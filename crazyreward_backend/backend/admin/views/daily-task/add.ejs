@@ -1,0 +1,1940 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Add Daily Task</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300..800;1,300..800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="/css/admin.css">
+    <link rel="icon" href="/images/favicon.png">
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif !important;
+        }
+
+        body.dashboard-body {
+            background-color: #f3f4f6 !important;
+            font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif !important;
+        }
+
+        .task-form-page-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+
+        .task-form-header-card {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 24px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .task-form-header-title h1 {
+            font-size: 24px;
+            font-weight: 800;
+            color: #0f172a;
+            margin: 0 0 4px;
+        }
+
+        .task-form-header-title p {
+            font-size: 14px;
+            color: #64748b;
+            margin: 0;
+        }
+
+        .btn-back-link {
+            background: #f1f5f9;
+            color: #0f172a;
+            border: 1px solid #cbd5e1;
+            padding: 10px 20px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-back-link:hover {
+            background: #e2e8f0;
+            transform: translateY(-1px);
+        }
+
+        /* ========= PAGE CONTAINER ========= */
+        .admin-form-section {
+            max-width: 100%;
+            margin: 0 auto;
+            background: #ffffff;
+            padding: 32px;
+            border-radius: 20px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+        }
+
+        .admin-form-section h2 {
+            margin-top: 0;
+            margin-bottom: 24px;
+            font-weight: 800;
+            color: #0f172a;
+            font-size: 20px;
+        }
+
+        .prefill-banner {
+            background: linear-gradient(135deg, #dcfce7, #bbf7d0);
+            border: 1px solid #86efac;
+            border-radius: 10px;
+            padding: 12px 16px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #166534;
+        }
+
+        /* ========= FORM ========= */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-size: 13px;
+            font-weight: 700;
+            margin-bottom: 6px;
+            display: block;
+            color: #475569;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        input,
+        textarea,
+        select {
+            width: 100%;
+            padding: 11px 14px;
+            border-radius: 12px;
+            border: 1px solid #cbd5e1;
+            background: #ffffff;
+            font-size: 14px;
+            font-weight: 600;
+            color: #0f172a;
+            transition: all 0.2s ease;
+        }
+
+        input:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: #052e1f;
+            box-shadow: 0 0 0 3px rgba(5, 46, 31, 0.12);
+            background: #ffffff;
+        }
+
+        /* ========= BUTTON ========= */
+        .admin-form button[type="submit"] {
+            width: 100%;
+            margin-top: 24px;
+            padding: 14px;
+            background: #052e1f;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 800;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 14px rgba(5, 46, 31, 0.25);
+        }
+
+        .admin-form button[type="submit"]:hover {
+            background: #042418;
+            transform: translateY(-1px);
+        }
+
+        /* ========= MODERN HIGH CONTRAST SWITCH TOGGLE ========= */
+        .switch-wrap {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 14px 16px;
+            background: #ffffff;
+            border-radius: 12px;
+            border: 1.5px solid #cbd5e1;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            transition: all 0.2s ease;
+            margin-bottom: 14px;
+        }
+
+        .switch-wrap:hover {
+            border-color: #94a3b8;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+        }
+
+        .switch-wrap.active-on {
+            background: #f0fdf4 !important;
+            border-color: #22c55e !important;
+        }
+
+        .switch-wrap label {
+            margin: 0;
+            flex: 1;
+            font-size: 14px;
+            font-weight: 700;
+            color: #0f172a;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .toggle-status-tag {
+            font-size: 11px;
+            font-weight: 800;
+            padding: 3px 10px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: all 0.2s ease;
+        }
+
+        .toggle-status-tag.tag-on {
+            background: #16a34a;
+            color: #ffffff;
+            box-shadow: 0 2px 5px rgba(22, 163, 74, 0.3);
+        }
+
+        .toggle-status-tag.tag-off {
+            background: #64748b;
+            color: #ffffff;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 52px;
+            height: 28px;
+            flex-shrink: 0;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .switch .slider {
+            position: absolute;
+            inset: 0;
+            background: #94a3b8;
+            border-radius: 30px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            border: 1.5px solid #64748b;
+        }
+
+        .switch .slider:before {
+            content: "";
+            position: absolute;
+            height: 20px;
+            width: 20px;
+            left: 2.5px;
+            top: 2.5px;
+            background: #ffffff;
+            border-radius: 50%;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+
+        .switch input:checked + .slider {
+            background: #16a34a;
+            border-color: #15803d;
+            box-shadow: 0 0 10px rgba(22, 163, 74, 0.4);
+        }
+
+        .switch input:checked + .slider:before {
+            transform: translateX(24px);
+            background: #ffffff;
+        }
+
+        /* ========= COUNTRY SELECT ========= */
+        .country-select-container {
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            background: #fafafa;
+            padding: 10px;
+        }
+
+        .country-options {
+            max-height: 150px;
+            overflow-y: auto;
+            margin-top: 6px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .country-option {
+            padding: 8px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .country-option:hover {
+            background: #eef2ff;
+        }
+
+        .selected-countries {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 8px;
+        }
+
+        .tag {
+            background: #e0e7ff;
+            color: #1e3a8a;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+        }
+
+        /* ========= MODAL ========= */
+        .modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, .4);
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            width: 320px;
+            text-align: center;
+        }
+
+        .btn-ok {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .desc-item {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .desc-item input {
+            flex: 1;
+        }
+
+        .remove-desc {
+            background: #fee2e2;
+            border: none;
+            padding: 0 10px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        /* ========= EVENTS SECTION ========= */
+        .events-section {
+            background: #f8fafc;
+            border: 2px dashed #cbd5e1;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .events-section h4 {
+            margin: 0 0 15px 0;
+            color: #334155;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .event-item {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 14px;
+            margin-bottom: 12px;
+        }
+
+        .event-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .event-item-header .event-number {
+            font-weight: 600;
+            color: #2563eb;
+        }
+
+        .remove-event-btn {
+            background: #fee2e2;
+            color: #dc2626;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .event-fields {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .event-fields input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            font-size: 13px;
+        }
+
+        .add-event-btn {
+            width: 100%;
+            padding: 12px;
+            background: #f1f5f9;
+            border: 2px dashed #94a3b8;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            color: #475569;
+            transition: .2s;
+        }
+
+        .add-event-btn:hover {
+            background: #e2e8f0;
+            border-color: #64748b;
+        }
+
+        .no-events-note {
+            text-align: center;
+            color: #64748b;
+            font-size: 13px;
+            margin-bottom: 12px;
+        }
+
+        /* Daily Reset Toggle */
+        .daily-reset-toggle {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px;
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            border-radius: 10px;
+            margin-top: 15px;
+        }
+
+        .daily-reset-toggle label {
+            margin: 0;
+            font-weight: 600;
+            color: #92400e;
+            flex: 1;
+        }
+
+        .daily-reset-toggle .switch input:checked+.slider {
+            background: #f59e0b;
+        }
+
+        .daily-reset-hint {
+            font-size: 11px;
+            color: #b45309;
+            margin-top: 4px;
+        }
+    </style>
+</head>
+
+<body class="dashboard-body">
+
+    <div id="alert-modal" class="modal">
+        <div class="modal-content">
+            <h3>Notification</h3>
+            <p class="alert-message">Something happened</p>
+            <div style="margin-top: 15px;">
+                <button id="alert-ok" class="btn-ok">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="dashboard-shell">
+        <%- include('../partials/sidebar', { activePage: 'daily-tasks' }) %>
+
+            <div class="dashboard-main">
+                <header class="navbar dashboard-navbar">
+                    <div class="nav-left">
+                        <button type="button" class="sidebar-toggle-btn" onclick="toggleSidebar()">
+                            ☰
+                        </button>
+                        <h2>Add Daily Task</h2>
+                    </div>
+
+                    <div class="nav-right" onclick="toggleDropdown()">
+                        <div class="dropdown" id="dropdown">
+                            <a href="/logout">Logout</a>
+                        </div>
+                    </div>
+                </header>
+
+                <main class="container task-form-page-container">
+                    <div class="task-form-header-card">
+                        <div class="task-form-header-title">
+                            <h1 id="formTitle">Add New Task</h1>
+                            <p>Configure task details, verification methods & payouts</p>
+                        </div>
+
+                        <a href="/manage-daily-task" class="btn-back-link">
+                            <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                            </svg>
+                            <span>Back to Manager</span>
+                        </a>
+                    </div>
+
+                    <section class="admin-form-section">
+                        <div id="prefillBanner" class="prefill-banner" style="display:none;">
+                            <span><i class="fa-solid fa-copy"></i></span>
+                            <span>You are duplicating an existing task. Edit the details and save as a new task.</span>
+                        </div>
+                        <h2 id="formTitle">Add New Task</h2>
+
+                        <form id="offerForm" class="admin-form" novalidate>
+
+                            <div class="form-group">
+                                <label>Offer Provider *</label>
+                                <select name="provider" required>
+                                    <option value="" disabled>Select Provider</option>
+                                    <option value="InternalOffer" selected>Internal Offer</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group" style="display: none;">
+                                <label>Offer Type *</label>
+                                <select name="offerType" id="offerTypeSelect" required>
+                                    <% if (typeof isWatchEarnPage !=='undefined' && isWatchEarnPage) { %>
+                                        <option value="WatchEarn" selected>Watch & Earn</option>
+                                        <% } else { %>
+                                            <option value="DailyTask" selected>Daily Tasks</option>
+                                            <% } %>
+                                </select>
+                            </div>
+
+                            <!-- Select Method Dropdown (Only for Daily Tasks) -->
+                            <div class="form-group" id="dailyTaskMethodGroup" <% if (typeof isWatchEarnPage
+                                !=='undefined' && isWatchEarnPage) { %>style="display: none;"<% } %>>
+                                    <label>Select Method *</label>
+                                    <select id="dailyTaskMethodSelect">
+                                        <option value="All">All Options (Multi + Package + Timer)</option>
+                                        <option value="MultiEvent">Multi Event (Multi Only)</option>
+                                        <option value="MultiPackage">Multi Event with Package</option>
+                                        <option value="MultiTimer">Multi Event with Timer</option>
+                                        <option value="Package">Package Verification Only</option>
+                                        <option value="PackageTimer">Package with Timer</option>
+                                        <option value="Screenshot">Screenshot Verification</option>
+                                        <option value="SingleEvent" selected>Single Event (Default)</option>
+                                    </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Offer ID *</label>
+                                <input type="text" name="offerId" id="offerIdInput" required />
+                                <small style="color:#64748b;font-size:11px;margin-top:4px;display:block;">Leave as-is or
+                                    change to
+                                    create a new unique ID.</small>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Offer Name *</label>
+                                <input type="text" name="offerName" required />
+                            </div>
+
+                            <div class="form-group">
+                                <label>App Rating (Optional)</label>
+                                <input type="text" name="rating" placeholder="e.g. 4.5" />
+                            </div>
+
+                            <div class="form-group">
+                                <label>App Downloads (Optional)</label>
+                                <input type="text" name="downloads" placeholder="e.g. 10M+" />
+                            </div>
+
+                            <div class="form-group" id="screenshotGroup" style="background: #faf5ff; border: 1.5px solid #e9d5ff; border-radius: 12px; padding: 14px 16px; margin-bottom: 16px; display: none;">
+                                <div style="display: flex; align-items: center; justify-content: space-between;">
+                                    <div>
+                                        <strong style="font-size: 14px; color: #581c87; display: block;">Screenshot Verification</strong>
+                                        <span style="font-size: 12px; color: #7e22ce;">Require user to upload screenshot proof for manual admin review</span>
+                                    </div>
+                                    <label class="switch">
+                                        <input type="checkbox" id="screenshotVerificationToggle" name="screenshotVerificationEnabled" value="true">
+                                        <span class="slider round"></span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Image URL *</label>
+                                <input type="url" name="imagePath" required />
+                            </div>
+
+                            <div class="form-group">
+                                <label>Banner URL (Optional)</label>
+                                <input type="url" name="bannerPath" id="bannerPathInput" placeholder="https://..." />
+                            </div>
+
+                            <div class="form-group">
+                                <label>Sub description (Optional)</label>
+                                <input type="text" name="subDescription" placeholder="e.g. Only for new users" />
+                            </div>
+
+                            <div class="form-group" id="descriptionStepsGroup">
+                                <label style="display: flex; justify-content: space-between; align-items: center;">
+                                    <span>Offer Description Steps *</span>
+                                    <span style="font-size: 11px; color: #64748b;">Step Title & Subtitle</span>
+                                </label>
+                                <div id="descriptionList"></div>
+                                <button type="button" id="addDescBtn"
+                                    style="margin-top:8px;padding:8px 12px;border:1px solid #e5e7eb;border-radius:6px;background:#f3f4f6;cursor:pointer;">
+                                    + Add Step
+                                </button>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Offer Disclaimer (Optional)</label>
+                                <div id="disclaimerList"></div>
+                                <button type="button" id="addDisclaimerBtn"
+                                    style="margin-top:8px;padding:8px 12px;border:1px solid #e5e7eb;border-radius:6px;background:#f3f4f6;cursor:pointer;">
+                                    + Add Disclaimer
+                                </button>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Offer Category *</label>
+                                <select name="offerCategory" required>
+                                    <option value="" disabled selected>Select Category</option>
+                                    <% if (typeof categories !=='undefined' && categories && categories.length> 0) { %>
+                                        <% categories.forEach(function(cat) { %>
+                                            <option value="<%= cat.name %>">
+                                                <%= cat.name %>
+                                            </option>
+                                            <% }); %>
+                                                <% } else { %>
+                                                    <option value="Multi Task">Multi Task</option>
+                                                    <option value="Youtube Video">Youtube Video</option>
+                                                    <option value="Youtube Shorts">Youtube Shorts</option>
+                                                    <option value="Instagram Reels">Instagram Reels</option>
+                                                    <option value="Install">Install</option>
+                                                    <option value="Register">Register</option>
+                                                    <option value="Other">Other</option>
+                                                    <% } %>
+                                </select>
+                            </div>
+
+                            <div class="form-group" id="coinsRewardGroup">
+                                <label>Coins (Reward Coins) *</label>
+                                <input type="number" name="payout" id="payout" required min="1" step="1"
+                                    placeholder="e.g. 50" />
+                            </div>
+
+                            <div class="form-group" id="trackingTimeGroup">
+                                <label>Tracking Time (in seconds, Must for Watch Earn)</label>
+                                <input type="number" name="trackingTime" min="0" step="1" />
+                            </div>
+
+                            <div class="form-group" id="colorGroup">
+                                <label>Background Color (in hex-code, Must for Daily Task)</label>
+                                <input type="string" name="color" />
+                            </div>
+
+                            <div class="form-group">
+                                <label style="display: flex; align-items: center; justify-content: space-between;">
+                                    <span><i class="fa-brands fa-youtube"
+                                            style="color: #ef4444; margin-right: 6px;"></i>Watch Tutorial Link
+                                        (Optional)</span>
+                                    <span style="font-size: 11px; color: #64748b;">YouTube / Video guide for
+                                        users</span>
+                                </label>
+                                <input type="url" name="watchTutorial"
+                                    placeholder="e.g. https://youtube.com/watch?v=..." />
+                            </div>
+
+                            <div class="form-group">
+                                <label id="redirectionUrlLabel">Redirection URL *</label>
+                                <input type="url" name="redirectionUrl" id="redirectionUrlInput" required />
+                            </div>
+
+                            <!-- Fetch Thumbnail Button -->
+                            <div class="form-group" id="fetchThumbnailGroup" style="display: none; margin-top: 8px;">
+                                <button type="button" id="fetchThumbnailBtn"
+                                    style="padding: 8px 12px; border: 1px solid #2563eb; border-radius: 6px; background: #eff6ff; color: #2563eb; font-weight: 500; cursor: pointer; transition: 0.2s;">
+                                    📸 Fetch YouTube Thumbnail
+                                </button>
+                            </div>
+
+                            <!-- Package Verification Toggle -->
+                            <div class="form-group" id="packageToggleGroup">
+                                <label>Package Verification ON/OFF</label>
+                                <label class="switch">
+                                    <input type="checkbox" name="packageEnabled" id="packageEnabledToggle">
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+
+                            <div class="form-group" id="packageNameGroup" style="display: none;">
+                                <label>App Package ID / Package Name *</label>
+                                <input type="text" name="packageName" id="packageNameInput"
+                                    placeholder="e.g. com.example.app" />
+                            </div>
+
+                            <!-- Timer Verification Toggle -->
+                            <div class="form-group" id="timerToggleGroup">
+                                <label>Timer Verification ON/OFF</label>
+                                <label class="switch">
+                                    <input type="checkbox" name="timerEnabled" id="timerEnabledToggle">
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+
+                            <div class="form-group" id="timerDurationGroup" style="display: none;">
+                                <label>Timer Duration (in minutes) *</label>
+                                <input type="number" name="timerDuration" id="timerDurationInput" min="1" step="1"
+                                    placeholder="e.g. 5" />
+                            </div>
+
+                            <!-- Video Verification Toggle (Only for Watch & Earn) -->
+                            <div class="form-group" id="videoVerificationToggleGroup" style="display: none;">
+                                <label>Video Verification ON/OFF</label>
+                                <label class="switch">
+                                    <input type="checkbox" name="videoVerificationEnabled"
+                                        id="videoVerificationEnabledToggle">
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+
+                            <div class="form-group" id="videoVerificationIdGroup" style="display: none;">
+                                <label>Video Verification ID *</label>
+                                <input type="text" name="videoVerificationId" id="videoVerificationIdInput"
+                                    placeholder="e.g. video_id_here" />
+                            </div>
+
+                            <!-- Daily Reward Mode Toggle -->
+                            <div class="form-group" id="dailyRewardToggleGroup" style="display: none;">
+                                <label>Daily Reward Mode ON/OFF</label>
+                                <label class="switch">
+                                    <input type="checkbox" name="dailyRewardEnabled" id="dailyRewardEnabledToggle">
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+
+                            <!-- Daily Rewards Steps Editor -->
+                            <div class="events-section" id="dailyRewardsSection"
+                                style="display: none; background: #f0fdf4; border-color: #86efac;">
+                                <h4 style="color: #166534;"><i class="fa-solid fa-clock" style="margin-right: 6px;"></i>
+                                    Daily Timers & Rewards</h4>
+                                <p class="no-events-note" style="color: #15803d;">Add multiple calendar day timers and
+                                    coin payouts (e.g. Day 1 -> 1 min -> 10 coins).</p>
+                                <div id="dailyRewardsList"></div>
+                                <button type="button" id="addDailyRewardBtn" class="add-event-btn"
+                                    style="background: #e8f5e9; border-color: #a5d6a7; color: #2e7d32;">
+                                    + Add Daily Step (Day)
+                                </button>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Status</label>
+                                <label class="switch">
+                                    <input type="checkbox" name="enabled" checked>
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Countries *</label>
+                                <div id="countrySelectContainer" class="country-select-container">
+                                    <input type="text" id="countrySearch" placeholder="Search & select countries..."
+                                        autocomplete="off" />
+                                    <div id="selectedCountries" class="selected-countries"></div>
+                                    <div id="countryOptions" class="country-options">
+                                        <div data-value="GLOBAL" class="country-option">🌍 GLOBAL</div>
+                                        <% countries.forEach(country=> { %>
+                                            <div data-value="<%= country.code %>" class="country-option">
+                                                <img src="<%= country.flag %>" alt="<%= country.name %> flag" width="20"
+                                                    height="14">
+                                                <span>
+                                                    <%= country.name %> (<%= country.code %>)
+                                                </span>
+                                            </div>
+                                            <% }); %>
+                                    </div>
+                                </div>
+                                <input type="hidden" name="countries" id="countriesInput" required />
+                            </div>
+
+                            <!-- Multi-Event Mode Toggle -->
+                            <div class="form-group" id="multiEventToggleGroup">
+                                <label>Multi-Event Mode ON/OFF</label>
+                                <label class="switch">
+                                    <input type="checkbox" name="multiEventEnabled" id="multiEventEnabledToggle">
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+
+                            <!-- Multi-Event Section Group -->
+                            <div id="multiEventGroup" style="display: none;">
+                                <!-- Multi-Event Section -->
+                                <div class="events-section">
+                                    <h4 id="multiEventsHeading">🎯 Multi-Events (Optional)</h4>
+                                    <p class="no-events-note" id="multiEventsNote">Add multiple reward events for this task. Leave empty for
+                                        single payout.</p>
+                                    <div id="eventsList"></div>
+                                    <button type="button" id="addEventBtn" class="add-event-btn">
+                                        + Add Event
+                                    </button>
+                                </div>
+
+                                <!-- Daily Reset Toggle -->
+                                <div class="switch-wrap" id="add_daily_reset_toggle_group">
+                                    <label><i class="fa-solid fa-rotate" style="margin-right: 6px; color: #2563eb;"></i> Daily Reset <span id="add_daily_reset_status_tag" class="toggle-status-tag tag-off">OFF (ONE-TIME)</span></label>
+                                    <label class="switch">
+                                        <input type="checkbox" id="add_daily_reset" name="dailyReset">
+                                        <span class="slider round"></span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Daily Cap Limit (Optional)</label>
+                                <input type="number" name="dailyCapLimit" min="0" />
+                            </div>
+                            <div class="form-group">
+                                <label>Lifetime Cap Limit (Optional)</label>
+                                <input type="number" name="lifetimeCapLimit" min="0" />
+                            </div>
+                            <div class="form-group" id="perUserDailyCapGroup" style="display: none;">
+                                <label>Per User Daily Cap (Optional)</label>
+                                <input type="number" name="perUserDailyCap" id="perUserDailyCapInput" min="0"
+                                    placeholder="e.g. 2" />
+                            </div>
+                            <button type="submit">Add Offer</button>
+                        </form>
+                    </section>
+                </main>
+            </div>
+    </div>
+
+    <script>
+        // --- 0. STATE VARIABLES (must be declared first for prefill) ---
+        let selectedCountries = [];
+        let descriptions = [{ title: '', subtitle: '' }];
+        let disclaimers = [];
+        let events = [];
+        let dailyRewards = [];
+
+        // --- 1. UTILITY & MODAL ---
+        function showAlert(message, callback) {
+            const modal = document.getElementById('alert-modal');
+            modal.querySelector('.alert-message').textContent = message;
+            modal.style.display = 'flex';
+            document.getElementById('alert-ok').onclick = () => {
+                modal.style.display = 'none';
+                if (callback) callback(true);
+            };
+        }
+
+        // --- 2. PREFILL FROM URL PARAMS ---
+        (function prefillFromUrl() {
+            const params = new URLSearchParams(window.location.search);
+            if (!params.has('prefill')) return;
+
+            // Show duplicate mode UI
+            const banner = document.getElementById('prefillBanner');
+            if (banner) banner.style.display = 'flex';
+            const title = document.getElementById('formTitle');
+            if (title) title.textContent = 'Duplicate Task';
+            const submitBtn = document.querySelector('button[type="submit"]');
+            if (submitBtn) submitBtn.textContent = 'Save as New Task';
+
+            // Helper to get param value
+            const get = (key, fallback) => params.get(key) || fallback;
+
+            // Simple text / number fields
+            const setIf = (name, value) => {
+                const el = document.querySelector(`[name="${name}"]`);
+                if (el && value !== null && value !== undefined && value !== '') {
+                    el.value = value;
+                }
+            };
+
+            setIf('offerId', get('offerId', ''));
+            setIf('offerName', get('offerName', ''));
+            setIf('imagePath', get('imagePath', ''));
+            setIf('bannerPath', get('bannerPath', ''));
+            setIf('payout', get('payout', ''));
+            setIf('trackingTime', get('trackingTime', ''));
+            setIf('color', get('color', ''));
+            setIf('redirectionUrl', get('redirectionUrl', ''));
+            setIf('dailyCapLimit', get('dailyCapLimit', ''));
+            setIf('lifetimeCapLimit', get('lifetimeCapLimit', ''));
+            setIf('packageName', get('packageName', ''));
+            setIf('watchTutorial', get('watchTutorial', ''));
+            setIf('subDescription', get('subDescription', ''));
+
+            // Checkbox prefill (packageEnabled, timerEnabled)
+            const packageEnabledPrefill = get('packageEnabled', '') === 'true';
+            const timerEnabledPrefill = get('timerEnabled', '') === 'true';
+
+            const packageToggle = document.getElementById('packageEnabledToggle');
+            const timerToggle = document.getElementById('timerEnabledToggle');
+
+            if (packageToggle && packageEnabledPrefill) {
+                packageToggle.checked = true;
+                document.getElementById('packageNameGroup').style.display = 'block';
+            }
+
+            if (timerToggle && timerEnabledPrefill) {
+                timerToggle.checked = true;
+                document.getElementById('dailyRewardToggleGroup').style.display = 'block';
+                document.getElementById('timerDurationGroup').style.display = 'block';
+            }
+
+            // Daily rewards prefill
+            const dailyRewardEnabledPrefill = get('dailyRewardEnabled', '') === 'true';
+            const dailyRewardEnabledToggle = document.getElementById('dailyRewardEnabledToggle');
+            const dailyRewardsSection = document.getElementById('dailyRewardsSection');
+            if (dailyRewardEnabledPrefill && dailyRewardEnabledToggle) {
+                dailyRewardEnabledToggle.checked = true;
+                if (timerToggle.checked) {
+                    dailyRewardsSection.style.display = 'block';
+                    document.getElementById('timerDurationGroup').style.display = 'none';
+                }
+            }
+            try {
+                const dailyRewardsRaw = get('dailyRewards', '');
+                if (dailyRewardsRaw) {
+                    const parsed = JSON.parse(dailyRewardsRaw);
+                    if (Array.isArray(parsed) && parsed.length) {
+                        dailyRewards = parsed.map(r => ({
+                            day: r.day,
+                            timerDurationMinutes: Math.round(r.timerDuration / 60),
+                            coins: r.coins
+                        }));
+                        renderDailyRewards();
+                    }
+                }
+            } catch (e) { console.warn('Could not parse dailyRewards:', e); }
+
+            // Multi event prefill
+            try {
+                const eventsRaw = get('events', '');
+                const multiEventEnabledToggle = document.getElementById('multiEventEnabledToggle');
+                const multiEventGroup = document.getElementById('multiEventGroup');
+                if (eventsRaw && eventsRaw !== '[]' && multiEventEnabledToggle) {
+                    const parsed = typeof eventsRaw === 'string' ? JSON.parse(eventsRaw) : eventsRaw;
+                    if (Array.isArray(parsed) && parsed.length) {
+                        events = parsed.map((e, idx) => ({
+                            eventId: e.eventId || `event_${idx + 1}`,
+                            name: e.name || '',
+                            label: e.label || e.levelText || e.eventLabel || '',
+                            coins: e.coins || 0
+                        }));
+                        multiEventEnabledToggle.checked = true;
+                        multiEventGroup.style.display = 'block';
+                        renderEvents();
+                    }
+                }
+            } catch (e) { console.warn('Could not parse events:', e); }
+
+            const timerDurationSec = Number(get('timerDuration', '0'));
+            if (timerDurationSec > 0) {
+                const timerDurationMinutes = Math.round(timerDurationSec / 60);
+                setIf('timerDuration', timerDurationMinutes);
+            }
+
+            // Select fields
+            const setSelect = (name, value) => {
+                const el = document.querySelector(`[name="${name}"]`);
+                if (el && value) {
+                    for (let i = 0; i < el.options.length; i++) {
+                        if (el.options[i].value === value) {
+                            el.selectedIndex = i;
+                            break;
+                        }
+                    }
+                }
+            };
+            setSelect('provider', get('provider', ''));
+            setSelect('offerType', get('offerType', ''));
+            setSelect('offerCategory', get('offerCategory', ''));
+
+            // Video Verification prefill
+            const videoVerificationEnabledPrefill = get('videoVerificationEnabled', '') === 'true';
+            const videoVerificationToggle = document.getElementById('videoVerificationEnabledToggle');
+            if (videoVerificationToggle && videoVerificationEnabledPrefill) {
+                videoVerificationToggle.checked = true;
+            }
+            setIf('videoVerificationId', get('videoVerificationId', ''));
+            setIf('perUserDailyCap', get('perUserDailyCap', ''));
+
+            // Countries (comma-separated, array, or JSON)
+            const countriesRaw = get('countries', '');
+            if (countriesRaw) {
+                let countryList = [];
+                try {
+                    const parsed = JSON.parse(countriesRaw);
+                    if (Array.isArray(parsed)) countryList = parsed;
+                    else if (parsed) countryList = [parsed];
+                } catch {
+                    countryList = countriesRaw.includes(',') ? countriesRaw.split(',') : [countriesRaw];
+                }
+                selectedCountries = countryList
+                    .map(c => typeof c === 'object' && c !== null ? (c.code || c.name || '') : String(c || ''))
+                    .map(c => c.trim().replace(/[\[\]"']/g, ''))
+                    .filter(Boolean);
+            }
+            if (!selectedCountries || selectedCountries.length === 0) {
+                selectedCountries = ['GLOBAL'];
+            }
+
+            // Description steps (JSON array)
+            try {
+                const descRaw = get('offerDescription', '');
+                if (descRaw) {
+                    let descArr = [];
+                    try { descArr = JSON.parse(descRaw); } catch { descArr = descRaw.split(','); }
+                    if (Array.isArray(descArr) && descArr.length) {
+                        descriptions = descArr.map(d => {
+                            if (typeof d === 'object' && d !== null) {
+                                return { title: d.title || '', subtitle: d.subtitle || '' };
+                            }
+                            const str = String(d || '');
+                            if (str.includes(':::')) {
+                                const parts = str.split(':::');
+                                return { title: parts[0].trim(), subtitle: (parts[1] || '').trim() };
+                            }
+                            return { title: str, subtitle: '' };
+                        });
+                        renderDescriptions();
+                    }
+                }
+            } catch (e) { console.warn('Could not parse offerDescription:', e); }
+
+            // Disclaimer steps (JSON array)
+            try {
+                const discRaw = get('offerDisclaimer', '');
+                if (discRaw) {
+                    let discArr = [];
+                    try { discArr = JSON.parse(discRaw); } catch { discArr = discRaw.split(','); }
+                    if (Array.isArray(discArr) && discArr.length) {
+                        disclaimers = discArr;
+                        renderDisclaimers();
+                    }
+                }
+            } catch (e) { console.warn('Could not parse offerDisclaimer:', e); }
+
+            // Select Method prefill
+            const hasMultiEvents = (events && events.length > 0) || (get('events', '') && get('events', '') !== '[]');
+            const hasPackage = packageEnabledPrefill;
+            const hasTimer = timerEnabledPrefill;
+            const hasScreenshot = get('screenshotVerificationEnabled', '') === 'true' || get('screenshotVerificationEnabled', '') === '1';
+
+            let methodPrefill = get('method', '');
+            if (!methodPrefill) {
+                if (hasScreenshot) methodPrefill = 'Screenshot';
+                else if (hasMultiEvents && hasPackage && hasTimer) methodPrefill = 'All';
+                else if (hasMultiEvents && hasPackage) methodPrefill = 'MultiPackage';
+                else if (hasMultiEvents && hasTimer) methodPrefill = 'MultiTimer';
+                else if (hasMultiEvents) methodPrefill = 'MultiEvent';
+                else if (hasPackage && hasTimer) methodPrefill = 'PackageTimer';
+                else if (hasPackage) methodPrefill = 'Package';
+                else if (hasTimer) methodPrefill = 'PackageTimer';
+                else methodPrefill = 'SingleEvent';
+            }
+
+            const methodSelectEl = document.getElementById('dailyTaskMethodSelect');
+            if (methodSelectEl) {
+                methodSelectEl.value = methodPrefill;
+            }
+        })();
+
+        const form = document.getElementById('offerForm');
+
+        const packageToggle = document.getElementById('packageEnabledToggle');
+        const packageNameGroup = document.getElementById('packageNameGroup');
+        const timerToggle = document.getElementById('timerEnabledToggle');
+        const timerDurationGroup = document.getElementById('timerDurationGroup');
+        const redirInput = document.getElementById('redirectionUrlInput');
+        const redirLabel = document.getElementById('redirectionUrlLabel');
+
+        const dailyRewardEnabledToggle = document.getElementById('dailyRewardEnabledToggle');
+        const dailyRewardToggleGroup = document.getElementById('dailyRewardToggleGroup');
+        const dailyRewardsSection = document.getElementById('dailyRewardsSection');
+
+        const multiEventEnabledToggle = document.getElementById('multiEventEnabledToggle');
+        const multiEventGroup = document.getElementById('multiEventGroup');
+
+        // Video Verification DOM elements
+        const videoVerificationToggleGroup = document.getElementById('videoVerificationToggleGroup');
+        const videoVerificationEnabledToggle = document.getElementById('videoVerificationEnabledToggle');
+        const videoVerificationIdGroup = document.getElementById('videoVerificationIdGroup');
+        const videoVerificationIdInput = document.getElementById('videoVerificationIdInput');
+        const offerTypeSelect = document.querySelector('[name="offerType"]');
+        const perUserDailyCapGroup = document.getElementById('perUserDailyCapGroup');
+        const perUserDailyCapInput = document.getElementById('perUserDailyCapInput');
+
+        // YouTube Thumbnail DOM elements
+        const bannerPathInput = document.getElementById('bannerPathInput');
+        const fetchThumbnailGroup = document.getElementById('fetchThumbnailGroup');
+        const fetchThumbnailBtn = document.getElementById('fetchThumbnailBtn');
+
+        function updateRedirRequiredState() {
+            const packageEnabled = packageToggle.checked;
+            const multiEventEnabled = multiEventEnabledToggle.checked;
+            if (packageEnabled || multiEventEnabled) {
+                redirInput.removeAttribute('required');
+                redirLabel.textContent = 'Redirection URL (Optional)';
+            } else {
+                redirInput.setAttribute('required', 'required');
+                redirLabel.textContent = 'Redirection URL *';
+            }
+        }
+
+        const dailyTaskMethodGroup = document.getElementById('dailyTaskMethodGroup');
+        const dailyTaskMethodSelect = document.getElementById('dailyTaskMethodSelect');
+
+        function updateFormFieldsVisibility() {
+            const offerType = offerTypeSelect.value;
+            const trackingTimeGroup = document.getElementById('trackingTimeGroup');
+            const colorGroup = document.getElementById('colorGroup');
+            const packageToggleGroup = document.getElementById('packageToggleGroup');
+            const timerToggleGroup = document.getElementById('timerToggleGroup');
+            const multiEventToggleGroup = document.getElementById('multiEventToggleGroup');
+
+            const isWatchEarn = offerType === 'WatchEarn';
+            const isDailyTask = offerType === 'DailyTask';
+
+            if (isDailyTask) {
+                dailyTaskMethodGroup.style.display = 'block';
+            } else {
+                dailyTaskMethodGroup.style.display = 'none';
+            }
+
+            if (isWatchEarn) {
+                if (multiEventToggleGroup) multiEventToggleGroup.style.display = 'none';
+                if (timerToggleGroup) timerToggleGroup.style.display = 'none';
+                if (packageToggleGroup) packageToggleGroup.style.display = 'none';
+                if (colorGroup) colorGroup.style.display = 'none';
+
+                document.getElementById('packageNameGroup').style.display = 'none';
+                document.getElementById('timerDurationGroup').style.display = 'none';
+                document.getElementById('dailyRewardToggleGroup').style.display = 'none';
+                document.getElementById('dailyRewardsSection').style.display = 'none';
+                document.getElementById('multiEventGroup').style.display = 'none';
+
+                if (trackingTimeGroup) trackingTimeGroup.style.display = 'block';
+
+                videoVerificationToggleGroup.style.display = 'block';
+                perUserDailyCapGroup.style.display = 'block';
+                if (videoVerificationEnabledToggle.checked) {
+                    videoVerificationIdGroup.style.display = 'block';
+                    videoVerificationIdInput.setAttribute('required', 'required');
+                } else {
+                    videoVerificationIdGroup.style.display = 'none';
+                    videoVerificationIdInput.removeAttribute('required');
+                }
+            } else {
+                if (colorGroup) colorGroup.style.display = 'block';
+                if (trackingTimeGroup) trackingTimeGroup.style.display = 'none';
+
+                videoVerificationToggleGroup.style.display = 'none';
+                videoVerificationIdGroup.style.display = 'none';
+                perUserDailyCapGroup.style.display = 'none';
+                videoVerificationEnabledToggle.checked = false;
+                videoVerificationIdInput.removeAttribute('required');
+
+                const method = dailyTaskMethodSelect.value;
+                const isStrictMulti = (method === 'MultiEvent' || method === 'MultiTimer' || method === 'MultiPackage');
+                const isAll = (method === 'All');
+                const isScreenshot = (method === 'Screenshot');
+                const showPackage = (method === 'MultiPackage' || method === 'All' || method === 'Package' || method === 'PackageTimer');
+                const showTimer = (method === 'MultiTimer' || method === 'All' || method === 'PackageTimer');
+
+                const descStepsGrp = document.getElementById('descriptionStepsGroup');
+                const coinsGrp = document.getElementById('coinsRewardGroup');
+                const payoutInput = document.getElementById('payout');
+                const multiHeading = document.getElementById('multiEventsHeading');
+                const multiNote = document.getElementById('multiEventsNote');
+                const screenshotGroup = document.getElementById('screenshotGroup');
+                const screenshotToggle = document.getElementById('screenshotVerificationToggle');
+
+                if (screenshotGroup) screenshotGroup.style.display = isScreenshot ? 'block' : 'none';
+                if (!isScreenshot && screenshotToggle) screenshotToggle.checked = false;
+
+                if (isStrictMulti) {
+                    if (descStepsGrp) descStepsGrp.style.display = 'none';
+                    if (coinsGrp) coinsGrp.style.display = 'none';
+                    if (payoutInput) payoutInput.removeAttribute('required');
+                    if (multiHeading) multiHeading.innerHTML = '🎯 Multi-Events <span style="color:#ef4444;">* (Required)</span>';
+                    if (multiNote) multiNote.textContent = 'Add milestone events for this task (Coins are calculated per event).';
+                } else {
+                    if (descStepsGrp) descStepsGrp.style.display = 'block';
+                    if (coinsGrp) coinsGrp.style.display = 'block';
+                    if (payoutInput) payoutInput.setAttribute('required', 'required');
+                    if (multiHeading) multiHeading.textContent = '🎯 Multi-Events (Optional)';
+                    if (multiNote) multiNote.textContent = 'Add multiple reward events for this task. Leave empty for single payout.';
+                }
+
+                if (multiEventToggleGroup) multiEventToggleGroup.style.display = (isStrictMulti || isAll) ? 'block' : 'none';
+                if (packageToggleGroup) packageToggleGroup.style.display = showPackage ? 'block' : 'none';
+                if (timerToggleGroup) timerToggleGroup.style.display = showTimer ? 'block' : 'none';
+
+                if (isStrictMulti) {
+                    multiEventEnabledToggle.checked = true;
+                    document.getElementById('multiEventGroup').style.display = 'block';
+                } else if (isAll) {
+                    document.getElementById('multiEventGroup').style.display = multiEventEnabledToggle.checked ? 'block' : 'none';
+                } else {
+                    multiEventEnabledToggle.checked = false;
+                    document.getElementById('multiEventGroup').style.display = 'none';
+                }
+
+                if (showPackage) {
+                    document.getElementById('packageNameGroup').style.display = packageToggle.checked ? 'block' : 'none';
+                } else {
+                    packageToggle.checked = false;
+                    document.getElementById('packageNameGroup').style.display = 'none';
+                }
+
+                if (showTimer) {
+                    if (timerToggle.checked) {
+                        document.getElementById('dailyRewardToggleGroup').style.display = 'block';
+                        if (dailyRewardEnabledToggle.checked) {
+                            dailyRewardsSection.style.display = 'block';
+                            timerDurationGroup.style.display = 'none';
+                        } else {
+                            dailyRewardsSection.style.display = 'none';
+                            timerDurationGroup.style.display = 'block';
+                        }
+                    } else {
+                        document.getElementById('dailyRewardToggleGroup').style.display = 'block';
+                        timerDurationGroup.style.display = 'none';
+                        dailyRewardsSection.style.display = 'none';
+                    }
+                } else {
+                    timerToggle.checked = false;
+                    document.getElementById('dailyRewardToggleGroup').style.display = 'none';
+                    document.getElementById('timerDurationGroup').style.display = 'none';
+                    document.getElementById('dailyRewardsSection').style.display = 'none';
+                }
+            }
+        }
+
+        function checkYoutubeUrl(url) {
+            if (!url) return false;
+            const ytRegex = /^(?:https?:\/\/)?(?:www\.|m\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=|shorts\/))((?:\w|-){11})(?:\S+)?$/;
+            return ytRegex.test(url.trim());
+        }
+
+        function getYoutubeId(url) {
+            if (!url) return null;
+            const ytRegex = /^(?:https?:\/\/)?(?:www\.|m\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=|shorts\/))((?:\w|-){11})(?:\S+)?$/;
+            const match = url.trim().match(ytRegex);
+            return match ? match[1] : null;
+        }
+
+        function updateThumbnailButtonVisibility() {
+            if (checkYoutubeUrl(redirInput.value)) {
+                fetchThumbnailGroup.style.display = 'block';
+            } else {
+                fetchThumbnailGroup.style.display = 'none';
+            }
+        }
+
+        offerTypeSelect.addEventListener('change', updateFormFieldsVisibility);
+        dailyTaskMethodSelect.addEventListener('change', () => {
+            const method = dailyTaskMethodSelect.value;
+            const isStrictMulti = (method === 'MultiEvent' || method === 'MultiTimer' || method === 'MultiPackage');
+            const isAll = (method === 'All');
+            const isScreenshot = (method === 'Screenshot');
+            const showPackage = (method === 'MultiPackage' || method === 'All' || method === 'Package' || method === 'PackageTimer');
+            const showTimer = (method === 'MultiTimer' || method === 'All' || method === 'PackageTimer');
+
+            if (isStrictMulti) {
+                multiEventEnabledToggle.checked = true;
+            } else if (isAll) {
+                const hasEvts = Array.isArray(events) && events.length > 0;
+                multiEventEnabledToggle.checked = hasEvts;
+            } else {
+                multiEventEnabledToggle.checked = false;
+            }
+
+            if (showPackage) packageToggle.checked = true;
+            else packageToggle.checked = false;
+
+            if (showTimer) timerToggle.checked = true;
+            else timerToggle.checked = false;
+
+            const screenshotToggle = document.getElementById('screenshotVerificationToggle');
+            if (isScreenshot && screenshotToggle) {
+                screenshotToggle.checked = true;
+            } else if (screenshotToggle) {
+                screenshotToggle.checked = false;
+            }
+
+            updateFormFieldsVisibility();
+            updateRedirRequiredState();
+        });
+        videoVerificationEnabledToggle.addEventListener('change', updateFormFieldsVisibility);
+
+        redirInput.addEventListener('input', updateThumbnailButtonVisibility);
+        redirInput.addEventListener('change', updateThumbnailButtonVisibility);
+
+        fetchThumbnailBtn.addEventListener('click', () => {
+            const ytId = getYoutubeId(redirInput.value);
+            if (ytId) {
+                const thumbnailUrl = `https://img.youtube.com/vi/${ytId}/maxresdefault.jpg`;
+                bannerPathInput.value = thumbnailUrl;
+
+                bannerPathInput.style.backgroundColor = '#dcfce7';
+                setTimeout(() => {
+                    bannerPathInput.style.backgroundColor = '';
+                }, 1000);
+            }
+        });
+
+        packageToggle.addEventListener('change', () => {
+            if (packageToggle.checked) {
+                packageNameGroup.style.display = 'block';
+            } else {
+                packageNameGroup.style.display = 'none';
+            }
+            updateRedirRequiredState();
+        });
+
+        multiEventEnabledToggle.addEventListener('change', () => {
+            if (multiEventEnabledToggle.checked) {
+                multiEventGroup.style.display = 'block';
+            } else {
+                multiEventGroup.style.display = 'none';
+                events = [];
+                renderEvents();
+            }
+            updateRedirRequiredState();
+        });
+
+        timerToggle.addEventListener('change', () => {
+            if (timerToggle.checked) {
+                dailyRewardToggleGroup.style.display = 'block';
+                if (dailyRewardEnabledToggle.checked) {
+                    dailyRewardsSection.style.display = 'block';
+                    timerDurationGroup.style.display = 'none';
+                } else {
+                    dailyRewardsSection.style.display = 'none';
+                    timerDurationGroup.style.display = 'block';
+                }
+            } else {
+                dailyRewardToggleGroup.style.display = 'none';
+                dailyRewardsSection.style.display = 'none';
+                timerDurationGroup.style.display = 'none';
+            }
+        });
+
+        dailyRewardEnabledToggle.addEventListener('change', () => {
+            if (dailyRewardEnabledToggle.checked) {
+                dailyRewardsSection.style.display = 'block';
+                timerDurationGroup.style.display = 'none';
+            } else {
+                dailyRewardsSection.style.display = 'none';
+                timerDurationGroup.style.display = 'block';
+            }
+        });
+
+        // Run once on prefill
+        setTimeout(() => {
+            updateRedirRequiredState();
+            updateFormFieldsVisibility();
+            updateThumbnailButtonVisibility();
+        }, 100);
+
+        // Country Handling
+        const countryOptions = document.getElementById('countryOptions');
+        const selectedCountriesDiv = document.getElementById('selectedCountries');
+        const countriesInput = document.getElementById('countriesInput');
+
+        // Search Filters
+        document.getElementById('countrySearch').addEventListener('input', (e) => filterCountries(e.target.value, 'countryOptions'));
+
+        function filterCountries(term, containerId) {
+            const lower = (term || '').toLowerCase().trim();
+            document.querySelectorAll(`#${containerId} .country-option`).forEach(opt => {
+                const val = opt.getAttribute('data-value');
+                if (selectedCountries.includes(val)) {
+                    opt.style.display = 'none';
+                } else if (!lower || opt.textContent.toLowerCase().includes(lower)) {
+                    opt.style.display = 'block';
+                } else {
+                    opt.style.display = 'none';
+                }
+            });
+        }
+
+        // Click Handlers
+        countryOptions.addEventListener('click', (e) => {
+            const opt = e.target.closest('.country-option');
+            if (!opt) return;
+            const value = opt.getAttribute('data-value');
+            if (!value) return;
+            if (value === 'GLOBAL') {
+                selectedCountries = ['GLOBAL'];
+            } else {
+                selectedCountries = selectedCountries.filter(c => c !== 'GLOBAL');
+                if (!selectedCountries.includes(value)) selectedCountries.push(value);
+            }
+            updateSelectedCountries();
+        });
+
+        // Update UI Functions
+        function updateSelectedCountries() {
+            renderTags(selectedCountries, selectedCountriesDiv);
+            countriesInput.value = selectedCountries.join(',');
+            // Hide selected from options
+            document.querySelectorAll('#countryOptions .country-option').forEach(opt => {
+                const val = opt.getAttribute('data-value');
+                opt.style.display = selectedCountries.includes(val) ? 'none' : 'block';
+            });
+        }
+
+        function renderTags(list, container) {
+            container.innerHTML = '';
+            list.forEach(c => {
+                if (!c) return;
+                const div = document.createElement('div');
+                div.className = 'tag';
+                div.innerHTML = `${c} <span data-value="${c}" style="cursor:pointer; margin-left:4px; font-weight:bold;">✖</span>`;
+                container.appendChild(div);
+            });
+        }
+
+        // Tag Removal
+        selectedCountriesDiv.addEventListener('click', (e) => {
+            const target = e.target.closest('span[data-value]');
+            if (!target) return;
+            const valToRemove = target.getAttribute('data-value');
+            if (valToRemove) {
+                selectedCountries = selectedCountries.filter(c => c !== valToRemove);
+                updateSelectedCountries();
+            }
+        });
+
+        // Initialize
+        updateSelectedCountries();
+
+        // -------- DESCRIPTION LIST LOGIC --------
+
+        const descContainer = document.getElementById('descriptionList');
+        const addDescBtn = document.getElementById('addDescBtn');
+
+        function renderDescriptions() {
+            descContainer.innerHTML = '';
+
+            descriptions.forEach((item, index) => {
+                const div = document.createElement('div');
+                div.className = 'desc-item';
+                div.style.display = 'flex';
+                div.style.gap = '8px';
+                div.style.marginBottom = '8px';
+                div.style.alignItems = 'center';
+
+                const title = typeof item === 'object' && item !== null ? (item.title || '') : (typeof item === 'string' && item.includes(':::') ? item.split(':::')[0].trim() : String(item || ''));
+                const subtitle = typeof item === 'object' && item !== null ? (item.subtitle || '') : (typeof item === 'string' && item.includes(':::') ? (item.split(':::')[1] || '').trim() : '');
+
+                div.innerHTML = `
+            <input type="text"
+                class="desc-title"
+                value="${title}"
+                data-index="${index}"
+                placeholder="Step Title (e.g. Download & Install)"
+                style="flex: 1.2; padding: 8px 12px; border: 1px solid #e5e7eb; border-radius: 8px;"
+                required
+            />
+            <input type="text"
+                class="desc-subtitle"
+                value="${subtitle}"
+                data-index="${index}"
+                placeholder="Step Subtitle (e.g. Install & open the app)"
+                style="flex: 1.8; padding: 8px 12px; border: 1px solid #e5e7eb; border-radius: 8px;"
+            />
+            <button type="button"
+                class="remove-desc"
+                data-index="${index}"
+                style="border:none; background:#fee2e2; color:#ef4444; padding:0 10px; height:38px; border-radius:8px; cursor:pointer;">
+                ✖
+            </button>
+        `;
+
+                descContainer.appendChild(div);
+            });
+        }
+
+        addDescBtn.addEventListener('click', () => {
+            descriptions.push({ title: '', subtitle: '' });
+            renderDescriptions();
+        });
+
+        descContainer.addEventListener('input', (e) => {
+            const index = parseInt(e.target.dataset.index);
+            if (isNaN(index)) return;
+            if (!descriptions[index] || typeof descriptions[index] !== 'object') {
+                descriptions[index] = { title: '', subtitle: '' };
+            }
+            if (e.target.classList.contains('desc-title')) {
+                descriptions[index].title = e.target.value;
+            } else if (e.target.classList.contains('desc-subtitle')) {
+                descriptions[index].subtitle = e.target.value;
+            }
+        });
+
+        descContainer.addEventListener('click', (e) => {
+            if (e.target.classList.contains('remove-desc')) {
+                const index = e.target.dataset.index;
+                descriptions.splice(index, 1);
+                if (descriptions.length === 0) descriptions.push({ title: '', subtitle: '' });
+                renderDescriptions();
+            }
+        });
+
+        renderDescriptions();
+
+        // -------- DISCLAIMER LIST LOGIC --------
+
+        const disclaimerContainer = document.getElementById('disclaimerList');
+        const addDisclaimerBtn = document.getElementById('addDisclaimerBtn');
+
+        function renderDisclaimers() {
+
+            disclaimerContainer.innerHTML = '';
+
+            disclaimers.forEach((text, index) => {
+
+                const div = document.createElement('div');
+                div.className = 'desc-item';
+
+                div.innerHTML = `
+        <input type="text"
+            value="${text}"
+            data-index="${index}"
+            placeholder="Enter disclaimer"
+        />
+
+        <button type="button"
+            class="remove-disclaimer"
+            data-index="${index}">
+            ✖
+        </button>
+        `;
+
+                disclaimerContainer.appendChild(div);
+
+            });
+
+        }
+
+        addDisclaimerBtn.addEventListener('click', () => {
+
+            disclaimers.push('');
+            renderDisclaimers();
+
+        });
+
+        disclaimerContainer.addEventListener('input', (e) => {
+
+            if (e.target.tagName === 'INPUT') {
+
+                const index = e.target.dataset.index;
+                disclaimers[index] = e.target.value;
+
+            }
+
+        });
+
+        disclaimerContainer.addEventListener('click', (e) => {
+            if (e.target.classList.contains('remove-disclaimer')) {
+                const index = e.target.dataset.index;
+                disclaimers.splice(index, 1);
+                renderDisclaimers();
+            }
+        });
+
+        // -------- EVENTS LIST LOGIC --------
+        // events is declared in STATE VARIABLES at top
+
+        function renderEvents() {
+            const container = document.getElementById('eventsList');
+            container.innerHTML = '';
+
+            if (events.length === 0) {
+                container.innerHTML = '<p class="no-events-note">No events added yet. Click "Add Event" to create multi-reward milestones.</p>';
+                return;
+            }
+
+            events.forEach((event, index) => {
+                const div = document.createElement('div');
+                div.className = 'event-item';
+                div.innerHTML = `
+                    <div class="event-item-header">
+                        <span class="event-number">Event ${index + 1}</span>
+                        <button type="button" class="remove-event-btn" data-index="${index}">✖ Remove</button>
+                    </div>
+                    <div class="event-fields" style="display: flex; gap: 8px;">
+                        <input type="text"
+                            class="event-label"
+                            data-index="${index}"
+                            value="${event.label || ''}"
+                            placeholder="Header (e.g., Level 1)"
+                            style="flex: 1;"
+                        />
+                        <input type="text"
+                            class="event-name"
+                            data-index="${index}"
+                            value="${event.name || ''}"
+                            placeholder="Event description"
+                            style="flex: 2;"
+                        />
+                        <input type="number"
+                            class="event-coins"
+                            data-index="${index}"
+                            value="${event.coins || ''}"
+                            placeholder="Coins"
+                            min="1"
+                            style="flex: 1;"
+                        />
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        document.getElementById('addEventBtn').addEventListener('click', () => {
+            events.push({
+                eventId: `event_${Date.now()}`,
+                name: '',
+                label: '',
+                coins: 0
+            });
+            renderEvents();
+        });
+
+        document.getElementById('eventsList').addEventListener('input', (e) => {
+            const index = parseInt(e.target.dataset.index);
+            if (e.target.classList.contains('event-label')) {
+                events[index].label = e.target.value;
+            } else if (e.target.classList.contains('event-name')) {
+                events[index].name = e.target.value;
+            } else if (e.target.classList.contains('event-coins')) {
+                events[index].coins = parseInt(e.target.value) || 0;
+            }
+        });
+
+        document.getElementById('eventsList').addEventListener('click', (e) => {
+            if (e.target.classList.contains('remove-event-btn')) {
+                const index = parseInt(e.target.dataset.index);
+                events.splice(index, 1);
+                renderEvents();
+            }
+        });
+
+        // -------- DAILY REWARDS LIST LOGIC --------
+        // dailyRewards is declared in STATE VARIABLES at top
+
+        function renderDailyRewards() {
+            const container = document.getElementById('dailyRewardsList');
+            container.innerHTML = '';
+
+            if (dailyRewards.length === 0) {
+                container.innerHTML = '<p class="no-events-note" style="color: #15803d; text-align: center; font-size: 13px;">No days added yet. Click "Add Daily Step" to create progression milestones.</p>';
+                return;
+            }
+
+            dailyRewards.forEach((step, index) => {
+                step.day = index + 1;
+                const div = document.createElement('div');
+                div.className = 'event-item';
+                div.style.borderColor = '#c8e6c9';
+                div.innerHTML = `
+                    <div class="event-item-header">
+                        <span class="event-number" style="color: #2e7d32;">Day ${step.day}</span>
+                        <button type="button" class="remove-event-btn remove-daily-reward-btn" data-index="${index}">✖ Remove</button>
+                    </div>
+                    <div class="event-fields">
+                        <input type="number"
+                            class="daily-reward-duration"
+                            data-index="${index}"
+                            value="${step.timerDurationMinutes || ''}"
+                            placeholder="Duration (in minutes)"
+                            min="1"
+                            required
+                        />
+                        <input type="number"
+                            class="daily-reward-coins"
+                            data-index="${index}"
+                            value="${step.coins || ''}"
+                            placeholder="Coins reward"
+                            min="1"
+                            required
+                        />
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        document.getElementById('addDailyRewardBtn').addEventListener('click', () => {
+            dailyRewards.push({
+                day: dailyRewards.length + 1,
+                timerDurationMinutes: 0,
+                coins: 0
+            });
+            renderDailyRewards();
+        });
+
+        document.getElementById('dailyRewardsList').addEventListener('input', (e) => {
+            const index = parseInt(e.target.dataset.index);
+            if (e.target.classList.contains('daily-reward-duration')) {
+                dailyRewards[index].timerDurationMinutes = parseInt(e.target.value) || 0;
+            } else if (e.target.classList.contains('daily-reward-coins')) {
+                dailyRewards[index].coins = parseInt(e.target.value) || 0;
+            }
+        });
+
+        document.getElementById('dailyRewardsList').addEventListener('click', (e) => {
+            if (e.target.classList.contains('remove-daily-reward-btn')) {
+                const index = parseInt(e.target.dataset.index);
+                dailyRewards.splice(index, 1);
+                renderDailyRewards();
+            }
+        });
+
+        // Initialize
+        renderEvents();
+        renderDailyRewards();
+
+        // --- 4. SUBMIT HANDLER ---
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData.entries());
+
+            // Checkboxes
+            data.enabled = !!form.elements['enabled'].checked;
+            data.dailyReset = !!form.elements['dailyReset'].checked;
+            data.packageEnabled = !!form.elements['packageEnabled'].checked;
+            data.timerEnabled = !!form.elements['timerEnabled'].checked;
+            data.dailyRewardEnabled = !!form.elements['dailyRewardEnabled']?.checked;
+            data.multiEventEnabled = !!form.elements['multiEventEnabled']?.checked;
+            data.videoVerificationEnabled = !!form.elements['videoVerificationEnabled']?.checked;
+
+            // Package / Timer validation and processing
+            if (data.packageEnabled) {
+                data.packageName = (form.elements['packageName'].value || '').trim();
+                if (!data.packageName) {
+                    return showAlert('❌ Package Name / App Package ID is required when Package verification is ON.');
+                }
+            } else {
+                data.packageName = '';
+            }
+
+            if (data.videoVerificationEnabled) {
+                data.videoVerificationId = (form.elements['videoVerificationId'].value || '').trim();
+                if (!data.videoVerificationId) {
+                    return showAlert('❌ Video Verification ID is required when Video Verification is ON.');
+                }
+            } else {
+                data.videoVerificationId = '';
+            }
+
+            if (data.timerEnabled) {
+                if (data.dailyRewardEnabled) {
+                    data.timerDuration = 0;
+                } else {
+                    const durationMinutes = Number(form.elements['timerDuration'].value) || 0;
+                    if (durationMinutes <= 0) {
+                        return showAlert('❌ Timer Duration must be a positive number of minutes when Timer is ON.');
+                    }
+                    data.timerDuration = durationMinutes * 60; // Store in seconds
+                }
+            } else {
+                data.timerDuration = 0;
+                data.dailyRewardEnabled = false;
+            }
+
+            // Daily rewards processing
+            if (data.dailyRewardEnabled) {
+                data.dailyRewards = dailyRewards.map(r => ({
+                    day: r.day,
+                    timerDuration: r.timerDurationMinutes * 60, // minutes to seconds
+                    coins: r.coins
+                }));
+                if (data.dailyRewards.length === 0) {
+                    return showAlert('❌ Please add at least one step for Daily Reward Mode.');
+                }
+                for (const r of data.dailyRewards) {
+                    if (r.timerDuration <= 0 || r.coins <= 0) {
+                        return showAlert('❌ Duration and Coins for all Daily Steps must be greater than zero.');
+                    }
+                }
+            } else {
+                data.dailyRewards = [];
+            }
+
+            // Redirection URL requirement
+            const isRedirOptional = data.packageEnabled || data.multiEventEnabled;
+            if (!isRedirOptional && (!data.redirectionUrl || data.redirectionUrl.trim() === '')) {
+                return showAlert('❌ Redirection URL is required.');
+            }
+
+            // Numbers
+            data.payout = Number(data.payout) || 0;
+            data.coins = data.payout;
+            data.trackingTime = data.trackingTime ? Number(data.trackingTime) : 0;
+            data.dailyCapLimit = data.dailyCapLimit ? Number(data.dailyCapLimit) : null;
+            data.lifetimeCapLimit = data.lifetimeCapLimit ? Number(data.lifetimeCapLimit) : null;
+            data.perUserDailyCap = (data.offerType === 'WatchEarn' && data.perUserDailyCap) ? Number(data.perUserDailyCap) : null;
+
+            // Arrays
+            data.countries = selectedCountries;
+
+            // Validation
+            if (!data.countries.length) return showAlert('❌ Select at least one country');
+
+            const method = dailyTaskMethodSelect ? dailyTaskMethodSelect.value : 'SingleEvent';
+            const isStrictMultiMethod = (method === 'MultiEvent' || method === 'MultiTimer' || method === 'MultiPackage');
+            const isScreenshot = (method === 'Screenshot');
+
+            // Convert description to array
+            data.offerDescription = descriptions
+                .map(d => {
+                    const title = typeof d === 'object' && d !== null ? (d.title || '').trim() : String(d || '').trim();
+                    const sub = typeof d === 'object' && d !== null ? (d.subtitle || '').trim() : '';
+                    if (!title && !sub) return null;
+                    if (sub) return `${title}:::${sub}`;
+                    return title;
+                })
+                .filter(Boolean);
+
+            data.offerDisclaimer = disclaimers
+                .map(d => d.trim())
+                .filter(d => d.length > 0);
+
+            const hasEvents = Array.isArray(events) && events.length > 0;
+
+            if (isStrictMultiMethod) {
+                if (!hasEvents) {
+                    return showAlert('❌ Please add at least one event in Multi-Events.');
+                }
+            }
+
+            // Events array
+            if (hasEvents && (isStrictMultiMethod || data.multiEventEnabled || method === 'All')) {
+                data.events = events.map((e, index) => ({
+                    eventId: e.eventId || `event_${index + 1}`,
+                    name: e.name,
+                    label: e.label || '',
+                    coins: Number(e.coins) || 0
+                }));
+                const sumCoins = data.events.reduce((sum, e) => sum + (Number(e.coins) || 0), 0);
+                if (sumCoins <= 0) {
+                    return showAlert('❌ Total coins for Multi-Events must be greater than zero.');
+                }
+                data.payout = sumCoins;
+                data.coins = sumCoins;
+                data.multiEventEnabled = true;
+
+                if (!data.offerDescription || data.offerDescription.length === 0) {
+                    data.offerDescription = data.events.map(e => e.name || e.label || 'Complete task');
+                }
+            } else {
+                data.events = [];
+                data.multiEventEnabled = false;
+                if (!data.payout || Number(data.payout) <= 0) {
+                    return showAlert('❌ Coins (Reward Coins) is required.');
+                }
+                if (!data.offerDescription.length) {
+                    return showAlert('❌ Add at least one description line');
+                }
+            }
+
+            if (isScreenshot) {
+                data.screenshotVerificationEnabled = true;
+                data.multiEventEnabled = false;
+                data.events = [];
+                data.packageEnabled = false;
+                data.packageName = '';
+                data.timerEnabled = false;
+                data.timerDuration = 0;
+                data.dailyRewardEnabled = false;
+                data.dailyRewards = [];
+            } else {
+                data.screenshotVerificationEnabled = false;
+            }
+
+            try {
+                const res = await fetch('/add-daily-task', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                const json = await res.json();
+                showAlert(json.message, () => { if (json.success) location.reload(); });
+            } catch (err) {
+                console.error(err);
+                showAlert('❌ Server Error');
+            }
+        const addDReset = document.getElementById('add_daily_reset');
+        if (addDReset) {
+            addDReset.addEventListener('change', (e) => {
+                const tag = document.getElementById('add_daily_reset_status_tag');
+                const wrap = document.getElementById('add_daily_reset_toggle_group');
+                const isChecked = e.target.checked;
+                if (tag) {
+                    tag.textContent = isChecked ? 'ON (DAILY)' : 'OFF (ONE-TIME)';
+                    tag.className = 'toggle-status-tag ' + (isChecked ? 'tag-on' : 'tag-off');
+                }
+                if (wrap) {
+                    if (isChecked) wrap.classList.add('active-on');
+                    else wrap.classList.remove('active-on');
+                }
+            });
+        }
+        });
+    </script>
+
+    <script src="/js/admin.js"></script>
+</body>
+
+</html>

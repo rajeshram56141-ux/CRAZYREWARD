@@ -1,0 +1,44 @@
+# Node dependencies
+node_modules/
+.pnpm-store/
+
+# Environment variables & secrets
+.env
+.env.*
+!.env.example
+
+# Service Account & Firebase credentials
+*.json
+!package.json
+!package-lock.json
+*.pem
+*.key
+*.cert
+*.crt
+
+# Logs & PM2
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+pnpm-debug.log*
+.pm2/
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# User uploads & cache
+public/uploads/*
+!public/uploads/.gitkeep
+
+# OS / Editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+tmp/
+temp/
+scratch/

@@ -1,0 +1,78 @@
+<!-- Shared Global Modals & Backdrop -->
+<div id="confirm-modal" class="modal">
+    <div class="modal-content">
+        <h3>Confirm this action?</h3>
+        <p class="confirm-message">Are you sure?</p>
+        <div class="modal-actions" style="justify-content: center;">
+            <button id="confirm-cancel" class="btn-cancel">Cancel</button>
+            <button id="confirm-ok" class="btn-ok">OK</button>
+        </div>
+    </div>
+</div>
+
+<div id="alert-modal" class="modal">
+    <div class="modal-content">
+        <h3>Message</h3>
+        <p class="alert-message">Something happened</p>
+        <div class="modal-actions" style="justify-content: center;">
+            <button id="alert-ok" class="btn-ok">OK</button>
+        </div>
+    </div>
+</div>
+
+<div id="action-form-modal" class="modal">
+    <div class="modal-content action-form-modal-content">
+        <div class="action-form-modal-content-head">
+            <h3 id="action-form-title">Action</h3>
+            <p id="action-form-sub" class="action-form-sub">Fill details</p>
+        </div>
+        <div id="action-form-fields" class="action-form-grid"></div>
+        <div class="modal-actions action-form-actions">
+            <button id="action-form-cancel" class="btn-cancel">Cancel</button>
+            <button id="action-form-submit" class="btn-ok">Submit</button>
+        </div>
+    </div>
+</div>
+
+<div id="wallet-modal" class="modal wallet-modal">
+    <div class="modal-content wallet-modal-content">
+        <div class="wallet-modal-head">
+            <div>
+                <h3><i class="fa-solid fa-wallet" style="margin-right: 6px;"></i> Manage Wallet Catalog</h3>
+                <p>Configure payout methods, conversion rates, and denominations</p>
+            </div>
+            <button class="wallet-add-btn" onclick="openAddWalletMethodModal()">
+                <i class="fa-solid fa-plus" style="margin-right: 4px;"></i> Add Payout Method
+            </button>
+            <button class="wallet-modal-close" onclick="closeWalletModal()" aria-label="Close">&times;</button>
+        </div>
+        <div id="wallet-modal-body" class="wallet-modal-body">
+            <div class="wallet-placeholder">Select an app and click "Manage Wallet".</div>
+        </div>
+        <div class="modal-actions wallet-modal-actions">
+            <button class="btn-ok wallet-close-btn" onclick="closeWalletModal()">Done</button>
+        </div>
+    </div>
+</div>
+
+<div id="app-data-modal" class="modal app-data-modal">
+    <div class="modal-content app-data-modal-content">
+        <div class="app-data-modal-head">
+            <div>
+                <h3>Manage App Settings</h3>
+                <p>Edit app configurations, offer providers, and referral settings</p>
+            </div>
+            <button class="app-data-modal-close" onclick="closeAppDataModal()"
+                aria-label="Close">&times;</button>
+        </div>
+        <div id="app-data-modal-body" class="app-data-modal-body">
+            <div class="app-data-placeholder">Select an app and click "Manage App Settings".</div>
+        </div>
+        <div class="modal-actions app-data-modal-actions">
+            <button class="btn-ok" onclick="closeAppDataModal()">Close</button>
+        </div>
+    </div>
+</div>
+
+<div class="overlay" id="loadingOverlay">Processing...</div>
+<div id="sidebar-backdrop" class="sidebar-backdrop" onclick="toggleSidebar(false)"></div>

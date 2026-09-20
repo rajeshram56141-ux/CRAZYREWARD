@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Promo Code Manager - Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/admin.css">
+    <link rel="icon" href="/images/favicon.png">
+    <style>
+        :root {
+            --bg: #f8fafc;
+            --surface: #ffffff;
+            --text: #0f172a;
+            --muted: #64748b;
+            --border: #e2e8f0;
+            --primary: #052e1f;
+            --primary-hover: #042418;
+            --danger: #dc2626;
+            --success: #16a34a;
+            --radius: 16px;
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--text);
+        }
+
+        .wrap {
+            max-width: 1280px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 360px 1fr;
+            gap: 24px;
+        }
+
+        .panel {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.03);
+            height: fit-content;
+        }
+
+        .panel h2 {
+            margin: 0 0 16px;
+            font-size: 18px;
+            font-weight: 800;
+            color: #0f172a;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .field {
+            margin-bottom: 16px;
+        }
+
+        .field label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 12px;
+            color: var(--muted);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 11px 14px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            font-size: 14px;
+            font-family: inherit;
+            background: #fff;
+            color: #0f172a;
+            transition: all 0.2s ease;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #052e1f;
+            box-shadow: 0 0 0 3px rgba(5, 46, 31, 0.1);
+        }
+
+        .btn-submit {
+            width: 100%;
+            border: none;
+            border-radius: 12px;
+            padding: 12px;
+            background: #052e1f;
+            color: #fff;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(5, 46, 31, 0.2);
+        }
+
+        .btn-submit:hover {
+            background: #042418;
+            transform: translateY(-1px);
+        }
+
+        .table-panel {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.03);
+        }
+
+        .table-wrap {
+            overflow-x: auto;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            margin-top: 16px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #fff;
+        }
+
+        th {
+            background: #052e1f;
+            color: #fff;
+            padding: 14px 16px;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            text-align: left;
+        }
+
+        td {
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--border);
+            font-size: 13px;
+            color: #334155;
+            vertical-align: middle;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        .pill {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 10px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .pill.on {
+            background: #dcfce7;
+            color: #16a34a;
+        }
+
+        .pill.off {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .progress-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .progress-track {
+            flex: 1;
+            height: 8px;
+            background: #f1f5f9;
+            border-radius: 999px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #052e1f;
+            border-radius: 999px;
+        }
+
+        .actions {
+            display: flex;
+            gap: 6px;
+        }
+
+        .btn-round {
+            width: 34px;
+            height: 34px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: #475569;
+        }
+
+        .btn-round:hover {
+            background: #f8fafc;
+            color: #0f172a;
+        }
+
+        .btn-round.danger:hover {
+            background: #fee2e2;
+            color: #dc2626;
+            border-color: #fecaca;
+        }
+
+        /* Modal Overlays */
+        .modal-bg {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(8px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 99999;
+        }
+
+        .modal-bg.show {
+            display: flex !important;
+        }
+
+        .modal-card {
+            background: #fff;
+            width: 92%;
+            max-width: 480px;
+            border-radius: 24px;
+            padding: 24px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            animation: slideUp 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .modal-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-head h3 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 800;
+        }
+
+        @media (max-width: 960px) {
+            .wrap {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body class="dashboard-body">
+    <div class="dashboard-shell">
+        <%- include('../partials/sidebar', { activePage: 'promo-codes' }) %>
+
+        <div class="dashboard-main">
+            <header class="navbar dashboard-navbar">
+                <div class="nav-left">
+                    <button type="button" class="sidebar-toggle-btn" onclick="toggleSidebar()">
+                        ☰
+                    </button>
+                    <h2>Promo Code Manager</h2>
+
+                    <select id="appSelect" class="app-select" style="margin-left: 12px; padding: 8px 12px; border-radius: 10px; border: 1px solid #cbd5e1; font-weight: 600;">
+                        <% (typeof firebaseServices !== 'undefined' && firebaseServices ? firebaseServices : []).forEach(service => { %>
+                            <option value="<%= service.appName %>">
+                                <%= service.displayName %>
+                            </option>
+                        <% }) %>
+                    </select>
+                </div>
+
+                <div class="nav-right" onclick="toggleDropdown()">
+                    <div class="avatar">
+                        <%- typeof photo !== 'undefined' && photo ? photo : 'A' %>
+                    </div>
+                    <div class="dropdown" id="dropdown">
+                        <a href="/logout">Logout</a>
+                    </div>
+                </div>
+            </header>
+
+            <main class="container dashboard-home">
+                <div class="wrap">
+                    <section class="panel">
+                        <h2><i class="fa-solid fa-plus" style="margin-right: 6px;"></i> Add Promo Code</h2>
+                        <form id="createForm">
+                            <div class="field">
+                                <label>Promo Code *</label>
+                                <input type="text" id="code" placeholder="e.g. WELCOME100" style="text-transform:uppercase" required />
+                            </div>
+                            <div class="field">
+                                <label>Coins Reward *</label>
+                                <input type="number" id="reward" min="1" placeholder="e.g. 100" required />
+                            </div>
+                            <div class="field">
+                                <label>Max Redemptions *</label>
+                                <input type="number" id="max" min="1" placeholder="e.g. 500" required />
+                            </div>
+                            <button type="submit" class="btn-submit"><i class="fa-solid fa-rocket" style="margin-right: 6px;"></i> Create Promo Code</button>
+                            <div id="addMsg" style="margin-top: 12px; font-size: 13px; font-weight: 600;"></div>
+                        </form>
+                    </section>
+
+                    <section class="table-panel">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <h2 style="margin:0; font-size: 18px; font-weight: 800;"><i class="fa-solid fa-ticket" style="margin-right: 6px;"></i> Active Promo Codes</h2>
+                                <p style="margin: 4px 0 0; font-size: 13px; color: var(--muted);">Manage and track promo code redemptions across your app</p>
+                            </div>
+                            <button class="btn-round" onclick="loadPromos()" title="Refresh List" style="width:auto; padding: 8px 14px; gap: 6px; font-weight: 700;">
+                                <i class="fa-solid fa-rotate-right"></i> Refresh
+                            </button>
+                        </div>
+
+                        <div class="table-wrap">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Code</th>
+                                        <th>Reward</th>
+                                        <th>Redeemed</th>
+                                        <th>Max Limit</th>
+                                        <th>Status</th>
+                                        <th>Progress</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="promoRows">
+                                    <tr>
+                                        <td colspan="7" style="text-align:center; padding: 24px; color: var(--muted);">Loading promo codes...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- EDIT MODAL -->
+    <div class="modal-bg" id="editBg">
+        <div class="modal-card">
+            <div class="modal-head">
+                <h3><i class="fa-solid fa-pen-to-square" style="margin-right: 6px;"></i> Edit Promo Code</h3>
+                <button type="button" class="btn-round" onclick="closeModals()">&times;</button>
+            </div>
+            <form id="editForm">
+                <input type="hidden" id="e_code">
+                <div class="field">
+                    <label>Promo Code</label>
+                    <input type="text" id="e_code_display" readonly style="background:#f1f5f9; font-weight:700;">
+                </div>
+                <div class="field">
+                    <label>Coins Reward</label>
+                    <input type="number" id="e_reward" min="1" required>
+                </div>
+                <div class="field">
+                    <label>Max Redemptions</label>
+                    <input type="number" id="e_max" min="1" required>
+                </div>
+                <div class="field">
+                    <label>Status</label>
+                    <select id="e_active">
+                        <option value="true">Active</option>
+                        <option value="false">Disabled / Inactive</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn-submit" style="margin-top: 8px;">Save Changes</button>
+                <div id="editMsg" style="margin-top: 10px; font-size: 13px;"></div>
+            </form>
+        </div>
+    </div>
+
+    <!-- DELETE MODAL -->
+    <div class="modal-bg" id="deleteBg">
+        <div class="modal-card">
+            <div class="modal-head">
+                <h3 style="color: var(--danger)"><i class="fa-solid fa-trash-can" style="margin-right: 6px;"></i> Delete Promo Code</h3>
+                <button type="button" class="btn-round" onclick="closeModals()">&times;</button>
+            </div>
+            <p style="font-size: 14px; color: #475569; margin-bottom: 20px;">
+                Are you sure you want to delete promo code <strong id="d_code_display"></strong>? This action cannot be undone.
+            </p>
+            <input type="hidden" id="d_code">
+            <div style="display: flex; gap: 10px; justify-content: flex-end;">
+                <button type="button" class="btn-round" style="width: auto; padding: 10px 18px; font-weight: 700;" onclick="closeModals()">Cancel</button>
+                <button type="button" class="btn-submit" style="width: auto; background: var(--danger);" onclick="confirmDelete()">Confirm Delete</button>
+            </div>
+            <div id="deleteMsg" style="margin-top: 10px; font-size: 13px;"></div>
+        </div>
+    </div>
+
+    <script src="/js/admin.js"></script>
+    <script>
+        const appSelect = document.getElementById("appSelect");
+        const rows = document.getElementById("promoRows");
+        const addMsg = document.getElementById("addMsg");
+        const editMsg = document.getElementById("editMsg");
+        const deleteMsg = document.getElementById("deleteMsg");
+
+        let currentPromos = [];
+
+        function getAppName() {
+            return appSelect.value;
+        }
+
+        appSelect.addEventListener("change", loadPromos);
+
+        async function loadPromos() {
+            rows.innerHTML = "<tr><td colspan='7' style='text-align:center; padding: 24px;'>Loading promos...</td></tr>";
+
+            try {
+                const res = await fetch("/getPromoCodes", {
+                    method: "POST",
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ appName: getAppName() })
+                });
+
+                const data = await res.json();
+                rows.innerHTML = "";
+
+                if (!data.success || !data.promos?.length) {
+                    rows.innerHTML = "<tr><td colspan='7' style='text-align:center; padding: 24px; color: var(--muted);'>No promo codes found for this app.</td></tr>";
+                    return;
+                }
+
+                currentPromos = data.promos;
+
+                data.promos.forEach(p => {
+                    const percent = Math.min(100, (p.redeemedCount / p.maxRedemptions) * 100).toFixed(1);
+                    const isActive = p.active;
+
+                    rows.innerHTML += `
+                    <tr>
+                        <td><strong style="font-size:14px; letter-spacing:0.04em;">${p.code}</strong></td>
+                        <td><span style="font-weight:700; color:#052e1f;"><i class="fa-solid fa-coins" style="color:#d97706; margin-right:3px;"></i> ${p.reward}</span></td>
+                        <td>${p.redeemedCount}</td>
+                        <td>${p.maxRedemptions}</td>
+                        <td>
+                            <span class="pill ${isActive ? 'on' : 'off'}">
+                                ${isActive ? 'Active' : 'Inactive'}
+                            </span>
+                        </td>
+                        <td>
+                            <div class="progress-container">
+                                <span style="font-size:12px; font-weight:700; width:45px;">${percent}%</span>
+                                <div class="progress-track">
+                                    <div class="progress-fill" style="width:${percent}%"></div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="actions">
+                                <button class="btn-round" onclick="openEditModal('${p.code}')" title="Edit">
+                                    <i class="fa-solid fa-pen-to-square"></i>
+                                </button>
+                                <button class="btn-round danger" onclick="openDeleteModal('${p.code}')" title="Delete">
+                                    <i class="fa-solid fa-trash-can"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>`;
+                });
+            } catch (err) {
+                rows.innerHTML = "<tr><td colspan='7' style='text-align:center; padding: 24px; color: var(--danger);'>Error loading promo codes.</td></tr>";
+            }
+        }
+
+        document.getElementById("createForm").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const code = document.getElementById("code").value.trim();
+            const reward = document.getElementById("reward").value;
+            const max = document.getElementById("max").value;
+
+            addMsg.textContent = "Creating promo code...";
+            addMsg.style.color = "var(--muted)";
+
+            try {
+                const res = await fetch("/createPromoCode", {
+                    method: "POST",
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        appName: getAppName(), code, reward, maxRedemptions: max
+                    })
+                });
+
+                const data = await res.json();
+
+                if (data.success) {
+                    addMsg.innerHTML = '<i class="fa-solid fa-circle-check" style="color:var(--success); margin-right:4px;"></i> ' + data.message;
+                    addMsg.style.color = "var(--success)";
+                    e.target.reset();
+                    loadPromos();
+                } else {
+                    addMsg.innerHTML = '<i class="fa-solid fa-circle-xmark" style="color:var(--danger); margin-right:4px;"></i> ' + data.message;
+                    addMsg.style.color = "var(--danger)";
+                }
+
+                setTimeout(() => { addMsg.textContent = ""; }, 3500);
+            } catch (err) {
+                addMsg.innerHTML = '<i class="fa-solid fa-circle-xmark" style="color:var(--danger); margin-right:4px;"></i> Server error. Failed to create promo.';
+                addMsg.style.color = "var(--danger)";
+            }
+        });
+
+        function openEditModal(code) {
+            const promo = currentPromos.find(p => p.code === code);
+            if (!promo) return;
+
+            document.getElementById("e_code").value = promo.code;
+            document.getElementById("e_code_display").value = promo.code;
+            document.getElementById("e_reward").value = promo.reward;
+            document.getElementById("e_max").value = promo.maxRedemptions;
+            document.getElementById("e_active").value = promo.active ? "true" : "false";
+
+            editMsg.textContent = "";
+            document.getElementById("editBg").classList.add("show");
+        }
+
+        document.getElementById("editForm").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const code = document.getElementById("e_code").value;
+            const reward = document.getElementById("e_reward").value;
+            const max = document.getElementById("e_max").value;
+            const isActive = document.getElementById("e_active").value === "true";
+
+            editMsg.textContent = "Saving changes...";
+            editMsg.style.color = "var(--muted)";
+
+            try {
+                await fetch("/updatePromoCode", {
+                    method: "POST",
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        appName: getAppName(), code, reward, maxRedemptions: max, active: isActive,
+                    })
+                });
+                closeModals();
+                loadPromos();
+            } catch (err) {
+                editMsg.textContent = "Failed to update promo.";
+                editMsg.style.color = "var(--danger)";
+            }
+        });
+
+        function openDeleteModal(code) {
+            document.getElementById("d_code").value = code;
+            document.getElementById("d_code_display").textContent = code;
+            deleteMsg.textContent = "";
+            document.getElementById("deleteBg").classList.add("show");
+        }
+
+        async function confirmDelete() {
+            const code = document.getElementById("d_code").value;
+            deleteMsg.textContent = "Deleting promo code...";
+            deleteMsg.style.color = "var(--muted)";
+
+            try {
+                await fetch("/deletePromoCode", {
+                    method: "POST",
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ appName: getAppName(), code })
+                });
+                closeModals();
+                loadPromos();
+            } catch (err) {
+                deleteMsg.textContent = "Failed to delete promo.";
+                deleteMsg.style.color = "var(--danger)";
+            }
+        }
+
+        function closeModals() {
+            document.querySelectorAll(".modal-bg").forEach(el => el.classList.remove("show"));
+        }
+
+        loadPromos();
+    </script>
+</body>
+
+</html>

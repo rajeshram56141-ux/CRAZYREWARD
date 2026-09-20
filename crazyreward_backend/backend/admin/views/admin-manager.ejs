@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Manager - Admin Dashboard</title>
+    <link rel="stylesheet" href="/css/admin.css">
+    <link rel="icon" href="/images/favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #f8fafc;
+            --surface: #ffffff;
+            --border: #e2e8f0;
+            --primary: #052e1f;
+            --primary-hover: #042418;
+            --text: #0f172a;
+            --muted: #64748b;
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--text);
+        }
+
+        .glass-card {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
+            border: 1px solid var(--border);
+            margin-bottom: 24px;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            background: rgba(5, 46, 31, 0.08);
+            color: #052e1f;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .stat-val {
+            font-size: 22px;
+            font-weight: 800;
+            color: #0f172a;
+        }
+
+        .stat-lbl {
+            font-size: 12px;
+            color: var(--muted);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        /* Table Container */
+        .table-container {
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: auto;
+            margin-top: 16px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 14px 16px;
+            font-size: 13px;
+            border-bottom: 1px solid var(--border);
+            vertical-align: middle;
+        }
+
+        th {
+            background: #052e1f;
+            color: #ffffff;
+            font-weight: 700;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            text-align: left;
+        }
+
+        .role-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 12px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+
+        .role-superadmin {
+            background: #fef3c7;
+            color: #b45309;
+            border: 1px solid #fde68a;
+        }
+
+        .role-admin {
+            background: #dbeafe;
+            color: #1d4ed8;
+            border: 1px solid #bfdbfe;
+        }
+
+        .permission-pills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .perm-pill {
+            background: rgba(5, 46, 31, 0.08);
+            color: #052e1f;
+            border-radius: 6px;
+            padding: 3px 8px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .btn-action-primary {
+            background: #052e1f;
+            color: #ffffff;
+            border: none;
+            border-radius: 12px;
+            padding: 10px 18px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-action-primary:hover {
+            background: #042418;
+        }
+
+        .btn-edit-sm {
+            background: #f1f5f9;
+            color: #334155;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            padding: 6px 12px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-edit-sm:hover {
+            background: #e2e8f0;
+        }
+
+        .btn-delete-sm {
+            background: #fef2f2;
+            color: #dc2626;
+            border: 1px solid #fecaca;
+            border-radius: 8px;
+            padding: 6px 12px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-delete-sm:hover {
+            background: #fee2e2;
+        }
+
+        /* Screen-Centered Blur Modal */
+        .modal-bg {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(8px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 999999;
+            padding: 20px;
+        }
+
+        .modal-bg.show, .modal-bg.is-open {
+            display: flex !important;
+        }
+
+        .modal-card {
+            width: min(640px, 94vw);
+            background: #ffffff;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .modal-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 24px;
+            background: linear-gradient(135deg, #052e1f 0%, #0a4731 100%);
+            color: #ffffff;
+        }
+
+        .modal-head h3 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 800;
+        }
+
+        .close-btn {
+            background: rgba(255, 255, 255, 0.15);
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            color: #ffffff;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .modal-body-scroll {
+            padding: 24px;
+            overflow-y: auto;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--muted);
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-size: 13px;
+            background: #ffffff;
+        }
+
+        .permissions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 10px;
+            background: #f8fafc;
+            padding: 14px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            margin-top: 6px;
+        }
+
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #334155;
+            cursor: pointer;
+        }
+
+        .checkbox-label input {
+            accent-color: #052e1f;
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            padding: 12px 24px;
+            border-radius: 12px;
+            color: #ffffff;
+            font-weight: 700;
+            font-size: 13px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2);
+            display: none;
+            z-index: 1000000;
+        }
+
+        .toast.success { background-color: #16a34a; display: block; }
+        .toast.error { background-color: #dc2626; display: block; }
+
+        .loading-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(4px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000001;
+        }
+    </style>
+</head>
+
+<body class="dashboard-body">
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay">
+        <div style="font-weight: 800; color: #052e1f; font-size: 16px;">Processing...</div>
+    </div>
+
+    <!-- Confirm Delete Modal -->
+    <div id="confirm-modal" class="modal-bg">
+        <div class="modal-card" style="max-width: 440px;">
+            <div class="modal-head">
+                <h3>Confirm Action</h3>
+                <button type="button" class="close-btn" onclick="closeConfirmModal()">&times;</button>
+            </div>
+            <div class="modal-body-scroll">
+                <p id="confirm-message" style="margin: 0 0 20px 0; color: #475569; font-size: 14px; line-height: 1.5; font-weight: 500;"></p>
+                <div style="display: flex; justify-content: flex-end; gap: 10px;">
+                    <button type="button" class="btn-edit-sm" onclick="closeConfirmModal()">Cancel</button>
+                    <button type="button" id="confirm-ok-btn" class="btn-delete-sm" style="background: #dc2626; color: #fff; border: none; padding: 8px 16px;">Yes, Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit Admin Modal -->
+    <div id="admin-modal" class="modal-bg">
+        <div class="modal-card">
+            <div class="modal-head">
+                <h3 id="modal-title">Add New Admin</h3>
+                <button type="button" class="close-btn" onclick="closeAdminModal()">&times;</button>
+            </div>
+            
+            <form id="adminForm" onsubmit="saveAdmin(event)" style="display: flex; flex-direction: column; overflow: hidden; height: 100%;">
+                <input type="hidden" id="adminId" name="id">
+                
+                <div class="modal-body-scroll">
+                    <div class="form-group">
+                        <label for="adminName">Full Name *</label>
+                        <input type="text" id="adminName" class="form-control" placeholder="e.g. Admin Manager" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="adminEmail">Email Address *</label>
+                        <input type="email" id="adminEmail" class="form-control" placeholder="e.g. admin@crazyreward.com" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="adminPassword" id="passwordLabel">Password *</label>
+                        <input type="password" id="adminPassword" class="form-control" placeholder="Minimum 6 characters">
+                        <small id="passwordHelp" style="color: #64748b; font-size: 11px; display: none; margin-top: 4px;">Leave blank to keep existing password.</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="adminRole">Role *</label>
+                        <select id="adminRole" class="form-control" onchange="togglePermissionsGrid()" required>
+                            <option value="admin" selected>Admin</option>
+                            <option value="superadmin">Super Admin</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group" id="permissionsGroup" style="margin-top: 15px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                            <label style="margin: 0; font-weight: 800; font-size: 13px; color: #0f172a; text-transform: none;">
+                                🛡️ Permissions (Task Access Control)
+                            </label>
+                            <div style="display: flex; gap: 8px;">
+                                <button type="button" onclick="setAllPermissions(true)" style="background: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe; border-radius: 6px; padding: 4px 10px; font-size: 11px; font-weight: 700; cursor: pointer;">Select All</button>
+                                <button type="button" onclick="setAllPermissions(false)" style="background: #f8fafc; color: #64748b; border: 1px solid #e2e8f0; border-radius: 6px; padding: 4px 10px; font-size: 11px; font-weight: 700; cursor: pointer;">Deselect All</button>
+                            </div>
+                        </div>
+
+                        <div style="max-height: 380px; overflow-y: auto; padding-right: 4px; display: flex; flex-direction: column; gap: 12px;">
+                            
+                            <!-- 1. Dashboard & Analytics -->
+                            <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 10px 14px;">
+                                <div style="font-size: 11px; font-weight: 800; color: #475569; text-transform: uppercase; margin-bottom: 8px;">
+                                    📊 Dashboard & Analytics
+                                </div>
+                                <div class="permissions-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 8px; background: transparent; border: none; padding: 0; margin: 0;">
+                                    <label class="checkbox-label"><input type="checkbox" id="p_dashboard"> Dashboard Stats</label>
+                                    <label class="checkbox-label"><input type="checkbox" id="p_myEarnings"> My Earnings</label>
+                                    <label class="checkbox-label"><input type="checkbox" id="p_taskPerformance"> Task Performance</label>
+                                </div>
+                            </div>
+
+                            <!-- 2. App Data & Settings -->
+                            <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 10px 14px;">
+                                <div style="font-size: 11px; font-weight: 800; color: #475569; text-transform: uppercase; margin-bottom: 8px;">
+                                    ⚙️ App Data & Settings
+                                </div>
+                                <div class="permissions-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 8px; background: transparent; border: none; padding: 0; margin: 0;">
+                                    <label class="checkbox-label"><input type="checkbox" id="p_appConfig"> Manage App Settings</label>
+                                    <label class="checkbox-label"><input type="checkbox" id="p_moreApps"> More Apps</label>
+                                </div>
+                            </div>
+
+                            <!-- 3. Battle Arena -->
+                            <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 10px 14px;">
+                                <div style="font-size: 11px; font-weight: 800; color: #475569; text-transform: uppercase; margin-bottom: 8px;">
+                                    ⚔️ Battle Arena
+                                </div>
+                                <div class="permissions-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 8px; background: transparent; border: none; padding: 0; margin: 0;">
+                                    <label class="checkbox-label"><input type="checkbox" id="p_battleArena"> Battle Arena (All)</label>
+                                </div>
+                            </div>
+
+                            <!-- 4. Payment Section -->
+                            <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 10px 14px;">
+                                <div style="font-size: 11px; font-weight: 800; color: #475569; text-transform: uppercase; margin-bottom: 8px;">
+                                    💳 Payment Section
+                                </div>
+                                <div class="permissions-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 8px; background: transparent; border: none; padding: 0; margin: 0;">
+                                    <label class="checkbox-label"><input type="checkbox" id="p_wallet"> Manage Wallet</label>
+                                    <label class="checkbox-label"><input type="checkbox" id="p_payouts"> Pending Payouts & History</label>
+                                </div>
+                            </div>
+
+                            <!-- 5. Task Management -->
+                            <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 10px 14px;">
+                                <div style="font-size: 11px; font-weight: 800; color: #475569; text-transform: uppercase; margin-bottom: 8px;">
+                                    🎯 Task Management
+                                </div>
+                                <div class="permissions-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 8px; background: transparent; border: none; padding: 0; margin: 0;">
+                                    <label class="checkbox-label"><input type="checkbox" id="p_dailyTasks"> Daily Tasks</label>
+                                    <label class="checkbox-label"><input type="checkbox" id="p_dailyChallenge"> Daily Challenge</label>
+                                    <label class="checkbox-label"><input type="checkbox" id="p_dailyCheckinFollow"> Check-in & Follow</label>
+                                    <label class="checkbox-label"><input type="checkbox" id="p_diamondCatch"> Diamond Catch</label>
+                                    <label class="checkbox-label"><input type="checkbox" id="p_giveaways"> Giveaways</label>
+                                    <label class="checkbox-label"><input type="checkbox" id="p_offerwall"> Offerwall</label>
+                                    <label class="checkbox-label"><input type="checkbox" id="p_games"> Play Games</label>
+                                    <label class="checkbox-label"><input type="checkbox" id="p_promoCodes"> Promo Codes</label>
+                                    <label class="checkbox-label"><input type="checkbox" id="p_readEarn"> Read & Earn</label>
+                                    <label class="checkbox-label"><input type="checkbox" id="p_superOffer"> Super Offer & Proofs</label>
+                                    <label class="checkbox-label"><input type="checkbox" id="p_survey"> Survey</label>
+                                    <label class="checkbox-label"><input type="checkbox" id="p_watchEarn"> Watch & Earn</label>
+                                </div>
+                            </div>
+
+                            <!-- 6. User Section -->
+                            <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 10px 14px;">
+                                <div style="font-size: 11px; font-weight: 800; color: #475569; text-transform: uppercase; margin-bottom: 8px;">
+                                    👥 User Section & Activity
+                                </div>
+                                <div class="permissions-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 8px; background: transparent; border: none; padding: 0; margin: 0;">
+                                    <label class="checkbox-label"><input type="checkbox" id="p_support"> Support Manager</label>
+                                    <label class="checkbox-label"><input type="checkbox" id="p_unusualActivity"> Unusual Activity</label>
+                                    <label class="checkbox-label"><input type="checkbox" id="p_userActivity"> User Activity Logs</label>
+                                    <label class="checkbox-label"><input type="checkbox" id="p_rewardHistory"> Reward History</label>
+                                    <label class="checkbox-label"><input type="checkbox" id="p_superOfferHistory"> Super Offer History</label>
+                                    <label class="checkbox-label"><input type="checkbox" id="p_users"> User & Deletions</label>
+                                    <label class="checkbox-label"><input type="checkbox" id="p_promoters"> Promoters</label>
+                                </div>
+                            </div>
+
+                            <!-- 7. Marketing & Notifications -->
+                            <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 10px 14px;">
+                                <div style="font-size: 11px; font-weight: 800; color: #475569; text-transform: uppercase; margin-bottom: 8px;">
+                                    📢 Marketing & Notifications
+                                </div>
+                                <div class="permissions-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 8px; background: transparent; border: none; padding: 0; margin: 0;">
+                                    <label class="checkbox-label"><input type="checkbox" id="p_promotions"> Promotion Manager</label>
+                                    <label class="checkbox-label"><input type="checkbox" id="p_notifications"> Send Notifications</label>
+                                </div>
+                            </div>
+
+                            <!-- 8. Developer Mode -->
+                            <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 10px 14px;">
+                                <div style="font-size: 11px; font-weight: 800; color: #475569; text-transform: uppercase; margin-bottom: 8px;">
+                                    🛠️ Developer Mode
+                                </div>
+                                <div class="permissions-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 8px; background: transparent; border: none; padding: 0; margin: 0;">
+                                    <label class="checkbox-label"><input type="checkbox" id="p_devMode"> Developer Mode</label>
+                                    <label class="checkbox-label"><input type="checkbox" id="p_apiIntegrations"> API Integrations</label>
+                                    <label class="checkbox-label"><input type="checkbox" id="p_postbackLogs"> Postback Logs</label>
+                                    <label class="checkbox-label"><input type="checkbox" id="p_redisManage"> Redis Cache</label>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div style="padding: 16px 24px; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 10px; background: #ffffff;">
+                    <button type="button" class="btn-edit-sm" onclick="closeAdminModal()">Cancel</button>
+                    <button type="submit" class="btn-action-primary">Save Admin</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast"></div>
+
+    <div class="dashboard-shell">
+        <%- include('partials/sidebar', { activePage: 'admin-manager' }) %>
+
+        <div class="dashboard-main">
+            <header class="navbar dashboard-navbar">
+                <div class="nav-left" style="display: flex; align-items: center; gap: 12px; white-space: nowrap;">
+                    <button type="button" class="sidebar-toggle-btn" onclick="toggleSidebar()">☰</button>
+                    <h2 style="margin: 0; font-size: 18px; font-weight: 800; white-space: nowrap;">Admin Manager</h2>
+                </div>
+
+                <div class="nav-right" onclick="toggleDropdown()">
+                    <div class="avatar"><%- typeof photo !== 'undefined' && photo ? photo : 'A' %></div>
+                    <div class="dropdown" id="dropdown">
+                        <a href="/logout">Logout</a>
+                    </div>
+                </div>
+            </header>
+
+            <main class="container dashboard-home">
+                <!-- STATS GRID -->
+                <%
+                    const adminList = Array.isArray(admins) ? admins : [];
+                    const superCount = adminList.filter(a => a.role === 'superadmin').length;
+                    const standardCount = adminList.length - superCount;
+                %>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">👑</div>
+                        <div>
+                            <div class="stat-val"><%= adminList.length %></div>
+                            <div class="stat-lbl">Total Admins</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: rgba(245, 158, 11, 0.1); color: #f59e0b;">⭐</div>
+                        <div>
+                            <div class="stat-val"><%= superCount %></div>
+                            <div class="stat-lbl">Super Admins</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: rgba(59, 130, 246, 0.1); color: #3b82f6;">👤</div>
+                        <div>
+                            <div class="stat-val"><%= standardCount %></div>
+                            <div class="stat-lbl">Standard Admins</div>
+                        </div>
+                    </div>
+                </div>
+
+                <section class="glass-card">
+                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; margin-bottom: 20px;">
+                        <div>
+                            <h2 style="margin: 0 0 4px 0; font-size: 20px; font-weight: 800; color: #052e1f;">Panel Admin Directory</h2>
+                            <p style="color: var(--muted); font-size: 13px; margin: 0;">Manage panel profiles, access levels, and module-level permissions</p>
+                        </div>
+                        <button type="button" class="btn-action-primary" onclick="openAddAdminModal()">+ Add New Admin</button>
+                    </div>
+
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Admin Details</th>
+                                    <th>Role</th>
+                                    <th>Assigned Permissions</th>
+                                    <th>Last Login</th>
+                                    <th style="text-align: right;">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% if (adminList.length === 0) { %>
+                                    <tr>
+                                        <td colspan="5" style="text-align: center; color: var(--muted); padding: 24px; font-weight: 600;">No admin users found.</td>
+                                    </tr>
+                                <% } %>
+                                <% adminList.forEach(a => { %>
+                                    <tr id="admin-row-<%= a._id %>">
+                                        <td>
+                                            <div style="font-weight: 800; color: #0f172a;"><%= a.name %></div>
+                                            <div style="font-size: 12px; color: var(--muted); margin-top: 2px; font-weight: 600;"><%= a.email %></div>
+                                        </td>
+                                        <td>
+                                            <span class="role-badge role-<%= a.role %>">
+                                                 <%= a.role === 'superadmin' ? 'Super Admin' : 'Admin' %>
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <% if (a.role === 'superadmin') { %>
+                                                <span class="role-badge role-superadmin" style="font-size: 11px;">All Access (Super Admin)</span>
+                                            <% } else { %>
+                                                <div class="permission-pills">
+                                                    <% 
+                                                        const pLabels = {
+                                                            dashboard: 'Dashboard',
+                                                            myEarnings: 'My Earnings',
+                                                            taskPerformance: 'Task Performance',
+                                                            appConfig: 'App Settings',
+                                                            moreApps: 'More Apps',
+                                                            battleArena: 'Battle Arena',
+                                                            wallet: 'Wallet',
+                                                            payouts: 'Payouts',
+                                                            dailyTasks: 'Daily Tasks',
+                                                            dailyChallenge: 'Daily Challenge',
+                                                            dailyCheckinFollow: 'Check-in & Follow',
+                                                            diamondCatch: 'Diamond Catch',
+                                                            giveaways: 'Giveaways',
+                                                            offerwall: 'Offerwall',
+                                                            games: 'Games',
+                                                            promoCodes: 'Promo Codes',
+                                                            readEarn: 'Read & Earn',
+                                                            superOffer: 'Super Offer',
+                                                            survey: 'Survey',
+                                                            watchEarn: 'Watch & Earn',
+                                                            support: 'Support',
+                                                            unusualActivity: 'Unusual Activity',
+                                                            userActivity: 'User Activity',
+                                                            rewardHistory: 'Reward History',
+                                                            superOfferHistory: 'Super Offer History',
+                                                            users: 'Users & Deletions',
+                                                            promoters: 'Promoters',
+                                                            promotions: 'Promotions',
+                                                            notifications: 'Notifications',
+                                                            devMode: 'Dev Mode',
+                                                            apiIntegrations: 'API Keys',
+                                                            postbackLogs: 'Postback Logs',
+                                                            redisManage: 'Redis Cache'
+                                                        };
+                                                        let hasAny = false;
+                                                        if (a.permissions) {
+                                                            Object.keys(pLabels).forEach(key => {
+                                                                if (a.permissions[key]) {
+                                                                    hasAny = true;
+                                                    %>
+                                                        <span class="perm-pill"><%= pLabels[key] %></span>
+                                                    <% 
+                                                                }
+                                                            });
+                                                        }
+                                                        if (!hasAny) {
+                                                    %>
+                                                        <span style="color: var(--muted); font-style: italic; font-size: 12px; font-weight: 600;">No Permissions</span>
+                                                    <% } %>
+                                                </div>
+                                            <% } %>
+                                        </td>
+                                        <td style="color: var(--muted); font-weight: 600;">
+                                            <%= a.lastLogin ? new Date(a.lastLogin).toLocaleString('en-IN') : 'Never' %>
+                                        </td>
+                                        <td style="text-align: right;">
+                                            <div style="display: flex; justify-content: flex-end; gap: 8px;">
+                                                <button class="btn-edit-sm" onclick="openEditAdminModal('<%= JSON.stringify(a) %>')">Edit</button>
+                                                <% if (a.email !== email) { %>
+                                                    <button class="btn-delete-sm" onclick="triggerDeleteAdmin('<%= a._id %>', '<%= a.name %>')">Delete</button>
+                                                <% } %>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                <% }) %>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <script src="/js/admin.js"></script>
+    <script>
+        const adminModal = document.getElementById('admin-modal');
+        const adminForm = document.getElementById('adminForm');
+        const modalTitle = document.getElementById('modal-title');
+        const adminIdInput = document.getElementById('adminId');
+        const adminNameInput = document.getElementById('adminName');
+        const adminEmailInput = document.getElementById('adminEmail');
+        const adminPasswordInput = document.getElementById('adminPassword');
+        const adminRoleSelect = document.getElementById('adminRole');
+        
+        const passwordLabel = document.getElementById('passwordLabel');
+        const passwordHelp = document.getElementById('passwordHelp');
+        const permissionsGroup = document.getElementById('permissionsGroup');
+        const loadingOverlay = document.getElementById('loadingOverlay');
+
+        // Confirm modal
+        const confirmModal = document.getElementById('confirm-modal');
+        const confirmMessage = document.getElementById('confirm-message');
+        const confirmOkBtn = document.getElementById('confirm-ok-btn');
+        let adminToDelete = null;
+
+        const permissionKeys = [
+            'dashboard', 'myEarnings', 'taskPerformance',
+            'appConfig', 'moreApps',
+            'battleArena',
+            'wallet', 'payouts',
+            'dailyTasks', 'dailyChallenge', 'dailyCheckinFollow', 'diamondCatch', 
+            'giveaways', 'offerwall', 'games', 'promoCodes', 'readEarn', 
+            'superOffer', 'survey', 'watchEarn',
+            'support', 'unusualActivity', 'userActivity', 'rewardHistory', 
+            'superOfferHistory', 'users', 'promoters',
+            'promotions', 'notifications',
+            'devMode', 'apiIntegrations', 'postbackLogs', 'redisManage'
+        ];
+
+        function showLoading(show) {
+            loadingOverlay.style.display = show ? 'flex' : 'none';
+        }
+
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = `toast ${type}`;
+            setTimeout(() => {
+                toast.className = 'toast';
+            }, 3000);
+        }
+
+        function setAllPermissions(enable) {
+            permissionKeys.forEach(k => {
+                const el = document.getElementById(`p_${k}`);
+                if (el) el.checked = enable;
+            });
+        }
+
+        function togglePermissionsGrid() {
+            if (adminRoleSelect.value === 'superadmin') {
+                permissionsGroup.style.opacity = '0.5';
+                permissionsGroup.style.pointerEvents = 'none';
+                setAllPermissions(true);
+            } else {
+                permissionsGroup.style.opacity = '1';
+                permissionsGroup.style.pointerEvents = 'auto';
+            }
+        }
+
+        function openAddAdminModal() {
+            adminForm.reset();
+            adminIdInput.value = '';
+            modalTitle.textContent = 'Add New Admin';
+            passwordLabel.textContent = 'Password *';
+            adminPasswordInput.required = true;
+            passwordHelp.style.display = 'none';
+            adminEmailInput.disabled = false;
+            
+            adminRoleSelect.value = 'admin';
+            setAllPermissions(false);
+            togglePermissionsGrid();
+            
+            adminModal.classList.add('show');
+        }
+
+        function openEditAdminModal(adminStr) {
+            adminForm.reset();
+            const admin = JSON.parse(adminStr);
+            
+            adminIdInput.value = admin._id;
+            modalTitle.textContent = 'Edit Admin Permissions';
+            adminNameInput.value = admin.name;
+            adminEmailInput.value = admin.email;
+            adminEmailInput.disabled = true;
+            
+            passwordLabel.textContent = 'Change Password';
+            adminPasswordInput.required = false;
+            passwordHelp.style.display = 'block';
+            
+            adminRoleSelect.value = admin.role;
+            
+            permissionKeys.forEach(k => {
+                const checked = admin.permissions && admin.permissions[k] === true;
+                const el = document.getElementById(`p_${k}`);
+                if (el) el.checked = checked;
+            });
+            
+            togglePermissionsGrid();
+            adminModal.classList.add('show');
+        }
+
+        function closeAdminModal() {
+            adminModal.classList.remove('show');
+        }
+
+        function triggerDeleteAdmin(id, name) {
+            adminToDelete = id;
+            confirmMessage.textContent = `Are you sure you want to delete admin "${name}"? This action cannot be undone.`;
+            confirmModal.classList.add('show');
+        }
+
+        function closeConfirmModal() {
+            confirmModal.classList.remove('show');
+            adminToDelete = null;
+        }
+
+        confirmOkBtn.onclick = async () => {
+            if (!adminToDelete) return;
+            const id = adminToDelete;
+            closeConfirmModal();
+            showLoading(true);
+            
+            try {
+                const res = await fetch(`/admin-manager/delete/${id}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                const data = await res.json();
+                showLoading(false);
+                
+                if (data.success) {
+                    showToast('Admin deleted successfully.');
+                    const row = document.getElementById(`admin-row-${id}`);
+                    if (row) row.remove();
+                } else {
+                    showToast(data.message || 'Failed to delete admin.', 'error');
+                }
+            } catch (err) {
+                showLoading(false);
+                console.error(err);
+                showToast('Something went wrong.', 'error');
+            }
+        };
+
+        async function saveAdmin(e) {
+            e.preventDefault();
+            
+            const id = adminIdInput.value;
+            const name = adminNameInput.value;
+            const email = adminEmailInput.value;
+            const password = adminPasswordInput.value;
+            const role = adminRoleSelect.value;
+            
+            const permissions = {};
+            permissionKeys.forEach(k => {
+                const el = document.getElementById(`p_${k}`);
+                if (el) permissions[k] = el.checked;
+            });
+
+            const isEdit = !!id;
+            const url = isEdit ? `/admin-manager/edit/${id}` : '/admin-manager/add';
+            const payload = { name, email, role, permissions };
+            if (password) {
+                payload.password = password;
+            }
+
+            showLoading(true);
+            try {
+                const res = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+                showLoading(false);
+                
+                if (data.success) {
+                    showToast(isEdit ? 'Admin updated successfully.' : 'New admin added successfully.');
+                    closeAdminModal();
+                    setTimeout(() => window.location.reload(), 1000);
+                } else {
+                    showToast(data.message || 'Error occurred.', 'error');
+                }
+            } catch (err) {
+                showLoading(false);
+                console.error(err);
+                showToast('Something went wrong.', 'error');
+            }
+        }
+    </script>
+</body>
+
+</html>

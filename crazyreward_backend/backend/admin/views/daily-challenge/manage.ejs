@@ -1,0 +1,846 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <title>Daily Challenge Manager - Crazyreward Admin</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/admin.css">
+
+    <style>
+        :root {
+            --bg: #f8fafc;
+            --surface: #ffffff;
+            --border: #e2e8f0;
+            --primary: #052e1f;
+            --primary-hover: #042418;
+            --accent: #ba4fff;
+            --text: #0f172a;
+            --muted: #64748b;
+            --radius-card: 20px;
+            --radius-input: 12px;
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', sans-serif !important;
+        }
+
+        body.dashboard-body {
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+        }
+
+        .wrap {
+            width: 100%;
+            padding: 24px 30px;
+        }
+
+        /* Page Header Bar */
+        .page-header-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 24px;
+            background: var(--surface);
+            padding: 24px 28px;
+            border-radius: var(--radius-card);
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.02);
+        }
+
+        .page-title-section h1 {
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--primary);
+            margin: 0 0 6px 0;
+            letter-spacing: -0.02em;
+        }
+
+        .page-title-section p {
+            font-size: 13px;
+            color: var(--muted);
+            margin: 0;
+            font-weight: 500;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .btn-primary-custom {
+            background: linear-gradient(135deg, #ba4fff, #6b15f6);
+            color: #ffffff;
+            border: none;
+            padding: 11px 22px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(186, 79, 255, 0.25);
+        }
+
+        .btn-primary-custom:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(186, 79, 255, 0.35);
+        }
+
+        /* Section Cards */
+        .section-card {
+            background: var(--surface);
+            border-radius: var(--radius-card);
+            border: 1px solid var(--border);
+            padding: 24px 28px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.02);
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding-bottom: 14px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 800;
+            color: var(--primary);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 12.5px;
+            font-weight: 700;
+            color: #334155;
+            margin-bottom: 7px;
+        }
+
+        .form-control-custom {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius-input);
+            font-size: 13.5px;
+            color: var(--text);
+            background: #ffffff;
+            transition: all 0.2s;
+        }
+
+        .form-control-custom:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(186, 79, 255, 0.12);
+        }
+
+        /* Switch Toggle */
+        .switch-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .switch-toggle {
+            position: relative;
+            display: inline-block;
+            width: 46px;
+            height: 24px;
+        }
+
+        .switch-toggle input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #cbd5e1;
+            transition: .3s;
+            border-radius: 24px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .3s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: #10b981;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(22px);
+        }
+
+        /* Table */
+        .custom-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        .custom-table th {
+            text-align: left;
+            padding: 12px 16px;
+            background: #f8fafc;
+            color: var(--muted);
+            font-weight: 700;
+            font-size: 12px;
+            border-bottom: 1px solid var(--border);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .custom-table td {
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--border);
+            vertical-align: middle;
+        }
+
+        .custom-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .badge-type {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 11px;
+            background: #e0e7ff;
+            color: #3730a3;
+        }
+
+        .badge-target {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-weight: 800;
+            font-size: 12px;
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .action-btn-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-sm-edit {
+            background: #f1f5f9;
+            color: #475569;
+            border: 1px solid #cbd5e1;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-sm-edit:hover {
+            background: #e2e8f0;
+            color: #1e293b;
+        }
+
+        .btn-sm-delete {
+            background: #fee2e2;
+            color: #dc2626;
+            border: 1px solid #fca5a5;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-sm-delete:hover {
+            background: #fecaca;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(4px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+
+        .modal-card {
+            background: #ffffff;
+            border-radius: 20px;
+            width: 100%;
+            max-width: 540px;
+            padding: 24px 28px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            border: 1px solid var(--border);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 18px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .modal-title {
+            font-size: 17px;
+            font-weight: 800;
+            color: var(--primary);
+            margin: 0;
+        }
+
+        .modal-close {
+            background: transparent;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: var(--muted);
+        }
+
+        .provider-select-box {
+            background: #f0fdf4;
+            border: 1.5px solid #86efac;
+            border-radius: 12px;
+            padding: 12px 14px;
+            margin-bottom: 14px;
+            display: none;
+        }
+    </style>
+</head>
+
+<body class="dashboard-body">
+    <div class="dashboard-shell">
+        <%- include('../partials/sidebar', { activePage: 'daily-challenge', admin: admin }) %>
+
+        <div class="dashboard-main">
+            <header class="navbar dashboard-navbar">
+                <div class="nav-left" style="display: flex; align-items: center; gap: 12px; white-space: nowrap;">
+                    <button type="button" class="sidebar-toggle-btn" onclick="toggleSidebar()">☰</button>
+                    <h2 style="margin: 0; font-size: 18px; font-weight: 800; white-space: nowrap;">Daily Challenge Manager</h2>
+                </div>
+                <div class="nav-right" onclick="toggleDropdown()">
+                    <div class="avatar"><%= (typeof admin !== 'undefined' && admin && admin.email) ? admin.email[0].toUpperCase() : 'A' %></div>
+                    <div class="dropdown" id="dropdown">
+                        <a href="/logout">Logout</a>
+                    </div>
+                </div>
+            </header>
+
+            <main class="container wrap">
+                
+                <!-- Page Header Bar -->
+                <div class="page-header-bar">
+                    <div class="page-title-section">
+                        <h1>Daily Challenge Manager</h1>
+                        <p>Configure daily task targets, completion coin rewards, and sub-task requirements.</p>
+                    </div>
+                    <div class="header-actions">
+                        <button type="button" class="btn-primary-custom" onclick="openAddTaskModal()">
+                            <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
+                            Add Challenge Task
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Global Config Card -->
+                <div class="section-card">
+                    <div class="section-header">
+                        <h2 class="section-title">
+                            <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                            General Settings
+                        </h2>
+                    </div>
+
+                    <form id="globalConfigForm" onsubmit="saveGlobalConfig(event)">
+                        <div class="form-grid-2">
+                            <div class="form-group">
+                                <label class="form-label">Daily Challenge Status</label>
+                                <div class="switch-container">
+                                    <label class="switch-toggle">
+                                        <input type="checkbox" id="challengeIsActive" name="isActive" <%= config && config.isActive ? 'checked' : '' %>>
+                                        <span class="slider"></span>
+                                    </label>
+                                    <span style="font-size: 13px; font-weight: 600; color: #475569;">Enable Daily Challenge in Mobile App</span>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="rewardCoins">Daily Completion Reward (Coins)</label>
+                                <input type="number" class="form-control-custom" id="rewardCoins" name="rewardCoins" value="<%= (config && config.rewardCoins) || 500 %>" min="1" required>
+                                <small style="color: #64748b; font-size: 11px; margin-top: 4px; display: block;">Coins credited when user finishes 100% of all configured tasks.</small>
+                            </div>
+                        </div>
+
+                        <div style="text-align: right; margin-top: 14px;">
+                            <button type="submit" class="btn-primary-custom">Save Settings</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Active Sub-Tasks Card -->
+                <div class="section-card">
+                    <div class="section-header">
+                        <h2 class="section-title">
+                            <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
+                            Active Challenge Tasks (<%= (config && config.tasks ? config.tasks.length : 0) %>)
+                        </h2>
+                    </div>
+
+                    <div style="overflow-x: auto;">
+                        <table class="custom-table">
+                            <thead>
+                                <tr>
+                                    <th>Order</th>
+                                    <th>Title & Description</th>
+                                    <th>Task Type</th>
+                                    <th>Required Target</th>
+                                    <th>Status</th>
+                                    <th style="text-align: right;">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% if (config && config.tasks && config.tasks.length > 0) { %>
+                                    <% for (let task of config.tasks) { %>
+                                        <tr>
+                                            <td style="font-weight: 700; color: #475569;">#<%= task.displayOrder || 0 %></td>
+                                            <td>
+                                                <div style="font-weight: 700; color: #0f172a;"><%= task.title %></div>
+                                                <div style="font-size: 11.5px; color: #64748b;"><%= task.description || 'No description' %></div>
+                                            </td>
+                                            <td>
+                                                <span class="badge-type"><%= task.taskType %></span>
+                                            </td>
+                                            <td>
+                                                <span class="badge-target"><%= task.targetCount %>x Count</span>
+                                            </td>
+                                            <td>
+                                                <% if (task.isActive) { %>
+                                                    <span style="color: #10b981; font-weight: 700; font-size: 12px;">Active</span>
+                                                <% } else { %>
+                                                    <span style="color: #94a3b8; font-weight: 700; font-size: 12px;">Disabled</span>
+                                                <% } %>
+                                            </td>
+                                            <td>
+                                                <div class="action-btn-group" style="justify-content: flex-end;">
+                                                    <button type="button" class="btn-sm-edit" data-task="<%= encodeURIComponent(JSON.stringify(task)) %>" onclick="handleEditBtnClick(this)">Edit</button>
+                                                    <button type="button" class="btn-sm-delete" onclick="deleteTask('<%= task.taskId %>')">Delete</button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    <% } %>
+                                <% } else { %>
+                                    <tr>
+                                        <td colspan="6" style="text-align: center; padding: 32px; color: #94a3b8;">
+                                            No sub-tasks configured yet. Click "Add Challenge Task" above to add requirements!
+                                        </td>
+                                    </tr>
+                                <% } %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </main>
+        </div>
+    </div>
+
+    <!-- Add/Edit Task Modal -->
+    <div class="modal-overlay" id="taskModal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modalTitle">Add Challenge Task</h3>
+                <button type="button" class="modal-close" onclick="closeTaskModal()">&times;</button>
+            </div>
+
+            <form id="taskForm" onsubmit="handleTaskSubmit(event)">
+                <input type="hidden" id="modalTaskId" name="taskId">
+                <input type="hidden" id="taskIcon" name="icon" value="assets/icons/plygames.png">
+
+                <div class="form-grid-2">
+                    <div class="form-group">
+                        <label class="form-label" for="taskType">Task Type *</label>
+                        <select class="form-control-custom" id="taskType" name="taskType" onchange="handleTaskTypeChange(this.value)" required>
+                            <option value="play_games">🎮 Play Games (HTML5)</option>
+                            <option value="super_offer">💎 Super Offer</option>
+                            <option value="read_and_earn">📰 Read & Earn (Articles)</option>
+                            <option value="battle_arena">⚔️ Battle Arena (Clash)</option>
+                            <option value="daily_task">🎯 Daily Task (CPA / S2S)</option>
+                            <option value="watch_earn">📺 Watch Video (Watch & Earn)</option>
+                            <option value="offerwall">🎁 Offerwalls (All Providers)</option>
+                            <option value="survey">📋 Surveys & Research (All Providers)</option>
+                            <option value="daily_checkin">📅 Daily Check-in</option>
+                            <option value="diamond_catch">💎 Diamond Catch</option>
+                            <option value="giveaway">🎟️ Giveaway Participation</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="targetCount">Target Count *</label>
+                        <input type="number" class="form-control-custom" id="targetCount" name="targetCount" value="1" min="1" required>
+                    </div>
+                </div>
+
+                <!-- Provider Selector Box for Offerwall / Survey -->
+                <div class="provider-select-box" id="providerSelectBox">
+                    <label class="form-label" style="color: #166534;" for="providerDropdown">Select Offerwall / Survey Provider *</label>
+                    <select class="form-control-custom" id="providerDropdown" onchange="handleProviderChange(this.value)">
+                        <optgroup label="All Providers Option">
+                            <option value="all">🌐 Any Provider (Generic)</option>
+                        </optgroup>
+                        <optgroup label="Offerwall Partners">
+                            <option value="pubscale">PubScale (SDK & S2S)</option>
+                            <option value="taskwall">Taskwall</option>
+                            <option value="growdeck">GrowDeck</option>
+                            <option value="playtimeads">Playtime Ads</option>
+                            <option value="cpidroid">CPIDroid</option>
+                            <option value="sushiads">SushiAds</option>
+                            <option value="tapjoy">Tapjoy</option>
+                            <option value="adjoe">Adjoe Playtime</option>
+                            <option value="lootably">Lootably</option>
+                            <option value="notik">Notik.me</option>
+                            <option value="timewall">Timewall</option>
+                            <option value="wannads">Wannads</option>
+                            <option value="adgate">AdGate Media</option>
+                            <option value="cpalead">CPALead</option>
+                            <option value="monlix">Monlix</option>
+                        </optgroup>
+                        <optgroup label="Survey & Research Partners">
+                            <option value="bitlabs">BitLabs Surveys</option>
+                            <option value="cpxresearch">CPX Research</option>
+                            <option value="theoremreach">TheoremReach</option>
+                            <option value="inbrain">inBrain.ai</option>
+                            <option value="pollfish">Pollfish</option>
+                        </optgroup>
+                    </select>
+                    <small style="color: #15803d; font-size: 11px; margin-top: 4px; display: block;">Select a specific partner or choose 'Any Provider' to count any offerwall/survey.</small>
+                </div>
+
+                <!-- Auto-Assigned Icon Visual Info Box -->
+                <div class="form-group" style="margin-bottom: 14px;">
+                    <label class="form-label">Task Icon (Auto-assigned)</label>
+                    <div style="display: flex; align-items: center; gap: 10px; padding: 8px 14px; background: #f8fafc; border-radius: 12px; border: 1.5px solid var(--border);">
+                        <span id="iconEmoji" style="font-size: 18px;">🎮</span>
+                        <div style="font-size: 12.5px; font-weight: 600; color: #334155;" id="iconPathText">assets/icons/plygames.png</div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="taskTitle">Task Title *</label>
+                    <input type="text" class="form-control-custom" id="taskTitle" name="title" placeholder="e.g. Play 5 Games" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="taskDescription">Description</label>
+                    <input type="text" class="form-control-custom" id="taskDescription" name="description" placeholder="e.g. Play 5 HTML5 games today">
+                </div>
+
+                <div class="form-grid-2">
+                    <div class="form-group">
+                        <label class="form-label" for="displayOrder">Display Order</label>
+                        <input type="number" class="form-control-custom" id="displayOrder" name="displayOrder" value="0">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Task Status</label>
+                        <div class="switch-container" style="margin-top: 8px;">
+                            <label class="switch-toggle">
+                                <input type="checkbox" id="taskIsActive" name="isActive" checked>
+                                <span class="slider"></span>
+                            </label>
+                            <span style="font-size: 13px; font-weight: 600; color: #475569;">Active</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
+                    <button type="button" class="btn-sm-edit" onclick="closeTaskModal()" style="padding: 10px 18px;">Cancel</button>
+                    <button type="submit" class="btn-primary-custom" style="padding: 10px 22px;">Save Task</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const providerMeta = {
+            pubscale: { title: 'Complete PubScale Offer', desc: 'Complete 1 offer from PubScale offerwall', icon: 'assets/icons/pubscale-logo.png', emoji: '🎁' },
+            taskwall: { title: 'Complete Taskwall Offer', desc: 'Complete tasks on Taskwall', icon: 'assets/icons/taskwall-logo.png', emoji: '🎁' },
+            growdeck: { title: 'Complete GrowDeck Offer', desc: 'Complete tasks on GrowDeck', icon: 'assets/icons/growdeck-logo.png', emoji: '🎁' },
+            playtimeads: { title: 'Play Games on Playtime', desc: 'Earn coins by playing on Playtime Ads', icon: 'assets/icons/playtimeads-logo.png', emoji: '🎮' },
+            cpidroid: { title: 'Complete CPIDroid Task', desc: 'Install and complete offer on CPIDroid', icon: 'assets/icons/cpidroid-logo.png', emoji: '📱' },
+            sushiads: { title: 'Complete SushiAds Offer', desc: 'Complete offer on SushiAds', icon: 'assets/icons/sushiads-logo.png', emoji: '🍣' },
+            tapjoy: { title: 'Complete Tapjoy Offer', desc: 'Explore and complete offer on Tapjoy', icon: 'assets/icons/tapjoy-logo.png', emoji: '🎁' },
+            adjoe: { title: 'Play via Adjoe Playtime', desc: 'Play featured apps on Adjoe', icon: 'assets/icons/adjoe-logo.png', emoji: '🎮' },
+            lootably: { title: 'Complete Lootably Offer', desc: 'Complete tasks on Lootably', icon: 'assets/icons/lootably-logo.png', emoji: '🎁' },
+            notik: { title: 'Complete Notik Offer', desc: 'Complete fast tasks on Notik.me', icon: 'assets/icons/notik-logo.png', emoji: '⚡' },
+            timewall: { title: 'Complete Timewall Task', desc: 'Complete tasks on Timewall', icon: 'assets/icons/timewall-logo.png', emoji: '⏱️' },
+            wannads: { title: 'Complete Wannads Offer', desc: 'Complete tasks on Wannads', icon: 'assets/icons/wannads-logo.png', emoji: '🎁' },
+            adgate: { title: 'Complete AdGate Offer', desc: 'Complete offer on AdGate Media', icon: 'assets/icons/star.png', emoji: '⭐' },
+            cpalead: { title: 'Complete CPALead Offer', desc: 'Complete quick offer on CPALead', icon: 'assets/icons/star.png', emoji: '⭐' },
+            monlix: { title: 'Complete Monlix Offer', desc: 'Complete offer on Monlix', icon: 'assets/icons/star.png', emoji: '⭐' },
+            bitlabs: { title: 'Complete BitLabs Survey', desc: 'Answer questions on BitLabs surveys', icon: 'assets/icons/bitlabs-logo.png', emoji: '📋' },
+            cpxresearch: { title: 'Complete CPX Research Survey', desc: 'Complete survey on CPX Research', icon: 'assets/icons/cpxresearch-logo.png', emoji: '📋' },
+            theoremreach: { title: 'Complete TheoremReach Survey', desc: 'Answer quick survey on TheoremReach', icon: 'assets/icons/theoremreach-logo.png', emoji: '📋' },
+            inbrain: { title: 'Complete inBrain Survey', desc: 'Earn rewards answering inBrain surveys', icon: 'assets/icons/star.png', emoji: '📋' },
+            pollfish: { title: 'Complete Pollfish Survey', desc: 'Answer survey on Pollfish', icon: 'assets/icons/star.png', emoji: '📋' }
+        };
+
+        const defaultTaskMeta = {
+            play_games: { title: 'Play 5 Games', desc: 'Play 5 HTML5 games today', icon: 'assets/icons/plygames.png', emoji: '🎮' },
+            super_offer: { title: 'Complete Super Offer', desc: 'Unlock and complete 1 super offer', icon: 'assets/icons/super.png', emoji: '💎' },
+            read_and_earn: { title: 'Read 3 Articles', desc: 'Read 3 articles on Read & Earn', icon: 'assets/icons/readd.png', emoji: '📰' },
+            battle_arena: { title: 'Win 2 Battle Matches', desc: 'Participate and win battles in Arena', icon: 'assets/icons/battles.png', emoji: '⚔️' },
+            daily_task: { title: 'Complete 1 Daily Task', desc: 'Complete 1 CPA or app task today', icon: 'assets/icons/badge.png', emoji: '🎯' },
+            watch_earn: { title: 'Watch 5 Videos', desc: 'Watch 5 video ads on Watch & Earn', icon: 'assets/icons/watch video.png', emoji: '📺' },
+            offerwall: { title: 'Complete 1 Offerwall', desc: 'Complete any offerwall task today', icon: 'assets/icons/pubscale-logo.png', emoji: '🎁' },
+            survey: { title: 'Complete 1 Survey', desc: 'Answer 1 survey from survey partners', icon: 'assets/icons/bitlabs-logo.png', emoji: '📋' },
+            daily_checkin: { title: 'Claim Daily Check-in', desc: 'Maintain your daily check-in streak', icon: 'assets/icons/clock.png', emoji: '📅' },
+            diamond_catch: { title: 'Play Diamond Catch', desc: 'Play and win Diamond Catch mini game', icon: 'assets/icons/emoji.png', emoji: '💎' },
+            giveaway: { title: 'Join Daily Giveaway', desc: 'Get ticket to daily giveaway', icon: 'assets/icons/givwy.png', emoji: '🎟️' }
+        };
+
+        function handleTaskTypeChange(taskType) {
+            const box = document.getElementById('providerSelectBox');
+            if (taskType === 'offerwall' || taskType === 'survey') {
+                box.style.display = 'block';
+            } else {
+                box.style.display = 'none';
+            }
+
+            const def = defaultTaskMeta[taskType];
+            if (def) {
+                document.getElementById('taskTitle').value = def.title;
+                document.getElementById('taskDescription').value = def.desc;
+                document.getElementById('taskIcon').value = def.icon;
+                document.getElementById('iconEmoji').innerText = def.emoji;
+                document.getElementById('iconPathText').innerText = def.icon;
+            }
+        }
+
+        function handleProviderChange(providerKey) {
+            if (providerKey === 'all') {
+                const currentType = document.getElementById('taskType').value;
+                const def = defaultTaskMeta[currentType] || defaultTaskMeta.offerwall;
+                document.getElementById('taskTitle').value = def.title;
+                document.getElementById('taskDescription').value = def.desc;
+                document.getElementById('taskIcon').value = def.icon;
+                document.getElementById('iconEmoji').innerText = def.emoji;
+                document.getElementById('iconPathText').innerText = def.icon;
+                return;
+            }
+
+            const meta = providerMeta[providerKey];
+            if (meta) {
+                document.getElementById('taskTitle').value = meta.title;
+                document.getElementById('taskDescription').value = meta.desc;
+                document.getElementById('taskIcon').value = meta.icon;
+                document.getElementById('iconEmoji').innerText = meta.emoji;
+                document.getElementById('iconPathText').innerText = meta.icon;
+            }
+        }
+
+        function toggleDropdown() {
+            const dropdown = document.getElementById('dropdown');
+            if (dropdown) dropdown.classList.toggle('show');
+        }
+
+        function toggleSidebar() {
+            const sidebar = document.querySelector('.dashboard-sidebar');
+            if (sidebar) sidebar.classList.toggle('open');
+        }
+
+        function toggleSidebarCollapse() {
+            const shell = document.querySelector('.dashboard-shell');
+            if (shell) shell.classList.toggle('collapsed');
+        }
+
+        function toggleSubMenu(event, groupId) {
+            if (event) event.preventDefault();
+            const group = document.getElementById(groupId);
+            if (group) group.classList.toggle('open');
+        }
+
+        async function saveGlobalConfig(e) {
+            e.preventDefault();
+            const isActive = document.getElementById('challengeIsActive').checked;
+            const rewardCoins = document.getElementById('rewardCoins').value;
+
+            try {
+                const res = await fetch('/admin/daily-challenge/update-config', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ isActive, rewardCoins })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    alert('✅ ' + data.message);
+                } else {
+                    alert('❌ ' + (data.message || 'Failed to save settings'));
+                }
+            } catch (err) {
+                alert('❌ Error saving settings: ' + err);
+            }
+        }
+
+        function openAddTaskModal() {
+            document.getElementById('modalTitle').innerText = 'Add Challenge Task';
+            document.getElementById('modalTaskId').value = '';
+            document.getElementById('taskType').value = 'play_games';
+            document.getElementById('providerSelectBox').style.display = 'none';
+            document.getElementById('targetCount').value = '5';
+            document.getElementById('taskTitle').value = 'Play 5 Games';
+            document.getElementById('taskDescription').value = 'Play 5 HTML5 games today';
+            document.getElementById('displayOrder').value = '0';
+            document.getElementById('taskIcon').value = 'assets/icons/plygames.png';
+            document.getElementById('iconEmoji').innerText = '🎮';
+            document.getElementById('iconPathText').innerText = 'assets/icons/plygames.png';
+            document.getElementById('taskIsActive').checked = true;
+            document.getElementById('taskModal').style.display = 'flex';
+        }
+
+        function handleEditBtnClick(btn) {
+            try {
+                const taskData = JSON.parse(decodeURIComponent(btn.getAttribute('data-task')));
+                openEditTaskModal(taskData);
+            } catch (err) {
+                console.error('Failed to parse task data', err);
+            }
+        }
+
+        function openEditTaskModal(task) {
+            document.getElementById('modalTitle').innerText = 'Edit Challenge Task';
+            document.getElementById('modalTaskId').value = task.taskId;
+            document.getElementById('taskTitle').value = task.title || '';
+            document.getElementById('taskDescription').value = task.description || '';
+            document.getElementById('taskType').value = task.taskType || 'play_games';
+            document.getElementById('targetCount').value = task.targetCount || 1;
+            document.getElementById('displayOrder').value = task.displayOrder || 0;
+            document.getElementById('taskIcon').value = task.icon || 'assets/icons/plygames.png';
+            document.getElementById('iconPathText').innerText = task.icon || 'assets/icons/plygames.png';
+            document.getElementById('taskIsActive').checked = task.isActive !== false;
+            
+            const def = defaultTaskMeta[task.taskType];
+            if (def) {
+                document.getElementById('iconEmoji').innerText = def.emoji;
+            }
+
+            if (task.taskType === 'offerwall' || task.taskType === 'survey') {
+                document.getElementById('providerSelectBox').style.display = 'block';
+            } else {
+                document.getElementById('providerSelectBox').style.display = 'none';
+            }
+
+            document.getElementById('taskModal').style.display = 'flex';
+        }
+
+        function closeTaskModal() {
+            document.getElementById('taskModal').style.display = 'none';
+        }
+
+        async function handleTaskSubmit(e) {
+            e.preventDefault();
+            const taskId = document.getElementById('modalTaskId').value;
+            const title = document.getElementById('taskTitle').value;
+            const description = document.getElementById('taskDescription').value;
+            const taskType = document.getElementById('taskType').value;
+            const targetCount = document.getElementById('targetCount').value;
+            const displayOrder = document.getElementById('displayOrder').value;
+            const icon = document.getElementById('taskIcon').value;
+            const isActive = document.getElementById('taskIsActive').checked;
+
+            const endpoint = taskId ? '/admin/daily-challenge/edit-task' : '/admin/daily-challenge/add-task';
+            const payload = { taskId, title, description, taskType, targetCount, displayOrder, icon, isActive };
+
+            try {
+                const res = await fetch(endpoint, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+                if (data.success) {
+                    alert('✅ ' + data.message);
+                    window.location.reload();
+                } else {
+                    alert('❌ ' + (data.message || 'Operation failed'));
+                }
+            } catch (err) {
+                alert('❌ Error saving task: ' + err);
+            }
+        }
+
+        async function deleteTask(taskId) {
+            if (!confirm('Are you sure you want to delete this challenge task?')) return;
+            try {
+                const res = await fetch('/admin/daily-challenge/delete-task', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ taskId })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    alert('✅ ' + data.message);
+                    window.location.reload();
+                } else {
+                    alert('❌ ' + (data.message || 'Failed to delete task'));
+                }
+            } catch (err) {
+                alert('❌ Error deleting task: ' + err);
+            }
+        }
+    </script>
+    <script src="/js/admin.js"></script>
+</body>
+
+</html>

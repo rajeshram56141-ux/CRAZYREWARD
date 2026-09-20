@@ -1,0 +1,1067 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Add Watch & Earn</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/admin.css">
+    <link rel="icon" href="/images/favicon.png">
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif !important;
+        }
+
+        body.dashboard-body {
+            background-color: #f3f4f6 !important;
+            font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif !important;
+        }
+
+        .task-form-page-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+
+        .task-form-header-card {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 24px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .task-form-header-title h1 {
+            font-size: 24px;
+            font-weight: 800;
+            color: #0f172a;
+            margin: 0 0 4px;
+        }
+
+        .task-form-header-title p {
+            font-size: 14px;
+            color: #64748b;
+            margin: 0;
+        }
+
+        .btn-back-link {
+            background: #f1f5f9;
+            color: #0f172a;
+            border: 1px solid #cbd5e1;
+            padding: 10px 20px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-back-link:hover {
+            background: #e2e8f0;
+            transform: translateY(-1px);
+        }
+
+        /* ========= PAGE CONTAINER ========= */
+        .admin-form-section {
+            max-width: 100%;
+            margin: 0 auto;
+            background: #ffffff;
+            padding: 32px;
+            border-radius: 20px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+        }
+
+        .admin-form-section h2 {
+            margin-top: 0;
+            margin-bottom: 24px;
+            font-weight: 800;
+            color: #0f172a;
+            font-size: 20px;
+        }
+
+        .prefill-banner {
+            background: linear-gradient(135deg, #dcfce7, #bbf7d0);
+            border: 1px solid #86efac;
+            border-radius: 10px;
+            padding: 12px 16px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #166534;
+        }
+
+        /* ========= FORM ========= */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-size: 13px;
+            font-weight: 700;
+            margin-bottom: 6px;
+            display: block;
+            color: #475569;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        input,
+        textarea,
+        select {
+            width: 100%;
+            padding: 11px 14px;
+            border-radius: 12px;
+            border: 1px solid #cbd5e1;
+            background: #ffffff;
+            font-size: 14px;
+            font-weight: 600;
+            color: #0f172a;
+            transition: all 0.2s ease;
+        }
+
+        input:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: #052e1f;
+            box-shadow: 0 0 0 3px rgba(5, 46, 31, 0.12);
+            background: #ffffff;
+        }
+
+        /* ========= BUTTON ========= */
+        .admin-form button[type="submit"] {
+            width: 100%;
+            margin-top: 24px;
+            padding: 14px;
+            background: #052e1f;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 800;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 14px rgba(5, 46, 31, 0.25);
+        }
+
+        .admin-form button[type="submit"]:hover {
+            background: #042418;
+            transform: translateY(-1px);
+        }
+
+        /* ========= SWITCH ========= */
+        .switch {
+            position: relative;
+            width: 46px;
+            height: 24px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            inset: 0;
+            background: #d1d5db;
+            border-radius: 30px;
+            transition: .3s;
+        }
+
+        .slider:before {
+            content: "";
+            position: absolute;
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            top: 3px;
+            background: white;
+            border-radius: 50%;
+            transition: .3s;
+        }
+
+        input:checked+.slider {
+            background: #2563eb;
+        }
+
+        input:checked+.slider:before {
+            transform: translateX(22px);
+        }
+
+        /* ========= COUNTRY SELECT ========= */
+        .country-select-container {
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            background: #fafafa;
+            padding: 10px;
+        }
+
+        .country-options {
+            max-height: 150px;
+            overflow-y: auto;
+            margin-top: 6px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .country-option {
+            padding: 8px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .country-option:hover {
+            background: #eef2ff;
+        }
+
+        .selected-countries {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 8px;
+        }
+
+        .tag {
+            background: #e0e7ff;
+            color: #1e3a8a;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+        }
+
+        /* ========= MODAL ========= */
+        .modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, .4);
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            width: 320px;
+            text-align: center;
+        }
+
+        .btn-ok {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .desc-item {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .desc-item input {
+            flex: 1;
+        }
+
+        .remove-desc {
+            background: #fee2e2;
+            border: none;
+            padding: 0 10px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        /* ========= EVENTS SECTION ========= */
+        .events-section {
+            background: #f8fafc;
+            border: 2px dashed #cbd5e1;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .events-section h4 {
+            margin: 0 0 15px 0;
+            color: #334155;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .event-item {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 14px;
+            margin-bottom: 12px;
+        }
+
+        .event-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .event-item-header .event-number {
+            font-weight: 600;
+            color: #2563eb;
+        }
+
+        .remove-event-btn {
+            background: #fee2e2;
+            color: #dc2626;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .event-fields {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .event-fields input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            font-size: 13px;
+        }
+
+        .add-event-btn {
+            width: 100%;
+            padding: 12px;
+            background: #f1f5f9;
+            border: 2px dashed #94a3b8;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            color: #475569;
+            transition: .2s;
+        }
+
+        .add-event-btn:hover {
+            background: #e2e8f0;
+            border-color: #64748b;
+        }
+
+        .no-events-note {
+            text-align: center;
+            color: #64748b;
+            font-size: 13px;
+            margin-bottom: 12px;
+        }
+
+        /* Daily Reset Toggle */
+        .daily-reset-toggle {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px;
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            border-radius: 10px;
+            margin-top: 15px;
+        }
+
+        .daily-reset-toggle label {
+            margin: 0;
+            font-weight: 600;
+            color: #92400e;
+            flex: 1;
+        }
+
+        .daily-reset-toggle .switch input:checked+.slider {
+            background: #f59e0b;
+        }
+
+        .daily-reset-hint {
+            font-size: 11px;
+            color: #b45309;
+            margin-top: 4px;
+        }
+    </style>
+</head>
+
+<body class="dashboard-body">
+
+    <div id="alert-modal" class="modal">
+        <div class="modal-content">
+            <h3>Notification</h3>
+            <p class="alert-message">Something happened</p>
+            <div style="margin-top: 15px;">
+                <button id="alert-ok" class="btn-ok">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="dashboard-shell">
+        <%- include('../partials/sidebar', { activePage: 'watch-earn' }) %>
+
+        <div class="dashboard-main">
+            <header class="navbar dashboard-navbar">
+                <div class="nav-left">
+                    <button type="button" class="sidebar-toggle-btn" onclick="toggleSidebar()">
+                        ☰
+                    </button>
+                    <h2>Add Watch & Earn</h2>
+                </div>
+
+                <div class="nav-right" onclick="toggleDropdown()">
+                    <div class="dropdown" id="dropdown">
+                        <a href="/logout">Logout</a>
+                    </div>
+                </div>
+            </header>
+
+            <main class="container task-form-page-container">
+                <div class="task-form-header-card">
+                    <div class="task-form-header-title">
+                        <h1 id="formTitle">Add New Watch & Earn</h1>
+                        <p>Configure watch video details & payouts</p>
+                    </div>
+
+                    <a href="/manage-watch-earn" class="btn-back-link">
+                        <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+                        <span>Back to Manager</span>
+                    </a>
+                </div>
+
+                <section class="admin-form-section">
+        <div id="prefillBanner" class="prefill-banner" style="display:none;">
+            <span><i class="fa-solid fa-copy"></i></span>
+            <span>You are duplicating an existing task. Edit the details and save as a new task.</span>
+        </div>
+        <h2 id="formTitle">Add New Watch & Earn</h2>
+
+        <form id="offerForm" class="admin-form" novalidate>
+
+            <div class="form-group">
+                <label>Offer Provider *</label>
+                <select name="provider" required>
+                    <option value="" disabled>Select Provider</option>
+                    <option value="InternalOffer" selected>Internal Offer</option>
+                </select>
+            </div>
+
+            <input type="hidden" name="offerType" id="offerTypeSelect" value="WatchEarn" />
+
+            <div class="form-group">
+                <label>Offer ID *</label>
+                <input type="text" name="offerId" id="offerIdInput" required />
+                <small style="color:#64748b;font-size:11px;margin-top:4px;display:block;">Leave as-is or change to
+                    create a new unique ID.</small>
+            </div>
+
+            <div class="form-group">
+                <label>Offer Name *</label>
+                <input type="text" name="offerName" required />
+            </div>
+
+            <div class="form-group">
+                <label>Image URL *</label>
+                <input type="url" name="imagePath" required />
+            </div>
+
+            <div class="form-group">
+                <label>Banner URL (Optional)</label>
+                <input type="url" name="bannerPath" id="bannerPathInput" placeholder="https://..." />
+            </div>
+
+            <div class="form-group">
+                <label>Sub description (Optional)</label>
+                <input type="text" name="subDescription" placeholder="e.g. Only for new users" />
+            </div>
+
+            <div class="form-group">
+                <label>Offer Description *</label>
+                <div id="descriptionList"></div>
+                <button type="button" id="addDescBtn"
+                    style="margin-top:8px;padding:8px 12px;border:1px solid #e5e7eb;border-radius:6px;background:#f3f4f6;cursor:pointer;">
+                    + Add Line
+                </button>
+            </div>
+
+            <div class="form-group">
+                <label>Offer Disclaimer (Optional)</label>
+                <div id="disclaimerList"></div>
+                <button type="button" id="addDisclaimerBtn"
+                    style="margin-top:8px;padding:8px 12px;border:1px solid #e5e7eb;border-radius:6px;background:#f3f4f6;cursor:pointer;">
+                    + Add Disclaimer
+                </button>
+            </div>
+
+            <div class="form-group">
+                <label>Offer Category *</label>
+                <select name="offerCategory" required>
+                    <option value="" disabled selected>Select Category</option>
+                    <% if (typeof categories !== 'undefined' && categories && categories.length > 0) { %>
+                        <% categories.forEach(function(cat) { %>
+                            <option value="<%= cat.name %>"><%= cat.name %></option>
+                        <% }); %>
+                    <% } else { %>
+                        <option value="Multi Task">Multi Task</option>
+                        <option value="Youtube Video">Youtube Video</option>
+                        <option value="Youtube Shorts">Youtube Shorts</option>
+                        <option value="Instagram Reels">Instagram Reels</option>
+                        <option value="Install">Install</option>
+                        <option value="Register">Register</option>
+                        <option value="Other">Other</option>
+                    <% } %>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Payout *</label>
+                <input type="number" name="payout" required min="0.1" step="0.1" />
+            </div>
+
+            <div class="form-group" id="trackingTimeGroup">
+                <label>Tracking Time (in seconds) *</label>
+                <input type="number" name="trackingTime" id="trackingTimeInput" min="0" step="1" placeholder="e.g. 30" />
+            </div>
+
+            <div class="form-group">
+                <label>Watch Tutorial Link (Optional)</label>
+                <input type="url" name="watchTutorial" placeholder="e.g. https://youtube.com/..." />
+            </div>
+
+            <div class="form-group">
+                <label id="redirectionUrlLabel">Redirection URL *</label>
+                <input type="url" name="redirectionUrl" id="redirectionUrlInput" required />
+            </div>
+
+            <!-- Fetch Thumbnail Button -->
+            <div class="form-group" id="fetchThumbnailGroup" style="display: none; margin-top: 8px;">
+                <button type="button" id="fetchThumbnailBtn" style="padding: 8px 12px; border: 1px solid #2563eb; border-radius: 6px; background: #eff6ff; color: #2563eb; font-weight: 500; cursor: pointer; transition: 0.2s;">
+                    📸 Fetch YouTube Thumbnail
+                </button>
+            </div>
+
+            <!-- Video Verification Toggle (Watch & Earn) -->
+            <div class="form-group" id="videoVerificationToggleGroup">
+                <label>Video Verification: <span id="videoVerificationStatus" style="font-weight: bold; color: #ef4444;">OFF</span></label>
+                <label class="switch">
+                    <input type="checkbox" name="videoVerificationEnabled" id="videoVerificationEnabledToggle" onchange="updateVideoVerificationVisibility()" onclick="updateVideoVerificationVisibility()">
+                    <span class="slider round"></span>
+                </label>
+            </div>
+
+            <div class="form-group" id="videoVerificationIdGroup" style="display: none;">
+                <label>Video Verification ID *</label>
+                <input type="text" name="videoVerificationId" id="videoVerificationIdInput" placeholder="e.g. video_id_here" />
+            </div>
+
+            <div class="form-group">
+                <label>Status</label>
+                <label class="switch">
+                    <input type="checkbox" name="enabled" checked>
+                    <span class="slider round"></span>
+                </label>
+            </div>
+
+            <div class="form-group">
+                <label>Countries *</label>
+                <div id="countrySelectContainer" class="country-select-container">
+                    <input type="text" id="countrySearch" placeholder="Search & select countries..."
+                        autocomplete="off" />
+                    <div id="selectedCountries" class="selected-countries"></div>
+                    <div id="countryOptions" class="country-options">
+                        <div data-value="GLOBAL" class="country-option">🌍 GLOBAL</div>
+                        <% countries.forEach(country=> { %>
+                            <div data-value="<%= country.code %>" class="country-option">
+                                <img src="<%= country.flag %>" alt="<%= country.name %> flag" width="20" height="14">
+                                <span>
+                                    <%= country.name %> (<%= country.code %>)
+                                </span>
+                            </div>
+                            <% }); %>
+                    </div>
+                </div>
+                <input type="hidden" name="countries" id="countriesInput" required />
+            </div>
+
+            <div class="form-group">
+                <label>Daily Cap Limit (Optional)</label>
+                <input type="number" name="dailyCapLimit" min="0" />
+            </div>
+            <div class="form-group">
+                <label>Lifetime Cap Limit (Optional)</label>
+                <input type="number" name="lifetimeCapLimit" min="0" />
+            </div>
+            <div class="form-group" id="perUserDailyCapGroup">
+                <label>Per User Daily Cap (Optional)</label>
+                <input type="number" name="perUserDailyCap" id="perUserDailyCapInput" min="0" placeholder="e.g. 2" />
+            </div>
+            <button type="submit">Add Offer</button>
+        </form>
+    </section>
+</main>
+</div>
+</div>
+
+    <script>
+        // --- 0. STATE VARIABLES ---
+        let selectedCountries = [];
+        let descriptions = [''];
+        let disclaimers = [];
+
+        // --- 1. DOM ELEMENTS ---
+        const form = document.getElementById('offerForm');
+        const countryOptions = document.getElementById('countryOptions');
+        const selectedCountriesDiv = document.getElementById('selectedCountries');
+        const countriesInput = document.getElementById('countriesInput');
+        const descContainer = document.getElementById('descriptionList');
+        const addDescBtn = document.getElementById('addDescBtn');
+        const disclaimerContainer = document.getElementById('disclaimerList');
+        const addDisclaimerBtn = document.getElementById('addDisclaimerBtn');
+        const videoVerificationEnabledToggle = document.getElementById('videoVerificationEnabledToggle');
+        const videoVerificationIdGroup = document.getElementById('videoVerificationIdGroup');
+        const videoVerificationIdInput = document.getElementById('videoVerificationIdInput');
+        const redirInput = document.getElementById('redirectionUrlInput');
+        const bannerPathInput = document.getElementById('bannerPathInput');
+        const fetchThumbnailBtn = document.getElementById('fetchThumbnailBtn');
+
+        // --- 2. UTILITY & MODAL ---
+        function showAlert(message, callback) {
+            const modal = document.getElementById('alert-modal');
+            modal.querySelector('.alert-message').textContent = message;
+            modal.style.display = 'flex';
+            document.getElementById('alert-ok').onclick = () => {
+                modal.style.display = 'none';
+                if (callback) callback(true);
+            };
+        }
+
+        function checkYoutubeUrl(url) {
+            if (!url) return false;
+            const ytRegex = /^(?:https?:\/\/)?(?:www\.|m\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=|shorts\/))((?:\w|-){11})(?:\S+)?$/;
+            return ytRegex.test(url.trim());
+        }
+
+        function getYoutubeId(url) {
+            if (!url) return null;
+            const ytRegex = /^(?:https?:\/\/)?(?:www\.|m\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=|shorts\/))((?:\w|-){11})(?:\S+)?$/;
+            const match = url.trim().match(ytRegex);
+            return match ? match[1] : null;
+        }
+
+        function updateVideoVerificationVisibility() {
+            const toggle = document.getElementById('videoVerificationEnabledToggle');
+            const group = document.getElementById('videoVerificationIdGroup');
+            const input = document.getElementById('videoVerificationIdInput');
+            const statusEl = document.getElementById('videoVerificationStatus');
+            const isChecked = !!(toggle && toggle.checked);
+
+            if (group) {
+                group.style.display = isChecked ? 'block' : 'none';
+            }
+            if (input) {
+                if (isChecked) {
+                    input.setAttribute('required', 'required');
+                    // Auto-fill from Redirection URL if input is currently empty
+                    if (!input.value.trim()) {
+                        const redirVal = document.getElementById('redirectionUrlInput')?.value || '';
+                        const ytId = getYoutubeId(redirVal);
+                        if (ytId) input.value = ytId;
+                    }
+                } else {
+                    input.removeAttribute('required');
+                }
+            }
+            if (statusEl) {
+                statusEl.textContent = isChecked ? 'ON' : 'OFF';
+                statusEl.style.color = isChecked ? '#10b981' : '#ef4444';
+            }
+        }
+
+        function updateThumbnailButtonVisibility() {
+            const redir = document.getElementById('redirectionUrlInput');
+            const fetchGroup = document.getElementById('fetchThumbnailGroup');
+            if (fetchGroup) {
+                if (redir && checkYoutubeUrl(redir.value)) {
+                    fetchGroup.style.display = 'block';
+                } else {
+                    fetchGroup.style.display = 'none';
+                }
+            }
+        }
+
+        // --- 3. COUNTRIES UI LOGIC ---
+        function filterCountries(term, containerId) {
+            document.querySelectorAll(`#${containerId} .country-option`).forEach(opt => {
+                opt.style.display = opt.textContent.toLowerCase().includes(term.toLowerCase()) ? 'block' : 'none';
+            });
+        }
+
+        function renderTags(list, container) {
+            if (!container) return;
+            container.innerHTML = '';
+            list.forEach(c => {
+                const div = document.createElement('div');
+                div.className = 'tag';
+                div.innerHTML = `${c} <span data-value="${c}">✖</span>`;
+                container.appendChild(div);
+            });
+        }
+
+        function updateSelectedCountries() {
+            if (selectedCountriesDiv) renderTags(selectedCountries, selectedCountriesDiv);
+            if (countriesInput) countriesInput.value = selectedCountries.join(',');
+            // Hide selected from options
+            document.querySelectorAll('#countryOptions .country-option').forEach(opt => {
+                opt.style.display = selectedCountries.includes(opt.getAttribute('data-value')) ? 'none' : 'block';
+            });
+        }
+
+        // Country Search Filter
+        document.getElementById('countrySearch')?.addEventListener('input', (e) => filterCountries(e.target.value, 'countryOptions'));
+
+        // Country Option Click
+        countryOptions?.addEventListener('click', (e) => {
+            const opt = e.target.closest('.country-option');
+            if (!opt) return;
+            const value = opt.getAttribute('data-value');
+            if (value === 'GLOBAL') {
+                selectedCountries = ['GLOBAL'];
+            } else {
+                selectedCountries = selectedCountries.filter(c => c !== 'GLOBAL');
+                if (!selectedCountries.includes(value)) selectedCountries.push(value);
+            }
+            updateSelectedCountries();
+        });
+
+        // Tag Removal
+        selectedCountriesDiv?.addEventListener('click', (e) => {
+            if (e.target.tagName !== 'SPAN') return;
+            selectedCountries = selectedCountries.filter(c => c !== e.target.getAttribute('data-value'));
+            updateSelectedCountries();
+        });
+
+        // --- 4. DESCRIPTION LOGIC ---
+        function renderDescriptions() {
+            if (!descContainer) return;
+            descContainer.innerHTML = '';
+            descriptions.forEach((text, index) => {
+                const div = document.createElement('div');
+                div.className = 'desc-item';
+                div.innerHTML = `
+                    <input type="text"
+                        value="${text}"
+                        data-index="${index}"
+                        placeholder="Enter description line"
+                        required
+                    />
+                    <button type="button"
+                        class="remove-desc"
+                        data-index="${index}">
+                        ✖
+                    </button>
+                `;
+                descContainer.appendChild(div);
+            });
+        }
+
+        addDescBtn?.addEventListener('click', () => {
+            descriptions.push('');
+            renderDescriptions();
+        });
+
+        descContainer?.addEventListener('input', (e) => {
+            if (e.target.tagName === 'INPUT') {
+                const index = e.target.dataset.index;
+                descriptions[index] = e.target.value;
+            }
+        });
+
+        descContainer?.addEventListener('click', (e) => {
+            if (e.target.classList.contains('remove-desc')) {
+                const index = e.target.dataset.index;
+                descriptions.splice(index, 1);
+                if (descriptions.length === 0) descriptions.push('');
+                renderDescriptions();
+            }
+        });
+
+        // --- 5. DISCLAIMER LOGIC ---
+        function renderDisclaimers() {
+            if (!disclaimerContainer) return;
+            disclaimerContainer.innerHTML = '';
+            disclaimers.forEach((text, index) => {
+                const div = document.createElement('div');
+                div.className = 'desc-item';
+                div.innerHTML = `
+                    <input type="text"
+                        value="${text}"
+                        data-index="${index}"
+                        placeholder="Enter disclaimer"
+                    />
+                    <button type="button"
+                        class="remove-disclaimer"
+                        data-index="${index}">
+                        ✖
+                    </button>
+                `;
+                disclaimerContainer.appendChild(div);
+            });
+        }
+
+        addDisclaimerBtn?.addEventListener('click', () => {
+            disclaimers.push('');
+            renderDisclaimers();
+        });
+
+        disclaimerContainer?.addEventListener('input', (e) => {
+            if (e.target.tagName === 'INPUT') {
+                const index = e.target.dataset.index;
+                disclaimers[index] = e.target.value;
+            }
+        });
+
+        disclaimerContainer?.addEventListener('click', (e) => {
+            if (e.target.classList.contains('remove-disclaimer')) {
+                const index = e.target.dataset.index;
+                disclaimers.splice(index, 1);
+                renderDisclaimers();
+            }
+        });
+
+        // --- 6. EVENT LISTENERS ---
+        if (videoVerificationEnabledToggle) {
+            videoVerificationEnabledToggle.addEventListener('change', updateVideoVerificationVisibility);
+            videoVerificationEnabledToggle.addEventListener('click', updateVideoVerificationVisibility);
+            videoVerificationEnabledToggle.addEventListener('input', updateVideoVerificationVisibility);
+        }
+        if (redirInput) {
+            redirInput.addEventListener('input', () => {
+                updateThumbnailButtonVisibility();
+                const vToggle = document.getElementById('videoVerificationEnabledToggle');
+                const vInput = document.getElementById('videoVerificationIdInput');
+                if (vToggle && vToggle.checked && vInput && !vInput.value.trim()) {
+                    const ytId = getYoutubeId(redirInput.value);
+                    if (ytId) vInput.value = ytId;
+                }
+            });
+            redirInput.addEventListener('change', updateThumbnailButtonVisibility);
+        }
+
+        if (fetchThumbnailBtn) {
+            fetchThumbnailBtn.addEventListener('click', () => {
+                const ytId = getYoutubeId(redirInput?.value || '');
+                if (ytId && bannerPathInput) {
+                    const thumbnailUrl = `https://img.youtube.com/vi/${ytId}/maxresdefault.jpg`;
+                    bannerPathInput.value = thumbnailUrl;
+                    
+                    bannerPathInput.style.backgroundColor = '#dcfce7';
+                    setTimeout(() => {
+                        bannerPathInput.style.backgroundColor = '';
+                    }, 1000);
+                }
+            });
+        }
+
+        // --- 7. PREFILL FROM URL PARAMS ---
+        (function initPage() {
+            const params = new URLSearchParams(window.location.search);
+            const isPrefill = params.has('prefill');
+
+            if (isPrefill) {
+                // Show duplicate mode UI
+                const banner = document.getElementById('prefillBanner');
+                if (banner) banner.style.display = 'flex';
+                const title = document.getElementById('formTitle');
+                if (title) title.textContent = 'Duplicate Task';
+                const submitBtn = document.querySelector('button[type="submit"]');
+                if (submitBtn) submitBtn.textContent = 'Save as New Task';
+
+                const get = (key, fallback) => params.get(key) || fallback;
+
+                const setIf = (name, value) => {
+                    const el = document.querySelector(`[name="${name}"]`);
+                    if (el && value !== null && value !== undefined && value !== '') {
+                        el.value = value;
+                    }
+                };
+
+                setIf('offerId', get('offerId', ''));
+                setIf('offerName', get('offerName', ''));
+                setIf('imagePath', get('imagePath', ''));
+                setIf('bannerPath', get('bannerPath', ''));
+                setIf('payout', get('payout', ''));
+                setIf('trackingTime', get('trackingTime', ''));
+                setIf('color', get('color', ''));
+                setIf('redirectionUrl', get('redirectionUrl', ''));
+                setIf('dailyCapLimit', get('dailyCapLimit', ''));
+                setIf('lifetimeCapLimit', get('lifetimeCapLimit', ''));
+                setIf('packageName', get('packageName', ''));
+                setIf('watchTutorial', get('watchTutorial', ''));
+                setIf('subDescription', get('subDescription', ''));
+
+                const setSelect = (name, value) => {
+                    const el = document.querySelector(`[name="${name}"]`);
+                    if (el && value) {
+                        for (let i = 0; i < el.options.length; i++) {
+                            if (el.options[i].value === value) {
+                                el.selectedIndex = i;
+                                break;
+                            }
+                        }
+                    }
+                };
+                setSelect('provider', get('provider', ''));
+                setSelect('offerCategory', get('offerCategory', ''));
+
+                // Video Verification prefill
+                const isVideoVerifPrefill = get('videoVerificationEnabled', '') === 'true' || get('videoVerificationEnabled', '') === '1';
+                if (videoVerificationEnabledToggle) {
+                    videoVerificationEnabledToggle.checked = isVideoVerifPrefill;
+                }
+                const passedVid = get('videoVerificationId', '');
+                if (videoVerificationIdInput && passedVid) {
+                    videoVerificationIdInput.value = passedVid;
+                }
+                setIf('perUserDailyCap', get('perUserDailyCap', ''));
+
+                // Countries prefill
+                const countriesRaw = get('countries', '');
+                if (countriesRaw) {
+                    const countryList = countriesRaw.includes(',') ? countriesRaw.split(',') : [countriesRaw];
+                    selectedCountries = countryList.map(c => c.trim()).filter(Boolean);
+                }
+
+                // Descriptions prefill
+                try {
+                    const descRaw = get('offerDescription', '');
+                    if (descRaw) {
+                        let descArr = [];
+                        try { descArr = JSON.parse(descRaw); } catch { descArr = descRaw.split(','); }
+                        if (Array.isArray(descArr) && descArr.length) {
+                            descriptions = descArr;
+                        }
+                    }
+                } catch (e) { console.warn('Could not parse offerDescription:', e); }
+
+                // Disclaimers prefill
+                try {
+                    const discRaw = get('offerDisclaimer', '');
+                    if (discRaw) {
+                        let discArr = [];
+                        try { discArr = JSON.parse(discRaw); } catch { discArr = discRaw.split(','); }
+                        if (Array.isArray(discArr) && discArr.length) {
+                            disclaimers = discArr;
+                        }
+                    }
+                } catch (e) { console.warn('Could not parse offerDisclaimer:', e); }
+            }
+
+            // Render all UI components
+            updateSelectedCountries();
+            renderDescriptions();
+            renderDisclaimers();
+            updateVideoVerificationVisibility();
+            updateThumbnailButtonVisibility();
+        })();
+
+        // --- 8. SUBMIT HANDLER ---
+        form?.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData.entries());
+
+            // Checkboxes & Types
+            data.offerType = 'WatchEarn';
+            data.enabled = !!form.elements['enabled'].checked;
+            data.dailyReset = false;
+            data.packageEnabled = false;
+            data.packageName = '';
+            data.timerEnabled = false;
+            data.timerDuration = 0;
+            data.dailyRewardEnabled = false;
+            data.dailyRewards = [];
+            data.multiEventEnabled = false;
+            data.events = [];
+
+            // Video Verification validation and processing
+            data.videoVerificationEnabled = !!form.elements['videoVerificationEnabled']?.checked;
+            if (data.videoVerificationEnabled) {
+                data.videoVerificationId = (form.elements['videoVerificationId'].value || '').trim();
+                if (!data.videoVerificationId) {
+                    return showAlert('❌ Video Verification ID is required when Video Verification is ON.');
+                }
+            } else {
+                data.videoVerificationId = '';
+            }
+
+            // Redirection URL requirement
+            if (!data.redirectionUrl || data.redirectionUrl.trim() === '') {
+                return showAlert('❌ Redirection URL is required.');
+            }
+
+            // Numbers
+            data.payout = Number(data.payout);
+            data.trackingTime = data.trackingTime ? Number(data.trackingTime) : 0;
+            data.dailyCapLimit = data.dailyCapLimit ? Number(data.dailyCapLimit) : null;
+            data.lifetimeCapLimit = data.lifetimeCapLimit ? Number(data.lifetimeCapLimit) : null;
+            data.perUserDailyCap = data.perUserDailyCap ? Number(data.perUserDailyCap) : null;
+
+            // Arrays
+            data.countries = selectedCountries;
+
+            // Validation
+            if (!data.countries.length) return showAlert('❌ Select at least one country');
+
+            // Convert description to array
+            data.offerDescription = descriptions
+                .map(d => d.trim())
+                .filter(d => d.length > 0);
+
+            if (!data.offerDescription.length)
+                return showAlert('❌ Add at least one description line');
+
+            data.offerDisclaimer = disclaimers
+                .map(d => d.trim())
+                .filter(d => d.length > 0);
+
+            try {
+                const res = await fetch('/add-daily-task', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                const json = await res.json();
+                showAlert(json.message, () => { if (json.success) location.reload(); });
+            } catch (err) {
+                console.error(err);
+                showAlert('❌ Server Error');
+            }
+        });
+    </script>
+
+    <script src="/js/admin.js"></script>
+</body>
+
+</html>

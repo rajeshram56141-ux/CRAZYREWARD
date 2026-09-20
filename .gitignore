@@ -1,0 +1,122 @@
+# ==============================================================================
+#                      CRAZYREWARD MAIN PROJECT .GITIGNORE
+# ==============================================================================
+
+# ------------------------------------------------------------------------------
+# 1. Operating System & Editor Files
+# ------------------------------------------------------------------------------
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+
+# Editors & IDEs
+.idea/
+.vscode/
+*.iml
+*.ipr
+*.iws
+*.sublime-project
+*.sublime-workspace
+*.swp
+*.swo
+*~
+*.bak
+
+# ------------------------------------------------------------------------------
+# 2. Flutter & Dart (App Directory)
+# ------------------------------------------------------------------------------
+# Flutter build outputs
+**/build/
+**/.dart_tool/
+**/.flutter-plugins
+**/.flutter-plugins-dependencies
+**/.packages
+**/.pub-cache/
+**/.pub/
+**/coverage/
+.flutter-devtools-history
+
+# Android specific
+**/android/.gradle/
+**/android/local.properties
+**/android/app/release/
+**/android/app/debug/
+**/android/captures/
+**/android/.cxx/
+**/android/.externalNativeBuild/
+
+# Signing keys & keystores (Never commit private keys)
+*.keystore
+*.jks
+**/key.properties
+
+# iOS specific
+**/ios/Pods/
+**/ios/.symlinks/
+**/ios/Flutter/Flutter.framework
+**/ios/Flutter/Flutter.podspec
+**/ios/Flutter/Generated.xcconfig
+**/ios/Flutter/app.framework
+**/ios/Flutter/ephemeral/
+**/ios/*.xcworkspace
+**/ios/*.mode1v3
+**/ios/*.mode2v3
+**/ios/*.moved-aside
+**/ios/*.pbxuser
+**/ios/*.perspectivev3
+**/ios/DerivedData/
+
+# Windows / Linux desktop build artifacts
+**/windows/flutter/ephemeral/
+**/linux/flutter/ephemeral/
+
+# ------------------------------------------------------------------------------
+# 3. Node.js & Express Backend (crazyreward_backend)
+# ------------------------------------------------------------------------------
+# Dependencies
+**/node_modules/
+**/.pnpm-store/
+
+# Environment Variables & Secrets
+**/.env
+**/.env.*
+!**/.env.example
+
+# Service Account Keys & Certificates
+**/crazy-reward-*-firebase-adminsdk-*.json
+**/firebase-service-account*.json
+**/serviceAccountKey*.json
+*.pem
+*.key
+*.cert
+*.crt
+
+# Runtime logs & PM2
+**/logs/
+**/*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+pnpm-debug.log*
+.pm2/
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# User uploads & cache (Backend static uploads)
+**/public/uploads/*
+!**/public/uploads/.gitkeep
+
+# ------------------------------------------------------------------------------
+# 4. Misc & Temp Files
+# ------------------------------------------------------------------------------
+scratch/
+tmp/
+temp/

@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Surveys - Admin</title>
+    <link rel="stylesheet" href="/css/admin.css">
+    <link rel="icon" href="/images/favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg: #f8fafc;
+            --surface: #ffffff;
+            --border: #e2e8f0;
+            --primary: #052e1f;
+            --primary-hover: #042418;
+            --text: #0f172a;
+            --muted: #64748b;
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--text);
+        }
+
+        .glass-card {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
+            border: 1px solid var(--border);
+        }
+
+        .btn-action-primary {
+            background: #052e1f;
+            color: #ffffff;
+            border: none;
+            border-radius: 12px;
+            padding: 10px 18px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-action-primary:hover {
+            background: #042418;
+        }
+
+        #survey-list-container {
+            display: grid !important;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)) !important;
+            gap: 20px !important;
+            align-items: start !important;
+            margin-top: 16px !important;
+        }
+
+        .app-data-offer-row {
+            background: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+            transition: all 0.2s ease;
+        }
+
+        .app-data-offer-row:hover {
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.04);
+            border-color: #cbd5e1;
+        }
+
+        .app-data-offer-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #cbd5e1;
+            padding-bottom: 10px;
+        }
+
+        .app-data-offer-name {
+            font-weight: 800;
+            color: #0f172a;
+            font-size: 15px;
+        }
+
+        .app-data-offer-provider-select {
+            padding: 6px 10px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-weight: 700;
+            background: white;
+            font-size: 13px;
+            cursor: pointer;
+            width: calc(100% - 80px);
+        }
+
+        .remove-btn {
+            background: #fee2e2;
+            color: #ef4444;
+            border: 1px solid #fecaca;
+            padding: 6px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 700;
+            transition: all 0.2s;
+        }
+
+        .remove-btn:hover {
+            background: #ef4444;
+            color: white;
+        }
+
+        .app-data-offer-controls {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .app-data-offer-enabled {
+            padding: 8px 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            background: white;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            flex: 1;
+        }
+
+        .rank-wrap {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .rank-wrap span {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--muted);
+        }
+
+        .rank-wrap input {
+            width: 60px;
+            padding: 6px 8px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        .badge {
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .badge.active {
+            background: #f1f5f9;
+            color: #64748b;
+        }
+
+        .badge.new {
+            background: #fef3c7;
+            color: #b45309;
+        }
+
+        /* Grid style override for inputs inside the cards */
+        .offer-extra-fields {
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 10px !important;
+            margin-top: 4px !important;
+            width: 100% !important;
+        }
+
+        .offer-field-wrap {
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 4px !important;
+            flex: none !important;
+            width: 100% !important;
+            max-width: 100% !important;
+        }
+
+        .offer-field-wrap label {
+            font-weight: 700 !important;
+            font-size: 11px !important;
+            color: #64748b !important;
+            margin-bottom: 2px !important;
+        }
+
+        .offer-field-wrap input {
+            width: 100% !important;
+            box-sizing: border-box !important;
+            padding: 8px 12px !important;
+            border: 1px solid #cbd5e1 !important;
+            border-radius: 8px !important;
+            font-size: 13px !important;
+            background: #f8fafc !important;
+            font-weight: 500 !important;
+        }
+
+        .offer-field-wrap input:focus {
+            outline: none !important;
+            border-color: #052e1f !important;
+            background: #ffffff !important;
+        }
+    </style>
+</head>
+
+<body class="dashboard-body">
+    <div class="dashboard-shell">
+        <%- include('../partials/sidebar', { activePage: 'survey' }) %>
+
+            <div class="dashboard-main">
+                <header class="navbar dashboard-navbar">
+                    <div class="nav-left" style="display: flex; align-items: center; gap: 12px; white-space: nowrap;">
+                        <button type="button" class="sidebar-toggle-btn" onclick="toggleSidebar()">☰</button>
+                        <h2 style="margin: 0; font-size: 18px; font-weight: 800; white-space: nowrap;">Manage Surveys
+                        </h2>
+
+                        <select id="appSelect" onchange="onAppChanged()"
+                            style="margin-left: 8px; padding: 6px 12px; border-radius: 10px; border: 1px solid #cbd5e1; font-weight: 700; background: #f8fafc; font-size: 13px; cursor: pointer;">
+                            <% (typeof firebaseServices !=='undefined' && firebaseServices ? firebaseServices :
+                                []).forEach(service=> { %>
+                                <option value="<%= service.appName %>" <%=typeof activeAppName !=='undefined' &&
+                                    service.appName===activeAppName ? 'selected' : '' %>>
+                                    <%= service.displayName %>
+                                </option>
+                                <% }) %>
+                        </select>
+                    </div>
+
+                    <div class="nav-right" onclick="toggleDropdown()">
+                        <div class="avatar"><%- typeof photo !=='undefined' && photo ? photo : 'A' %></div>
+                        <div class="dropdown" id="dropdown">
+                            <a href="/logout">Logout</a>
+                        </div>
+                    </div>
+                </header>
+
+                <main class="container dashboard-home">
+                    <section class="glass-card">
+                        <div
+                            style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 16px;">
+                            <div>
+                                <h2 style="margin: 0 0 4px 0; font-size: 20px; font-weight: 800; color: #052e1f;">Survey
+                                    Integrations</h2>
+                                <p style="color: var(--muted); font-size: 13px; margin: 0;">Configure active survey
+                                    partners, ranks, and integration keys</p>
+                            </div>
+                            <div style="display: flex; gap: 12px;">
+                                <button type="button" class="btn-action-primary" style="background: #2563eb;"
+                                    onclick="addNewSurveyRow()">+ Add Survey</button>
+                                <button type="button" class="btn-action-primary" onclick="saveSurveys()"><i
+                                        class="fa-solid fa-floppy-disk" style="margin-right: 6px;"></i> Save
+                                    Surveys</button>
+                            </div>
+                        </div>
+
+                        <div id="status-alert"
+                            style="display: none; padding: 12px 16px; border-radius: 8px; margin-bottom: 16px; font-weight: 600; font-size: 13px;">
+                        </div>
+
+                        <div id="survey-list-container">
+                            <div style="padding: 20px; text-align: center; color: var(--muted);">Loading survey
+                                configurations...</div>
+                        </div>
+                    </section>
+                </main>
+            </div>
+            <!-- Edit Configuration Modal -->
+            <div id="edit-config-modal" class="modal">
+                <div class="modal-content"
+                    style="max-width: 550px; border-radius: 16px; padding: 24px; background: #ffffff; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e2e8f0; padding-bottom: 12px; margin-bottom: 16px;">
+                        <h3 id="modal-provider-title"
+                            style="margin: 0; font-size: 18px; font-weight: 800; color: #0f172a;">Edit Provider
+                            Configuration</h3>
+                        <button type="button" onclick="closeModal('edit-config-modal')"
+                            style="background: none; border: none; font-size: 20px; cursor: pointer; color: #64748b;">&times;</button>
+                    </div>
+
+                    <!-- Modal Body Form -->
+                    <div id="modal-form-container" style="display: flex; flex-direction: column; gap: 16px;">
+                        <!-- Provider selector for adding new ones (hidden in edit mode) -->
+                        <div id="modal-provider-select-wrap"
+                            style="display: none; flex-direction: column; gap: 4px; width: 100%;">
+                            <label style="font-weight:bold; font-size:12px; color:#475569;">Select Provider Type
+                                *:</label>
+                            <select id="modal-provider-select" onchange="onModalProviderSelectChange(this)"
+                                style="padding:8px 12px; border:1px solid #cbd5e1; border-radius:8px; font-weight:700; background:#f8fafc; outline:none;">
+                                <!-- Will be populated dynamically -->
+                            </select>
+                        </div>
+
+                        <!-- Status & Rank in Modal -->
+                        <div style="display: flex; gap: 16px; width: 100%;">
+                            <div style="display: flex; flex-direction: column; gap: 4px; flex: 1;">
+                                <label style="font-weight:bold; font-size:12px; color:#475569;">Status *:</label>
+                                <select id="modal-status-select"
+                                    style="padding:8px 12px; border:1px solid #cbd5e1; border-radius:8px; font-weight:700; background:#f8fafc; outline:none;">
+                                    <option value="true">Enabled</option>
+                                    <option value="false">Disabled</option>
+                                </select>
+                            </div>
+                            <div style="display: flex; flex-direction: column; gap: 4px; flex: 1;">
+                                <label style="font-weight:bold; font-size:12px; color:#475569;">Rank *:</label>
+                                <input type="number" id="modal-rank-input" min="0" value="1"
+                                    style="padding:8px 12px; border:1px solid #cbd5e1; border-radius:8px; font-weight:700; background:#f8fafc; outline:none;" />
+                            </div>
+                        </div>
+
+                        <!-- Provider-specific dynamic inputs container -->
+                        <div id="modal-fields-container"
+                            style="display: flex; flex-direction: column; gap: 16px; border-top: 1px dashed #e2e8f0; padding-top: 16px;">
+                            <!-- Dynamically loaded fields will go here -->
+                        </div>
+                    </div>
+
+                    <div
+                        style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 24px; border-top: 1px solid #e2e8f0; padding-top: 16px;">
+                        <button type="button" class="btn-action-primary" style="background: #64748b;"
+                            onclick="closeModal('edit-config-modal')">Cancel</button>
+                        <button type="button" class="btn-action-primary" style="background: #10b981;"
+                            onclick="applyModalChanges()">Done</button>
+                    </div>
+                </div>
+            </div>
+
+            <%- include('../partials/user_lookup') %>
+                <script src="/js/admin.js?v=2026-08-05_05"></script>
+                <script src="/js/user_lookup.js"></script>
+                <script>
+                    const SURVEY_PROVIDERS = ['cpxresearch', 'bitlabs', 'timewall', 'wannads', 'tapjoy', 'cpidroid', 'theoremreach'];
+
+                    function isSurveyProvider(providerName) {
+                        const clean = String(providerName || '').toLowerCase().replace(/[\s\-_]/g, '');
+                        return SURVEY_PROVIDERS.includes(clean);
+                    }
+
+                    const SURVEY_PROVIDERS_LIST = [
+                        { value: 'CPXResearch', label: 'CPX Research (App ID)' },
+                        { value: 'BitLabs', label: 'BitLabs (Token)' },
+                        { value: 'TimeWall', label: 'TimeWall (URL)' },
+                        { value: 'Wannads', label: 'Wannads (URL)' },
+                        { value: 'Tapjoy', label: 'Tapjoy (URL)' },
+                        { value: 'CPIDroid', label: 'CPIDroid (URL)' },
+                        { value: 'TheoremReach', label: 'TheoremReach (URL / App ID)' },
+                        { value: 'Custom', label: 'Custom WebView (Name + URL)' }
+                    ];
+
+                    let currentOffersSettings = {};
+
+                    async function loadSurveys() {
+                        const container = document.getElementById('survey-list-container');
+                        const selectedApp = document.getElementById('appSelect').value;
+                        if (!selectedApp) return;
+
+                        try {
+                            const res = await fetch(`/app-data-config?appName=${encodeURIComponent(selectedApp)}`);
+                            const json = await res.json();
+                            if (!json.success) throw new Error(json.message || 'Failed to fetch settings');
+
+                            currentOffersSettings = json.offersSettings || {};
+                            renderSurveys();
+                        } catch (err) {
+                            container.innerHTML = `<div style="color: #ef4444; padding: 20px; text-align: center; font-weight: bold;">Error: ${err.message}</div>`;
+                        }
+                    }
+
+                    function renderSurveys() {
+                        const container = document.getElementById('survey-list-container');
+
+                        const surveys = Object.entries(currentOffersSettings)
+                            .filter(([provider, _]) => isSurveyProvider(provider))
+                            .sort((a, b) => (Number(a[1].rank) || 0) - (Number(b[1].rank) || 0));
+
+                        if (surveys.length === 0) {
+                            container.innerHTML = `<div style="padding: 40px 20px; text-align: center; color: var(--muted); font-weight: 500;">No active surveys found. Click "+ Add Survey" to get started.</div>`;
+                            return;
+                        }
+
+                        container.innerHTML = surveys.map(([provider, config]) => {
+                            return getSurveyRowHtml(provider, config, false);
+                        }).join('');
+                    }
+
+                    let activeEditingRow = null;
+                    let isNewMode = false;
+
+                    function openEditModal(buttonEl) {
+                        const row = buttonEl.closest('.app-data-offer-row');
+                        if (!row) return;
+                        activeEditingRow = row;
+                        isNewMode = false;
+
+                        const provider = row.dataset.provider;
+                        document.getElementById('modal-provider-title').textContent = `Edit Config: ${provider}`;
+                        document.getElementById('modal-provider-select-wrap').style.display = 'none';
+
+                        const enabled = row.querySelector('.app-data-offer-enabled').value;
+                        const rank = row.querySelector('.app-data-offer-rank').value;
+
+                        document.getElementById('modal-status-select').value = enabled;
+                        document.getElementById('modal-rank-input').value = rank;
+
+                        const fieldsWrap = row.querySelector('.offer-extra-fields-wrap');
+                        const modalFieldsContainer = document.getElementById('modal-fields-container');
+
+                        // Read current values from row inputs to build config
+                        const currentConfig = {};
+                        const customNameInput = fieldsWrap.querySelector('.app-data-offer-provider-custom');
+                        const urlInput = fieldsWrap.querySelector('.app-data-offer-url');
+                        const iconUrlInput = fieldsWrap.querySelector('.app-data-offer-iconurl');
+                        const appIdInput = fieldsWrap.querySelector('.app-data-offer-appid');
+                        const secretKeyInput = fieldsWrap.querySelector('.app-data-offer-secretkey');
+                        const tokenInput = fieldsWrap.querySelector('.app-data-offer-token');
+                        const appKeyInput = fieldsWrap.querySelector('.app-data-offer-appkey');
+
+                        if (customNameInput) currentConfig.customName = customNameInput.value;
+                        if (urlInput) currentConfig.url = urlInput.value;
+                        if (iconUrlInput) currentConfig.iconUrl = iconUrlInput.value;
+                        if (appIdInput) currentConfig.appId = appIdInput.value;
+                        if (secretKeyInput) currentConfig.secretKey = secretKeyInput.value;
+                        if (tokenInput) currentConfig.token = tokenInput.value;
+                        if (appKeyInput) currentConfig.appKey = appKeyInput.value;
+
+                        // Render inputs inside modal
+                        modalFieldsContainer.innerHTML = window.getExtraFieldsHtml(provider, currentConfig);
+
+                        openModal('edit-config-modal');
+                    }
+
+                    function onModalProviderSelectChange(selectEl) {
+                        const provider = selectEl.value;
+                        const modalFieldsContainer = document.getElementById('modal-fields-container');
+                        modalFieldsContainer.innerHTML = window.getExtraFieldsHtml(provider, {});
+                    }
+
+                    function addNewSurveyRow() {
+                        isNewMode = true;
+                        activeEditingRow = null;
+
+                        document.getElementById('modal-provider-title').textContent = 'Add New Survey';
+                        document.getElementById('modal-provider-select-wrap').style.display = 'flex';
+
+                        const selectEl = document.getElementById('modal-provider-select');
+                        selectEl.innerHTML = SURVEY_PROVIDERS_LIST.map(p =>
+                            `<option value="${p.value}">${p.label}</option>`
+                        ).join('');
+
+                        selectEl.value = SURVEY_PROVIDERS_LIST[0].value;
+                        onModalProviderSelectChange(selectEl);
+
+                        const container = document.getElementById('survey-list-container');
+                        const currentRowsCount = container.querySelectorAll('.app-data-offer-row').length;
+                        document.getElementById('modal-status-select').value = 'true';
+                        document.getElementById('modal-rank-input').value = currentRowsCount + 1;
+
+                        openModal('edit-config-modal');
+                    }
+
+                    function applyModalChanges() {
+                        const modalFieldsContainer = document.getElementById('modal-fields-container');
+                        const enabled = document.getElementById('modal-status-select').value;
+                        const rank = document.getElementById('modal-rank-input').value;
+
+                        if (isNewMode) {
+                            // ADD NEW MODE
+                            const provider = document.getElementById('modal-provider-select').value;
+                            const container = document.getElementById('survey-list-container');
+                            const emptyDiv = container.querySelector('.app-data-empty') || container.querySelector('[style*="color: var(--muted)"]');
+                            if (emptyDiv) container.innerHTML = '';
+
+                            // Extract config fields from modal
+                            const config = {
+                                enabled: enabled === 'true',
+                                rank: Number(rank) || 1,
+                                category: 'survey'
+                            };
+
+                            const customNameInput = modalFieldsContainer.querySelector('.app-data-offer-provider-custom');
+                            const urlInput = modalFieldsContainer.querySelector('.app-data-offer-url');
+                            const iconUrlInput = modalFieldsContainer.querySelector('.app-data-offer-iconurl');
+                            const appIdInput = modalFieldsContainer.querySelector('.app-data-offer-appid');
+                            const secretKeyInput = modalFieldsContainer.querySelector('.app-data-offer-secretkey');
+                            const tokenInput = modalFieldsContainer.querySelector('.app-data-offer-token');
+                            const appKeyInput = modalFieldsContainer.querySelector('.app-data-offer-appkey');
+
+                            if (customNameInput) config.customName = customNameInput.value.trim();
+                            if (urlInput) config.url = urlInput.value.trim();
+                            if (iconUrlInput) config.iconUrl = iconUrlInput.value.trim();
+                            if (appIdInput) config.appId = appIdInput.value.trim();
+                            if (secretKeyInput) config.secretKey = secretKeyInput.value.trim();
+                            if (tokenInput) config.token = tokenInput.value.trim();
+                            if (appKeyInput) config.appKey = appKeyInput.value.trim();
+
+                            const resolvedProviderName = (provider === 'Custom' && config.customName) ? config.customName : provider;
+                            if (!resolvedProviderName) {
+                                alert('Custom provider key/name is required!');
+                                return;
+                            }
+
+                            // Append the row HTML card
+                            const rowHtml = getSurveyRowHtml(resolvedProviderName, config, true);
+                            const tempDiv = document.createElement('div');
+                            tempDiv.innerHTML = rowHtml.trim();
+                            const newRow = tempDiv.firstChild;
+
+                            // Sync status select and rank in row
+                            newRow.querySelector('.app-data-offer-enabled').value = enabled;
+                            newRow.querySelector('.app-data-offer-rank').value = rank;
+
+                            container.appendChild(newRow);
+                        } else {
+                            // EDIT MODE
+                            if (!activeEditingRow) return;
+
+                            const fieldsWrap = activeEditingRow.querySelector('.offer-extra-fields-wrap');
+
+                            // Sync status & rank from modal to row
+                            activeEditingRow.querySelector('.app-data-offer-enabled').value = enabled;
+                            activeEditingRow.querySelector('.app-data-offer-rank').value = rank;
+
+                            // Save values from modal back to row's hidden inputs
+                            const modalInputs = modalFieldsContainer.querySelectorAll('input, select, textarea');
+                            modalInputs.forEach(modalInput => {
+                                let targetClass = '';
+                                if (modalInput.classList.contains('app-data-offer-provider-custom')) targetClass = '.app-data-offer-provider-custom';
+                                else if (modalInput.classList.contains('app-data-offer-url')) targetClass = '.app-data-offer-url';
+                                else if (modalInput.classList.contains('app-data-offer-iconurl')) targetClass = '.app-data-offer-iconurl';
+                                else if (modalInput.classList.contains('app-data-offer-appid')) targetClass = '.app-data-offer-appid';
+                                else if (modalInput.classList.contains('app-data-offer-secretkey')) targetClass = '.app-data-offer-secretkey';
+                                else if (modalInput.classList.contains('app-data-offer-token')) targetClass = '.app-data-offer-token';
+                                else if (modalInput.classList.contains('app-data-offer-appkey')) targetClass = '.app-data-offer-appkey';
+
+                                if (targetClass) {
+                                    const rowInput = fieldsWrap.querySelector(targetClass);
+                                    if (rowInput) {
+                                        rowInput.value = modalInput.value;
+                                    }
+                                }
+                            });
+
+                            // Update row dataset and visual name if custom name changes
+                            const customNameInput = modalFieldsContainer.querySelector('.app-data-offer-provider-custom');
+                            if (customNameInput) {
+                                const newName = customNameInput.value.trim();
+                                if (newName) {
+                                    activeEditingRow.dataset.provider = newName;
+                                    const nameEl = activeEditingRow.querySelector('.app-data-offer-name');
+                                    if (nameEl) nameEl.textContent = newName;
+                                }
+                            }
+                        }
+
+                        closeModal('edit-config-modal');
+                        saveSurveys();
+                    }
+
+                    function getSurveyRowHtml(provider, config = {}, isNew = false) {
+                        const enabled = config.enabled !== false;
+                        const rank = Number(config.rank) || 0;
+                        const displayName = config.customName || provider;
+                        const iconImg = config.iconUrl ? `<img src="${escapeHtml(config.iconUrl)}" style="height:22px; width:22px; object-fit:contain; border-radius:4px; margin-right:8px;" onError="this.style.display='none'" />` : '';
+                        return `
+                <div class="app-data-offer-row" data-provider="${escapeHtml(provider)}">
+                    <div class="app-data-offer-header-row">
+                        <div class="app-data-offer-name" style="display:flex; align-items:center;">
+                            ${iconImg}
+                            <span>${escapeHtml(displayName)}</span>
+                        </div>
+                        <div style="display:flex; gap:8px; align-items:center;">
+                            <button type="button" onclick="openEditModal(this)" class="btn-action-primary" style="background: #2563eb; padding: 4px 10px; font-size: 11px; font-weight: 700; border-radius:6px; border:none; color:white; cursor:pointer;">Edit Config</button>
+                            <button type="button" onclick="if(confirm('Delete ${escapeHtml(provider)} provider?')) { this.closest('.app-data-offer-row')?.remove(); saveSurveys(); }" class="remove-btn">Remove</button>
+                        </div>
+                    </div>
+                    <div class="app-data-offer-controls">
+                        <select class="app-data-offer-enabled">
+                            <option value="true" ${enabled ? 'selected' : ''}>Enabled</option>
+                            <option value="false" ${!enabled ? 'selected' : ''}>Disabled</option>
+                        </select>
+                        <div class="rank-wrap">
+                            <span>Rank:</span>
+                            <input type="number" class="app-data-offer-rank" min="0" value="${rank}" />
+                        </div>
+                        <span class="badge ${isNew ? 'new' : 'active'}">${isNew ? 'New' : 'Active'}</span>
+                    </div>
+                    <!-- Hidden fields wrapper -->
+                    <div class="offer-extra-fields-wrap" style="display: none;">
+                        ${window.getExtraFieldsHtml(provider, config)}
+                    </div>
+                </div>
+            `;
+                    }
+
+                    async function saveSurveys() {
+                        const container = document.getElementById('survey-list-container');
+                        const selectedApp = document.getElementById('appSelect').value;
+                        if (!selectedApp) return;
+
+                        const updatedSurveys = {};
+                        const rows = container.querySelectorAll('.app-data-offer-row');
+
+                        for (const row of rows) {
+                            let providerName = row.dataset.provider;
+                            const enabled = row.querySelector('.app-data-offer-enabled').value === 'true';
+                            const rank = Number(row.querySelector('.app-data-offer-rank').value) || 0;
+
+                            const config = { enabled, rank, category: 'survey' };
+
+                            // Get fields based on provider type
+                            const cleanName = providerName.toLowerCase().replace(/[\s\-_]/g, '');
+
+                            const customNameInput = row.querySelector('.app-data-offer-provider-custom');
+                            if (customNameInput) {
+                                const urlInput = row.querySelector('.app-data-offer-url');
+                                const iconUrlInput = row.querySelector('.app-data-offer-iconurl');
+                                const customName = String(customNameInput.value || '').trim();
+                                const url = String(urlInput?.value || '').trim();
+                                const iconUrl = String(iconUrlInput?.value || '').trim();
+                                if (!customName || !url) {
+                                    alert('Custom provider name and URL are required!');
+                                    customNameInput.focus();
+                                    return;
+                                }
+                                providerName = customName; // Use custom name as the key
+                                config.url = url;
+                                config.customName = customName;
+                                config.iconUrl = iconUrl;
+                            } else if (cleanName === 'cpxresearch') {
+                                const appId = String(row.querySelector('.app-data-offer-appid')?.value || '').trim();
+                                if (!appId) {
+                                    alert('CPX Research App ID is required!');
+                                    return;
+                                }
+                                config.appId = appId;
+                            } else if (cleanName === 'bitlabs') {
+                                const token = String(row.querySelector('.app-data-offer-token')?.value || '').trim();
+                                if (enabled && !token) {
+                                    alert('BitLabs Token is required!');
+                                    return;
+                                }
+                                config.token = token;
+                            } else {
+                                const urlInput = row.querySelector('.app-data-offer-url');
+                                if (urlInput) {
+                                    const url = String(urlInput.value || '').trim();
+                                    if (enabled && !url) {
+                                        alert(`${providerName} WebView/Offerwall URL is required!`);
+                                        return;
+                                    }
+                                    config.url = url;
+                                }
+                            }
+
+                            updatedSurveys[providerName] = config;
+                        }
+
+                        showAlert('Saving survey configuration...', 'loading');
+
+                        try {
+                            const res = await fetch('/app-data-config/offers-settings', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ selectedApp, category: 'survey', offersSettings: updatedSurveys })
+                            });
+                            const json = await res.json();
+                            if (!res.ok || !json.success) throw new Error(json.message || 'Failed to save surveys');
+
+                            showAlert('Survey settings updated successfully!', 'success');
+                            setTimeout(loadSurveys, 1000);
+                        } catch (err) {
+                            showAlert(err.message || 'Failed to update settings', 'error');
+                        }
+                    }
+
+                    function showAlert(msg, type) {
+                        const alertEl = document.getElementById('status-alert');
+                        alertEl.style.display = 'block';
+                        alertEl.innerText = msg;
+                        if (type === 'loading') {
+                            alertEl.style.background = '#fef3c7';
+                            alertEl.style.color = '#b45309';
+                            alertEl.style.border = '1px solid #fde68a';
+                        } else if (type === 'success') {
+                            alertEl.style.background = '#dcfce7';
+                            alertEl.style.color = '#15803d';
+                            alertEl.style.border = '1px solid #bbf7d0';
+                        } else {
+                            alertEl.style.background = '#fee2e2';
+                            alertEl.style.color = '#b91c1c';
+                            alertEl.style.border = '1px solid #fecaca';
+                        }
+                    }
+
+                    function escapeHtml(str) {
+                        return String(str || '')
+                            .replace(/&/g, '&amp;')
+                            .replace(/</g, '&lt;')
+                            .replace(/>/g, '&gt;')
+                            .replace(/"/g, '&quot;')
+                            .replace(/'/g, '&#039;');
+                    }
+
+                    function onAppChanged() {
+                        const selectedApp = document.getElementById('appSelect').value;
+                        window.location.href = `/manage-survey?appName=${encodeURIComponent(selectedApp)}`;
+                    }
+
+                    window.addEventListener('DOMContentLoaded', loadSurveys);
+                </script>
+</body>
+
+</html>

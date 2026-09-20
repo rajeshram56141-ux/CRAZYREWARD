@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "534146066275",
+    "project_id": "crazy-reward-7a1cc",
+    "storage_bucket": "crazy-reward-7a1cc.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:534146066275:android:9797178e284494e33f1556",
+        "android_client_info": {
+          "package_name": "com.crazyreward.games"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "534146066275-9nejprsbpnufjn3qge2popsed384dfpt.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.crazyreward.games",
+            "certificate_hash": "daa8e849a5cec007448496a2bc394d4957233d3d"
+          }
+        },
+        {
+          "client_id": "534146066275-n31158vffmt4q5akcta9sid6a8hgcvps.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyADAPb54aed9YtoypZliLBWDTf5lm6c1os"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "534146066275-n31158vffmt4q5akcta9sid6a8hgcvps.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage App Settings - Admin</title>
+    <link rel="stylesheet" href="/css/admin.css">
+    <link rel="icon" href="/images/favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #f8fafc;
+            --surface: #ffffff;
+            --border: #e2e8f0;
+            --primary: #052e1f;
+            --primary-hover: #042418;
+            --text: #0f172a;
+            --muted: #64748b;
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--text);
+        }
+
+        .glass-card {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
+            border: 1px solid var(--border);
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            background: rgba(5, 46, 31, 0.08);
+            color: #052e1f;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .stat-val {
+            font-size: 22px;
+            font-weight: 800;
+            color: #0f172a;
+        }
+
+        .stat-lbl {
+            font-size: 12px;
+            color: var(--muted);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        .btn-action-primary {
+            background: #052e1f;
+            color: #ffffff;
+            border: none;
+            border-radius: 12px;
+            padding: 10px 18px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-action-primary:hover {
+            background: #042418;
+        }
+
+        #app-data-editor-container {
+            margin-top: 16px;
+        }
+    </style>
+</head>
+
+<body class="dashboard-body">
+    <div class="dashboard-shell">
+        <%- include('../partials/sidebar', { activePage: 'app-settings' }) %>
+
+        <div class="dashboard-main">
+            <header class="navbar dashboard-navbar">
+                <div class="nav-left" style="display: flex; align-items: center; gap: 12px; white-space: nowrap;">
+                    <button type="button" class="sidebar-toggle-btn" onclick="toggleSidebar()">☰</button>
+                    <h2 style="margin: 0; font-size: 18px; font-weight: 800; white-space: nowrap;">Manage App Settings</h2>
+
+                    <select id="appSelect" onchange="onAppChanged()" style="margin-left: 8px; padding: 6px 12px; border-radius: 10px; border: 1px solid #cbd5e1; font-weight: 700; background: #f8fafc; font-size: 13px; cursor: pointer;">
+                        <% (typeof firebaseServices !== 'undefined' && firebaseServices ? firebaseServices : []).forEach(service => { %>
+                            <option value="<%= service.appName %>" <%= typeof activeAppName !== 'undefined' && service.appName === activeAppName ? 'selected' : '' %>>
+                                <%= service.displayName %>
+                            </option>
+                        <% }) %>
+                    </select>
+                </div>
+
+                <div class="nav-right" onclick="toggleDropdown()">
+                    <div class="avatar"><%- typeof photo !== 'undefined' && photo ? photo : 'A' %></div>
+                    <div class="dropdown" id="dropdown">
+                        <a href="/logout">Logout</a>
+                    </div>
+                </div>
+            </header>
+
+            <main class="container dashboard-home">
+                <!-- STATS CARDS -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fa-solid fa-gear"></i></div>
+                        <div>
+                            <div class="stat-val">6</div>
+                            <div class="stat-lbl">Config Modules</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: rgba(59, 130, 246, 0.1); color: #3b82f6;"><i class="fa-solid fa-plug"></i></div>
+                        <div>
+                            <div class="stat-val">15+</div>
+                            <div class="stat-lbl">Offerwall Providers</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: rgba(22, 163, 74, 0.1); color: #16a34a;"><i class="fa-solid fa-lock"></i></div>
+                        <div>
+                            <div class="stat-val">Active</div>
+                            <div class="stat-lbl">Realtime Sync</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- MAIN GLASS CARD -->
+                <section class="glass-card">
+                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; margin-bottom: 20px;">
+                        <div>
+                            <h2 style="margin: 0 0 4px 0; font-size: 20px; font-weight: 800; color: #052e1f;">App Settings & Configuration</h2>
+                            <p style="color: var(--muted); font-size: 13px; margin: 0;">Configure app parameters, offerwall integrations, referral rules, and home banners</p>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+                            <button type="button" onclick="openClearCoinsModal()" style="background: #dc2626; color: #ffffff; border: none; border-radius: 12px; padding: 10px 18px; font-size: 13px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 12px rgba(220, 38, 38, 0.2); transition: all 0.2s ease;">
+                                <i class="fa-solid fa-coins"></i> Clear User Coins
+                            </button>
+                            <button type="button" class="btn-action-primary" onclick="loadAppSettings()"><i class="fa-solid fa-rotate-right" style="margin-right: 6px;"></i> Refresh Settings</button>
+                        </div>
+                    </div>
+
+                    <!-- CONTAINER WHERE APP DATA EDITOR RENDERS -->
+                    <div id="app-data-editor-container">
+                        <div class="app-data-placeholder loading">Loading app settings...</div>
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <!-- CLEAR USER COINS MODAL -->
+    <div id="clearCoinsModal" style="display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.65); backdrop-filter: blur(4px); z-index: 9999; align-items: center; justify-content: center; padding: 20px;">
+        <div style="background: #ffffff; width: 100%; max-width: 560px; border-radius: 20px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); overflow: hidden; border: 1px solid #fee2e2;">
+            
+            <!-- Header -->
+            <div style="background: #fef2f2; padding: 18px 24px; border-bottom: 1px solid #fee2e2; display: flex; justify-content: space-between; align-items: center;">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <div style="width: 40px; height: 40px; border-radius: 12px; background: #fee2e2; color: #dc2626; display: flex; align-items: center; justify-content: center; font-size: 20px;">
+                        <i class="fa-solid fa-coins"></i>
+                    </div>
+                    <div>
+                        <h3 style="margin: 0; font-size: 16px; font-weight: 800; color: #991b1b;">Clear User Coins (0 Coins)</h3>
+                        <p style="margin: 0; font-size: 12px; color: #b91c1c;">Reset user coins balance to zero</p>
+                    </div>
+                </div>
+                <button type="button" onclick="closeClearCoinsModal()" style="background: none; border: none; font-size: 24px; color: #991b1b; cursor: pointer; padding: 0 6px; line-height: 1;">&times;</button>
+            </div>
+
+            <!-- Body -->
+            <div style="padding: 24px;">
+                <!-- TAB BAR -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; margin-bottom: 16px; background: #f1f5f9; padding: 4px; border-radius: 12px;">
+                    <button type="button" id="tabInclude" onclick="switchClearMode('include')" style="border: none; border-radius: 9px; padding: 9px 10px; font-size: 12.5px; font-weight: 700; cursor: pointer; transition: all 0.2s; background: #ffffff; color: #dc2626; box-shadow: 0 2px 6px rgba(0,0,0,0.06); display: flex; align-items: center; justify-content: center; gap: 6px;">
+                        <i class="fa-solid fa-user-check"></i> Include
+                    </button>
+                    <button type="button" id="tabExclude" onclick="switchClearMode('exclude')" style="border: none; border-radius: 9px; padding: 9px 10px; font-size: 12.5px; font-weight: 700; cursor: pointer; transition: all 0.2s; background: transparent; color: #64748b; display: flex; align-items: center; justify-content: center; gap: 6px;">
+                        <i class="fa-solid fa-user-shield"></i> Exclude
+                    </button>
+                    <button type="button" id="tabAll" onclick="switchClearMode('all')" style="border: none; border-radius: 9px; padding: 9px 10px; font-size: 12.5px; font-weight: 700; cursor: pointer; transition: all 0.2s; background: transparent; color: #64748b; display: flex; align-items: center; justify-content: center; gap: 6px;">
+                        <i class="fa-solid fa-users"></i> All Users
+                    </button>
+                </div>
+
+                <!-- Mode Info Description Callout -->
+                <div id="modeDescriptionBox" style="background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 10px; padding: 12px; margin-bottom: 16px; font-size: 12.5px; color: #1e40af; line-height: 1.5;">
+                    <!-- Dynamically populated by JS -->
+                </div>
+
+                <!-- Specific input container (for Include & Exclude) -->
+                <div id="specificInputContainer" style="margin-bottom: 16px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                        <label id="inputLabelText" style="font-size: 12px; font-weight: 700; color: #334155;">Enter User Emails / IDs (separated by comma , or new lines):</label>
+                        <span id="targetCountBadge" style="font-size: 11px; font-weight: 700; color: #64748b; background: #f1f5f9; padding: 2px 8px; border-radius: 6px;">0 entered</span>
+                    </div>
+                    <textarea id="clearCoinsIdentifiers" rows="4" placeholder="e.g. user1@gmail.com, user2@gmail.com, DP_123456" 
+                        style="width: 100%; border: 1.5px solid #cbd5e1; border-radius: 10px; padding: 10px 12px; font-size: 13px; font-family: monospace; outline: none; resize: vertical; box-sizing: border-box;"
+                        oninput="updateTargetCount()"></textarea>
+                </div>
+
+                <!-- Warning Callout -->
+                <div style="background: #fffbeb; border: 1px solid #fde68a; border-radius: 10px; padding: 12px; margin-bottom: 16px; display: flex; gap: 10px; align-items: flex-start;">
+                    <i class="fa-solid fa-circle-exclamation" style="color: #d97706; margin-top: 2px;"></i>
+                    <div style="font-size: 12px; color: #92400e; line-height: 1.5;">
+                        <strong>Irreversible Action:</strong> Coins balance will be immediately set to <strong>0</strong>. Previous coins cannot be recovered.
+                    </div>
+                </div>
+
+                <!-- Confirmation Checkbox -->
+                <label style="display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 600; color: #334155; cursor: pointer; user-select: none;">
+                    <input type="checkbox" id="confirmClearCheckbox" onchange="toggleConfirmClearBtn()" style="accent-color: #dc2626; width: 17px; height: 17px;">
+                    <span>I confirm that I want to clear coins to 0.</span>
+                </label>
+            </div>
+
+            <!-- Footer -->
+            <div style="background: #f8fafc; padding: 14px 24px; border-top: 1px solid #e2e8f0; display: flex; justify-content: flex-end; gap: 10px;">
+                <button type="button" onclick="closeClearCoinsModal()" style="background: #e2e8f0; color: #334155; border: none; border-radius: 10px; padding: 10px 18px; font-size: 13px; font-weight: 700; cursor: pointer;">
+                    Cancel
+                </button>
+                <button type="button" id="btnConfirmClearCoins" onclick="executeClearCoins()" disabled style="background: #dc2626; color: #ffffff; border: none; border-radius: 10px; padding: 10px 20px; font-size: 13px; font-weight: 700; cursor: not-allowed; opacity: 0.5; display: flex; align-items: center; gap: 6px; transition: all 0.2s;">
+                    <span id="clearCoinsBtnText">Confirm & Clear Coins (0)</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <%- include('../partials/user_lookup') %>
+    <script src="/js/admin.js?v=<%= Date.now() %>"></script>
+    <script src="/js/user_lookup.js"></script>
+    <script>
+        let currentClearMode = 'include'; // 'include', 'exclude', 'all'
+
+        function loadAppSettings() {
+            refreshAppDataManager();
+        }
+
+        function onAppChanged() {
+            const selectedApp = document.getElementById('appSelect').value;
+            window.location.href = `/manage-app-settings?appName=${encodeURIComponent(selectedApp)}`;
+        }
+
+        function openClearCoinsModal() {
+            const modal = document.getElementById('clearCoinsModal');
+            if (modal) {
+                modal.style.display = 'flex';
+                document.getElementById('confirmClearCheckbox').checked = false;
+                document.getElementById('clearCoinsIdentifiers').value = '';
+                switchClearMode('include');
+                updateTargetCount();
+            }
+        }
+
+        function closeClearCoinsModal() {
+            const modal = document.getElementById('clearCoinsModal');
+            if (modal) modal.style.display = 'none';
+        }
+
+        function switchClearMode(mode) {
+            currentClearMode = mode;
+            const tabInclude = document.getElementById('tabInclude');
+            const tabExclude = document.getElementById('tabExclude');
+            const tabAll = document.getElementById('tabAll');
+            const descBox = document.getElementById('modeDescriptionBox');
+            const specificContainer = document.getElementById('specificInputContainer');
+            const inputLabelText = document.getElementById('inputLabelText');
+            const textarea = document.getElementById('clearCoinsIdentifiers');
+
+            // Reset tab styles
+            [tabInclude, tabExclude, tabAll].forEach(tab => {
+                if (tab) {
+                    tab.style.background = 'transparent';
+                    tab.style.color = '#64748b';
+                    tab.style.boxShadow = 'none';
+                }
+            });
+
+            if (mode === 'include') {
+                if (tabInclude) {
+                    tabInclude.style.background = '#ffffff';
+                    tabInclude.style.color = '#dc2626';
+                    tabInclude.style.boxShadow = '0 2px 6px rgba(0,0,0,0.06)';
+                }
+                if (descBox) {
+                    descBox.style.background = '#eff6ff';
+                    descBox.style.borderColor = '#bfdbfe';
+                    descBox.style.color = '#1e40af';
+                    descBox.innerHTML = '<i class="fa-solid fa-bullseye" style="margin-right: 6px;"></i> <strong>Include Mode:</strong> Coins will be reset to <strong>0</strong> ONLY for the users entered below. All other users remain untouched.';
+                }
+                if (specificContainer) specificContainer.style.display = 'block';
+                if (inputLabelText) inputLabelText.textContent = 'Enter User Emails / IDs to CLEAR (comma or new-line separated):';
+                if (textarea) textarea.placeholder = 'e.g. user1@gmail.com, user2@gmail.com, DP_123456...';
+            } else if (mode === 'exclude') {
+                if (tabExclude) {
+                    tabExclude.style.background = '#ffffff';
+                    tabExclude.style.color = '#0284c7';
+                    tabExclude.style.boxShadow = '0 2px 6px rgba(0,0,0,0.06)';
+                }
+                if (descBox) {
+                    descBox.style.background = '#f0fdf4';
+                    descBox.style.borderColor = '#bbf7d0';
+                    descBox.style.color = '#15803d';
+                    descBox.innerHTML = '<i class="fa-solid fa-shield-halved" style="margin-right: 6px;"></i> <strong>Exclude (Protected) Mode:</strong> Entered users will remain <strong>SAFE</strong>. Coins of <strong>ALL other users</strong> in the database will be reset to <strong>0</strong>.';
+                }
+                if (specificContainer) specificContainer.style.display = 'block';
+                if (inputLabelText) inputLabelText.textContent = 'Enter Protected Emails / IDs to KEEP SAFE (comma or new-line separated):';
+                if (textarea) textarea.placeholder = 'e.g. vipuser@gmail.com, admin@gmail.com, DP_999999...';
+            } else if (mode === 'all') {
+                if (tabAll) {
+                    tabAll.style.background = '#ffffff';
+                    tabAll.style.color = '#dc2626';
+                    tabAll.style.boxShadow = '0 2px 6px rgba(0,0,0,0.06)';
+                }
+                if (descBox) {
+                    descBox.style.background = '#fef2f2';
+                    descBox.style.borderColor = '#fecaca';
+                    descBox.style.color = '#991b1b';
+                    descBox.innerHTML = '<i class="fa-solid fa-triangle-exclamation" style="margin-right: 6px;"></i> <strong>All Users Mode:</strong> Coins will be reset to <strong>0</strong> for <strong>EVERY single user</strong> in the entire database.';
+                }
+                if (specificContainer) specificContainer.style.display = 'none';
+            }
+
+            toggleConfirmClearBtn();
+        }
+
+        function updateTargetCount() {
+            const text = document.getElementById('clearCoinsIdentifiers')?.value || '';
+            const list = text.split(/[\n,;]+/).map(s => s.trim()).filter(Boolean);
+            const badge = document.getElementById('targetCountBadge');
+            if (badge) badge.textContent = `${list.length} entered`;
+            toggleConfirmClearBtn();
+        }
+
+        function toggleConfirmClearBtn() {
+            const isChecked = document.getElementById('confirmClearCheckbox')?.checked;
+            const btn = document.getElementById('btnConfirmClearCoins');
+            
+            let isValid = isChecked;
+            if (currentClearMode === 'include' || currentClearMode === 'exclude') {
+                const text = document.getElementById('clearCoinsIdentifiers')?.value || '';
+                const list = text.split(/[\n,;]+/).map(s => s.trim()).filter(Boolean);
+                if (list.length === 0) isValid = false;
+            }
+            
+            if (btn) {
+                btn.disabled = !isValid;
+                btn.style.opacity = isValid ? '1' : '0.5';
+                btn.style.cursor = isValid ? 'pointer' : 'not-allowed';
+            }
+        }
+
+        async function executeClearCoins() {
+            const identifiers = document.getElementById('clearCoinsIdentifiers')?.value || '';
+            const btn = document.getElementById('btnConfirmClearCoins');
+            const btnText = document.getElementById('clearCoinsBtnText');
+
+            if (currentClearMode === 'all') {
+                if (!confirm('⚠️ FINAL CONFIRMATION: Are you sure you want to reset coins to 0 for ALL users? This action cannot be undone!')) {
+                    return;
+                }
+            } else if (currentClearMode === 'exclude') {
+                if (!confirm('⚠️ CONFIRMATION: You are about to clear coins for ALL users EXCEPT the entered protected list. Proceed?')) {
+                    return;
+                }
+            }
+
+            try {
+                if (btn) btn.disabled = true;
+                if (btnText) btnText.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Clearing Coins...';
+
+                const res = await fetch('/api/admin/clear-user-coins', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        mode: currentClearMode,
+                        identifiers: identifiers
+                    })
+                });
+
+                const data = await res.json();
+                if (!res.ok || !data.success) {
+                    throw new Error(data.message || 'Failed to clear coins');
+                }
+
+                alert('✅ ' + data.message);
+                closeClearCoinsModal();
+            } catch (err) {
+                console.error('Error clearing coins:', err);
+                alert('❌ ' + err.message);
+            } finally {
+                if (btn) btn.disabled = false;
+                if (btnText) btnText.textContent = 'Confirm & Clear Coins (0)';
+                toggleConfirmClearBtn();
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            loadAppSettings();
+        });
+    </script>
+</body>
+
+</html>

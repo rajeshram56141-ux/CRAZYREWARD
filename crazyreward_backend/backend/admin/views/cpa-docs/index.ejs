@@ -1,0 +1,2429 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Postback & Tracking Documentation - Crazyreward Admin</title>
+    <link rel="stylesheet" href="/css/admin.css">
+    <link rel="icon" href="/images/favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+            box-sizing: border-box;
+        }
+
+        body.dashboard-body {
+            background-color: #f8fafc;
+            color: #0f172a;
+            margin: 0;
+        }
+
+        .cpa-docs-container {
+            padding: 24px 32px 60px 32px;
+            max-width: 1440px;
+            margin: 0 auto;
+        }
+
+        .page-header {
+            margin-bottom: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .page-header h1 {
+            font-size: 24px;
+            font-weight: 800;
+            color: #0f172a;
+            margin: 0;
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .page-header p {
+            color: #64748b;
+            margin: 6px 0 0 0;
+            font-size: 13.5px;
+        }
+
+        .badge-s2s {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 12px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: #ffffff;
+            letter-spacing: 0.5px;
+            box-shadow: 0 2px 8px rgba(16, 185, 129, 0.25);
+        }
+
+        /* TABS NAVIGATION */
+        .tabs-header-nav {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 6px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+            overflow-x: auto;
+            scrollbar-width: thin;
+        }
+
+        .doc-tab-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 18px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 700;
+            color: #64748b;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .doc-tab-btn:hover {
+            color: #0f172a;
+            background: #f1f5f9;
+        }
+
+        .doc-tab-btn.active {
+            color: #ffffff;
+            background: #052e1f;
+            box-shadow: 0 4px 12px rgba(5, 46, 31, 0.2);
+        }
+
+        .doc-tab-btn .tab-count {
+            padding: 2px 8px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 800;
+            background: rgba(0, 0, 0, 0.08);
+        }
+
+        .doc-tab-btn.active .tab-count {
+            background: rgba(255, 255, 255, 0.25);
+            color: #ffffff;
+        }
+
+        /* DOMAIN CONFIG BAR */
+        .domain-bar-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 14px;
+            padding: 12px 18px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+        }
+
+        .domain-bar-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 13px;
+            color: #334155;
+        }
+
+        .domain-badge {
+            background: #ecfdf5;
+            color: #059669;
+            border: 1px solid #a7f3d0;
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+        }
+
+        .domain-input-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .domain-input {
+            padding: 6px 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 12px;
+            font-family: 'JetBrains Mono', monospace;
+            width: 260px;
+            outline: none;
+            background: #f8fafc;
+        }
+
+        .domain-input:focus {
+            border-color: #10b981;
+            background: #ffffff;
+        }
+
+        /* TAB PANES */
+        .tab-pane {
+            display: none;
+        }
+
+        .tab-pane.active {
+            display: block;
+            animation: fadeIn 0.25s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* CARDS & GRIDS */
+        .grid-2col {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(440px, 1fr));
+            gap: 24px;
+            margin-bottom: 28px;
+        }
+
+        .grid-partner-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(460px, 1fr));
+            gap: 22px;
+            margin-bottom: 28px;
+        }
+
+        .doc-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.2s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .doc-card:hover {
+            border-color: #cbd5e1;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05);
+        }
+
+        .card-header-flex {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 14px;
+            gap: 12px;
+        }
+
+        .card-title {
+            margin: 0;
+            font-size: 16px;
+            font-weight: 800;
+            color: #0f172a;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            letter-spacing: -0.3px;
+        }
+
+        .card-title-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .card-title-icon svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        .icon-blue { background: #eff6ff; color: #2563eb; }
+        .icon-green { background: #ecfdf5; color: #059669; }
+        .icon-purple { background: #f5f3ff; color: #7c3aed; }
+        .icon-orange { background: #fff7ed; color: #ea580c; }
+        .icon-cyan { background: #ecfeff; color: #0891b2; }
+        .icon-emerald { background: #f0fdf4; color: #16a34a; }
+        .icon-amber { background: #fffbeb; color: #d97706; }
+        .icon-rose { background: #fff1f2; color: #e11d48; }
+
+        .method-badge {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10.5px;
+            font-weight: 800;
+            padding: 3px 8px;
+            border-radius: 6px;
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 999px;
+        }
+
+        .status-pill.enabled {
+            background: #ecfdf5;
+            color: #059669;
+            border: 1px solid #a7f3d0;
+        }
+
+        .status-pill.disabled {
+            background: #f1f5f9;
+            color: #64748b;
+            border: 1px solid #e2e8f0;
+        }
+
+        .code-box {
+            background: #0f172a;
+            border-radius: 14px;
+            padding: 14px 16px;
+            position: relative;
+            margin: 12px 0;
+            border: 1px solid #1e293b;
+        }
+
+        .code-box pre {
+            margin: 0;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            color: #e2e8f0;
+            white-space: pre-wrap;
+            word-break: break-all;
+            line-height: 1.6;
+            padding-right: 70px;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #e2e8f0;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 5px 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.15s ease;
+        }
+
+        .copy-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+        }
+
+        .copy-btn svg {
+            width: 13px;
+            height: 13px;
+        }
+
+        .param-hl { color: #38bdf8; font-weight: 700; }
+        .param-val { color: #f472b6; font-weight: 700; }
+        .param-static { color: #34d399; font-weight: 700; }
+
+        .param-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+            margin-top: 10px;
+        }
+
+        .param-table th {
+            text-align: left;
+            padding: 8px 10px;
+            background: #f8fafc;
+            color: #475569;
+            font-weight: 700;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .param-table td {
+            padding: 8px 10px;
+            border-bottom: 1px solid #f1f5f9;
+            color: #334155;
+            vertical-align: middle;
+        }
+
+        .param-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .param-name {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+            color: #0f172a;
+            background: #f1f5f9;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 11.5px;
+        }
+
+        .req-pill {
+            font-size: 10px;
+            font-weight: 800;
+            padding: 2px 6px;
+            border-radius: 4px;
+            display: inline-block;
+            letter-spacing: 0.3px;
+        }
+
+        .req-mandatory { background: #fee2e2; color: #b91c1c; }
+        .req-optional { background: #f1f5f9; color: #64748b; }
+
+        .flow-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 8px;
+        }
+
+        .flow-step-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 12px 14px;
+        }
+
+        .flow-num {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #052e1f;
+            color: #ffffff;
+            font-size: 11px;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .flow-content h4 {
+            margin: 0 0 4px 0;
+            font-size: 13px;
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        .flow-content p {
+            margin: 0;
+            font-size: 12px;
+            color: #64748b;
+            line-height: 1.4;
+        }
+
+        .flow-content code {
+            font-family: 'JetBrains Mono', monospace;
+            background: #e2e8f0;
+            color: #0f172a;
+            padding: 1px 4px;
+            border-radius: 4px;
+            font-size: 11px;
+        }
+
+        /* ACTIVE TASKS TABLE */
+        .tasks-table-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+            margin-top: 28px;
+        }
+
+        .tasks-data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            margin-top: 14px;
+        }
+
+        .tasks-data-table th {
+            text-align: left;
+            padding: 10px 14px;
+            background: #f8fafc;
+            color: #475569;
+            font-weight: 700;
+            border-bottom: 2px solid #e2e8f0;
+            font-size: 11.5px;
+            text-transform: uppercase;
+        }
+
+        .tasks-data-table td {
+            padding: 12px 14px;
+            border-bottom: 1px solid #f1f5f9;
+            vertical-align: middle;
+        }
+
+        .tasks-data-table tr:hover {
+            background-color: #fafafa;
+        }
+
+        .btn-copy-sm {
+            padding: 6px 12px;
+            border-radius: 8px;
+            background: #f1f5f9;
+            border: 1px solid #cbd5e1;
+            color: #0f172a;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.15s ease;
+            text-decoration: none;
+        }
+
+        .btn-copy-sm:hover {
+            background: #e2e8f0;
+        }
+
+        /* LIVE TESTER FORM */
+        .tester-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 14px;
+            margin-top: 12px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-group label {
+            font-size: 11.5px;
+            font-weight: 700;
+            color: #475569;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .form-control {
+            padding: 9px 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 10px;
+            font-size: 13px;
+            outline: none;
+            background: #ffffff;
+            color: #0f172a;
+            transition: border-color 0.2s;
+        }
+
+        .form-control:focus {
+            border-color: #10b981;
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+        }
+
+        .btn-test {
+            background: linear-gradient(135deg, #052e1f, #064e3b);
+            color: #ffffff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 800;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(5, 46, 31, 0.15);
+        }
+
+        .btn-test:hover {
+            opacity: 0.95;
+            transform: translateY(-1px);
+        }
+
+        .test-result-box {
+            margin-top: 14px;
+            border-radius: 12px;
+            padding: 14px 16px;
+            font-size: 13px;
+            display: none;
+            line-height: 1.5;
+        }
+
+        .test-result-success {
+            background: #ecfdf5;
+            border: 1px solid #a7f3d0;
+            color: #065f46;
+        }
+
+        .test-result-error {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #991b1b;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: #0f172a;
+            color: #ffffff;
+            padding: 12px 20px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 700;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            display: none;
+            align-items: center;
+            gap: 8px;
+            z-index: 9999;
+        }
+
+        .card-footer-action {
+            margin-top: auto;
+            padding-top: 14px;
+            border-top: 1px dashed #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .key-val-display {
+            font-size: 11.5px;
+            color: #64748b;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .key-val-display code {
+            font-family: 'JetBrains Mono', monospace;
+            background: #f1f5f9;
+            padding: 2px 6px;
+            border-radius: 6px;
+            color: #0f172a;
+            font-size: 11px;
+            max-width: 160px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+    </style>
+</head>
+
+<body class="dashboard-body">
+    <div class="dashboard-shell">
+        <%- include('../partials/sidebar', { activePage: 'cpa-docs' }) %>
+
+        <div class="dashboard-main">
+            <!-- NAVBAR -->
+            <header class="navbar dashboard-navbar">
+                <div class="nav-left" style="display: flex; align-items: center; gap: 12px; white-space: nowrap;">
+                    <button type="button" class="sidebar-toggle-btn" onclick="toggleSidebar()">☰</button>
+                    <h2 style="margin: 0; font-size: 18px; font-weight: 800; white-space: nowrap;">
+                        Postback & Tracking Documentation
+                    </h2>
+                </div>
+
+                <div class="nav-right" onclick="toggleDropdown()">
+                    <div class="avatar"><%= admin.name ? admin.name.split(' ').map(part => part[0]).join('').toUpperCase() : (admin.username ? admin.username.charAt(0).toUpperCase() : 'A') %></div>
+                    <div class="dropdown" id="dropdown">
+                        <a href="/logout">Logout</a>
+                    </div>
+                </div>
+            </header>
+
+            <main class="cpa-docs-container">
+                <!-- PAGE HEADER -->
+                <div class="page-header">
+                    <div>
+                        <h1>
+                            <span>Postback & Tracking Documentation</span>
+                            <span class="badge-s2s">
+                                <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                                LIVE S2S DOCS
+                            </span>
+                        </h1>
+                        <p>Complete integration specification for Direct CPA Tasks, Offerwall Partners, Survey Networks, and Webhook Callbacks.</p>
+                    </div>
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                        <a href="/manage-daily-task" class="btn-copy-sm">
+                            <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+                            Daily Tasks
+                        </a>
+                        <a href="/app-settings/offerwall" class="btn-copy-sm">
+                            <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
+                            Offerwalls Config
+                        </a>
+                        <a href="/app-settings/survey" class="btn-copy-sm">
+                            <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
+                            Surveys Config
+                        </a>
+                    </div>
+                </div>
+
+                <!-- DOMAIN SELECTOR BAR -->
+                <div class="domain-bar-card">
+                    <div class="domain-bar-left">
+                        <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="#059669"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/></svg>
+                        <span>Active Server Domain:</span>
+                        <span class="domain-badge" id="activeDomainBadge"><%= baseUrl || 'https://crazyreward.zodplaygames.com' %></span>
+                    </div>
+                    <div class="domain-input-group">
+                        <label style="font-size: 12px; font-weight: 700; color: #64748b;">Target Domain:</label>
+                        <input type="text" id="customDomainInput" class="domain-input" value="<%= baseUrl || 'https://crazyreward.zodplaygames.com' %>" placeholder="e.g. https://crazyreward.zodplaygames.com" />
+                        <button type="button" class="btn-copy-sm" onclick="applyCustomDomain()" style="background: #052e1f; color: #ffffff; border-color: #052e1f;">Apply</button>
+                    </div>
+                </div>
+
+                <!-- MAIN TABS HEADER -->
+                <div class="tabs-header-nav">
+                    <button type="button" class="doc-tab-btn active" onclick="switchDocTab('direct-cpa')">
+                        <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                        Direct CPA Tasks
+                        <span class="tab-count"><%= (dailyTasks || []).length %></span>
+                    </button>
+                    <button type="button" class="doc-tab-btn" onclick="switchDocTab('offerwalls')">
+                        <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+                        Offerwall Partners
+                        <span class="tab-count" id="offerwallCount">10</span>
+                    </button>
+                    <button type="button" class="doc-tab-btn" onclick="switchDocTab('surveys')">
+                        <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+                        Survey Partners
+                        <span class="tab-count" id="surveyCount">7</span>
+                    </button>
+                    <button type="button" class="doc-tab-btn" onclick="switchDocTab('tester')">
+                        <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        Live Postback Simulator
+                        <span class="tab-count" style="background: #10b981; color: #fff;">TEST</span>
+                    </button>
+                </div>
+
+                <!-- ========================================================================= -->
+                <!-- TAB 1: DIRECT CPA TASKS -->
+                <!-- ========================================================================= -->
+                <div id="tab-direct-cpa" class="tab-pane active">
+                    <div class="grid-2col">
+                        <!-- CARD 1: REDIRECTION URL MACROS -->
+                        <div class="doc-card">
+                            <div class="card-header-flex">
+                                <h3 class="card-title">
+                                    <span class="card-title-icon icon-blue">
+                                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
+                                    </span>
+                                    1. Redirection URL (App to Advertiser Link)
+                                </h3>
+                                <span class="method-badge">TRACKING LINK</span>
+                            </div>
+                            <p style="font-size: 13px; color: #64748b; margin: 0 0 12px 0; line-height: 1.5;">
+                                When configuring a Daily Task, enter the advertiser tracking link in the <b>Redirection URL</b> field. The mobile app dynamically substitutes the <code>{userId}</code> and <code>{gaid}</code> tokens:
+                            </p>
+
+                            <div class="code-box">
+                                <button class="copy-btn" onclick="copyDynamicUrl('https://advertiser-network.com/click?subId={userId}&gaid={gaid}')">
+                                    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                                    Copy
+                                </button>
+                                <pre>https://advertiser-network.com/click?<span class="param-hl">subId</span>=<span class="param-val">{userId}</span>&<span class="param-hl">gaid</span>=<span class="param-val">{gaid}</span></pre>
+                            </div>
+
+                            <table class="param-table">
+                                <thead>
+                                    <tr>
+                                        <th>Macro Token</th>
+                                        <th>Resolved Value</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><span class="param-name">{userId}</span></td>
+                                        <td>Unique User Account ID (e.g., <code>66b2f4...</code>)</td>
+                                        <td><span class="req-pill req-mandatory">MANDATORY</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="param-name">{gaid}</span></td>
+                                        <td>Google Advertising ID (Android Device)</td>
+                                        <td><span class="req-pill req-optional">OPTIONAL</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- CARD 2: HOW THE FLOW WORKS -->
+                        <div class="doc-card">
+                            <div class="card-header-flex">
+                                <h3 class="card-title">
+                                    <span class="card-title-icon icon-cyan">
+                                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                                    </span>
+                                    Integration Architecture Flow
+                                </h3>
+                                <span class="method-badge" style="background: #e0e7ff; color: #4338ca;">3-STEP WORKFLOW</span>
+                            </div>
+
+                            <div class="flow-steps">
+                                <div class="flow-step-item">
+                                    <div class="flow-num">1</div>
+                                    <div class="flow-content">
+                                        <h4>User Engages Task in App</h4>
+                                        <p>App resolves <code>{userId}</code> with the logged-in user ID and redirects to the advertiser's platform.</p>
+                                    </div>
+                                </div>
+
+                                <div class="flow-step-item">
+                                    <div class="flow-num">2</div>
+                                    <div class="flow-content">
+                                        <h4>Conversion Milestone Completed</h4>
+                                        <p>The user registers, reaches a level, or completes the required action on the advertiser's application.</p>
+                                    </div>
+                                </div>
+
+                                <div class="flow-step-item">
+                                    <div class="flow-num">3</div>
+                                    <div class="flow-content">
+                                        <h4>Server-to-Server Postback Fired</h4>
+                                        <p>Advertiser server triggers our <code>/cpa-postback</code> endpoint. Signature and credentials are verified, and coins are instantly credited.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CARD 3 & 4: SINGLE EVENT VS MULTI EVENT POSTBACK URLS -->
+                    <div class="grid-2col">
+                        <!-- CARD 3: SINGLE EVENT POSTBACK -->
+                        <div class="doc-card">
+                            <div class="card-header-flex">
+                                <h3 class="card-title">
+                                    <span class="card-title-icon icon-green">
+                                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                    </span>
+                                    2. Single Event Postback Specification
+                                </h3>
+                                <span class="method-badge" style="background: #dcfce7; color: #15803d;">HTTP GET / POST</span>
+                            </div>
+                            <p style="font-size: 13px; color: #64748b; margin: 0 0 10px 0;">
+                                For standard single-conversion offers (Install, Registration, First Action), provide the advertiser with this Postback URL:
+                            </p>
+
+                            <div class="code-box">
+                                <button class="copy-btn" onclick="copyDynamicUrl('{BASE_URL}/cpa-postback?userId={subId}&appName=crazyreward&offerId={offerId}&secret={secretKey}')">
+                                    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                                    Copy
+                                </button>
+                                <pre><span class="url-base-token"><%= baseUrl %></span>/cpa-postback?<span class="param-hl">userId</span>=<span class="param-val">{subId}</span>&<span class="param-hl">appName</span>=<span class="param-val">crazyreward</span>&<span class="param-hl">offerId</span>=<span class="param-val">{offerId}</span>&<span class="param-hl">secret</span>=<span class="param-val">{secretKey}</span></pre>
+                            </div>
+
+                            <table class="param-table">
+                                <thead>
+                                    <tr>
+                                        <th>Parameter</th>
+                                        <th>Description</th>
+                                        <th>Requirement</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><span class="param-name">userId</span></td>
+                                        <td>The user identifier forwarded in the click subId macro</td>
+                                        <td><span class="req-pill req-mandatory">MANDATORY</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="param-name">appName</span></td>
+                                        <td>Constant application identifier: <code>crazyreward</code></td>
+                                        <td><span class="req-pill req-mandatory">MANDATORY</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="param-name">offerId</span></td>
+                                        <td>Unique Task <b>Offer ID</b> defined in Admin Panel</td>
+                                        <td><span class="req-pill req-mandatory">MANDATORY</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="param-name">secret</span></td>
+                                        <td>Task <b>Secret Key</b> for authentication</td>
+                                        <td><span class="req-pill req-mandatory">MANDATORY</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- CARD 4: MULTI EVENT POSTBACK -->
+                        <div class="doc-card">
+                            <div class="card-header-flex">
+                                <h3 class="card-title">
+                                    <span class="card-title-icon icon-purple">
+                                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+                                    </span>
+                                    3. Multi-Event & Milestone Specification
+                                </h3>
+                                <span class="method-badge" style="background: #ede9fe; color: #6d28d9;">MULTI-TIER</span>
+                            </div>
+                            <p style="font-size: 13px; color: #64748b; margin: 0 0 10px 0;">
+                                For progressive offers with tiered milestones (e.g., Level 1, Level 5, Level 10 rewards), append <code>&eventId=</code>:
+                            </p>
+
+                            <div class="code-box">
+                                <button class="copy-btn" onclick="copyDynamicUrl('{BASE_URL}/cpa-postback?userId={subId}&appName=crazyreward&offerId={offerId}&secret={secretKey}&eventId={eventId}')">
+                                    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                                    Copy
+                                </button>
+                                <pre><span class="url-base-token"><%= baseUrl %></span>/cpa-postback?<span class="param-hl">userId</span>=<span class="param-val">{subId}</span>&<span class="param-hl">appName</span>=<span class="param-val">crazyreward</span>&<span class="param-hl">offerId</span>=<span class="param-val">{offerId}</span>&<span class="param-hl">secret</span>=<span class="param-val">{secretKey}</span>&<span class="param-hl">eventId</span>=<span class="param-val">{eventId}</span></pre>
+                            </div>
+
+                            <table class="param-table">
+                                <thead>
+                                    <tr>
+                                        <th>Parameter</th>
+                                        <th>Description</th>
+                                        <th>Requirement</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><span class="param-name">userId</span></td>
+                                        <td>User identifier from tracking token</td>
+                                        <td><span class="req-pill req-mandatory">MANDATORY</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="param-name">offerId</span></td>
+                                        <td>Task <b>Offer ID</b></td>
+                                        <td><span class="req-pill req-mandatory">MANDATORY</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="param-name">secret</span></td>
+                                        <td>Task <b>Secret Key</b></td>
+                                        <td><span class="req-pill req-mandatory">MANDATORY</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="param-name">eventId</span></td>
+                                        <td>Milestone Event ID (e.g., <code>event_1</code>, <code>level_5</code>)</td>
+                                        <td><span class="req-pill req-mandatory">MANDATORY</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- ACTIVE TASKS QUICK REFERENCE TABLE -->
+                    <div class="tasks-table-card">
+                        <div class="card-header-flex">
+                            <h3 class="card-title">
+                                <span class="card-title-icon icon-emerald">
+                                    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
+                                </span>
+                                Registered Active Daily Tasks & Postback Endpoints
+                            </h3>
+                            <a href="/add-daily-task" class="btn-copy-sm" style="background: #0f172a; color: #fff;">
+                                <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                                Create New Task
+                            </a>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="tasks-data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Task Details</th>
+                                        <th>Offer ID</th>
+                                        <th>Secret Key</th>
+                                        <th>Integration Mode</th>
+                                        <th>Ready Postback Endpoint</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% if (!dailyTasks || dailyTasks.length === 0) { %>
+                                        <tr>
+                                            <td colspan="5" style="text-align: center; color: #94a3b8; padding: 24px;">No active daily tasks registered.</td>
+                                        </tr>
+                                    <% } else { %>
+                                        <% dailyTasks.forEach(t => { 
+                                            const isMulti = Array.isArray(t.events) && t.events.length > 0;
+                                            const secret = t.secretKey || 'NO_SECRET_SET';
+                                        %>
+                                            <tr>
+                                                <td>
+                                                    <div style="font-weight: 800; color: #0f172a;"><%= t.offerName %></div>
+                                                    <div style="font-size: 11px; color: #64748b;">Reward: <%= t.payout || 0 %> Coins</div>
+                                                </td>
+                                                <td>
+                                                    <span class="param-name"><%= t.offerId %></span>
+                                                </td>
+                                                <td>
+                                                    <span style="font-family: 'JetBrains Mono', monospace; font-size: 12px; background: #f8fafc; padding: 4px 8px; border-radius: 6px; border: 1px solid #e2e8f0;">
+                                                        <%= secret %>
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <% if (isMulti) { %>
+                                                        <span class="req-pill" style="background: #ede9fe; color: #6d28d9;">Multi Event (<%= t.events.length %> Milestones)</span>
+                                                    <% } else { %>
+                                                        <span class="req-pill" style="background: #dcfce7; color: #15803d;">Single Event</span>
+                                                    <% } %>
+                                                </td>
+                                                <td>
+                                                    <button class="btn-copy-sm" data-offer-id="<%= t.offerId %>" data-secret="<%= secret %>" data-multi="<%= isMulti ? '1' : '0' %>" onclick="copyTaskFromBtn(this)">
+                                                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                                                        Copy Endpoint
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        <% }); %>
+                                    <% } %>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ========================================================================= -->
+                <!-- TAB 2: OFFERWALL PARTNERS -->
+                <!-- ========================================================================= -->
+                <div id="tab-offerwalls" class="tab-pane">
+                    <!-- Offerwall Overview Alert -->
+                    <div style="background: #ecfdf5; border: 1px solid #a7f3d0; border-radius: 16px; padding: 16px 20px; margin-bottom: 24px; display: flex; align-items: flex-start; gap: 14px;">
+                        <span style="font-size: 24px;">🎁</span>
+                        <div>
+                            <h4 style="margin: 0 0 4px 0; font-size: 14px; font-weight: 800; color: #065f46;">Offerwall S2S Postback Integration Guide</h4>
+                            <p style="margin: 0; font-size: 13px; color: #047857; line-height: 1.5;">
+                                When a user finishes an app offer or game milestone on any partner wall, the provider dispatches an S2S HTTP request to our server. 
+                                Our backend validates transactions, avoids duplicates, credits user wallet coins, updates daily challenge goals, and distributes squad referral bonuses.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="grid-partner-cards">
+                        <!-- 1. PUBSCALE -->
+                        <% 
+                            const pubscaleCfg = offersSettings.Pubscale || offersSettings.pubscale || {}; 
+                            const pubscaleEnabled = pubscaleCfg.enabled !== false && pubscaleCfg.enabled !== 'false';
+                        %>
+                        <div class="doc-card">
+                            <div class="card-header-flex">
+                                <h3 class="card-title">
+                                    <span class="card-title-icon icon-teal" style="background: #ccfbf1; color: #0d9488;">
+                                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                    </span>
+                                    PubScale (Native SDK)
+                                </h3>
+                                <div style="display: flex; gap: 6px; align-items: center;">
+                                    <span class="status-pill <%= pubscaleEnabled ? 'enabled' : 'disabled' %>">
+                                        <%= pubscaleEnabled ? '● Enabled' : '○ Disabled' %>
+                                    </span>
+                                    <span class="method-badge">GET / POST</span>
+                                </div>
+                            </div>
+                            <p style="font-size: 12.5px; color: #64748b; margin: 0 0 8px 0;">
+                                Integrated via Native Android SDK with MD5 signature validation. Paste this URL in your PubScale Publisher Dashboard:
+                            </p>
+
+                            <div class="code-box">
+                                <button class="copy-btn" onclick="copyDynamicUrl('{BASE_URL}/postback/pubscale?userId={user_id}&token={trans_id}&value={payout}&offer_id={offer_id}&signature={signature}')">
+                                    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                                    Copy
+                                </button>
+                                <pre><span class="url-base-token"><%= baseUrl %></span>/postback/pubscale?<span class="param-hl">userId</span>=<span class="param-val">{user_id}</span>&<span class="param-hl">token</span>=<span class="param-val">{trans_id}</span>&<span class="param-hl">value</span>=<span class="param-val">{payout}</span>&<span class="param-hl">signature</span>=<span class="param-val">{signature}</span></pre>
+                            </div>
+
+                            <table class="param-table">
+                                <thead>
+                                    <tr>
+                                        <th>Parameter</th>
+                                        <th>Pubscale Macro</th>
+                                        <th>Requirement</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><span class="param-name">userId</span></td>
+                                        <td><code>{user_id}</code> or <code>{subId}</code></td>
+                                        <td><span class="req-pill req-mandatory">MANDATORY</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="param-name">token</span></td>
+                                        <td><code>{trans_id}</code> or <code>{token}</code></td>
+                                        <td><span class="req-pill req-mandatory">MANDATORY</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="param-name">value</span></td>
+                                        <td><code>{payout}</code> or <code>{reward}</code></td>
+                                        <td><span class="req-pill req-mandatory">MANDATORY</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="param-name">signature</span></td>
+                                        <td><code>{signature}</code> (MD5 hash)</td>
+                                        <td><span class="req-pill req-optional">SECURITY</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <div class="card-footer-action">
+                                <div class="key-val-display">
+                                    <span>App ID:</span>
+                                    <code><%= pubscaleCfg.appId || 'Not Set' %></code>
+                                </div>
+                                <button type="button" class="btn-copy-sm" onclick="openTesterWithProvider('pubscale')">
+                                    Test Postback ➔
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- 2. PLAYTIME ADS -->
+                        <% 
+                            const playtimeCfg = offersSettings.PlaytimeAds || offersSettings.playtimeAds || offersSettings.Playtime || {}; 
+                            const playtimeEnabled = playtimeCfg.enabled !== false && playtimeCfg.enabled !== 'false';
+                        %>
+                        <div class="doc-card">
+                            <div class="card-header-flex">
+                                <h3 class="card-title">
+                                    <span class="card-title-icon icon-purple">
+                                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                    </span>
+                                    Playtime Ads (Native SDK)
+                                </h3>
+                                <div style="display: flex; gap: 6px; align-items: center;">
+                                    <span class="status-pill <%= playtimeEnabled ? 'enabled' : 'disabled' %>">
+                                        <%= playtimeEnabled ? '● Enabled' : '○ Disabled' %>
+                                    </span>
+                                    <span class="method-badge">GET / POST</span>
+                                </div>
+                            </div>
+                            <p style="font-size: 12.5px; color: #64748b; margin: 0 0 8px 0;">
+                                Rewards users per minute of active game playtime. Configure in Playtime Ads Dashboard:
+                            </p>
+
+                            <div class="code-box">
+                                <button class="copy-btn" onclick="copyDynamicUrl('{BASE_URL}/postback/playtimeads?userId={userId}&txId={txId}&coins={coins}&offerId={offerId}')">
+                                    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                                    Copy
+                                </button>
+                                <pre><span class="url-base-token"><%= baseUrl %></span>/postback/playtimeads?<span class="param-hl">userId</span>=<span class="param-val">{userId}</span>&<span class="param-hl">txId</span>=<span class="param-val">{txId}</span>&<span class="param-hl">coins</span>=<span class="param-val">{coins}</span>&<span class="param-hl">offerId</span>=<span class="param-val">{offerId}</span></pre>
+                            </div>
+
+                            <table class="param-table">
+                                <thead>
+                                    <tr>
+                                        <th>Parameter</th>
+                                        <th>Playtime Macro</th>
+                                        <th>Requirement</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><span class="param-name">userId</span></td>
+                                        <td><code>{userId}</code></td>
+                                        <td><span class="req-pill req-mandatory">MANDATORY</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="param-name">txId</span></td>
+                                        <td><code>{txId}</code> or <code>{trans_id}</code></td>
+                                        <td><span class="req-pill req-mandatory">MANDATORY</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="param-name">coins</span></td>
+                                        <td><code>{coins}</code> or <code>{amount}</code></td>
+                                        <td><span class="req-pill req-mandatory">MANDATORY</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="param-name">offerId</span></td>
+                                        <td><code>{offerId}</code> (App / Game package)</td>
+                                        <td><span class="req-pill req-optional">OPTIONAL</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <div class="card-footer-action">
+                                <div class="key-val-display">
+                                    <span>App Key:</span>
+                                    <code><%= playtimeCfg.appKey || 'Not Set' %></code>
+                                </div>
+                                <button type="button" class="btn-copy-sm" onclick="openTesterWithProvider('playtimeads')">
+                                    Test Postback ➔
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- 3. GROWDECK -->
+                        <% 
+                            const growdeckCfg = offersSettings.GrowDeck || offersSettings.growdeck || {}; 
+                            const growdeckEnabled = growdeckCfg.enabled !== false && growdeckCfg.enabled !== 'false';
+                        %>
+                        <div class="doc-card">
+                            <div class="card-header-flex">
+                                <h3 class="card-title">
+                                    <span class="card-title-icon icon-emerald">
+                                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+                                    </span>
+                                    GrowDeck (Playtime Plugin)
+                                </h3>
+                                <div style="display: flex; gap: 6px; align-items: center;">
+                                    <span class="status-pill <%= growdeckEnabled ? 'enabled' : 'disabled' %>">
+                                        <%= growdeckEnabled ? '● Enabled' : '○ Disabled' %>
+                                    </span>
+                                    <span class="method-badge">GET / POST</span>
+                                </div>
+                            </div>
+                            <p style="font-size: 12.5px; color: #64748b; margin: 0 0 8px 0;">
+                                Interactive tasks and playtime SDK. Paste in your GrowDeck Partner Dashboard:
+                            </p>
+
+                            <div class="code-box">
+                                <button class="copy-btn" onclick="copyDynamicUrl('{BASE_URL}/postback/growdeck?user_id={user_id}&trans_id={trans_id}&reward={reward}&offer_id={offer_id}')">
+                                    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                                    Copy
+                                </button>
+                                <pre><span class="url-base-token"><%= baseUrl %></span>/postback/growdeck?<span class="param-hl">user_id</span>=<span class="param-val">{user_id}</span>&<span class="param-hl">trans_id</span>=<span class="param-val">{trans_id}</span>&<span class="param-hl">reward</span>=<span class="param-val">{reward}</span>&<span class="param-hl">offer_id</span>=<span class="param-val">{offer_id}</span></pre>
+                            </div>
+
+                            <table class="param-table">
+                                <thead>
+                                    <tr>
+                                        <th>Parameter</th>
+                                        <th>GrowDeck Macro</th>
+                                        <th>Requirement</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><span class="param-name">user_id</span></td>
+                                        <td><code>{user_id}</code> or <code>{userId}</code></td>
+                                        <td><span class="req-pill req-mandatory">MANDATORY</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="param-name">trans_id</span></td>
+                                        <td><code>{trans_id}</code> or <code>{tx_id}</code></td>
+                                        <td><span class="req-pill req-mandatory">MANDATORY</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="param-name">reward</span></td>
+                                        <td><code>{reward}</code> or <code>{amount}</code></td>
+                                        <td><span class="req-pill req-mandatory">MANDATORY</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <div class="card-footer-action">
+                                <div class="key-val-display">
+                                    <span>App ID:</span>
+                                    <code><%= growdeckCfg.appId || 'Not Set' %></code>
+                                </div>
+                                <button type="button" class="btn-copy-sm" onclick="openTesterWithProvider('growdeck')">
+                                    Test Postback ➔
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- 4. NOTIK -->
+                        <% 
+                            const notikCfg = offersSettings.Notik || offersSettings.notik || {}; 
+                            const notikEnabled = notikCfg.enabled !== false && notikCfg.enabled !== 'false';
+                        %>
+                        <div class="doc-card">
+                            <div class="card-header-flex">
+                                <h3 class="card-title">
+                                    <span class="card-title-icon icon-teal" style="background: #e0f2f1; color: #009688;">
+                                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+                                    </span>
+                                    Notik (WebView Offerwall)
+                                </h3>
+                                <div style="display: flex; gap: 6px; align-items: center;">
+                                    <span class="status-pill <%= notikEnabled ? 'enabled' : 'disabled' %>">
+                                        <%= notikEnabled ? '● Enabled' : '○ Disabled' %>
+                                    </span>
+                                    <span class="method-badge">GET / POST</span>
+                                </div>
+                            </div>
+                            <p style="font-size: 12.5px; color: #64748b; margin: 0 0 8px 0;">
+                                App install and engagement tasks. Paste this callback in Notik Publisher settings:
+                            </p>
+
+                            <div class="code-box">
+                                <button class="copy-btn" onclick="copyDynamicUrl('{BASE_URL}/postback/notik?user_id={user_id}&tx_id={tx_id}&amount={amount}&offer_id={offer_id}')">
+                                    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                                    Copy
+                                </button>
+                                <pre><span class="url-base-token"><%= baseUrl %></span>/postback/notik?<span class="param-hl">user_id</span>=<span class="param-val">{user_id}</span>&<span class="param-hl">tx_id</span>=<span class="param-val">{tx_id}</span>&<span class="param-hl">amount</span>=<span class="param-val">{amount}</span>&<span class="param-hl">offer_id</span>=<span class="param-val">{offer_id}</span></pre>
+                            </div>
+
+                            <table class="param-table">
+                                <thead>
+                                    <tr>
+                                        <th>Parameter</th>
+                                        <th>Notik Macro</th>
+                                        <th>Requirement</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><span class="param-name">user_id</span></td>
+                                        <td><code>{user_id}</code></td>
+                                        <td><span class="req-pill req-mandatory">MANDATORY</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="param-name">tx_id</span></td>
+                                        <td><code>{tx_id}</code></td>
+                                        <td><span class="req-pill req-mandatory">MANDATORY</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="param-name">amount</span></td>
+                                        <td><code>{amount}</code></td>
+                                        <td><span class="req-pill req-mandatory">MANDATORY</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <div class="card-footer-action">
+                                <div class="key-val-display">
+                                    <span>Status:</span>
+                                    <code><%= notikEnabled ? 'Active in App' : 'Disabled' %></code>
+                                </div>
+                                <button type="button" class="btn-copy-sm" onclick="openTesterWithProvider('notik')">
+                                    Test Postback ➔
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- 5. TAPJOY -->
+                        <% 
+                            const tapjoyCfg = offersSettings.Tapjoy || offersSettings.tapjoy || {}; 
+                            const tapjoyEnabled = tapjoyCfg.enabled !== false && tapjoyCfg.enabled !== 'false';
+                        %>
+                        <div class="doc-card">
+                            <div class="card-header-flex">
+                                <h3 class="card-title">
+                                    <span class="card-title-icon icon-rose" style="background: #fee2e2; color: #dc2626;">
+                                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"/></svg>
+                                    </span>
+                                    Tapjoy (WebView Offerwall)
+                                </h3>
+                                <div style="display: flex; gap: 6px; align-items: center;">
+                                    <span class="status-pill <%= tapjoyEnabled ? 'enabled' : 'disabled' %>">
+                                        <%= tapjoyEnabled ? '● Enabled' : '○ Disabled' %>
+                                    </span>
+                                    <span class="method-badge">GET / POST</span>
+                                </div>
+                            </div>
+                            <p style="font-size: 12.5px; color: #64748b; margin: 0 0 8px 0;">
+                                Top games & multi-reward tasks. Postback URL format for Tapjoy Dashboard:
+                            </p>
+
+                            <div class="code-box">
+                                <button class="copy-btn" onclick="copyDynamicUrl('{BASE_URL}/postback/tapjoy?snuid={snuid}&currency={currency}&id={id}')">
+                                    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                                    Copy
+                                </button>
+                                <pre><span class="url-base-token"><%= baseUrl %></span>/postback/tapjoy?<span class="param-hl">snuid</span>=<span class="param-val">{snuid}</span>&<span class="param-hl">currency</span>=<span class="param-val">{currency}</span>&<span class="param-hl">id</span>=<span class="param-val">{id}</span></pre>
+                            </div>
+
+                            <table class="param-table">
+                                <thead>
+                                    <tr>
+                                        <th>Parameter</th>
+                                        <th>Tapjoy Macro</th>
+                                        <th>Requirement</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><span class="param-name">snuid</span></td>
+                                        <td><code>{snuid}</code> (User Account ID)</td>
+                                        <td><span class="req-pill req-mandatory">MANDATORY</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="param-name">currency</span></td>
+                                        <td><code>{currency}</code> (Coins)</td>
+                                        <td><span class="req-pill req-mandatory">MANDATORY</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="param-name">id</span></td>
+                                        <td><code>{id}</code> (Transaction ID)</td>
+                                        <td><span class="req-pill req-mandatory">MANDATORY</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <div class="card-footer-action">
+                                <div class="key-val-display">
+                                    <span>Format:</span>
+                                    <code>snuid / currency / id</code>
+                                </div>
+                                <button type="button" class="btn-copy-sm" onclick="openTesterWithProvider('tapjoy')">
+                                    Test Postback ➔
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- 6. TASKWALL -->
+                        <div class="doc-card">
+                            <div class="card-header-flex">
+                                <h3 class="card-title">
+                                    <span class="card-title-icon icon-blue">
+                                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+                                    </span>
+                                    Taskwall (WebView Offerwall)
+                                </h3>
+                                <span class="method-badge">GET / POST</span>
+                            </div>
+                            <p style="font-size: 12.5px; color: #64748b; margin: 0 0 8px 0;">
+                                Quick tasks & download offers. Endpoint for Taskwall publisher account:
+                            </p>
+
+                            <div class="code-box">
+                                <button class="copy-btn" onclick="copyDynamicUrl('{BASE_URL}/postback/taskwall?userId={userId}&trans_id={trans_id}&amount={amount}&offer_id={offer_id}')">
+                                    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                                    Copy
+                                </button>
+                                <pre><span class="url-base-token"><%= baseUrl %></span>/postback/taskwall?<span class="param-hl">userId</span>=<span class="param-val">{userId}</span>&<span class="param-hl">trans_id</span>=<span class="param-val">{trans_id}</span>&<span class="param-hl">amount</span>=<span class="param-val">{amount}</span>&<span class="param-hl">offer_id</span>=<span class="param-val">{offer_id}</span></pre>
+                            </div>
+
+                            <table class="param-table">
+                                <thead>
+                                    <tr>
+                                        <th>Parameter</th>
+                                        <th>Macro / Token</th>
+                                        <th>Requirement</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><span class="param-name">userId</span></td>
+                                        <td><code>{userId}</code> or <code>{subId}</code></td>
+                                        <td><span class="req-pill req-mandatory">MANDATORY</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="param-name">trans_id</span></td>
+                                        <td><code>{trans_id}</code></td>
+                                        <td><span class="req-pill req-mandatory">MANDATORY</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="param-name">amount</span></td>
+                                        <td><code>{amount}</code> (Coins)</td>
+                                        <td><span class="req-pill req-mandatory">MANDATORY</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <div class="card-footer-action">
+                                <div class="key-val-display">
+                                    <span>Route:</span>
+                                    <code>/postback/taskwall</code>
+                                </div>
+                                <button type="button" class="btn-copy-sm" onclick="openTesterWithProvider('taskwall')">
+                                    Test Postback ➔
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- 7. ADJOE & SUSHIADS & LOOTABLY (MULTI CARD) -->
+                        <div class="doc-card">
+                            <div class="card-header-flex">
+                                <h3 class="card-title">
+                                    <span class="card-title-icon icon-amber">
+                                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/></svg>
+                                    </span>
+                                    Adjoe, SushiAds & Lootably
+                                </h3>
+                                <span class="method-badge">WEBVIEW</span>
+                            </div>
+                            <p style="font-size: 12.5px; color: #64748b; margin: 0 0 8px 0;">
+                                Supported standard callback routes for additional integrated offerwall partners:
+                            </p>
+
+                            <div class="code-box">
+                                <button class="copy-btn" onclick="copyDynamicUrl('{BASE_URL}/postback/adjoe?userId={userId}&amount={amount}&trans_id={trans_id}')">
+                                    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                                    Copy Adjoe
+                                </button>
+                                <pre><span class="url-base-token"><%= baseUrl %></span>/postback/adjoe?<span class="param-hl">userId</span>=<span class="param-val">{userId}</span>&<span class="param-hl">amount</span>=<span class="param-val">{amount}</span>&<span class="param-hl">trans_id</span>=<span class="param-val">{trans_id}</span></pre>
+                            </div>
+
+                            <div class="code-box">
+                                <button class="copy-btn" onclick="copyDynamicUrl('{BASE_URL}/postback/sushiads?userId={userId}&amount={amount}&trans_id={trans_id}')">
+                                    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                                    Copy SushiAds
+                                </button>
+                                <pre><span class="url-base-token"><%= baseUrl %></span>/postback/sushiads?<span class="param-hl">userId</span>=<span class="param-val">{userId}</span>&<span class="param-hl">amount</span>=<span class="param-val">{amount}</span>&<span class="param-hl">trans_id</span>=<span class="param-val">{trans_id}</span></pre>
+                            </div>
+
+                            <div class="card-footer-action">
+                                <div class="key-val-display">
+                                    <span>Lootably:</span>
+                                    <code>/postback/lootably</code>
+                                </div>
+                                <button type="button" class="btn-copy-sm" onclick="openTesterWithProvider('adjoe')">
+                                    Test Adjoe ➔
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- 8. GENERIC CUSTOM OFFERWALL -->
+                        <div class="doc-card" style="border-style: dashed; border-color: #94a3b8; background: #fafbfc;">
+                            <div class="card-header-flex">
+                                <h3 class="card-title">
+                                    <span class="card-title-icon icon-orange">
+                                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                    </span>
+                                    Generic Dynamic Offerwall (Any New Partner)
+                                </h3>
+                                <span class="method-badge" style="background: #ffedd5; color: #c2410c;">CATCH-ALL</span>
+                            </div>
+                            <p style="font-size: 12.5px; color: #64748b; margin: 0 0 8px 0;">
+                                For custom or new partners (Monlix, AdGem, OfferToro, Ayet, HangMyAds), replace <code>{provider}</code> with the partner name:
+                            </p>
+
+                            <div class="code-box">
+                                <button class="copy-btn" onclick="copyDynamicUrl('{BASE_URL}/postback/{provider}?userId={userId}&trans_id={trans_id}&amount={coins}&offer_id={offer_id}')">
+                                    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                                    Copy
+                                </button>
+                                <pre><span class="url-base-token"><%= baseUrl %></span>/postback/<span class="param-static">{provider}</span>?<span class="param-hl">userId</span>=<span class="param-val">{subId}</span>&<span class="param-hl">trans_id</span>=<span class="param-val">{tx_id}</span>&<span class="param-hl">amount</span>=<span class="param-val">{payout}</span></pre>
+                            </div>
+
+                            <p style="font-size: 11.5px; color: #475569; margin: 6px 0 0 0;">
+                                <b>Universal Param Aliases:</b> Supports <code>user_id, userId, subId, uid, snuid</code> for User ID, and <code>amount, payout, coins, reward</code> for Coins.
+                            </p>
+
+                            <div class="card-footer-action">
+                                <div class="key-val-display">
+                                    <span>Supported:</span>
+                                    <code>All HTTP Verbs</code>
+                                </div>
+                                <button type="button" class="btn-copy-sm" onclick="openTesterWithProvider('custom')">
+                                    Test Custom ➔
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ========================================================================= -->
+                <!-- TAB 3: SURVEY PARTNERS -->
+                <!-- ========================================================================= -->
+                <div id="tab-surveys" class="tab-pane">
+                    <!-- Survey Overview Alert -->
+                    <div style="background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 16px; padding: 16px 20px; margin-bottom: 24px; display: flex; align-items: flex-start; gap: 14px;">
+                        <span style="font-size: 24px;">📊</span>
+                        <div>
+                            <h4 style="margin: 0 0 4px 0; font-size: 14px; font-weight: 800; color: #1e40af;">Survey Networks S2S Callback Specifications</h4>
+                            <p style="margin: 0; font-size: 13px; color: #1d4ed8; line-height: 1.5;">
+                                Surveys reward users upon submitting verified responses. 
+                                Providers fire instant postbacks with user ID, reward amount, and unique survey transaction IDs.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="grid-partner-cards">
+                        <!-- 1. CPX RESEARCH -->
+                        <% 
+                            const cpxCfg = offersSettings.CPXResearch || offersSettings.cpxresearch || offersSettings.CPX || {}; 
+                            const cpxEnabled = cpxCfg.enabled !== false && cpxCfg.enabled !== 'false';
+                        %>
+                        <div class="doc-card">
+                            <div class="card-header-flex">
+                                <h3 class="card-title">
+                                    <span class="card-title-icon icon-blue">
+                                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+                                    </span>
+                                    CPX Research (Native Dialog SDK)
+                                </h3>
+                                <div style="display: flex; gap: 6px; align-items: center;">
+                                    <span class="status-pill <%= cpxEnabled ? 'enabled' : 'disabled' %>">
+                                        <%= cpxEnabled ? '● Enabled' : '○ Disabled' %>
+                                    </span>
+                                    <span class="method-badge">GET / POST</span>
+                                </div>
+                            </div>
+                            <p style="font-size: 12.5px; color: #64748b; margin: 0 0 8px 0;">
+                                Top international survey wall. Paste in CPX Research Dashboard > Settings > Postback:
+                            </p>
+
+                            <div class="code-box">
+                                <button class="copy-btn" onclick="copyDynamicUrl('{BASE_URL}/postback/cpx?sub_id={sub_id}&amount={amount}&trans_id={trans_id}&status={status}&offer_id={offer_id}')">
+                                    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                                    Copy
+                                </button>
+                                <pre><span class="url-base-token"><%= baseUrl %></span>/postback/cpx?<span class="param-hl">sub_id</span>=<span class="param-val">{sub_id}</span>&<span class="param-hl">amount</span>=<span class="param-val">{amount}</span>&<span class="param-hl">trans_id</span>=<span class="param-val">{trans_id}</span>&<span class="param-hl">status</span>=<span class="param-val">{status}</span></pre>
+                            </div>
+
+                            <table class="param-table">
+                                <thead>
+                                    <tr>
+                                        <th>Parameter</th>
+                                        <th>CPX Macro Token</th>
+                                        <th>Requirement</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><span class="param-name">sub_id</span></td>
+                                        <td><code>{sub_id}</code> (User Account ID)</td>
+                                        <td><span class="req-pill req-mandatory">MANDATORY</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="param-name">amount</span></td>
+                                        <td><code>{amount}</code> or <code>{reward}</code></td>
+                                        <td><span class="req-pill req-mandatory">MANDATORY</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="param-name">trans_id</span></td>
+                                        <td><code>{trans_id}</code></td>
+                                        <td><span class="req-pill req-mandatory">MANDATORY</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="param-name">status</span></td>
+                                        <td><code>{status}</code> (1 = Approved, 2 = Rejected)</td>
+                                        <td><span class="req-pill req-mandatory">MANDATORY</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <div class="card-footer-action">
+                                <div class="key-val-display">
+                                    <span>App ID:</span>
+                                    <code><%= cpxCfg.appId || 'Not Set' %></code>
+                                </div>
+                                <button type="button" class="btn-copy-sm" onclick="openTesterWithProvider('cpx')">
+                                    Test Postback ➔
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- 2. BITLABS -->
+                        <% 
+                            const bitlabsCfg = offersSettings.BitLabs || offersSettings.bitlabs || {}; 
+                            const bitlabsEnabled = bitlabsCfg.enabled !== false && bitlabsCfg.enabled !== 'false';
+                        %>
+                        <div class="doc-card">
+                            <div class="card-header-flex">
+                                <h3 class="card-title">
+                                    <span class="card-title-icon icon-blue">
+                                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"/></svg>
+                                    </span>
+                                    BitLabs (Native SDK)
+                                </h3>
+                                <div style="display: flex; gap: 6px; align-items: center;">
+                                    <span class="status-pill <%= bitlabsEnabled ? 'enabled' : 'disabled' %>">
+                                        <%= bitlabsEnabled ? '● Enabled' : '○ Disabled' %>
+                                    </span>
+                                    <span class="method-badge">GET / POST</span>
+                                </div>
+                            </div>
+                            <p style="font-size: 12.5px; color: #64748b; margin: 0 0 8px 0;">
+                                High-converting survey router SDK. Set in BitLabs Dashboard > App Settings > Postback:
+                            </p>
+
+                            <div class="code-box">
+                                <button class="copy-btn" onclick="copyDynamicUrl('{BASE_URL}/postback/bitlabs?uid=[#UID]&val=[#VAL]&tx=[#TX]&offer_id=[#OFFER_ID]')">
+                                    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                                    Copy
+                                </button>
+                                <pre><span class="url-base-token"><%= baseUrl %></span>/postback/bitlabs?<span class="param-hl">uid</span>=<span class="param-val">[#UID]</span>&<span class="param-hl">val</span>=<span class="param-val">[#VAL]</span>&<span class="param-hl">tx</span>=<span class="param-val">[#TX]</span>&<span class="param-hl">offer_id</span>=<span class="param-val">[#OFFER_ID]</span></pre>
+                            </div>
+
+                            <table class="param-table">
+                                <thead>
+                                    <tr>
+                                        <th>Parameter</th>
+                                        <th>BitLabs Macro</th>
+                                        <th>Requirement</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><span class="param-name">uid</span></td>
+                                        <td><code>[#UID]</code> (User Account ID)</td>
+                                        <td><span class="req-pill req-mandatory">MANDATORY</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="param-name">val</span></td>
+                                        <td><code>[#VAL]</code> (Coins payout)</td>
+                                        <td><span class="req-pill req-mandatory">MANDATORY</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="param-name">tx</span></td>
+                                        <td><code>[#TX]</code> (Transaction ID)</td>
+                                        <td><span class="req-pill req-mandatory">MANDATORY</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <div class="card-footer-action">
+                                <div class="key-val-display">
+                                    <span>Token:</span>
+                                    <code><%= bitlabsCfg.token ? (bitlabsCfg.token.substring(0, 8) + '...') : 'Not Set' %></code>
+                                </div>
+                                <button type="button" class="btn-copy-sm" onclick="openTesterWithProvider('bitlabs')">
+                                    Test Postback ➔
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- 3. TIMEWALL -->
+                        <% 
+                            const timewallCfg = offersSettings.TimeWall || offersSettings.timewall || {}; 
+                            const timewallEnabled = timewallCfg.enabled !== false && timewallCfg.enabled !== 'false';
+                        %>
+                        <div class="doc-card">
+                            <div class="card-header-flex">
+                                <h3 class="card-title">
+                                    <span class="card-title-icon icon-cyan">
+                                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                    </span>
+                                    TimeWall (Surveys & Micro-tasks)
+                                </h3>
+                                <div style="display: flex; gap: 6px; align-items: center;">
+                                    <span class="status-pill <%= timewallEnabled ? 'enabled' : 'disabled' %>">
+                                        <%= timewallEnabled ? '● Enabled' : '○ Disabled' %>
+                                    </span>
+                                    <span class="method-badge">GET / POST</span>
+                                </div>
+                            </div>
+                            <p style="font-size: 12.5px; color: #64748b; margin: 0 0 8px 0;">
+                                Micro-surveys, clicks and tasks. Configure in TimeWall Publisher Panel:
+                            </p>
+
+                            <div class="code-box">
+                                <button class="copy-btn" onclick="copyDynamicUrl('{BASE_URL}/postback/timewall?userID={userID}&currencyAmount={currencyAmount}&transactionID={transactionID}&offerId={offerId}')">
+                                    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                                    Copy
+                                </button>
+                                <pre><span class="url-base-token"><%= baseUrl %></span>/postback/timewall?<span class="param-hl">userID</span>=<span class="param-val">{userID}</span>&<span class="param-hl">currencyAmount</span>=<span class="param-val">{currencyAmount}</span>&<span class="param-hl">transactionID</span>=<span class="param-val">{transactionID}</span></pre>
+                            </div>
+
+                            <table class="param-table">
+                                <thead>
+                                    <tr>
+                                        <th>Parameter</th>
+                                        <th>TimeWall Macro</th>
+                                        <th>Requirement</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><span class="param-name">userID</span></td>
+                                        <td><code>{userID}</code></td>
+                                        <td><span class="req-pill req-mandatory">MANDATORY</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="param-name">currencyAmount</span></td>
+                                        <td><code>{currencyAmount}</code> (Coins)</td>
+                                        <td><span class="req-pill req-mandatory">MANDATORY</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="param-name">transactionID</span></td>
+                                        <td><code>{transactionID}</code></td>
+                                        <td><span class="req-pill req-mandatory">MANDATORY</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <div class="card-footer-action">
+                                <div class="key-val-display">
+                                    <span>Route:</span>
+                                    <code>/postback/timewall</code>
+                                </div>
+                                <button type="button" class="btn-copy-sm" onclick="openTesterWithProvider('timewall')">
+                                    Test Postback ➔
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- 4. WANNADS -->
+                        <% 
+                            const wannadsCfg = offersSettings.Wannads || offersSettings.wannads || {}; 
+                            const wannadsEnabled = wannadsCfg.enabled !== false && wannadsCfg.enabled !== 'false';
+                        %>
+                        <div class="doc-card">
+                            <div class="card-header-flex">
+                                <h3 class="card-title">
+                                    <span class="card-title-icon icon-orange">
+                                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                                    </span>
+                                    Wannads (Surveys & Offers)
+                                </h3>
+                                <div style="display: flex; gap: 6px; align-items: center;">
+                                    <span class="status-pill <%= wannadsEnabled ? 'enabled' : 'disabled' %>">
+                                        <%= wannadsEnabled ? '● Enabled' : '○ Disabled' %>
+                                    </span>
+                                    <span class="method-badge">GET / POST</span>
+                                </div>
+                            </div>
+                            <p style="font-size: 12.5px; color: #64748b; margin: 0 0 8px 0;">
+                                Surveys & Offer wall. Paste into your Wannads App settings Postback field:
+                            </p>
+
+                            <div class="code-box">
+                                <button class="copy-btn" onclick="copyDynamicUrl('{BASE_URL}/postback/wannads?subId={subId}&transId={transId}&reward={reward}&status={status}')">
+                                    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                                    Copy
+                                </button>
+                                <pre><span class="url-base-token"><%= baseUrl %></span>/postback/wannads?<span class="param-hl">subId</span>=<span class="param-val">{subId}</span>&<span class="param-hl">transId</span>=<span class="param-val">{transId}</span>&<span class="param-hl">reward</span>=<span class="param-val">{reward}</span>&<span class="param-hl">status</span>=<span class="param-val">{status}</span></pre>
+                            </div>
+
+                            <table class="param-table">
+                                <thead>
+                                    <tr>
+                                        <th>Parameter</th>
+                                        <th>Wannads Macro</th>
+                                        <th>Requirement</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><span class="param-name">subId</span></td>
+                                        <td><code>{subId}</code> (User ID)</td>
+                                        <td><span class="req-pill req-mandatory">MANDATORY</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="param-name">reward</span></td>
+                                        <td><code>{reward}</code> (Coins)</td>
+                                        <td><span class="req-pill req-mandatory">MANDATORY</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="param-name">transId</span></td>
+                                        <td><code>{transId}</code></td>
+                                        <td><span class="req-pill req-mandatory">MANDATORY</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="param-name">status</span></td>
+                                        <td><code>{status}</code> (1 = OK, 2 = Revoked)</td>
+                                        <td><span class="req-pill req-mandatory">MANDATORY</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <div class="card-footer-action">
+                                <div class="key-val-display">
+                                    <span>Route:</span>
+                                    <code>/postback/wannads</code>
+                                </div>
+                                <button type="button" class="btn-copy-sm" onclick="openTesterWithProvider('wannads')">
+                                    Test Postback ➔
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- 5. THEOREMREACH -->
+                        <% 
+                            const theoremCfg = offersSettings.TheoremReach || offersSettings.theoremreach || {}; 
+                            const theoremEnabled = theoremCfg.enabled !== false && theoremCfg.enabled !== 'false';
+                        %>
+                        <div class="doc-card">
+                            <div class="card-header-flex">
+                                <h3 class="card-title">
+                                    <span class="card-title-icon icon-purple">
+                                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                                    </span>
+                                    TheoremReach (Survey Wall)
+                                </h3>
+                                <div style="display: flex; gap: 6px; align-items: center;">
+                                    <span class="status-pill <%= theoremEnabled ? 'enabled' : 'disabled' %>">
+                                        <%= theoremEnabled ? '● Enabled' : '○ Disabled' %>
+                                    </span>
+                                    <span class="method-badge">GET / POST</span>
+                                </div>
+                            </div>
+                            <p style="font-size: 12.5px; color: #64748b; margin: 0 0 8px 0;">
+                                Rewarded opinion surveys with partial reward support. Postback URL:
+                            </p>
+
+                            <div class="code-box">
+                                <button class="copy-btn" onclick="copyDynamicUrl('{BASE_URL}/postback/theoremreach?user_id={user_id}&reward={reward}&tx_id={tx_id}')">
+                                    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                                    Copy
+                                </button>
+                                <pre><span class="url-base-token"><%= baseUrl %></span>/postback/theoremreach?<span class="param-hl">user_id</span>=<span class="param-val">{user_id}</span>&<span class="param-hl">reward</span>=<span class="param-val">{reward}</span>&<span class="param-hl">tx_id</span>=<span class="param-val">{tx_id}</span></pre>
+                            </div>
+
+                            <table class="param-table">
+                                <thead>
+                                    <tr>
+                                        <th>Parameter</th>
+                                        <th>TheoremReach Macro</th>
+                                        <th>Requirement</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><span class="param-name">user_id</span></td>
+                                        <td><code>{user_id}</code></td>
+                                        <td><span class="req-pill req-mandatory">MANDATORY</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="param-name">reward</span></td>
+                                        <td><code>{reward}</code> (Coins)</td>
+                                        <td><span class="req-pill req-mandatory">MANDATORY</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="param-name">tx_id</span></td>
+                                        <td><code>{tx_id}</code></td>
+                                        <td><span class="req-pill req-mandatory">MANDATORY</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <div class="card-footer-action">
+                                <div class="key-val-display">
+                                    <span>Route:</span>
+                                    <code>/postback/theoremreach</code>
+                                </div>
+                                <button type="button" class="btn-copy-sm" onclick="openTesterWithProvider('theoremreach')">
+                                    Test Postback ➔
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- 6. CPIDROID -->
+                        <% 
+                            const cpiCfg = offersSettings.CPIDroid || offersSettings.cpidroid || {}; 
+                            const cpiEnabled = cpiCfg.enabled !== false && cpiCfg.enabled !== 'false';
+                        %>
+                        <div class="doc-card">
+                            <div class="card-header-flex">
+                                <h3 class="card-title">
+                                    <span class="card-title-icon icon-green">
+                                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+                                    </span>
+                                    CPIDroid (CPI & Surveys)
+                                </h3>
+                                <div style="display: flex; gap: 6px; align-items: center;">
+                                    <span class="status-pill <%= cpiEnabled ? 'enabled' : 'disabled' %>">
+                                        <%= cpiEnabled ? '● Enabled' : '○ Disabled' %>
+                                    </span>
+                                    <span class="method-badge">GET / POST</span>
+                                </div>
+                            </div>
+                            <p style="font-size: 12.5px; color: #64748b; margin: 0 0 8px 0;">
+                                App install CPI and survey campaign postback:
+                            </p>
+
+                            <div class="code-box">
+                                <button class="copy-btn" onclick="copyDynamicUrl('{BASE_URL}/postback/cpidroid?userId={userId}&txId={txId}&coins={coins}')">
+                                    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                                    Copy
+                                </button>
+                                <pre><span class="url-base-token"><%= baseUrl %></span>/postback/cpidroid?<span class="param-hl">userId</span>=<span class="param-val">{userId}</span>&<span class="param-hl">coins</span>=<span class="param-val">{coins}</span>&<span class="param-hl">txId</span>=<span class="param-val">{txId}</span></pre>
+                            </div>
+
+                            <table class="param-table">
+                                <thead>
+                                    <tr>
+                                        <th>Parameter</th>
+                                        <th>CPIDroid Macro</th>
+                                        <th>Requirement</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><span class="param-name">userId</span></td>
+                                        <td><code>{userId}</code> or <code>{subId}</code></td>
+                                        <td><span class="req-pill req-mandatory">MANDATORY</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="param-name">coins</span></td>
+                                        <td><code>{coins}</code> or <code>{amount}</code></td>
+                                        <td><span class="req-pill req-mandatory">MANDATORY</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="param-name">txId</span></td>
+                                        <td><code>{txId}</code> or <code>{trans_id}</code></td>
+                                        <td><span class="req-pill req-mandatory">MANDATORY</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <div class="card-footer-action">
+                                <div class="key-val-display">
+                                    <span>Route:</span>
+                                    <code>/postback/cpidroid</code>
+                                </div>
+                                <button type="button" class="btn-copy-sm" onclick="openTesterWithProvider('cpidroid')">
+                                    Test Postback ➔
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ========================================================================= -->
+                <!-- TAB 4: LIVE POSTBACK SIMULATOR -->
+                <!-- ========================================================================= -->
+                <div id="tab-tester" class="tab-pane">
+                    <div class="doc-card" style="margin-bottom: 24px;">
+                        <div class="card-header-flex">
+                            <h3 class="card-title">
+                                <span class="card-title-icon icon-orange">
+                                    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                                </span>
+                                Universal S2S Postback Verification Simulator
+                            </h3>
+                            <span class="method-badge" style="background: #ffedd5; color: #c2410c;">INTERACTIVE TESTER</span>
+                        </div>
+                        <p style="font-size: 13px; color: #64748b; margin: 0 0 16px 0;">
+                            Simulate incoming postbacks from any Direct CPA Advertiser, Offerwall Partner, or Survey Network. 
+                            Verifies authentication, updates database records, prevents duplicate replay, and credits test coins instantly.
+                        </p>
+
+                        <!-- Tester Mode Selector -->
+                        <div style="display: flex; gap: 10px; margin-bottom: 16px;">
+                            <label style="display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 700; cursor: pointer;">
+                                <input type="radio" name="testerMode" value="cpa" checked onchange="toggleTesterMode()" />
+                                Direct CPA Daily Task
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 700; cursor: pointer; margin-left: 12px;">
+                                <input type="radio" name="testerMode" value="offerwall" onchange="toggleTesterMode()" />
+                                Offerwall / Survey Partner
+                            </label>
+                        </div>
+
+                        <!-- CPA Task Form Section -->
+                        <div id="testerCpaSection">
+                            <div class="tester-grid">
+                                <div class="form-group">
+                                    <label>Select Daily Task *</label>
+                                    <select id="testTaskSelect" class="form-control" onchange="onTaskSelectChange()">
+                                        <option value="">-- Select Active Task --</option>
+                                        <% (dailyTasks || []).forEach(t => { %>
+                                            <option value="<%= t.offerId %>" data-secret="<%= t.secretKey || '' %>" data-events='<%- JSON.stringify(t.events || []) %>'>
+                                                <%= t.offerName %> (<%= t.offerId %>)
+                                            </option>
+                                        <% }); %>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Target User ID *</label>
+                                    <input type="text" id="testUserId" class="form-control" placeholder="Enter user ID (e.g. 66bc...)" />
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Offer ID</label>
+                                    <input type="text" id="testOfferId" class="form-control" readonly style="background: #f1f5f9; color: #475569;" placeholder="Task Offer ID" />
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Secret Key</label>
+                                    <input type="text" id="testSecret" class="form-control" placeholder="Task Secret Key" />
+                                </div>
+
+                                <div class="form-group" id="testEventGroup" style="display: none;">
+                                    <label style="color: #7c3aed; font-weight: 800;">Target Milestone *</label>
+                                    <select id="testEventSelect" class="form-control" style="background: #faf5ff; border-color: #c4b5fd; color: #5b21b6; font-weight: 600;">
+                                        <!-- Populated dynamically -->
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Offerwall / Survey Form Section -->
+                        <div id="testerOfferwallSection" style="display: none;">
+                            <div class="tester-grid">
+                                <div class="form-group">
+                                    <label>Select Provider *</label>
+                                    <select id="testProviderSelect" class="form-control" onchange="onProviderSelectChange()">
+                                        <option value="pubscale">PubScale</option>
+                                        <option value="playtimeads">Playtime Ads</option>
+                                        <option value="growdeck">GrowDeck</option>
+                                        <option value="notik">Notik</option>
+                                        <option value="tapjoy">Tapjoy</option>
+                                        <option value="taskwall">Taskwall</option>
+                                        <option value="adjoe">Adjoe</option>
+                                        <option value="cpx">CPX Research</option>
+                                        <option value="bitlabs">BitLabs</option>
+                                        <option value="timewall">TimeWall</option>
+                                        <option value="wannads">Wannads</option>
+                                        <option value="theoremreach">TheoremReach</option>
+                                        <option value="cpidroid">CPIDroid</option>
+                                        <option value="custom">Custom Partner</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group" id="customProviderInputGroup" style="display: none;">
+                                    <label>Custom Partner Name *</label>
+                                    <input type="text" id="testCustomProvider" class="form-control" placeholder="e.g. monlix" />
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Target User ID *</label>
+                                    <input type="text" id="testOwUserId" class="form-control" placeholder="User ID (e.g. 66bc...)" />
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Coins / Payout *</label>
+                                    <input type="number" id="testOwCoins" class="form-control" value="250" min="1" />
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Transaction ID *</label>
+                                    <div style="display: flex; gap: 6px;">
+                                        <input type="text" id="testOwTxId" class="form-control" placeholder="Unique TX ID" />
+                                        <button type="button" class="btn-copy-sm" onclick="generateRandomTx()" title="Generate Random TX">🎲</button>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Offer / Task ID (Optional)</label>
+                                    <input type="text" id="testOwOfferId" class="form-control" placeholder="e.g. test_offer_01" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="display: flex; gap: 12px; align-items: center; margin-top: 18px;">
+                            <button type="button" class="btn-test" onclick="executePostbackTest()">
+                                <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                                <span>Dispatch Test S2S Postback</span>
+                            </button>
+                            <span id="testLoading" style="display: none; font-size: 13px; color: #64748b;">Processing callback...</span>
+                        </div>
+
+                        <div id="testResult" class="test-result-box"></div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- TOAST NOTIFICATION -->
+    <div id="toast" class="toast">
+        <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="#10b981"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+        <span id="toastMsg">Copied to clipboard!</span>
+    </div>
+
+    <script>
+        let currentBaseUrl = '<%= baseUrl || "https://crazyreward.zodplaygames.com" %>';
+
+        // Initialize Base Domain: Default to official https://crazyreward.zodplaygames.com
+        window.addEventListener('DOMContentLoaded', () => {
+            if (!currentBaseUrl) {
+                currentBaseUrl = 'https://crazyreward.zodplaygames.com';
+            }
+            updateDisplayedBaseUrls(currentBaseUrl);
+            generateRandomTx();
+        });
+
+        function applyCustomDomain() {
+            let inputVal = document.getElementById('customDomainInput').value.trim();
+            if (!inputVal) {
+                inputVal = 'https://crazyreward.zodplaygames.com';
+            }
+            // Remove trailing slash
+            if (inputVal.endsWith('/')) {
+                inputVal = inputVal.slice(0, -1);
+            }
+            currentBaseUrl = inputVal;
+            updateDisplayedBaseUrls(currentBaseUrl);
+            showToast('Target domain applied: ' + currentBaseUrl);
+        }
+
+        function updateDisplayedBaseUrls(domain) {
+            document.getElementById('activeDomainBadge').textContent = domain;
+            document.getElementById('customDomainInput').value = domain;
+            document.querySelectorAll('.url-base-token').forEach(el => {
+                el.textContent = domain;
+            });
+        }
+
+        function copyDynamicUrl(template) {
+            const finalUrl = template.replace('{BASE_URL}', currentBaseUrl);
+            copyText(finalUrl);
+        }
+
+        function copyTaskFromBtn(btn) {
+            const offerId = btn.getAttribute('data-offer-id') || '';
+            const secret = btn.getAttribute('data-secret') || '';
+            const isMulti = btn.getAttribute('data-multi') === '1';
+            copyTaskPostback(offerId, secret, isMulti);
+        }
+
+        function copyTaskPostback(offerId, secret, isMulti) {
+            let url = `${currentBaseUrl}/cpa-postback?userId={subId}&appName=crazyreward&offerId=${offerId}&secret=${secret}`;
+            if (isMulti) {
+                url += '&eventId={eventId}';
+            }
+            copyText(url);
+        }
+
+        function copyText(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                showToast('Copied to clipboard!');
+            }).catch(err => {
+                console.error('Copy error:', err);
+            });
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMsg').textContent = msg;
+            toast.style.display = 'flex';
+            setTimeout(() => {
+                toast.style.display = 'none';
+            }, 2500);
+        }
+
+        // TABS SWITCHING
+        function switchDocTab(tabName) {
+            document.querySelectorAll('.doc-tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-pane').forEach(pane => pane.classList.remove('active'));
+
+            const targetBtn = Array.from(document.querySelectorAll('.doc-tab-btn')).find(b => b.getAttribute('onclick').includes(tabName));
+            if (targetBtn) targetBtn.classList.add('active');
+
+            const targetPane = document.getElementById('tab-' + tabName);
+            if (targetPane) targetPane.classList.add('active');
+        }
+
+        function openTesterWithProvider(providerName) {
+            switchDocTab('tester');
+            const radio = document.querySelector('input[name="testerMode"][value="offerwall"]');
+            if (radio) {
+                radio.checked = true;
+                toggleTesterMode();
+            }
+            const providerSelect = document.getElementById('testProviderSelect');
+            if (providerSelect) {
+                providerSelect.value = providerName.toLowerCase();
+                onProviderSelectChange();
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function toggleTesterMode() {
+            const mode = document.querySelector('input[name="testerMode"]:checked').value;
+            const cpaSec = document.getElementById('testerCpaSection');
+            const owSec = document.getElementById('testerOfferwallSection');
+            const resultBox = document.getElementById('testResult');
+            resultBox.style.display = 'none';
+
+            if (mode === 'cpa') {
+                cpaSec.style.display = 'block';
+                owSec.style.display = 'none';
+            } else {
+                cpaSec.style.display = 'none';
+                owSec.style.display = 'block';
+            }
+        }
+
+        function onProviderSelectChange() {
+            const val = document.getElementById('testProviderSelect').value;
+            const customGroup = document.getElementById('customProviderInputGroup');
+            customGroup.style.display = val === 'custom' ? 'block' : 'none';
+        }
+
+        function generateRandomTx() {
+            const rand = 'tx_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
+            const input = document.getElementById('testOwTxId');
+            if (input) input.value = rand;
+        }
+
+        function onTaskSelectChange() {
+            const select = document.getElementById('testTaskSelect');
+            const selectedOpt = select.options[select.selectedIndex];
+            const eventGroup = document.getElementById('testEventGroup');
+            const eventSelect = document.getElementById('testEventSelect');
+
+            if (!selectedOpt || !selectedOpt.value) {
+                document.getElementById('testOfferId').value = '';
+                document.getElementById('testSecret').value = '';
+                eventGroup.style.display = 'none';
+                eventSelect.innerHTML = '';
+                return;
+            }
+
+            document.getElementById('testOfferId').value = selectedOpt.value;
+            document.getElementById('testSecret').value = selectedOpt.dataset.secret || '';
+
+            try {
+                const events = JSON.parse(selectedOpt.dataset.events || '[]');
+                if (Array.isArray(events) && events.length > 0) {
+                    eventSelect.innerHTML = '';
+                    events.forEach((ev, idx) => {
+                        const opt = document.createElement('option');
+                        opt.value = ev.eventId || `event_${idx + 1}`;
+                        opt.textContent = `Event ${idx + 1}: ${ev.label || ev.name || 'Event'} (+${ev.coins || 0} Coins) [ID: ${opt.value}]`;
+                        eventSelect.appendChild(opt);
+                    });
+                    eventGroup.style.display = 'block';
+                } else {
+                    eventGroup.style.display = 'none';
+                    eventSelect.innerHTML = '';
+                }
+            } catch (e) {
+                eventGroup.style.display = 'none';
+            }
+        }
+
+        // UNIFIED LIVE TESTER EXECUTION
+        async function executePostbackTest() {
+            const mode = document.querySelector('input[name="testerMode"]:checked').value;
+            const resultBox = document.getElementById('testResult');
+            const loading = document.getElementById('testLoading');
+
+            loading.style.display = 'inline';
+            resultBox.style.display = 'none';
+
+            try {
+                if (mode === 'cpa') {
+                    // Direct CPA Task Dispatch
+                    const userId = document.getElementById('testUserId').value.trim();
+                    const offerId = document.getElementById('testOfferId').value.trim();
+                    const secret = document.getElementById('testSecret').value.trim();
+                    const eventGroup = document.getElementById('testEventGroup');
+                    const eventSelect = document.getElementById('testEventSelect');
+
+                    if (!offerId) throw new Error('Please select an active Daily Task.');
+                    if (!userId) throw new Error('Please enter a target User ID.');
+                    if (!secret) throw new Error('Please enter or verify the Secret Key.');
+
+                    const params = new URLSearchParams({
+                        userId: userId,
+                        appName: 'crazyreward',
+                        offerId: offerId,
+                        secret: secret
+                    });
+                    if (eventGroup.style.display !== 'none' && eventSelect.value) {
+                        params.set('eventId', eventSelect.value);
+                    }
+
+                    const testUrl = '/cpa-postback?' + params.toString();
+                    const res = await fetch(testUrl, { method: 'GET' });
+                    const text = await res.text();
+
+                    loading.style.display = 'none';
+                    resultBox.style.display = 'block';
+
+                    if (res.ok && (text === '1' || text.includes('success'))) {
+                        resultBox.className = 'test-result-box test-result-success';
+                        resultBox.innerHTML = `<b>SUCCESS (HTTP ${res.status}):</b> Direct CPA Postback verified. Response: <code>${text}</code>. Coins successfully credited to User <code>${userId}</code>.`;
+                    } else {
+                        resultBox.className = 'test-result-box test-result-error';
+                        resultBox.innerHTML = `<b>EXECUTION REJECTED (HTTP ${res.status}):</b> Server response: <code>${text}</code>.<br/><small>Check that the User exists, task secret is valid, and account is not blocked.</small>`;
+                    }
+                } else {
+                    // Offerwall & Survey Dispatch
+                    const provider = document.getElementById('testProviderSelect').value;
+                    let targetProvider = provider;
+                    if (provider === 'custom') {
+                        targetProvider = document.getElementById('testCustomProvider').value.trim() || 'Custom';
+                    }
+
+                    const userId = document.getElementById('testOwUserId').value.trim();
+                    const coins = document.getElementById('testOwCoins').value.trim();
+                    const txId = document.getElementById('testOwTxId').value.trim() || ('tx_' + Date.now());
+                    const offerId = document.getElementById('testOwOfferId').value.trim() || `${targetProvider}_test`;
+
+                    if (!userId) throw new Error('Please enter a target User ID.');
+                    if (!coins || Number(coins) <= 0) throw new Error('Please enter a valid coin amount (> 0).');
+
+                    // Determine route & parameters according to provider
+                    let endpoint = `/postback/${targetProvider}`;
+                    let params = new URLSearchParams();
+
+                    if (targetProvider === 'pubscale') {
+                        params.set('userId', userId);
+                        params.set('token', txId);
+                        params.set('value', coins);
+                        params.set('offer_id', offerId);
+                    } else if (targetProvider === 'bitlabs') {
+                        params.set('uid', userId);
+                        params.set('val', coins);
+                        params.set('tx', txId);
+                        params.set('offer_id', offerId);
+                    } else if (targetProvider === 'cpx') {
+                        params.set('sub_id', userId);
+                        params.set('amount', coins);
+                        params.set('trans_id', txId);
+                        params.set('status', '1');
+                    } else if (targetProvider === 'timewall') {
+                        params.set('userID', userId);
+                        params.set('currencyAmount', coins);
+                        params.set('transactionID', txId);
+                        params.set('offerId', offerId);
+                    } else if (targetProvider === 'growdeck') {
+                        params.set('user_id', userId);
+                        params.set('reward', coins);
+                        params.set('trans_id', txId);
+                        params.set('offer_id', offerId);
+                    } else if (targetProvider === 'playtimeads') {
+                        params.set('userId', userId);
+                        params.set('coins', coins);
+                        params.set('txId', txId);
+                        params.set('offerId', offerId);
+                    } else if (targetProvider === 'wannads') {
+                        params.set('subId', userId);
+                        params.set('reward', coins);
+                        params.set('transId', txId);
+                        params.set('status', '1');
+                    } else if (targetProvider === 'tapjoy') {
+                        params.set('snuid', userId);
+                        params.set('currency', coins);
+                        params.set('id', txId);
+                    } else {
+                        params.set('userId', userId);
+                        params.set('amount', coins);
+                        params.set('trans_id', txId);
+                        params.set('offer_id', offerId);
+                    }
+
+                    const testUrl = `${endpoint}?${params.toString()}`;
+                    const res = await fetch(testUrl, { method: 'GET' });
+                    const text = await res.text();
+
+                    loading.style.display = 'none';
+                    resultBox.style.display = 'block';
+
+                    if (res.ok && (text === '1' || text.toLowerCase().includes('success'))) {
+                        resultBox.className = 'test-result-box test-result-success';
+                        resultBox.innerHTML = `<b>SUCCESS (HTTP ${res.status}):</b> [${targetProvider.toUpperCase()}] Postback verified. Response: <code>${text}</code>. ${coins} coins credited to User <code>${userId}</code> (TX: <code>${txId}</code>).`;
+                        generateRandomTx(); // Refresh TX for next click
+                    } else {
+                        resultBox.className = 'test-result-box test-result-error';
+                        resultBox.innerHTML = `<b>EXECUTION FAILED (HTTP ${res.status}):</b> Server returned: <code>${text}</code>.<br/><small>Ensure the User ID exists, is not blocked, and coins > 0.</small>`;
+                    }
+                }
+            } catch (err) {
+                loading.style.display = 'none';
+                resultBox.style.display = 'block';
+                resultBox.className = 'test-result-box test-result-error';
+                resultBox.innerHTML = `<b>ERROR:</b> ${err.message}`;
+            }
+        }
+    </script>
+    <script src="/js/admin.js"></script>
+</body>
+
+</html>

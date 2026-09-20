@@ -1,0 +1,437 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <title>Super Offer Verification - Admin</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/admin.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --bg-body: #f4f7fa;
+            --bg-card: #ffffff;
+            --primary: #052e1f;
+            --primary-hover: #042418;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border-color: #cbd5e1;
+            --radius-card: 16px;
+            --radius-input: 10px;
+        }
+
+        body.dashboard-body {
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            margin: 0;
+        }
+
+        .super-offer-container {
+            padding: 24px 32px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        /* Top Page Header Bar */
+        .page-header-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 24px;
+            background: #ffffff;
+            padding: 20px 24px;
+            border-radius: var(--radius-card);
+            border: 1px solid var(--border-color);
+            box-shadow: 0 2px 8px rgba(15, 23, 42, 0.03);
+        }
+
+        .page-title {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--text-main);
+            margin: 0 0 4px 0;
+            letter-spacing: -0.02em;
+        }
+
+        .page-subtitle {
+            font-size: 13.5px;
+            color: var(--text-muted);
+            margin: 0;
+            font-weight: 500;
+        }
+
+        .config-card {
+            background: var(--bg-card);
+            border-radius: var(--radius-card);
+            border: 1px solid var(--border-color);
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(15, 23, 42, 0.02);
+            margin-bottom: 24px;
+        }
+
+        .proofs-toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .proof-thumb {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 1px solid #cbd5e1;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .proof-thumb:hover {
+            transform: scale(1.08);
+            border-color: var(--primary);
+        }
+
+        .btn-approve {
+            background: #16a34a;
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            padding: 6px 14px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-approve:hover {
+            background: #15803d;
+        }
+
+        .btn-reject {
+            background: #ef4444;
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            padding: 6px 14px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-reject:hover {
+            background: #dc2626;
+        }
+
+        .btn-add-step {
+            background: #f1f5f9;
+            color: #475569;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            padding: 6px 12px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-add-step:hover {
+            background: #e2e8f0;
+            color: #0f172a;
+        }
+
+        /* Modal Styles */
+        .modal-backdrop {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(4px);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-box {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 24px;
+            width: 100%;
+            max-width: 480px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        .field-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .field-label {
+            font-size: 12.5px;
+            font-weight: 700;
+            color: #475569;
+        }
+
+        .field-input {
+            padding: 9px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-input);
+            font-size: 13.5px;
+            font-weight: 600;
+            background: #f8fafc;
+            color: var(--text-main);
+            outline: none;
+            transition: border-color 0.2s ease;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .field-input:focus {
+            border-color: var(--primary);
+            background: #ffffff;
+        }
+    </style>
+</head>
+
+<body class="dashboard-body">
+    <div class="dashboard-shell">
+        <%- include('../partials/sidebar', { activePage: 'super-offer-verification' }) %>
+
+        <div class="dashboard-main">
+            <header class="navbar dashboard-navbar">
+                <div class="nav-left" style="display: flex; align-items: center; gap: 12px; white-space: nowrap;">
+                    <button type="button" class="sidebar-toggle-btn" onclick="toggleSidebar()"><i class="fa-solid fa-bars"></i></button>
+                    <h2 style="margin: 0; font-size: 18px; font-weight: 800; white-space: nowrap;">Super Offer Verification</h2>
+                </div>
+                <div class="nav-right" onclick="toggleDropdown()">
+                    <div class="avatar"><%- typeof photo !== 'undefined' && photo ? photo : 'A' %></div>
+                    <div class="dropdown" id="dropdown">
+                        <a href="/logout">Logout</a>
+                    </div>
+                </div>
+            </header>
+
+            <div class="super-offer-container">
+                <!-- Page Header -->
+                <div class="page-header-bar">
+                    <div>
+                        <h1 class="page-title"><i class="fa-solid fa-camera" style="margin-right: 8px;"></i> Super Offer Verification</h1>
+                        <p class="page-subtitle">Review submitted screenshot proofs, approve coins, and unlock subsequent usage steps for users</p>
+                    </div>
+                    <div>
+                        <button type="button" class="btn-add-step" onclick="fetchPendingProofs()"><i class="fa-solid fa-rotate-right" style="margin-right: 6px;"></i> Refresh List</button>
+                    </div>
+                </div>
+
+                <!-- Proofs Container Card -->
+                <div class="config-card">
+                    <div class="proofs-toolbar">
+                        <div>
+                            <h3 style="font-size: 17px; font-weight: 800; margin: 0 0 2px 0; color: #052e1f;">Submitted Proofs</h3>
+                            <p style="font-size: 12.5px; color: var(--text-muted); margin: 0;">Approve or reject submitted proof screenshots</p>
+                        </div>
+                        <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                            <input type="text" id="proofSearchInput" placeholder="Search User ID / App..." style="padding: 8px 14px; border: 1px solid var(--border-color); border-radius: 8px; font-size: 13px;" oninput="fetchPendingProofs()">
+                            <select id="proofStatusFilter" style="padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 8px; font-size: 13px; font-weight: 700; background: white;" onchange="fetchPendingProofs()">
+                                <option value="pending" selected>Pending Only</option>
+                                <option value="approved">Approved</option>
+                                <option value="rejected">Rejected</option>
+                                <option value="all">All</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div style="overflow-x: auto;">
+                        <table class="table-directory" style="width: 100%; border-collapse: collapse;">
+                            <thead>
+                                <tr style="border-bottom: 1.5px solid #e2e8f0; text-align: left; font-size: 12px; color: #64748b; text-transform: uppercase;">
+                                    <th style="padding: 12px 10px;">User</th>
+                                    <th style="padding: 12px 10px;">App Name</th>
+                                    <th style="padding: 12px 10px;">Screenshot</th>
+                                    <th style="padding: 12px 10px;">Coins</th>
+                                    <th style="padding: 12px 10px;">Status</th>
+                                    <th style="padding: 12px 10px;">Submitted Date</th>
+                                    <th style="padding: 12px 10px; text-align: right;">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="proofsTableBody">
+                                <tr>
+                                    <td colspan="7" style="text-align: center; color: var(--text-muted); padding: 36px;">Loading proofs...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- REJECTION MODAL -->
+    <div id="rejectModal" class="modal-backdrop" onclick="if(event.target === this) closeRejectModal()">
+        <div class="modal-box">
+            <h3 style="margin: 0 0 12px 0; font-size: 18px; font-weight: 800; color: #dc2626;"><i class="fa-solid fa-circle-xmark" style="margin-right: 6px;"></i> Reject Screenshot Proof</h3>
+            <p style="font-size: 13px; color: var(--text-muted); margin: 0 0 16px 0;">Please enter a reason for rejecting this screenshot. The user will receive this reason in their notification.</p>
+            <input type="hidden" id="rejectProofId">
+            <div class="field-group" style="margin-bottom: 20px;">
+                <label class="field-label">Rejection Reason</label>
+                <input type="text" class="field-input" id="rejectReasonInput" placeholder="e.g. Screenshot unreadable / Incorrect app screen / Fake proof">
+            </div>
+            <div style="display: flex; justify-content: flex-end; gap: 10px;">
+                <button type="button" class="btn-add-step" onclick="closeRejectModal()">Cancel</button>
+                <button type="button" class="btn-reject" onclick="confirmRejectProof()"><i class="fa-solid fa-xmark" style="margin-right: 4px;"></i> Confirm Rejection</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- IMAGE PREVIEW MODAL -->
+    <div id="imagePreviewModal" class="modal-backdrop" onclick="closeImageModal()">
+        <div style="position: relative; max-width: 90vw; max-height: 90vh;">
+            <img id="modalPreviewImg" src="" style="max-width: 100%; max-height: 85vh; border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.5);">
+        </div>
+    </div>
+
+    <script src="/js/admin.js"></script>
+    <script>
+        async function fetchPendingProofs() {
+            const search = document.getElementById('proofSearchInput').value.trim();
+            const status = document.getElementById('proofStatusFilter').value;
+            const tbody = document.getElementById('proofsTableBody');
+            tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: var(--text-muted); padding: 36px;">Loading proofs...</td></tr>';
+
+            try {
+                const res = await fetch(`/admin/super-offer/pending-proofs?search=${encodeURIComponent(search)}&status=${encodeURIComponent(status)}`);
+                const data = await res.json();
+
+                if (data.success && data.proofs && data.proofs.length > 0) {
+                    tbody.innerHTML = data.proofs.map(p => {
+                        const statusColor = p.status === 'approved' ? '#15803d' : (p.status === 'rejected' ? '#dc2626' : '#d97706');
+                        const statusBg = p.status === 'approved' ? '#dcfce7' : (p.status === 'rejected' ? '#fee2e2' : '#fef3c7');
+                        const dateStr = p.createdAt ? new Date(p.createdAt).toLocaleString('en-IN') : '-';
+
+                        let rawImg = p.imageUrl || p.proofImageUrl || '';
+                        let imgUrl = rawImg;
+                        if (imgUrl && !imgUrl.startsWith('http') && !imgUrl.startsWith('/') && !imgUrl.startsWith('data:')) {
+                            imgUrl = '/' + imgUrl;
+                        }
+                        const isInvalidLocalPath = rawImg.includes('/data/user/') || rawImg.includes('/cache/');
+
+                        let imgHtml = '<span style="color: #94a3b8; font-size: 11.5px;">No Image</span>';
+                        if (isInvalidLocalPath) {
+                            imgHtml = '<span style="color: #ef4444; font-size: 11px; font-weight: 700; background: #fee2e2; padding: 2px 6px; border-radius: 4px;">Old Path (Unreadable)</span>';
+                        } else if (imgUrl) {
+                            imgHtml = `<img src="${imgUrl}" class="proof-thumb" onclick="openImageModal('${imgUrl}')" alt="Proof" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-block';"><span style="display:none; color: #ef4444; font-size: 11px;">Image failed</span>`;
+                        }
+
+                        return `
+                            <tr style="border-bottom: 1px solid #f1f5f9; font-size: 13px;">
+                                <td style="padding: 12px 10px;">
+                                    <strong style="color: #0f172a;">${p.userId}</strong><br>
+                                    <span style="font-size: 11.5px; color: #64748b;">${p.userEmail || '-'}</span>
+                                </td>
+                                <td style="padding: 12px 10px; font-weight: 700;">${p.appName || 'Super Offer'}</td>
+                                <td style="padding: 12px 10px;">
+                                    ${imgHtml}
+                                </td>
+                                <td style="padding: 12px 10px; font-weight: 800; color: #b45309;"><i class="fa-solid fa-coins" style="color: #eab308; margin-right: 4px;"></i> ${p.coins || 0}</td>
+                                <td style="padding: 12px 10px;">
+                                    <span style="background: ${statusBg}; color: ${statusColor}; padding: 3px 8px; border-radius: 6px; font-size: 11px; font-weight: 800; text-transform: uppercase;">
+                                        ${p.status}
+                                    </span>
+                                </td>
+                                <td style="padding: 12px 10px; color: #64748b; font-size: 12px;">${dateStr}</td>
+                                <td style="padding: 12px 10px; text-align: right;">
+                                    ${p.status === 'pending' ? `
+                                        <div style="display: inline-flex; gap: 6px;">
+                                            <button type="button" class="btn-approve" onclick="approveProof('${p._id}')"><i class="fa-solid fa-check" style="margin-right: 4px;"></i> Approve</button>
+                                            <button type="button" class="btn-reject" onclick="openRejectModal('${p._id}')"><i class="fa-solid fa-xmark" style="margin-right: 4px;"></i> Reject</button>
+                                        </div>
+                                    ` : `<span style="color: #94a3b8; font-size: 12px; font-weight: 600;">Reviewed</span>`}
+                                </td>
+                            </tr>
+                        `;
+                    }).join('');
+                } else {
+                    tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: var(--text-muted); padding: 36px;">No proof records found</td></tr>';
+                }
+            } catch (err) {
+                console.error(err);
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: #ef4444; padding: 36px;">Error loading proofs</td></tr>';
+            }
+        }
+
+        async function approveProof(id) {
+            if (!confirm('Approve this proof and credit coins to the user?')) return;
+            try {
+                const res = await fetch(`/admin/super-offer/approve-proof/${id}`, { method: 'POST' });
+                const data = await res.json();
+                if (data.success) {
+                    alert(data.message);
+                    fetchPendingProofs();
+                } else {
+                    alert('Failed: ' + (data.message || 'Error'));
+                }
+            } catch (err) {
+                alert('Request failed');
+            }
+        }
+
+        function openRejectModal(id) {
+            document.getElementById('rejectProofId').value = id;
+            document.getElementById('rejectReasonInput').value = '';
+            document.getElementById('rejectModal').style.display = 'flex';
+        }
+
+        function closeRejectModal() {
+            document.getElementById('rejectModal').style.display = 'none';
+        }
+
+        async function confirmRejectProof() {
+            const id = document.getElementById('rejectProofId').value;
+            const reason = document.getElementById('rejectReasonInput').value.trim();
+            try {
+                const res = await fetch(`/admin/super-offer/reject-proof/${id}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ reason })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    closeRejectModal();
+                    alert('Proof rejected.');
+                    fetchPendingProofs();
+                } else {
+                    alert('Failed: ' + (data.message || 'Error'));
+                }
+            } catch (err) {
+                alert('Request failed');
+            }
+        }
+
+        function openImageModal(url) {
+            document.getElementById('modalPreviewImg').src = url;
+            document.getElementById('imagePreviewModal').style.display = 'flex';
+        }
+
+        function closeImageModal() {
+            document.getElementById('imagePreviewModal').style.display = 'none';
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchPendingProofs();
+        });
+    </script>
+</body>
+
+</html>

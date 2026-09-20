@@ -1,0 +1,404 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <title>Game Manager - Admin</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/admin.css">
+
+    <style>
+        :root {
+            --bg: #f8fafc;
+            --surface: #ffffff;
+            --border: #e2e8f0;
+            --primary: #052e1f;
+            --primary-hover: #042418;
+            --text: #0f172a;
+            --muted: #64748b;
+            --radius-card: 20px;
+            --radius-input: 12px;
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', sans-serif !important;
+        }
+
+        body.dashboard-body {
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+        }
+
+        .game-manager-container {
+            padding: 24px 32px;
+            width: 100%;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        /* Page Header Bar */
+        .page-header-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 24px;
+            background: var(--surface);
+            padding: 24px 28px;
+            border-radius: var(--radius-card);
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.02);
+        }
+
+        .page-title-section h1 {
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--primary);
+            margin: 0 0 6px 0;
+            letter-spacing: -0.02em;
+        }
+
+        .page-title-section p {
+            font-size: 13px;
+            color: var(--muted);
+            margin: 0;
+            font-weight: 500;
+        }
+
+        .header-save-actions {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        /* Game Tabs Selector Row */
+        .game-tabs-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 24px;
+            padding: 6px;
+            background: #eef2f6;
+            border-radius: 14px;
+            width: fit-content;
+        }
+
+        .game-tab-btn {
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 13px;
+            color: var(--muted);
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .game-tab-btn.active {
+            color: #ffffff;
+            background: var(--primary);
+            box-shadow: 0 4px 12px rgba(5, 46, 31, 0.15);
+        }
+
+        .game-tab-btn:hover:not(.active) {
+            color: var(--primary);
+            background: rgba(5, 46, 31, 0.04);
+        }
+
+        .game-tab-btn.add-tab {
+            border: 1px dashed #cbd5e1;
+            color: #475569;
+        }
+
+        .game-tab-btn.add-tab:hover {
+            background: #ffffff;
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        /* Single Glass Card */
+        .glass-card {
+            background: var(--surface);
+            border-radius: var(--radius-card);
+            padding: 28px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
+            border: 1px solid var(--border);
+        }
+
+        .card-header-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 24px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 14px;
+        }
+
+        .card-header-icon {
+            font-size: 20px;
+        }
+
+        .card-header-title {
+            font-size: 16px;
+            font-weight: 800;
+            color: var(--text);
+            margin: 0;
+            letter-spacing: -0.01em;
+        }
+
+        /* Inputs & Form Groups */
+        .field-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .field-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .field-label {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .field-input, .field-select {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-input);
+            font-size: 14px;
+            font-family: inherit;
+            color: var(--text);
+            background: #ffffff;
+            transition: all 0.2s ease;
+            box-sizing: border-box;
+        }
+
+        .field-input:focus, .field-select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(5, 46, 31, 0.08);
+        }
+
+        .field-help {
+            font-size: 12px;
+            color: var(--muted);
+            line-height: 1.4;
+            font-weight: 500;
+        }
+
+        /* Primary Save Actions Button */
+        .save-btn-main {
+            background: var(--primary);
+            color: #ffffff;
+            padding: 12px 28px;
+            border: none;
+            border-radius: var(--radius-input);
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(5, 46, 31, 0.15);
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .save-btn-main:hover {
+            background: var(--primary-hover);
+            transform: translateY(-1px);
+        }
+
+        .save-status-text {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--muted);
+        }
+    </style>
+</head>
+
+<body class="dashboard-body">
+    <div class="dashboard-shell">
+        <%- include('../partials/sidebar', { activePage: 'diamond-catch' }) %>
+
+        <div class="dashboard-main">
+            <header class="navbar dashboard-navbar">
+                <div class="nav-left" style="display: flex; align-items: center; gap: 12px;">
+                    <button type="button" class="sidebar-toggle-btn" onclick="toggleSidebar()">Menu</button>
+                    <h2 style="margin: 0; font-size: 18px; font-weight: 800;">Games Settings Manager</h2>
+                </div>
+                <div class="nav-right">
+                    <div class="user-profile">
+                        <div class="avatar"><%= typeof photo !== 'undefined' && photo ? photo : 'A' %></div>
+                    </div>
+                </div>
+            </header>
+
+            <div class="game-manager-container">
+                <form id="diamondCatchForm" onsubmit="saveDiamondCatchConfig(event)">
+                    
+                    <!-- Hidden fields to preserve other Super Offer properties -->
+                    <input type="hidden" id="reward" value="<%= config.reward !== undefined ? config.reward : 10 %>">
+                    <input type="hidden" id="gemsRequired" value="<%= config.gemsRequired !== undefined ? config.gemsRequired : 20 %>">
+                    <input type="hidden" id="limitType" value="<%= config.limitType || 'hours' %>">
+                    <input type="hidden" id="hoursGap" value="<%= config.hoursGap || '10' %>">
+                    <input type="hidden" id="dailyLimit" value="<%= config.superOfferDailyLimit || config.dailyLimit || '10' %>">
+                    <input type="hidden" id="adsRequired" value="<%= config.adsRequired !== false ? 'true' : 'false' %>">
+                    <input type="hidden" id="installTask" value="<%= config.installTask !== false ? 'true' : 'false' %>">
+                    <input type="hidden" id="installGems" value="<%= config.installGems !== undefined ? config.installGems : 10 %>">
+                    <input type="hidden" id="tutorialUrl" value="<%= config.tutorialUrl || '' %>">
+                    <input type="hidden" id="howToPlayHidden" value="<%= (Array.isArray(config.howToPlay) ? config.howToPlay : []).join('\n') %>">
+
+                    <!-- Top Page Header Bar with Save Button -->
+                    <div class="page-header-bar">
+                        <div class="page-title-section">
+                            <h1>Games Configuration</h1>
+                            <p>Select a game below to manage gameplay gems rewards, limits, ads, and target scores</p>
+                        </div>
+                        <div class="header-save-actions">
+                            <span id="saveStatusHeader" class="save-status-text"></span>
+                            <button type="submit" class="save-btn-main">
+                                Save Settings
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Game Selection Tabs -->
+                    <div class="game-tabs-row">
+                        <button type="button" class="game-tab-btn active">
+                            <i class="fa-solid fa-gamepad" style="margin-right: 6px;"></i> Diamond Catch
+                        </button>
+                        <button type="button" class="game-tab-btn add-tab" onclick="alert('Add New Game configuration module is coming soon!')">
+                            <i class="fa-solid fa-plus" style="margin-right: 6px;"></i> Add New Game
+                        </button>
+                    </div>
+
+                    <!-- Single Config Card for Diamond Catch -->
+                    <div class="glass-card">
+                        <div class="card-header-row">
+                            <span class="card-header-icon"><i class="fa-solid fa-gamepad"></i></span>
+                            <h3 class="card-header-title">Diamond Catch Configuration Panel</h3>
+                        </div>
+
+                        <div class="form-grid-2">
+                            <div class="field-group">
+                                <label class="field-label" for="gameGems">Game Gems Reward</label>
+                                <input type="number" class="field-input" id="gameGems" name="gameGems" min="0" value="<%= config.gameGems !== undefined ? config.gameGems : 10 %>">
+                            </div>
+
+                            <div class="field-group">
+                                <label class="field-label" for="gameDailyLimit">Daily Game Claim Limit</label>
+                                <input type="text" class="field-input" id="gameDailyLimit" name="gameDailyLimit" value="<%= config.gameDailyLimit || '10-20' %>">
+                            </div>
+
+                            <div class="field-group">
+                                <label class="field-label" for="gameInstallTaskTriggerLimit">Game Collect Install Task Trigger Claim</label>
+                                <input type="text" class="field-input" id="gameInstallTaskTriggerLimit" name="gameInstallTaskTriggerLimit" value="<%= config.gameInstallTaskTriggerLimit || '10-20' %>">
+                            </div>
+
+                            <div class="field-group">
+                                <label class="field-label" for="adType">Game Ad Type</label>
+                                <select class="field-select" id="adType" name="adType">
+                                    <option value="rewarded" <%= config.adType === 'interstitial' ? '' : 'selected' %>>Rewarded Ad</option>
+                                    <option value="interstitial" <%= config.adType === 'interstitial' ? 'selected' : '' %>>Interstitial Ad</option>
+                                </select>
+                            </div>
+
+                            <div class="field-group full-width" style="margin-top: 6px;">
+                                <label class="field-label" for="installTaskMb">Install Task Required Storage MB</label>
+                                <input type="number" class="field-input" id="installTaskMb" name="installTaskMb" min="1" value="<%= config.installTaskMb !== undefined ? config.installTaskMb : 15 %>" placeholder="15">
+                            </div>
+
+                            <div class="field-group full-width" style="margin-top: 6px;">
+                                <label class="field-label" for="targetScores">Game Target Scores (Comma Separated, e.g. 10, 20, 30)</label>
+                                <input type="text" class="field-input" id="targetScores" name="targetScores" value="<%= (Array.isArray(config.targetScores) ? config.targetScores : [10, 20, 30]).join(', ') %>" placeholder="10, 20, 30">
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function setStatus(text, color) {
+            const h = document.getElementById('saveStatusHeader');
+            if (h) {
+                h.textContent = text;
+                h.style.color = color;
+            }
+        }
+
+        async function saveDiamondCatchConfig(e) {
+            e.preventDefault();
+            setStatus('Saving...', '#64748b');
+
+            const targetScoresRaw = document.getElementById('targetScores').value;
+            const targetScores = targetScoresRaw
+                .split(',')
+                .map(s => parseInt(s.trim()))
+                .filter(n => !isNaN(n));
+
+            const rawHowToPlay = document.getElementById('howToPlayHidden').value;
+            const howToPlay = rawHowToPlay
+                .split('\n')
+                .map(s => s.trim())
+                .filter(Boolean);
+
+            const superOfferLimitVal = document.getElementById('dailyLimit').value.trim() || '10';
+            const gameLimitVal = document.getElementById('gameDailyLimit').value.trim() || '10-20';
+
+            const payload = {
+                appData: {
+                    superOfferConfig: {
+                        reward: parseInt(document.getElementById('reward').value) || 0,
+                        gemsRequired: parseInt(document.getElementById('gemsRequired').value) || 0,
+                        limitType: document.getElementById('limitType').value,
+                        hoursGap: document.getElementById('hoursGap').value,
+                        dailyLimit: superOfferLimitVal,
+                        superOfferDailyLimit: superOfferLimitVal,
+                        gameDailyLimit: gameLimitVal,
+                        adsRequired: document.getElementById('adsRequired').value === 'true',
+                        installTask: document.getElementById('installTask').value === 'true',
+                        installGems: parseInt(document.getElementById('installGems').value) || 0,
+                        gameGems: parseInt(document.getElementById('gameGems').value) || 0,
+                        gameInstallTaskTriggerLimit: document.getElementById('gameInstallTaskTriggerLimit').value.trim() || '10-20',
+                        adType: document.getElementById('adType').value || 'rewarded',
+                        installTaskMb: parseInt(document.getElementById('installTaskMb').value) || 15,
+                        targetScores: targetScores.length > 0 ? targetScores : [10, 20, 30],
+                        tutorialUrl: document.getElementById('tutorialUrl').value.trim(),
+                        howToPlay: howToPlay
+                    }
+                }
+            };
+
+            try {
+                const res = await fetch('/app-data-config/app-data', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+                if (data.success) {
+                    setStatus('Saved successfully!', '#10b981');
+                    setTimeout(() => { setStatus('', '#64748b'); }, 3000);
+                } else {
+                    setStatus('Failed: ' + (data.message || 'Error'), '#ef4444');
+                }
+            } catch (err) {
+                console.error(err);
+                setStatus('Request failed', '#ef4444');
+            }
+        }
+    </script>
+    <script src="/js/admin.js"></script>
+</body>
+
+</html>

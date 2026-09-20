@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Add Giveaway - Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="/css/admin.css">
+    <link rel="icon" href="/images/favicon.png">
+    <style>
+        :root {
+            --bg: #f0f2f7;
+            --surface: #ffffff;
+            --surface2: #f7f8fc;
+            --border: #e2e5f0;
+            --border-active: #bcc4e0;
+            --accent: #3b5bdb;
+            --accent-dim: rgba(59, 91, 219, 0.08);
+            --accent-glow: rgba(59, 91, 219, 0.14);
+            --accent-light: #4c6ef5;
+            --accent-text: #2f4ac4;
+            --red: #c92a2a;
+            --red-dim: rgba(201, 42, 42, 0.08);
+            --amber: #875d0a;
+            --amber-bg: #fff9e6;
+            --amber-border: rgba(204, 139, 0, 0.2);
+            --text: #1a1f36;
+            --text-muted: #6b7280;
+            --text-dim: #adb5c7;
+            --sans: 'DM Sans', sans-serif;
+            --mono: 'DM Mono', monospace;
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.07), 0 1px 2px rgba(0, 0, 0, 0.04);
+            --shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--sans);
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            padding: 32px 16px 56px;
+        }
+
+        .wrap {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 22px;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--accent-dim);
+            border: 1px solid rgba(59, 91, 219, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .header-title {
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+        }
+
+        .header-sub {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 1px;
+        }
+
+        .btn-back {
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.18s;
+        }
+
+        .btn-back:hover {
+            border-color: var(--border-active);
+            color: var(--text);
+        }
+
+        /* Card */
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        /* Section */
+        .section {
+            padding: 22px 24px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .section:last-child {
+            border-bottom: none;
+        }
+
+        .section-head {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 18px;
+        }
+
+        .section-num {
+            width: 22px;
+            height: 22px;
+            background: var(--accent-dim);
+            border: 1px solid rgba(59, 91, 219, 0.18);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--accent-text);
+            font-family: var(--mono);
+            flex-shrink: 0;
+        }
+
+        .section-title {
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .section-sub {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 1px;
+        }
+
+        /* Grid */
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        .full {
+            grid-column: 1 / -1;
+        }
+
+        /* Form group */
+        .fg {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .fg label {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .req {
+            color: var(--red);
+        }
+
+        .opt {
+            color: var(--text-dim);
+            font-weight: 400;
+            text-transform: none;
+            letter-spacing: 0;
+            font-size: 10px;
+        }
+
+        input,
+        textarea,
+        select {
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text);
+            font-family: var(--sans);
+            font-size: 13px;
+            padding: 9px 12px;
+            width: 100%;
+            transition: border-color 0.18s, box-shadow 0.18s, background 0.18s;
+        }
+
+        input:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--accent-light);
+            background: var(--surface);
+            box-shadow: 0 0 0 3px var(--accent-glow);
+        }
+
+        input::placeholder,
+        textarea::placeholder {
+            color: var(--text-dim);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 76px;
+        }
+
+        input[type="number"] {
+            -moz-appearance: textfield;
+            appearance: textfield;
+        }
+
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+        }
+
+        /* Switch */
+        .switch {
+            position: relative;
+            width: 40px;
+            height: 22px;
+            flex-shrink: 0;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            inset: 0;
+            background: var(--border-active);
+            border-radius: 99px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .slider::before {
+            content: '';
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            left: 3px;
+            top: 3px;
+            background: #fff;
+            border-radius: 50%;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+            transition: transform 0.2s;
+        }
+
+        .switch input:checked+.slider {
+            background: var(--accent);
+        }
+
+        .switch input:checked+.slider::before {
+            transform: translateX(18px);
+        }
+
+        /* Note */
+        .note {
+            display: flex;
+            gap: 8px;
+            align-items: flex-start;
+            background: var(--amber-bg);
+            border: 1px solid var(--amber-border);
+            border-radius: 8px;
+            padding: 9px 12px;
+            font-size: 12px;
+            color: var(--amber);
+            line-height: 1.5;
+            margin-top: 8px;
+        }
+
+        /* Rewards */
+        .rewards-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .reward-item {
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 14px;
+        }
+
+        .reward-item-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .reward-tag {
+            font-family: var(--mono);
+            font-size: 10px;
+            font-weight: 500;
+            background: var(--accent-dim);
+            border: 1px solid rgba(59, 91, 219, 0.15);
+            color: var(--accent-text);
+            padding: 2px 8px;
+            border-radius: 99px;
+        }
+
+        .btn-remove {
+            background: var(--red-dim);
+            border: 1px solid rgba(201, 42, 42, 0.15);
+            color: var(--red);
+            padding: 5px 10px;
+            border-radius: 6px;
+            font-family: var(--sans);
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.18s;
+        }
+
+        .btn-remove:hover {
+            background: rgba(201, 42, 42, 0.14);
+        }
+
+        .reward-grid-top {
+            display: grid;
+            grid-template-columns: 1fr 1fr 90px;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .reward-grid-bottom {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .reward-toggle-wrap {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 9px 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            height: 100%;
+        }
+
+        .reward-toggle-wrap .tl {
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .reward-toggle-wrap .ts {
+            font-size: 10px;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        .btn-add-reward {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            width: 100%;
+            margin-top: 10px;
+            background: transparent;
+            border: 1.5px dashed var(--border-active);
+            color: var(--text-muted);
+            padding: 10px;
+            border-radius: 8px;
+            font-family: var(--sans);
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.18s;
+        }
+
+        .btn-add-reward:hover {
+            border-color: var(--accent-light);
+            color: var(--accent-text);
+            background: var(--accent-dim);
+        }
+
+        /* Submit */
+        .submit-wrap {
+            padding: 20px 24px;
+            background: var(--surface2);
+        }
+
+        .btn-submit {
+            width: 100%;
+            background: var(--accent);
+            border: none;
+            color: #fff;
+            font-family: var(--sans);
+            font-size: 14px;
+            font-weight: 700;
+            padding: 13px;
+            border-radius: 9px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 2px 8px rgba(59, 91, 219, 0.25);
+        }
+
+        .btn-submit:hover {
+            background: var(--accent-light);
+            box-shadow: 0 6px 20px rgba(59, 91, 219, 0.3);
+            transform: translateY(-1px);
+        }
+
+        .btn-submit:active {
+            transform: translateY(0);
+        }
+
+        /* Loader */
+        .loader-bg {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 20, 40, 0.45);
+            backdrop-filter: blur(4px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 12px;
+            z-index: 10000;
+        }
+
+        .loader-bg.show {
+            display: flex;
+        }
+
+        .spinner {
+            width: 32px;
+            height: 32px;
+            border: 2.5px solid var(--border);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 0.65s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .loader-text {
+            font-size: 13px;
+            color: var(--text-muted);
+            font-family: var(--mono);
+        }
+
+        @media (max-width: 600px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            .full {
+                grid-column: unset;
+            }
+
+            .reward-grid-top {
+                grid-template-columns: 1fr;
+            }
+
+            .reward-grid-bottom {
+                grid-template-columns: 1fr;
+            }
+
+            .section {
+                padding: 16px;
+            }
+
+            .submit-wrap {
+                padding: 16px;
+            }
+        }
+    </style>
+</head>
+
+<body class="dashboard-body">
+    <div class="dashboard-shell">
+        <%- include('../partials/sidebar', { activePage: 'giveaways' }) %>
+
+            <div class="dashboard-main">
+                <header class="navbar dashboard-navbar">
+                    <div class="nav-left">
+                        <button type="button" class="sidebar-toggle-btn" onclick="toggleSidebar()">
+                            ☰
+                        </button>
+                        <h2>Add Giveaway</h2>
+                    </div>
+
+                    <div class="nav-right" onclick="toggleDropdown()">
+                        <a href="/manage-giveaway" class="btn-back"
+                            style="background:#f1f5f9; color:#475569; padding:8px 16px; border-radius:10px; text-decoration:none; font-weight:700; display:inline-flex; align-items:center; gap:6px;">←
+                            Back to Giveaways</a>
+                        <div class="avatar">
+                            <%- typeof photo !== 'undefined' && photo ? photo : 'A' %>
+                        </div>
+                        <div class="dropdown" id="dropdown">
+                            <a href="/logout">Logout</a>
+                        </div>
+                    </div>
+                </header>
+
+                <main class="container dashboard-home">
+
+                    <div class="loader-bg" id="loaderBg">
+                        <div class="spinner"></div>
+                        <div class="loader-text">Creating giveaway…</div>
+                    </div>
+
+                    <div class="wrap">
+
+                        <div class="card">
+                            <form id="giveawayForm" novalidate>
+
+                                <!-- 01 Basic Info -->
+                                <div class="section">
+                                    <div class="section-head">
+                                        <div class="section-num">01</div>
+                                        <div>
+                                            <div class="section-title">Basic Info</div>
+                                            <div class="section-sub">Core details of the giveaway</div>
+                                        </div>
+                                    </div>
+                                    <div class="grid">
+                                        <div class="fg">
+                                            <label for="appName">App <span class="req">*</span></label>
+                                            <select id="appName" required>
+                                                <% firebaseServices.forEach(service=> { %>
+                                                    <option value="<%= service.appName %>"
+                                                        <%=service.appName===activeAppName ? 'selected' : '' %>>
+                                                        <%= service.displayName %>
+                                                    </option>
+                                                    <% }) %>
+                                            </select>
+                                        </div>
+                                        <div class="fg">
+                                            <label for="totalSlots">Total Slots <span class="req">*</span></label>
+                                            <input type="number" id="totalSlots" min="1" placeholder="e.g. 100"
+                                                required />
+                                        </div>
+                                        <div class="fg full">
+                                            <label for="title">Title <span class="req">*</span></label>
+                                            <input type="text" id="title" placeholder="Giveaway title…" required />
+                                        </div>
+                                        <div class="fg full">
+                                            <label for="description">Description <span class="req">*</span></label>
+                                            <textarea id="description" rows="3" placeholder="Describe this giveaway…"
+                                                required></textarea>
+                                        </div>
+                                        <div class="fg full">
+                                            <label for="bannerUrl">Banner URL <span class="req">*</span></label>
+                                            <input type="url" id="bannerUrl" placeholder="https://…" required />
+                                        </div>
+                                        <div class="fg">
+                                            <label for="startsAt">Starts At <span class="req">*</span></label>
+                                            <input type="datetime-local" id="startsAt" required />
+                                        </div>
+                                        <div class="fg">
+                                            <label for="declaresAt">Declares At <span class="req">*</span></label>
+                                            <input type="datetime-local" id="declaresAt" required />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- 02 Rewards -->
+                                <div class="section">
+                                    <div class="section-head">
+                                        <div class="section-num">02</div>
+                                        <div>
+                                            <div class="section-title">Rewards <span class="req">*</span></div>
+                                            <div class="section-sub">Each reward has its own auto-distribute and coins
+                                                setting</div>
+                                        </div>
+                                    </div>
+                                    <div id="rewardList" class="rewards-list"></div>
+                                    <button type="button" id="addRewardBtn" class="btn-add-reward">+ Add Reward</button>
+                                </div>
+
+                                <!-- Submit -->
+                                <div class="submit-wrap">
+                                    <button type="submit" class="btn-submit">🚀 Create Giveaway</button>
+                                </div>
+
+                            </form>
+                        </div>
+                    </div>
+
+                    <script src="/js/admin.js"></script>
+                    <script>
+                        function esc(v) {
+                            return String(v || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+                        }
+
+                        let rewards = [{ productName: '', productImage: '', productRank: 1, autoDistribute: false, coins: '' }];
+
+                        // Handle duplicate from manage page
+                        function parseDuplicateParams() {
+                            const params = new URLSearchParams(window.location.search);
+                            if (params.get('duplicate') !== '1') return;
+
+                            const appName = params.get('appName');
+                            if (appName) document.getElementById('appName').value = appName;
+
+                            const title = params.get('title');
+                            if (title) document.getElementById('title').value = decodeURIComponent(title);
+
+                            const desc = params.get('description');
+                            if (desc) document.getElementById('description').value = decodeURIComponent(desc);
+
+                            const bannerUrl = params.get('bannerUrl');
+                            if (bannerUrl) document.getElementById('bannerUrl').value = decodeURIComponent(bannerUrl);
+
+                            const totalSlots = params.get('totalSlots');
+                            if (totalSlots) document.getElementById('totalSlots').value = totalSlots;
+
+                            // Set dates to future (clear them for user to pick)
+                            document.getElementById('startsAt').value = '';
+                            document.getElementById('declaresAt').value = '';
+
+                            // Parse rewards
+                            const rewardsParam = params.get('rewards');
+                            if (rewardsParam) {
+                                const rewardItems = rewardsParam.split(',');
+                                rewards = rewardItems.map(item => {
+                                    const parts = item.split('|');
+                                    return {
+                                        productName: decodeURIComponent(parts[0] || ''),
+                                        productImage: decodeURIComponent(parts[1] || ''),
+                                        productRank: parseInt(parts[2]) || 1,
+                                        autoDistribute: parts[3] === '1',
+                                        coins: parts[4] ? parseInt(parts[4]) : '',
+                                    };
+                                });
+                            }
+                        }
+
+                        parseDuplicateParams();
+
+                        function renderRewards() {
+                            const list = document.getElementById('rewardList');
+                            list.innerHTML = '';
+                            rewards.forEach((r, i) => {
+                                const div = document.createElement('div');
+                                div.className = 'reward-item';
+                                div.innerHTML = `
+                <div class="reward-item-head">
+                    <span class="reward-tag">reward_${String(i + 1).padStart(2, '0')}</span>
+                    <button type="button" class="btn-remove" data-i="${i}">✕ Remove</button>
+                </div>
+                <div class="reward-grid-top">
+                    <div class="fg">
+                        <label>Product Name <span class="req">*</span></label>
+                        <input type="text" data-key="productName" data-i="${i}" placeholder="e.g. iPhone 15" value="${esc(r.productName)}" />
+                    </div>
+                    <div class="fg">
+                        <label>Image URL <span class="req">*</span></label>
+                        <input type="url" data-key="productImage" data-i="${i}" placeholder="https://…" value="${esc(r.productImage)}" />
+                    </div>
+                    <div class="fg">
+                        <label>Rank <span class="req">*</span></label>
+                        <input type="number" data-key="productRank" data-i="${i}" min="1" value="${r.productRank}" />
+                    </div>
+                </div>
+                <div class="reward-grid-bottom">
+                    <div class="fg">
+                        <div class="reward-toggle-wrap">
+                            <div>
+                                <div class="tl">Auto Distribute</div>
+                                <div class="ts">Auto-send reward on declare</div>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" data-key="autoDistribute" data-i="${i}" ${r.autoDistribute ? 'checked' : ''} />
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="fg">
+                        <label>Coins <span class="opt">(optional)</span></label>
+                        <input type="number" data-key="coins" data-i="${i}" min="0" placeholder="e.g. 500" value="${esc(r.coins)}" />
+                        <div class="note">
+                            <span>💡</span>
+                            <span>Coins distributed to winner on claim.</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+                                list.appendChild(div);
+                            });
+                        }
+
+                        document.getElementById('rewardList').addEventListener('input', e => {
+                            const el = e.target; if (el.tagName !== 'INPUT') return;
+                            const i = +el.dataset.i, key = el.dataset.key;
+                            if (isNaN(i) || !key || !rewards[i]) return;
+                            if (key === 'productRank') rewards[i][key] = +el.value;
+                            else rewards[i][key] = el.value;
+                        });
+
+                        document.getElementById('rewardList').addEventListener('change', e => {
+                            const el = e.target;
+                            if (el.type !== 'checkbox') return;
+                            const i = +el.dataset.i, key = el.dataset.key;
+                            if (isNaN(i) || !key || !rewards[i]) return;
+                            rewards[i][key] = el.checked;
+                        });
+
+                        document.getElementById('rewardList').addEventListener('click', e => {
+                            const btn = e.target.closest('.btn-remove'); if (!btn) return;
+                            rewards.splice(+btn.dataset.i, 1);
+                            if (!rewards.length) rewards.push({ productName: '', productImage: '', productRank: 1, autoDistribute: false, coins: '' });
+                            renderRewards();
+                        });
+
+                        document.getElementById('addRewardBtn').addEventListener('click', () => {
+                            rewards.push({ productName: '', productImage: '', productRank: rewards.length + 1, autoDistribute: false, coins: '' });
+                            renderRewards();
+                        });
+
+                        document.getElementById('giveawayForm').addEventListener('submit', async e => {
+                            e.preventDefault();
+
+                            const payload = {
+                                appName: document.getElementById('appName').value.trim(),
+                                title: document.getElementById('title').value.trim(),
+                                description: document.getElementById('description').value.trim(),
+                                bannerUrl: document.getElementById('bannerUrl').value.trim(),
+                                totalSlots: +document.getElementById('totalSlots').value,
+                                startsAt: document.getElementById('startsAt').value,
+                                declaresAt: document.getElementById('declaresAt').value,
+                                rewards: rewards.map(r => ({
+                                    productName: String(r.productName || '').trim(),
+                                    productImage: String(r.productImage || '').trim(),
+                                    productRank: Number(r.productRank),
+                                    autoDistribute: r.autoDistribute === true,
+                                    ...(r.coins !== '' && r.coins != null ? { coins: Number(r.coins) } : {}),
+                                })),
+                            };
+
+                            if (!payload.appName || !payload.title || !payload.description || !payload.bannerUrl || !payload.totalSlots || !payload.startsAt || !payload.declaresAt)
+                                return showAlert('❌ Please fill all required fields.');
+
+                            const sa = new Date(payload.startsAt), da = new Date(payload.declaresAt);
+                            if (isNaN(sa) || isNaN(da)) return showAlert('❌ Invalid date values.');
+                            if (da <= sa) return showAlert('❌ Declares At must be later than Starts At.');
+                            if (!payload.rewards.length) return showAlert('❌ Add at least one reward.');
+
+                            const bad = payload.rewards.find(r => !r.productName || !r.productImage || !Number.isFinite(r.productRank) || r.productRank < 1);
+                            if (bad) return showAlert('❌ Each reward needs name, image URL, and rank ≥ 1.');
+
+                            payload.startsAt = sa.toISOString();
+                            payload.declaresAt = da.toISOString();
+
+                            const ok = await new Promise(res => showConfirm('Create this giveaway now?', res));
+                            if (!ok) return;
+
+                            document.getElementById('loaderBg').classList.add('show');
+                            try {
+                                const res = await fetch('/createGiveaway', {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify(payload),
+                                });
+                                const json = await res.json();
+                                if (!json.success) return showAlert(`❌ ${json.message || 'Failed to create giveaway.'}`);
+                                showAlert(`✅ ${json.message}`, () => window.location.reload());
+                            } catch (err) {
+                                showAlert('❌ Server Error. Please try again.');
+                            } finally {
+                                document.getElementById('loaderBg').classList.remove('show');
+                            }
+                        });
+
+                        renderRewards();
+                    </script>
+                </main>
+            </div>
+    </div>
+</body>
+
+</html>

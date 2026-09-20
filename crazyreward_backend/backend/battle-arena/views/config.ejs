@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leaderboard Config - Crazyreward Admin</title>
+    <link rel="stylesheet" href="/css/admin.css">
+    <link rel="icon" href="/images/favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        .toast-notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #10b981;
+            color: #fff;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-weight: 600;
+            font-size: 14px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            z-index: 10000;
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+        .toast-notification.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        :root {
+            --bg: #f8fafc;
+            --surface: #ffffff;
+            --border: #e2e8f0;
+            --primary: #052e1f;
+            --primary-hover: #042418;
+            --text: #0f172a;
+            --muted: #64748b;
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', sans-serif !important;
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--text);
+        }
+
+        .glass-card {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
+            border: 1px solid var(--border);
+        }
+
+        .page-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .page-title {
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--text);
+            margin: 0 0 4px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .page-sub {
+            font-size: 13px;
+            color: var(--muted);
+            margin: 0;
+            font-weight: 500;
+        }
+
+        .section-header-line {
+            font-size: 16px;
+            font-weight: 800;
+            color: var(--text);
+            margin-bottom: 16px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 20px;
+            margin-bottom: 24px;
+        }
+
+        .cycle-stat-card {
+            background: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 22px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+            position: relative;
+            transition: all 0.2s ease;
+        }
+
+        .cycle-stat-card:hover {
+            box-shadow: 0 8px 24px rgba(5, 46, 31, 0.08);
+            border-color: #cbd5e1;
+        }
+
+        .card-head-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 18px;
+        }
+
+        .card-head-title {
+            font-size: 16px;
+            font-weight: 800;
+            color: var(--text);
+            letter-spacing: 0.02em;
+        }
+
+        .btn-icon-edit {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            background: rgba(5, 46, 31, 0.08);
+            border: 1px solid rgba(5, 46, 31, 0.15);
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-icon-edit:hover {
+            background: var(--primary);
+            color: #ffffff;
+        }
+
+        .info-rows {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            font-size: 13px;
+        }
+
+        .info-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .info-lbl {
+            color: var(--muted);
+            font-weight: 600;
+            width: 100px;
+        }
+
+        .info-val {
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        /* Status Badges */
+        .badge-pill {
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 0.03em;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            text-transform: uppercase;
+        }
+
+        .badge-active { background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
+        .badge-inactive { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
+        .badge-rescheduled { background: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
+        .badge-enabled { background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
+        .badge-manual { background: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
+
+        /* Modal Overlay & Container */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(15, 23, 42, 0.5);
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 999;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.25s ease;
+        }
+
+        .modal-overlay.open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-card {
+            background: #ffffff;
+            border-radius: 20px;
+            width: 100%;
+            max-width: 580px;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 28px;
+            box-shadow: 0 20px 40px rgba(15, 23, 42, 0.15);
+            border: 1px solid var(--border);
+        }
+
+        .modal-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .modal-heading {
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--text);
+        }
+
+        .modal-close-icon {
+            background: #f1f5f9;
+            border: none;
+            color: var(--muted);
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-close-icon:hover { background: #e2e8f0; color: var(--text); }
+
+        .form-grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .field-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .field-group label {
+            font-size: 12px;
+            font-weight: 800;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+
+        .input-control {
+            padding: 10px 14px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            background: #ffffff;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text);
+            outline: none;
+        }
+
+        .input-control:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(5, 46, 31, 0.1);
+        }
+
+        /* Pill Switch */
+        .switch-pill-container {
+            display: inline-flex;
+            align-items: center;
+            background: #f1f5f9;
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 3px;
+            cursor: pointer;
+            width: fit-content;
+        }
+
+        .switch-opt {
+            padding: 6px 14px;
+            border-radius: 16px;
+            font-size: 12px;
+            font-weight: 800;
+            color: var(--muted);
+            transition: all 0.2s ease;
+        }
+
+        .switch-opt.active {
+            background: var(--primary);
+            color: #ffffff;
+            box-shadow: 0 2px 6px rgba(5, 46, 31, 0.2);
+        }
+
+        .divider-dashed {
+            border-top: 1.5px dashed var(--border);
+            margin: 20px 0;
+        }
+
+        .tier-item-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .tier-input-box {
+            position: relative;
+            flex: 1;
+        }
+
+        .icon-coin-left {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 18px;
+            height: 18px;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        .coin-input {
+            padding-left: 40px !important;
+            width: 100%;
+        }
+
+        .btn-trash-row {
+            background: #fee2e2;
+            border: 1px solid #fecaca;
+            color: #ef4444;
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-trash-row:hover {
+            background: #ef4444;
+            color: #ffffff;
+        }
+
+        .btn-add-tier-dashed {
+            background: #f8fafc;
+            border: 1.5px dashed var(--border);
+            color: var(--muted);
+            font-weight: 700;
+            font-size: 13px;
+            width: 100%;
+            padding: 12px;
+            border-radius: 12px;
+            cursor: pointer;
+            margin-top: 12px;
+            transition: all 0.2s ease;
+        }
+
+        .btn-add-tier-dashed:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            background: rgba(5, 46, 31, 0.04);
+        }
+
+        .btn-primary-action {
+            background: var(--primary);
+            color: #ffffff;
+            font-weight: 700;
+            font-size: 13px;
+            padding: 10px 22px;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary-action:hover {
+            background: var(--primary-hover);
+        }
+
+        .btn-secondary-action {
+            background: #f1f5f9;
+            border: 1px solid var(--border);
+            color: var(--text);
+            font-weight: 700;
+            font-size: 13px;
+            padding: 10px 22px;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        /* Terms & Conditions Builder CSS */
+        .terms-tabs-header {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 8px;
+        }
+
+        .terms-tab-btn {
+            padding: 8px 16px;
+            font-size: 13px;
+            font-weight: 700;
+            border: 1px solid transparent;
+            background: transparent;
+            color: var(--muted);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .terms-tab-btn.active {
+            background: rgba(5, 46, 31, 0.08);
+            border-color: rgba(5, 46, 31, 0.15);
+            color: var(--primary);
+        }
+
+        .terms-tab-content {
+            display: none;
+        }
+
+        .terms-tab-content.active {
+            display: block;
+        }
+
+        .terms-list-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .term-item-card {
+            background: #f8fafc;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            position: relative;
+        }
+
+        .term-item-actions {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-term-delete {
+            width: 28px;
+            height: 28px;
+            border-radius: 8px;
+            background: #fee2e2;
+            border: 1px solid #fecaca;
+            color: #ef4444;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-term-delete:hover {
+            background: #ef4444;
+            color: #ffffff;
+        }
+
+        .bonus-field-hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body class="dashboard-body">
+    <div class="dashboard-shell">
+        <%- include('../partials/sidebar', { activePage: 'battle-config' }) %>
+
+        <div class="dashboard-main">
+            <header class="navbar dashboard-navbar">
+                <div class="nav-left" style="display: flex; align-items: center; gap: 12px;">
+                    <button type="button" class="sidebar-toggle-btn" onclick="if(typeof toggleSidebar === 'function') toggleSidebar();">☰</button>
+                    <h2 style="margin: 0; font-size: 18px; font-weight: 800; color: var(--text);">Battle Arena Config</h2>
+                </div>
+
+                <div class="nav-right" onclick="if(typeof toggleDropdown === 'function') toggleDropdown();">
+                    <div class="avatar"><%= (typeof admin !== 'undefined' && admin && (admin.name || admin.username || admin.email)) ? (admin.name || admin.username || admin.email).charAt(0).toUpperCase() : 'A' %></div>
+                    <div class="dropdown" id="dropdown">
+                        <a href="/logout">Logout</a>
+                    </div>
+                </div>
+            </header>
+
+            <main class="container wrap" style="padding: 24px;">
+                <div class="glass-card page-head">
+                    <div>
+                        <h1 class="page-title">
+                            <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                            </svg>
+                            Battle Arena & Leaderboard Config
+                        </h1>
+                        <p class="page-sub">Manage Daily & Weekly cycle settings, payout timers, auto reward rules, and rank prize distribution.</p>
+                    </div>
+                </div>
+
+                <!-- Leaderboard Cycle Settings Link Banner -->
+                <div class="glass-card" style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; background: #f0fdf4; border: 1px solid #bbf7d0;">
+                    <div>
+                        <div style="font-weight: 800; font-size: 15px; color: #166534; margin-bottom: 2px; display: flex; align-items: center; gap: 8px;">
+                            <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            Leaderboard Cycle Settings & Reward Tiers
+                        </div>
+                        <div style="font-size: 13px; color: #15803d; font-weight: 500;">
+                            Leaderboard cycles (Daily, Weekly, Monthly), payout schedules, and prize tier distributions are now managed in Battle Leaderboard.
+                        </div>
+                    </div>
+                    <a href="/admin/battle-arena/leaderboard?tab=cycle-settings" class="btn-primary-action" style="text-decoration: none; display: inline-flex; align-items: center; gap: 8px;">
+                        <span>Manage Cycle Settings</span>
+                        <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                    </a>
+                </div>
+
+                <!-- Global Economy & Rules -->
+                <div class="glass-card">
+                    <form id="globalConfigForm" action="/admin/battle-arena/config/save" method="POST" onsubmit="saveGlobalConfig(event)">
+                        <div class="section-header-line">
+                            <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/></svg>
+                            Arena Economy & General Settings
+                        </div>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-bottom: 20px;">
+                            <div class="field-group">
+                                <label>Platform Commission Fee (%)</label>
+                                <input type="number" class="input-control" name="platformCommissionFee" value="<%= config.platformCommissionFee || 10 %>" required />
+                            </div>
+                            <div class="field-group">
+                                <label>Bot Win Rate (%)</label>
+                                <input type="number" class="input-control" name="botWinRate" value="<%= typeof config.botWinRate !== 'undefined' ? config.botWinRate : 50 %>" min="0" max="100" required />
+                            </div>
+                            <div class="field-group">
+                                <label>Free Rewarded Ad Mandate</label>
+                                <select class="input-control" name="freeRoomAdMandate">
+                                    <option value="true" <%= config.freeRoomAdMandate ? 'selected' : '' %>>Required (User must watch Ad)</option>
+                                    <option value="false" <%= !config.freeRoomAdMandate ? 'selected' : '' %>>Disabled (Direct Join)</option>
+                                </select>
+                            </div>
+                            <div class="field-group">
+                                <label>Install Task Limit</label>
+                                <input type="text" class="input-control" name="battleInstallTaskCount" value="<%= config.battleInstallTaskCount || '0' %>" placeholder="e.g. 10-20 or 5" required />
+                            </div>
+                            <div class="field-group">
+                                <label>Install App Usage Time (Seconds)</label>
+                                <input type="number" class="input-control" name="installTaskUsageSeconds" value="<%= typeof config.installTaskUsageSeconds !== 'undefined' ? config.installTaskUsageSeconds : 30 %>" min="1" placeholder="30" required />
+                            </div>
+                            <div class="field-group">
+                                <label>Free Battle Daily Limit</label>
+                                <input type="text" class="input-control" name="battleDailyLimit" value="<%= config.battleDailyLimit || '0' %>" required />
+                            </div>
+                            <div class="field-group">
+                                <label>Anti-Cheat Strict Mode</label>
+                                <select class="input-control" name="antiCheatStrictMode">
+                                    <option value="true" <%= config.antiCheatStrictMode ? 'selected' : '' %>>Strict</option>
+                                    <option value="false" <%= !config.antiCheatStrictMode ? 'selected' : '' %>>Standard</option>
+                                </select>
+                            </div>
+                            <div class="field-group">
+                                <label>Points Per Correct Answer</label>
+                                <input type="number" class="input-control" name="correctPoints" value="<%= typeof config.correctPoints !== 'undefined' ? config.correctPoints : 100 %>" required />
+                            </div>
+                            <div class="field-group">
+                                <label>Points Deducted Per Wrong Answer</label>
+                                <input type="number" class="input-control" name="wrongPoints" value="<%= typeof config.wrongPoints !== 'undefined' ? config.wrongPoints : -100 %>" required />
+                            </div>
+                            <div class="field-group">
+                                <label>Max Speed Bonus Points</label>
+                                <input type="number" class="input-control" name="maxBonusPoints" value="<%= typeof config.maxBonusPoints !== 'undefined' ? config.maxBonusPoints : 100 %>" required />
+                            </div>
+                            <div class="field-group" style="border-left: 3px solid var(--primary); padding-left: 10px;">
+                                <label style="font-weight: 700; color: var(--primary);">Bonus Used in Battle (ON / OFF)</label>
+                                <select class="input-control" name="allowBonusCoins" id="allowBonusCoinsSelect" onchange="toggleBonusPercentField(this.value)">
+                                    <option value="false" <%= !config.allowBonusCoins ? 'selected' : '' %>>OFF (Bonus Coins Not Allowed)</option>
+                                    <option value="true" <%= config.allowBonusCoins ? 'selected' : '' %>>ON (Allow Bonus Coins)</option>
+                                </select>
+                            </div>
+                            <div class="field-group <%= config.allowBonusCoins ? '' : 'bonus-field-hidden' %>" id="bonusUsagePercentGroup" style="border-left: 3px solid var(--primary); padding-left: 10px;">
+                                <label style="font-weight: 700; color: var(--primary);">Bonus Usage Limit (%)</label>
+                                <input type="number" class="input-control" name="bonusUsagePercent" id="bonusUsagePercentInput" value="<%= typeof config.bonusUsagePercent !== 'undefined' ? config.bonusUsagePercent : 0 %>" min="0" max="100" placeholder="e.g. 100 for 100% or 50 for 50%" />
+                                <small style="font-size: 11px; color: var(--muted); margin-top: 4px; display: block;">Set 100 for 100% bonus usage, 50 for 50%, etc.</small>
+                            </div>
+                        </div>
+                        <div style="display: flex; justify-content: flex-end; margin-top: 20px;">
+                            <button type="submit" class="btn-primary-action">Save Economy Config</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Terms & Conditions Section -->
+                <div class="glass-card" style="margin-top: 24px;">
+                    <form id="termsConfigForm" action="/admin/battle-arena/config/save" method="POST" onsubmit="saveGlobalConfig(event)">
+                        <input type="hidden" name="freeTermsJson" id="freeTermsJson" value='<%= JSON.stringify(config.freeTerms || []) %>' />
+                        <input type="hidden" name="paidTermsJson" id="paidTermsJson" value='<%= JSON.stringify(config.paidTerms || []) %>' />
+
+                        <div class="section-header-line" style="border-bottom: none; margin-bottom: 12px; padding-bottom: 0;">
+                            <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                            Terms & Conditions Builder
+                        </div>
+                        <div class="terms-tabs-header">
+                            <button type="button" class="terms-tab-btn active" onclick="switchTermsTab('free')">Free Battle Terms</button>
+                            <button type="button" class="terms-tab-btn" onclick="switchTermsTab('paid')">Paid Battle Terms</button>
+                        </div>
+
+                        <!-- Free Terms Tab Content -->
+                        <div id="freeTermsContent" class="terms-tab-content active">
+                            <div class="terms-list-container" id="freeTermsList">
+                                <!-- Dynamic Free items will be loaded here -->
+                            </div>
+                            <button type="button" class="btn-add-tier-dashed" onclick="addTermItem('free')">+ Add Free Battle Term</button>
+                        </div>
+
+                        <!-- Paid Terms Tab Content -->
+                        <div id="paidTermsContent" class="terms-tab-content">
+                            <div class="terms-list-container" id="paidTermsList">
+                                <!-- Dynamic Paid items will be loaded here -->
+                            </div>
+                            <button type="button" class="btn-add-tier-dashed" onclick="addTermItem('paid')">+ Add Paid Battle Term</button>
+                        </div>
+
+                        <div style="display: flex; justify-content: flex-end; margin-top: 20px;">
+                            <button type="submit" class="btn-primary-action">Save Terms & Conditions</button>
+                        </div>
+                    </form>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        function showSuccessToast(message) {
+            let toast = document.querySelector('.toast-notification');
+            if (!toast) {
+                toast = document.createElement('div');
+                toast.className = 'toast-notification';
+                document.body.appendChild(toast);
+            }
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Terms & Conditions Builder Logic
+        let freeTerms = [];
+        let paidTerms = [];
+
+        try {
+            freeTerms = JSON.parse(document.getElementById('freeTermsJson').value || '[]');
+        } catch(e) { freeTerms = []; }
+
+        try {
+            paidTerms = JSON.parse(document.getElementById('paidTermsJson').value || '[]');
+        } catch(e) { paidTerms = []; }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return str
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        function renderTermsList(type) {
+            const list = type === 'free' ? freeTerms : paidTerms;
+            const container = document.getElementById(type + 'TermsList');
+            container.innerHTML = '';
+
+            if (list.length === 0) {
+                container.innerHTML = '<div style="color: var(--muted); font-size: 13px; font-weight: 500; text-align: center; padding: 20px;">No terms added yet. Click "+ Add Term" below to start.</div>';
+                return;
+            }
+
+            list.forEach((item, index) => {
+                const div = document.createElement('div');
+                div.className = 'term-item-card';
+                div.innerHTML = `
+                    <div style="font-weight: 800; color: var(--text); font-size: 14px; padding-right: 40px;">
+                        <input type="text" class="input-control" value="${escapeHtml(item.title)}" placeholder="Term Title (e.g. 1. Fair Play)" style="font-weight: bold; background: white;" oninput="updateTermItem('${type}', ${index}, 'title', this.value)" />
+                    </div>
+                    <div style="color: var(--muted); font-size: 13px; margin-top: 4px; padding-right: 40px;">
+                        <textarea class="input-control" placeholder="Term description..." rows="3" style="background: white;" oninput="updateTermItem('${type}', ${index}, 'description', this.value)">${escapeHtml(item.description)}</textarea>
+                    </div>
+                    <div class="term-item-actions">
+                        <button type="button" class="btn-term-delete" onclick="deleteTermItem('${type}', ${index})" title="Delete Term">✕</button>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function updateTermItem(type, index, field, value) {
+            const list = type === 'free' ? freeTerms : paidTerms;
+            if (list[index]) {
+                list[index][field] = value;
+                syncTermsJson(type);
+            }
+        }
+
+        function deleteTermItem(type, index) {
+            const list = type === 'free' ? freeTerms : paidTerms;
+            list.splice(index, 1);
+            syncTermsJson(type);
+            renderTermsList(type);
+        }
+
+        function addTermItem(type) {
+            const list = type === 'free' ? freeTerms : paidTerms;
+            list.push({ title: '', description: '' });
+            syncTermsJson(type);
+            renderTermsList(type);
+        }
+
+        function syncTermsJson(type) {
+            const list = type === 'free' ? freeTerms : paidTerms;
+            document.getElementById(type + 'TermsJson').value = JSON.stringify(list);
+        }
+
+        function switchTermsTab(type) {
+            const freeBtn = document.querySelector('.terms-tab-btn[onclick*="free"]');
+            const paidBtn = document.querySelector('.terms-tab-btn[onclick*="paid"]');
+            const freeContent = document.getElementById('freeTermsContent');
+            const paidContent = document.getElementById('paidTermsContent');
+
+            if (type === 'free') {
+                freeBtn.classList.add('active');
+                paidBtn.classList.remove('active');
+                freeContent.classList.add('active');
+                paidContent.classList.remove('active');
+            } else {
+                paidBtn.classList.add('active');
+                freeBtn.classList.remove('active');
+                paidContent.classList.add('active');
+                freeContent.classList.remove('active');
+            }
+        }
+
+        function toggleBonusPercentField(val) {
+            const group = document.getElementById('bonusUsagePercentGroup');
+            if (!group) return;
+            if (val === 'true') {
+                group.classList.remove('bonus-field-hidden');
+            } else {
+                group.classList.add('bonus-field-hidden');
+                const input = document.getElementById('bonusUsagePercentInput');
+                if (input) input.value = 0;
+            }
+        }
+
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', () => {
+            renderTermsList('free');
+            renderTermsList('paid');
+            if (new URLSearchParams(window.location.search).get('saved') === '1') {
+                showSuccessToast('Economy config saved successfully!');
+                if (window.history.replaceState) {
+                    window.history.replaceState({}, document.title, window.location.pathname);
+                }
+            }
+        });
+
+        async function saveGlobalConfig(e) {
+            e.preventDefault();
+            const form = e.target;
+            const submitBtn = form.querySelector('button[type="submit"]');
+            const originalBtnText = submitBtn ? submitBtn.innerText : 'Save';
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.innerText = 'Saving...';
+            }
+            const formData = new FormData(form);
+            const payload = {};
+            formData.forEach((value, key) => {
+                payload[key] = value;
+            });
+            
+            try {
+                const res = await fetch(form.action, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+                if (data.success) {
+                    showSuccessToast('Economy config saved successfully!');
+                    setTimeout(() => {
+                        window.location.href = '/admin/battle-arena/config?saved=1';
+                    }, 600);
+                } else {
+                    alert('Error saving config: ' + (data.message || 'Unknown error'));
+                    if (submitBtn) {
+                        submitBtn.disabled = false;
+                        submitBtn.innerText = originalBtnText;
+                    }
+                }
+            } catch (err) {
+                console.error('Fetch save error, submitting standard form:', err);
+                form.submit();
+            }
+        }
+    </script>
+    <script src="/js/admin.js"></script>
+</body>
+</html>

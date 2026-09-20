@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Promotion Requests - Admin</title>
+    <link rel="stylesheet" href="/css/admin.css">
+    <link rel="icon" href="/images/favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #f8fafc;
+            --surface: #ffffff;
+            --border: #e2e8f0;
+            --primary: #052e1f;
+            --primary-hover: #042418;
+            --text: #0f172a;
+            --muted: #64748b;
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--text);
+        }
+
+        .glass-card {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
+            border: 1px solid var(--border);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        /* Stats Bar */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            background: rgba(5, 46, 31, 0.08);
+            color: #052e1f;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .stat-val {
+            font-size: 22px;
+            font-weight: 800;
+            color: #0f172a;
+        }
+
+        .stat-lbl {
+            font-size: 12px;
+            color: var(--muted);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        /* Tabs Header */
+        .tabs-header {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 12px;
+        }
+
+        .tab-btn {
+            padding: 8px 18px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            background: #ffffff;
+            color: #475569;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .tab-btn:hover {
+            background: rgba(5, 46, 31, 0.06);
+            color: #052e1f;
+        }
+
+        .tab-btn.active {
+            background: #052e1f;
+            color: #ffffff;
+            border-color: #052e1f;
+        }
+
+        /* Table Styling */
+        .table-container {
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 14px 16px;
+            font-size: 13px;
+            border-bottom: 1px solid var(--border);
+            vertical-align: middle;
+        }
+
+        th {
+            background: #052e1f;
+            color: #ffffff;
+            font-weight: 700;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            text-align: left;
+        }
+
+        .type-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 800;
+            background: rgba(5, 46, 31, 0.08);
+            color: #052e1f;
+            border: 1px solid rgba(5, 46, 31, 0.15);
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 12px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+
+        .status-pending { background: #fef3c7; color: #b45309; border: 1px solid #fde68a; }
+        .status-active { background: #dbeafe; color: #1d4ed8; border: 1px solid #bfdbfe; }
+        .status-completed { background: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; }
+        .status-rejected { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
+
+        .btn-action-primary {
+            background: #052e1f;
+            color: #ffffff;
+            border: none;
+            border-radius: 10px;
+            padding: 8px 14px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-action-primary:hover {
+            background: #042418;
+        }
+
+        /* Screen-Centered Blur Modal */
+        .modal-bg {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(8px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 999999;
+            padding: 20px;
+        }
+
+        .modal-bg.show {
+            display: flex !important;
+        }
+
+        .modal-card {
+            width: min(600px, 94vw);
+            background: #ffffff;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .modal-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 24px;
+            background: linear-gradient(135deg, #052e1f 0%, #0a4731 100%);
+            color: #ffffff;
+        }
+
+        .modal-head h3 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 800;
+        }
+
+        .close-btn {
+            background: rgba(255, 255, 255, 0.15);
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            color: #ffffff;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .modal-body-scroll {
+            padding: 24px;
+            overflow-y: auto;
+        }
+
+        .detail-row {
+            display: flex;
+            margin-bottom: 10px;
+            font-size: 13px;
+        }
+
+        .detail-label {
+            width: 130px;
+            font-weight: 700;
+            color: var(--muted);
+            text-transform: uppercase;
+            font-size: 11px;
+        }
+
+        .detail-value {
+            flex: 1;
+            color: #0f172a;
+            font-weight: 600;
+            word-break: break-all;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--muted);
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+
+        .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-size: 13px;
+            background: #ffffff;
+        }
+
+        .form-group textarea {
+            min-height: 90px;
+            resize: vertical;
+        }
+    </style>
+</head>
+
+<body class="dashboard-body">
+    <div class="dashboard-shell">
+        <%- include('../partials/sidebar', { activePage: 'promotions' }) %>
+
+        <div class="dashboard-main">
+            <header class="navbar dashboard-navbar">
+                <div class="nav-left" style="display: flex; align-items: center; gap: 12px; white-space: nowrap;">
+                    <button type="button" class="sidebar-toggle-btn" onclick="toggleSidebar()">
+                        ☰
+                    </button>
+                    <h2 style="margin: 0; font-size: 18px; font-weight: 800; white-space: nowrap;">Promotion Requests</h2>
+
+                    <select id="appSelect" style="margin-left: 8px; padding: 6px 12px; border-radius: 10px; border: 1px solid #cbd5e1; font-weight: 700; background: #f8fafc; font-size: 13px; cursor: pointer;">
+                        <% (typeof firebaseServices !== 'undefined' && firebaseServices ? firebaseServices : []).forEach(service => { %>
+                            <option value="<%= service.appName %>">
+                                <%= service.displayName %>
+                            </option>
+                        <% }) %>
+                    </select>
+                </div>
+
+                <div class="nav-right" onclick="toggleDropdown()">
+                    <div class="avatar">
+                        <%- typeof photo !== 'undefined' && photo ? photo : 'A' %>
+                    </div>
+                    <div class="dropdown" id="dropdown">
+                        <a href="/logout">Logout</a>
+                    </div>
+                </div>
+            </header>
+
+            <main class="container dashboard-home">
+                <!-- STATS SUMMARY CARDS -->
+                <%
+                    const totalCount = Array.isArray(promotions) ? promotions.length : 0;
+                    const activeCount = Array.isArray(promotions) ? promotions.filter(p => p.status === 'pending' || p.status === 'active').length : 0;
+                    const resolvedCount = totalCount - activeCount;
+                %>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fa-solid fa-bullhorn"></i></div>
+                        <div>
+                            <div class="stat-val"><%= totalCount %></div>
+                            <div class="stat-lbl">Total Requests</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: rgba(245, 158, 11, 0.1); color: #f59e0b;"><i class="fa-solid fa-clock"></i></div>
+                        <div>
+                            <div class="stat-val"><%= activeCount %></div>
+                            <div class="stat-lbl">Active Pending</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: rgba(22, 163, 74, 0.1); color: #16a34a;"><i class="fa-solid fa-circle-check"></i></div>
+                        <div>
+                            <div class="stat-val"><%= resolvedCount %></div>
+                            <div class="stat-lbl">Resolved Requests</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- MAIN PROMOTIONS CARD -->
+                <section class="glass-card">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 12px;">
+                        <div>
+                            <h2 style="font-size: 20px; font-weight: 800; color: #052e1f; margin: 0 0 4px 0;">Promotion & Dev Submissions</h2>
+                            <p style="color: var(--muted); font-size: 13px; margin: 0;">Manage app, video promotion campaigns, and custom development requests</p>
+                        </div>
+                        <button class="btn-action-primary" onclick="window.location.reload()">🔄 Refresh</button>
+                    </div>
+
+                    <div class="tabs-header">
+                        <button class="tab-btn active" id="tabActive" onclick="filterPromotions('active')">Active Requests (<%= activeCount %>)</button>
+                        <button class="tab-btn" id="tabResolved" onclick="filterPromotions('resolved')">Resolved History (<%= resolvedCount %>)</button>
+                    </div>
+
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>User ID / Email</th>
+                                    <th>Type</th>
+                                    <th>Title</th>
+                                    <th>Link</th>
+                                    <th>Status</th>
+                                    <th style="text-align: right;">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% if(!promotions || promotions.length === 0) { %>
+                                    <tr><td colspan="7" style="text-align: center; color: var(--muted); padding: 24px; font-weight: 600;">No promotion requests found.</td></tr>
+                                <% } %>
+                                <tr id="no-active-msg" style="display: none;"><td colspan="7" style="text-align: center; color: var(--muted); padding: 24px; font-weight: 600;">No active promotion requests found.</td></tr>
+                                <tr id="no-resolved-msg" style="display: none;"><td colspan="7" style="text-align: center; color: var(--muted); padding: 24px; font-weight: 600;">No resolved promotion requests found.</td></tr>
+
+                                <% (promotions || []).forEach(promo => { %>
+                                    <% 
+                                        const isResolved = promo.status === 'completed' || promo.status === 'rejected'; 
+                                        const rowClass = isResolved ? 'promo-row-resolved' : 'promo-row-active';
+                                    %>
+                                    <tr class="promo-row <%= rowClass %>">
+                                        <td style="font-weight: 700; color: var(--muted);"><%= new Date(promo.createdAt).toLocaleDateString() %></td>
+                                        <td>
+                                            <span style="font-weight: 800; color: #0f172a;"><%= promo.email %></span><br>
+                                            <span style="font-size: 11px; color: var(--muted); font-weight: 600;">UID: <%= promo.userId %></span>
+                                            <% if (promo.phoneNumber) { %>
+                                                <br><span style="font-size: 11px; color: #475569; font-weight: 700;">📞 <%= promo.phoneNumber %></span>
+                                            <% } %>
+                                        </td>
+                                        <td>
+                                            <% if (promo.promotionType === 'app_promotion') { %>
+                                                <span class="type-badge">App Promo</span>
+                                                <% if (promo.campaignType) { %>
+                                                    <br><span style="font-size: 10px; font-weight: 800; color: #b45309; text-transform: uppercase;"><%= promo.campaignType %></span>
+                                                <% } %>
+                                            <% } else if (promo.promotionType === 'video_promotion') { %>
+                                                <span class="type-badge">Video Promo</span>
+                                            <% } else { %>
+                                                <span class="type-badge">App Dev</span>
+                                            <% } %>
+                                        </td>
+                                        <td>
+                                            <span style="font-weight: 800; color: #0f172a;"><%= promo.title %></span>
+                                            <% if (promo.budget) { %>
+                                                <br><span style="font-size: 11px; color: #16a34a; font-weight: 800;">💰 Budget: <%= promo.budget %></span>
+                                            <% } %>
+                                        </td>
+                                        <td>
+                                            <% if (promo.link) { %>
+                                                <a href="<%= promo.link %>" target="_blank" style="color: #052e1f; font-weight: 800; text-decoration: underline;">Open Link</a>
+                                            <% } else { %>
+                                                <span style="color: var(--muted);">-</span>
+                                            <% } %>
+                                        </td>
+                                        <td>
+                                            <span class="status-badge status-<%= promo.status %>"><%= promo.status %></span>
+                                        </td>
+                                        <td style="text-align: right;">
+                                            <!-- Hidden data nodes -->
+                                            <span class="data-id" style="display:none;"><%= promo._id %></span>
+                                            <span class="data-userid" style="display:none;"><%= promo.userId %></span>
+                                            <span class="data-email" style="display:none;"><%= promo.email %></span>
+                                            <span class="data-type" style="display:none;"><%= promo.promotionType %></span>
+                                            <span class="data-status" style="display:none;"><%= promo.status %></span>
+                                            <span class="data-phone" style="display:none;"><%= promo.phoneNumber || '' %></span>
+                                            <span class="data-budget" style="display:none;"><%= promo.budget || '' %></span>
+                                            <span class="data-campaign" style="display:none;"><%= promo.campaignType || '' %></span>
+                                            <span class="data-title" style="display:none;"><%= promo.title %></span>
+                                            <span class="data-desc" style="display:none;"><%= promo.description %></span>
+                                            <span class="data-link" style="display:none;"><%= promo.link %></span>
+                                            <span class="data-reply" style="display:none;"><%= promo.adminReply %></span>
+
+                                            <button class="btn-action-primary" onclick="openReplyModal(this)">
+                                                Manage
+                                            </button>
+                                        </td>
+                                    </tr>
+                                <% }) %>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <!-- EDIT / REPLY MODAL OVERLAY -->
+    <div id="replyModal" class="modal-bg">
+        <div class="modal-card">
+            <div class="modal-head">
+                <h3>Manage Promotion Request</h3>
+                <button type="button" class="close-btn" onclick="closeModal()">&times;</button>
+            </div>
+            
+            <div class="modal-body-scroll">
+                <div style="margin-bottom: 20px; border-bottom: 1px solid #f1f5f9; padding-bottom: 16px;">
+                    <div class="detail-row">
+                        <div class="detail-label">User ID:</div>
+                        <div class="detail-value" id="detailUserId"></div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Email:</div>
+                        <div class="detail-value" id="detailEmail"></div>
+                    </div>
+                    <div class="detail-row" id="rowPhone" style="display: none;">
+                        <div class="detail-label">Phone:</div>
+                        <div class="detail-value" id="detailPhone"></div>
+                    </div>
+                    <div class="detail-row" id="rowBudget" style="display: none;">
+                        <div class="detail-label">Budget:</div>
+                        <div class="detail-value" id="detailBudget"></div>
+                    </div>
+                    <div class="detail-row" id="rowCampaign" style="display: none;">
+                        <div class="detail-label">Campaign:</div>
+                        <div class="detail-value" id="detailCampaign"></div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Type:</div>
+                        <div class="detail-value" id="detailType"></div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Title:</div>
+                        <div class="detail-value" id="detailTitle"></div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Description:</div>
+                        <div class="detail-value" id="detailDesc" style="white-space: pre-wrap;"></div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Link:</div>
+                        <div class="detail-value" id="detailLink"></div>
+                    </div>
+                </div>
+
+                <form id="replyForm" onsubmit="submitReply(event)">
+                    <input type="hidden" id="promoId">
+                    
+                    <div class="form-group">
+                        <label for="promoStatus">Update Status</label>
+                        <select id="promoStatus" required>
+                            <option value="pending">Pending</option>
+                            <option value="active">Active</option>
+                            <option value="completed">Completed</option>
+                            <option value="rejected">Rejected</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="adminReply">Admin Reply / Notes</label>
+                        <textarea id="adminReply" placeholder="Enter notes or reply message for the user..."></textarea>
+                    </div>
+
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 24px;">
+                        <button type="button" class="btn-action-primary" style="background-color: #dc2626;" onclick="deletePromotion()">Delete Request</button>
+                        <div style="display: flex; gap: 10px;">
+                            <button type="button" class="tab-btn" onclick="closeModal()">Cancel</button>
+                            <button type="submit" class="btn-action-primary">Save Changes</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openReplyModal(btn) {
+            try {
+                const parent = btn.parentElement;
+                const id = parent.querySelector('.data-id').textContent.trim();
+                const userId = parent.querySelector('.data-userid').textContent.trim();
+                const email = parent.querySelector('.data-email').textContent.trim();
+                const type = parent.querySelector('.data-type').textContent.trim();
+                const status = parent.querySelector('.data-status').textContent.trim();
+                
+                const title = parent.querySelector('.data-title').textContent.trim();
+                const desc = parent.querySelector('.data-desc').textContent.trim();
+                const link = parent.querySelector('.data-link').textContent.trim();
+                const reply = parent.querySelector('.data-reply').textContent.trim();
+
+                const phone = parent.querySelector('.data-phone').textContent.trim();
+                const budget = parent.querySelector('.data-budget').textContent.trim();
+                const campaign = parent.querySelector('.data-campaign').textContent.trim();
+
+                document.getElementById('promoId').value = id;
+                document.getElementById('detailUserId').textContent = userId;
+                document.getElementById('detailEmail').textContent = email;
+                
+                let displayType = 'App Development';
+                if (type === 'app_promotion') displayType = 'App Promotion';
+                if (type === 'video_promotion') displayType = 'Video Promotion';
+                document.getElementById('detailType').textContent = displayType;
+                
+                document.getElementById('detailTitle').textContent = title;
+                document.getElementById('detailDesc').textContent = desc;
+                
+                if (link && link !== 'undefined' && link.trim() !== '') {
+                    const linkEl = document.createElement('a');
+                    linkEl.href = link;
+                    linkEl.target = '_blank';
+                    linkEl.style.color = '#052e1f';
+                    linkEl.style.fontWeight = '800';
+                    linkEl.style.textDecoration = 'underline';
+                    linkEl.textContent = link;
+                    const detailLink = document.getElementById('detailLink');
+                    detailLink.innerHTML = '';
+                    detailLink.appendChild(linkEl);
+                } else {
+                    document.getElementById('detailLink').textContent = '-';
+                }
+
+                if (phone && phone.trim() !== '') {
+                    document.getElementById('detailPhone').textContent = phone;
+                    document.getElementById('rowPhone').style.display = 'flex';
+                } else {
+                    document.getElementById('rowPhone').style.display = 'none';
+                }
+
+                if (budget && budget.trim() !== '') {
+                    document.getElementById('detailBudget').textContent = budget;
+                    document.getElementById('rowBudget').style.display = 'flex';
+                } else {
+                    document.getElementById('rowBudget').style.display = 'none';
+                }
+
+                if (campaign && campaign.trim() !== '') {
+                    let dispCampaign = campaign === 'install' ? 'Install' : campaign === 'register' ? 'Register' : campaign;
+                    document.getElementById('detailCampaign').textContent = dispCampaign;
+                    document.getElementById('rowCampaign').style.display = 'flex';
+                } else {
+                    document.getElementById('rowCampaign').style.display = 'none';
+                }
+
+                document.getElementById('promoStatus').value = status;
+                document.getElementById('adminReply').value = reply;
+
+                document.getElementById('replyModal').classList.add('show');
+            } catch (err) {
+                alert('JS Error: ' + err.message);
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('replyModal').classList.remove('show');
+        }
+
+        async function submitReply(event) {
+            event.preventDefault();
+            const id = document.getElementById('promoId').value;
+            const status = document.getElementById('promoStatus').value;
+            const adminReply = document.getElementById('adminReply').value;
+
+            try {
+                const response = await fetch('/update-promotion-status', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ id, status, adminReply })
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    alert('Request updated successfully');
+                    window.location.reload();
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            } catch (err) {
+                console.error(err);
+                alert('Failed to update promotion request');
+            }
+        }
+
+        async function deletePromotion() {
+            const id = document.getElementById('promoId').value;
+            if (!id) return;
+            
+            if (!confirm('Are you sure you want to permanently delete this promotion request?')) {
+                return;
+            }
+            
+            try {
+                const response = await fetch('/delete-promotion-request', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ id })
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    alert('Promotion request deleted successfully');
+                    window.location.reload();
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            } catch (err) {
+                console.error(err);
+                alert('Failed to delete promotion request');
+            }
+        }
+
+        function filterPromotions(type) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            const activeRows = document.querySelectorAll('.promo-row-active');
+            const resolvedRows = document.querySelectorAll('.promo-row-resolved');
+            const noActiveMsg = document.getElementById('no-active-msg');
+            const noResolvedMsg = document.getElementById('no-resolved-msg');
+
+            if (type === 'active') {
+                document.getElementById('tabActive').classList.add('active');
+                activeRows.forEach(row => row.style.display = '');
+                resolvedRows.forEach(row => row.style.display = 'none');
+                
+                if (noActiveMsg) noActiveMsg.style.display = activeRows.length === 0 ? '' : 'none';
+                if (noResolvedMsg) noResolvedMsg.style.display = 'none';
+            } else {
+                document.getElementById('tabResolved').classList.add('active');
+                activeRows.forEach(row => row.style.display = 'none');
+                resolvedRows.forEach(row => row.style.display = '');
+                
+                if (noResolvedMsg) noResolvedMsg.style.display = resolvedRows.length === 0 ? '' : 'none';
+                if (noActiveMsg) noActiveMsg.style.display = 'none';
+            }
+        }
+        
+        window.addEventListener('DOMContentLoaded', () => {
+            filterPromotions('active');
+        });
+    </script>
+
+    <%- include('../partials/user_lookup') %>
+    <script src="/js/admin.js"></script>
+    <script src="/js/user_lookup.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Session Details - Admin Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/admin.css">
+    <style>
+        .page-header-bar { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 24px; background: #ffffff; padding: 20px 24px; border-radius: 16px; border: 1px solid #cbd5e1; box-shadow: 0 2px 8px rgba(15, 23, 42, 0.03); }
+        .page-title { font-size: 22px; font-weight: 800; color: #0f172a; margin: 0 0 4px 0; display: flex; align-items: center; gap: 10px; }
+        .config-card { background: #ffffff; border-radius: 16px; border: 1px solid #cbd5e1; padding: 24px; margin-bottom: 24px; }
+        .card-title { font-size: 17px; font-weight: 800; color: #0f172a; margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
+        .table-custom { width: 100%; border-collapse: collapse; margin-top: 16px; }
+        .table-custom th { background: #f8fafc; text-align: left; padding: 12px; font-weight: 800; color: #475569; border-bottom: 2px solid #e2e8f0; }
+        .table-custom td { padding: 12px; border-bottom: 1px solid #f1f5f9; font-size: 13px; font-weight: 600; }
+        .btn-back { background: #cbd5e1; color: #334155; font-weight: 700; padding: 8px 16px; border-radius: 8px; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; font-size: 13px; }
+        .btn-back:hover { background: #cbd5e1e0; }
+    </style>
+</head>
+<body class="dashboard-body">
+    <div class="dashboard-shell">
+        <%- include('../partials/sidebar', { activePage: 'battle-history' }) %>
+
+        <div class="dashboard-main">
+            <header class="navbar dashboard-navbar">
+                <div class="nav-left" style="display: flex; align-items: center; gap: 12px; white-space: nowrap;">
+                    <button type="button" class="sidebar-toggle-btn" onclick="toggleSidebar()">☰</button>
+                    <h2 style="margin: 0; font-size: 18px; font-weight: 800; white-space: nowrap;">Session Details</h2>
+                </div>
+
+                <div class="nav-right" onclick="toggleDropdown()">
+                    <div class="avatar"><%= (admin && (admin.name || admin.username || admin.email)) ? (admin.name || admin.username || admin.email).charAt(0).toUpperCase() : 'A' %></div>
+                    <div class="dropdown" id="dropdown">
+                        <a href="/logout">Logout</a>
+                    </div>
+                </div>
+            </header>
+
+            <main class="container wrap" style="padding: 24px;">
+                <div class="page-header-bar">
+                    <div>
+                        <h1 class="page-title">
+                            <a href="/admin/battle-arena/history" class="btn-back" style="margin-right: 10px;">
+                                <span>← Back to History</span>
+                            </a>
+                            Session: <%= session.sessionId %>
+                        </h1>
+                        <p style="color: #64748b; font-size: 14px; margin: 0; margin-top: 4px;">
+                            Lobby Room: <strong><%= session.roomTitle %></strong> | Cycle Scheduled End Time: <%= new Date(session.endTime).toLocaleString() %>
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Teams Matching Grid -->
+                <div class="config-card">
+                    <div class="card-title">
+                        <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                        </svg>
+                        Matched Teams (1v1 Pairings) inside Match ID: <%= session.sessionId %>
+                    </div>
+                    <table class="table-custom">
+                        <thead>
+                            <tr>
+                                <th>Team ID</th>
+                                <th>Player 1 (Score)</th>
+                                <th>Player 2 (Score)</th>
+                                <th>Winner</th>
+                                <th>Net Prize</th>
+                                <th>Status</th>
+                                <th>Played Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% if (matches && matches.length) { %>
+                                <% matches.forEach(m => { %>
+                                    <tr>
+                                        <td style="font-weight: 800; font-family: monospace; color: #6366f1;"><%= m.matchId %></td>
+                                        <td>
+                                            <%= m.player1 ? m.player1.userName : 'N/A' %> 
+                                            <span style="color: #4f46e5; font-weight: 800;">(<%= m.player1 ? m.player1.speedScore : 0 %> Pts)</span>
+                                        </td>
+                                        <td>
+                                            <%= m.player2 ? m.player2.userName : 'N/A' %> 
+                                            <span style="color: #4f46e5; font-weight: 800;">(<%= m.player2 ? m.player2.speedScore : 0 %> Pts)</span>
+                                        </td>
+                                        <td>
+                                            <% if (m.winnerUserId) { %>
+                                                <span style="background: #dcfce7; color: #15803d; padding: 2px 8px; border-radius: 4px; font-weight: 900; font-size: 12px;">
+                                                    🏆 <%= m.winnerUserId === 'ai_bot_opponent' ? 'AI Bot' : m.winnerUserId %>
+                                                </span>
+                                            <% } else if (m.status === 'COMPLETED') { %>
+                                                <span style="background: #f1f5f9; color: #475569; padding: 2px 8px; border-radius: 4px; font-weight: 900; font-size: 12px;">Tie / Draw</span>
+                                            <% } else { %>
+                                                <span style="background: #fef3c7; color: #d97706; padding: 2px 8px; border-radius: 4px; font-weight: 900; font-size: 12px;">In Progress</span>
+                                            <% } %>
+                                        </td>
+                                        <td style="color: #16a34a; font-weight: 900;">
+                                            <%= m.netPrizeAwarded || 0 %> Coins
+                                        </td>
+                                        <td>
+                                            <% if (m.status === 'COMPLETED') { %>
+                                                <span style="background: #e2e8f0; color: #475569; padding: 2px 6px; border-radius: 4px; font-weight: 800; font-size: 11px;">COMPLETED</span>
+                                            <% } else if (m.status === 'IN_PROGRESS') { %>
+                                                <span style="background: #dcfce7; color: #15803d; padding: 2px 6px; border-radius: 4px; font-weight: 800; font-size: 11px;">PLAYING</span>
+                                            <% } else if (m.status === 'CANCELLED') { %>
+                                                <span style="background: #fee2e2; color: #dc2626; padding: 2px 6px; border-radius: 4px; font-weight: 800; font-size: 11px;">CANCELLED</span>
+                                            <% } else { %>
+                                                <span style="background: #f1f5f9; color: #64748b; padding: 2px 6px; border-radius: 4px; font-weight: 800; font-size: 11px;"><%= m.status %></span>
+                                            <% } %>
+                                        </td>
+                                        <td><%= new Date(m.createdAt).toLocaleString() %></td>
+                                    </tr>
+                                <% }) %>
+                            <% } else { %>
+                                <tr><td colspan="7" style="text-align: center; color: #94a3b8; padding: 20px;">No teams paired for this session cycle.</td></tr>
+                            <% } %>
+                        </tbody>
+                    </table>
+                </div>
+            </main>
+        </div>
+    </div>
+    <script src="/js/admin.js"></script>
+</body>
+</html>

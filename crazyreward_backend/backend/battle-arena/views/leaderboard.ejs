@@ -1,0 +1,1865 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Battle Leaderboard - Crazyreward Admin</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/admin.css">
+    <link rel="icon" href="/images/favicon.png">
+    <style>
+        :root {
+            --bg: #f8fafc;
+            --surface: #ffffff;
+            --border: #e2e8f0;
+            --primary: #052e1f;
+            --primary-hover: #042418;
+            --text: #0f172a;
+            --muted: #64748b;
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', sans-serif !important;
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--text);
+        }
+
+        /* Glassmorphism Cards */
+        .glass-card {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
+            border: 1px solid var(--border);
+        }
+
+        .overview-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        /* Dashboard Stat Cards (Grid matching My Earnings) */
+        .me-grid-4 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        @media (max-width: 1024px) {
+            .me-grid-4 { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (max-width: 640px) {
+            .me-grid-4 { grid-template-columns: 1fr; }
+        }
+
+        .dash-stat-card {
+            background: #ffffff;
+            border-radius: 18px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+            border: 1px solid #f1f5f9;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .dash-stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+        }
+
+        .stat-icon-circle {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .stat-icon-circle.green { background: #ecfdf5; color: #052e1f; }
+        .stat-icon-circle.orange { background: #fffbeb; color: #d97706; }
+        .stat-icon-circle.teal { background: #f0fdf4; color: #059669; }
+        .stat-icon-circle.red { background: #fef2f2; color: #ef4444; }
+        .stat-icon-circle.blue { background: #eff6ff; color: #2563eb; }
+
+        .stat-label {
+            font-size: 11px;
+            font-weight: 800;
+            color: #9ca3af;
+            letter-spacing: 0.6px;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+
+        .stat-value {
+            font-size: 22px;
+            font-weight: 800;
+            color: #111827;
+            letter-spacing: -0.02em;
+        }
+
+        /* Pill Navigation Tabs */
+        .tabs-header-pill {
+            display: inline-flex;
+            background: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 4px;
+            gap: 6px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+        }
+
+        .tab-btn-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: transparent;
+            border: none;
+            font-size: 13.5px;
+            font-weight: 700;
+            color: var(--muted);
+            padding: 10px 22px;
+            cursor: pointer;
+            border-radius: 10px;
+            transition: all 0.2s ease;
+        }
+
+        .tab-btn-pill:hover {
+            color: var(--text);
+            background: #f1f5f9;
+        }
+
+        .tab-btn-pill.active {
+            color: #ffffff;
+            background: var(--primary);
+            box-shadow: 0 4px 12px rgba(5, 46, 31, 0.25);
+        }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: fadeIn 0.2s ease-out; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(3px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Standard Admin Buttons */
+        .btn-action {
+            background: var(--primary);
+            color: #ffffff;
+            font-weight: 700;
+            padding: 10px 20px;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            transition: all 0.2s ease;
+        }
+
+        .btn-action:hover {
+            background: var(--primary-hover);
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: #f1f5f9;
+            color: #334155;
+            font-weight: 700;
+            padding: 8px 16px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12.5px;
+            transition: all 0.2s ease;
+        }
+
+        .btn-secondary:hover {
+            background: #e2e8f0;
+            color: #0f172a;
+        }
+
+        .btn-danger-outline {
+            background: #ffffff;
+            color: #ef4444;
+            font-weight: 700;
+            padding: 9px 18px;
+            border-radius: 10px;
+            border: 1px solid #fecaca;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            transition: all 0.2s ease;
+        }
+
+        .btn-danger-outline:hover {
+            background: #fef2f2;
+            border-color: #ef4444;
+        }
+
+        /* Source / Metric Badge matching My Earnings */
+        .source-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(5, 46, 31, 0.08);
+            color: #052e1f;
+            font-weight: 700;
+            font-size: 12px;
+            padding: 6px 12px;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .source-badge:hover {
+            background: #052e1f;
+            color: #ffffff;
+        }
+
+        .earnings-val {
+            font-weight: 800;
+            color: #052e1f;
+        }
+
+        /* Table Styling matching My Earnings */
+        .tp-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            font-size: 13px;
+            margin-top: 16px;
+        }
+
+        .tp-table th {
+            padding: 12px 14px;
+            font-size: 11px;
+            font-weight: 800;
+            color: #ffffff;
+            background: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .tp-table th:first-child { border-top-left-radius: 10px; border-bottom-left-radius: 10px; }
+        .tp-table th:last-child { border-top-right-radius: 10px; border-bottom-right-radius: 10px; }
+        
+        .tp-table td {
+            padding: 14px;
+            border-bottom: 1px solid #f1f5f9;
+            color: #1e293b;
+            font-weight: 600;
+            vertical-align: middle;
+            background: #ffffff;
+        }
+
+        .tp-table tr:hover td {
+            background: #f8fafc;
+        }
+
+        .banned-row td {
+            background: #fff1f2 !important;
+            opacity: 0.6;
+        }
+
+        /* Status & Type Tags */
+        .type-tag-paid { background: #fef3c7; color: #d97706; padding: 4px 10px; border-radius: 8px; font-weight: 800; font-size: 11px; display: inline-flex; align-items: center; }
+        .type-tag-free { background: #dbeafe; color: #2563eb; padding: 4px 10px; border-radius: 8px; font-weight: 800; font-size: 11px; display: inline-flex; align-items: center; }
+        .status-tag-active { background: #dcfce7; color: #15803d; padding: 4px 10px; border-radius: 8px; font-weight: 800; font-size: 11px; display: inline-flex; align-items: center; }
+        .status-tag-inactive { background: #fee2e2; color: #b91c1c; padding: 4px 10px; border-radius: 8px; font-weight: 800; font-size: 11px; display: inline-flex; align-items: center; }
+        .status-tag-manual { background: #eff6ff; color: #1d4ed8; padding: 4px 10px; border-radius: 8px; font-weight: 800; font-size: 11px; display: inline-flex; align-items: center; }
+        .game-tag { background: #f0fdf4; color: #166534; padding: 4px 10px; border-radius: 8px; font-weight: 800; font-size: 11px; border: 1px solid #bbf7d0; display: inline-flex; align-items: center; }
+
+        /* Rank Badges */
+        .rank-tag-1 { background: #fef3c7; color: #b45309; padding: 4px 10px; border-radius: 8px; font-weight: 800; font-size: 11.5px; border: 1px solid #fde68a; }
+        .rank-tag-2 { background: #f1f5f9; color: #475569; padding: 4px 10px; border-radius: 8px; font-weight: 800; font-size: 11.5px; border: 1px solid #cbd5e1; }
+        .rank-tag-3 { background: #ffedd5; color: #c2410c; padding: 4px 10px; border-radius: 8px; font-weight: 800; font-size: 11.5px; border: 1px solid #fed7aa; }
+        .rank-tag-def { background: #f8fafc; color: #64748b; padding: 4px 10px; border-radius: 8px; font-weight: 700; font-size: 11.5px; border: 1px solid #e2e8f0; }
+
+        /* Cards Grid */
+        .cycle-cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 20px;
+            margin-top: 16px;
+        }
+
+        .cycle-stat-card {
+            background: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 22px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+            transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .cycle-stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(5, 46, 31, 0.08);
+            border-color: #cbd5e1;
+        }
+
+        .card-top-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 14px;
+        }
+
+        .btn-card-edit {
+            background: #f1f5f9;
+            color: var(--text);
+            font-weight: 700;
+            padding: 6px 14px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.2s ease;
+        }
+
+        .btn-card-edit:hover {
+            background: var(--primary);
+            color: #ffffff;
+            border-color: var(--primary);
+        }
+
+        .btn-card-delete {
+            background: #fee2e2;
+            color: #dc2626;
+            font-weight: 700;
+            padding: 6px 14px;
+            border-radius: 8px;
+            border: 1px solid #fecaca;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.2s ease;
+        }
+
+        .btn-card-delete:hover {
+            background: #dc2626;
+            color: #ffffff;
+            border-color: #dc2626;
+        }
+
+        .time-box-grid {
+            background: #f8fafc;
+            border: 1px solid #f1f5f9;
+            border-radius: 12px;
+            padding: 12px 14px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+
+        .time-box-item {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .time-box-lbl {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--muted);
+            text-transform: uppercase;
+        }
+
+        .time-box-val {
+            font-size: 13px;
+            font-weight: 800;
+            color: #0f172a;
+        }
+
+        .tiers-summary-box {
+            background: #ffffff;
+            border: 1px solid #f1f5f9;
+            border-radius: 12px;
+            padding: 12px;
+        }
+
+        .tiers-header-lbl {
+            font-size: 11px;
+            font-weight: 800;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 8px;
+        }
+
+        .tier-pill {
+            background: #f8fafc;
+            border: 1px solid var(--border);
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .color-warning { color: #d97706 !important; }
+        .color-success { color: #16a34a !important; }
+        .color-dark-green { color: #052e1f !important; }
+        .stat-flex-row { display: flex; align-items: center; gap: 6px; }
+
+        /* Modal Overlay & Card matching My Earnings */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .modal-overlay.open { display: flex; }
+        
+        .modal-card {
+            background: #ffffff;
+            border-radius: 24px;
+            width: 100%;
+            max-width: 680px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            border: 1px solid var(--border);
+            overflow: hidden;
+            animation: modalFadeUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes modalFadeUp {
+            from { opacity: 0; transform: translateY(12px) scale(0.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, #052e1f 0%, #0a4731 100%);
+            color: #ffffff;
+            padding: 20px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .modal-header h3 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 800;
+            color: #ffffff;
+        }
+
+        .modal-close-btn {
+            background: rgba(255, 255, 255, 0.15);
+            border: none;
+            color: #ffffff;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s ease;
+        }
+
+        .modal-close-btn:hover { background: rgba(255, 255, 255, 0.25); }
+
+        .modal-body {
+            padding: 24px;
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+
+        .form-grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            font-size: 11px;
+            font-weight: 800;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text);
+            background: #ffffff;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(5, 46, 31, 0.1);
+        }
+
+        /* Pill Switch */
+        .switch-pill-container {
+            display: inline-flex;
+            align-items: center;
+            background: #f1f5f9;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 3px;
+            width: fit-content;
+        }
+
+        .switch-opt {
+            padding: 8px 18px;
+            border-radius: 9px;
+            font-size: 12px;
+            font-weight: 800;
+            color: var(--muted);
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .switch-opt.active {
+            background: var(--primary);
+            color: #ffffff;
+            box-shadow: 0 2px 6px rgba(5, 46, 31, 0.2);
+        }
+
+        .tier-item-row {
+            display: grid;
+            grid-template-columns: 100px 95px 1.2fr 1.2fr 38px;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .tier-grid-headers {
+            display: grid;
+            grid-template-columns: 100px 95px 1.2fr 1.2fr 38px;
+            gap: 8px;
+            margin-bottom: 6px;
+            padding: 0 4px;
+        }
+
+        .tier-header-col {
+            font-size: 11px;
+            font-weight: 700;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-trash-row {
+            background: #fee2e2;
+            border: 1px solid #fecaca;
+            color: #dc2626;
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            flex-shrink: 0;
+            font-weight: 800;
+            font-size: 14px;
+            transition: all 0.2s ease;
+        }
+
+        .btn-trash-row:hover {
+            background: #dc2626;
+            color: #ffffff;
+        }
+
+        .btn-preset-chip {
+            background: #f1f5f9;
+            border: 1px solid var(--border);
+            color: #334155;
+            padding: 6px 14px;
+            border-radius: 8px;
+            font-size: 11.5px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-preset-chip:hover {
+            background: var(--primary);
+            color: #ffffff;
+            border-color: var(--primary);
+        }
+
+        .btn-add-tier-dashed {
+            width: 100%;
+            padding: 12px;
+            border: 1.5px dashed #cbd5e1;
+            border-radius: 12px;
+            background: #f8fafc;
+            color: var(--primary);
+            font-weight: 700;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-top: 10px;
+        }
+
+        .btn-add-tier-dashed:hover {
+            background: #f1f5f9;
+            border-color: var(--primary);
+        }
+    </style>
+</head>
+<body class="dashboard-body">
+    <div class="dashboard-shell">
+        <%- include('../partials/sidebar', { activePage: 'battle-leaderboard' }) %>
+
+        <div class="dashboard-main">
+            <header class="navbar dashboard-navbar">
+                <div class="nav-left" style="display: flex; align-items: center; gap: 12px; white-space: nowrap;">
+                    <button type="button" class="sidebar-toggle-btn" onclick="if(typeof toggleSidebar === 'function') toggleSidebar();">☰</button>
+                    <h2 style="margin: 0; font-size: 18px; font-weight: 800; white-space: nowrap;">Battle Leaderboard</h2>
+                </div>
+
+                <div class="nav-right" onclick="if(typeof toggleDropdown === 'function') toggleDropdown();">
+                    <div class="avatar"><%- typeof photo !== 'undefined' && photo ? photo : ((typeof admin !== 'undefined' && admin && (admin.name || admin.username || admin.email)) ? (admin.name || admin.username || admin.email).charAt(0).toUpperCase() : 'A') %></div>
+                    <div class="dropdown" id="dropdown">
+                        <a href="/logout">Logout</a>
+                    </div>
+                </div>
+            </header>
+
+            <main class="container dashboard-home" style="padding: 24px;">
+                <!-- Overview Header Card matching My Earnings -->
+                <section class="glass-card">
+                    <div class="overview-head">
+                        <div>
+                            <h1 style="font-size: 22px; font-weight: 800; color: #052e1f; margin: 0 0 4px;">Battle Leaderboard Management</h1>
+                            <p style="color: var(--muted); font-size: 13px; margin: 0;">Configure leaderboard cycles, reward distribution, active player standings, and prize payouts</p>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+                            <button type="button" class="btn-action" onclick="openCreateCycleModal()">
+                                <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+                                Create Leaderboard
+                            </button>
+                            <form action="/admin/battle-arena/leaderboard/cycle/end-current" method="POST" onsubmit="return confirm('End current cycle and take snapshot now?');" style="margin: 0;">
+                                <button type="submit" class="btn-secondary" style="color: #dc2626; border-color: #fecaca; background: #fff1f2;">
+                                    <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6l4 2"/></svg>
+                                    End Current Cycle
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Dashboard Summary Stat Cards matching My Earnings (4 Columns) -->
+                <div class="me-grid-4">
+                    <div class="dash-stat-card">
+                        <div class="stat-icon-circle green">
+                            <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                                <circle cx="12" cy="12" r="3"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <div class="stat-label">CONFIGURED CYCLES</div>
+                            <div class="stat-value"><%= (typeof allCycleConfigs !== 'undefined' && allCycleConfigs) ? allCycleConfigs.length : 1 %></div>
+                            <div style="font-size: 11px; color: #64748b; font-weight: 600; margin-top: 2px;">Daily, Weekly, Monthly</div>
+                        </div>
+                    </div>
+
+                    <div class="dash-stat-card">
+                        <div class="stat-icon-circle blue">
+                            <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <div class="stat-label">ACTIVE CYCLE ID</div>
+                            <div class="stat-value" style="font-size: 16px;"><%= typeof cycleId !== 'undefined' ? cycleId : 'N/A' %></div>
+                            <div style="font-size: 11px; color: #64748b; font-weight: 600; margin-top: 2px;">Live round identifier</div>
+                        </div>
+                    </div>
+
+                    <div class="dash-stat-card">
+                        <div class="stat-icon-circle orange">
+                            <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <div class="stat-label">ACTIVE PLAYERS</div>
+                            <div class="stat-value"><%= (typeof standings !== 'undefined' && standings) ? standings.length : 0 %></div>
+                            <div style="font-size: 11px; color: #64748b; font-weight: 600; margin-top: 2px;">Compete in free battles</div>
+                        </div>
+                    </div>
+
+                    <div class="dash-stat-card">
+                        <div class="stat-icon-circle teal">
+                            <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V6m0 12v-2m0 0c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <div class="stat-label">HISTORICAL CYCLES</div>
+                            <div class="stat-value"><%= (typeof history !== 'undefined' && history) ? history.length : 0 %></div>
+                            <div style="font-size: 11px; color: #64748b; font-weight: 600; margin-top: 2px;">Archived payouts</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Navigation Tabs: Tab 1 (Cycle Settings), Tab 2 (Current Standings), Tab 3 (Historical Records) -->
+                <div class="tabs-header-pill">
+                    <button class="tab-btn-pill active" data-tab="cycle-settings" onclick="switchTab('cycle-settings', this)">
+                        <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><circle cx="12" cy="12" r="3"/></svg>
+                        Cycle Settings
+                    </button>
+                    <button class="tab-btn-pill" data-tab="current-standings" onclick="switchTab('current-standings', this)">
+                        <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16 8v8m-4-5v5m-4-2v2m-2 4h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                        Current Standings
+                    </button>
+                    <button class="tab-btn-pill" data-tab="historical-records" onclick="switchTab('historical-records', this)">
+                        <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        Historical Records
+                    </button>
+                </div>
+
+                <!-- Tab 1: Cycle Settings -->
+                <div id="cycle-settings" class="tab-content active">
+                    <div class="glass-card">
+                        <% const cycleList = allCycleConfigs || []; %>
+                        <div class="overview-head" style="margin-bottom: 20px;">
+                            <div>
+                                <h3 style="margin: 0 0 4px; font-size: 17px; font-weight: 800; color: #052e1f;">Leaderboard Configurations</h3>
+                                <p style="margin: 0; font-size: 13px; color: var(--muted);">Create, manage, and schedule custom leaderboards with unique IDs and reward tiers</p>
+                            </div>
+                            <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                                <% if (cycleList.length > 0) { %>
+                                    <form action="/admin/battle-arena/leaderboard/cycle/delete-all" method="POST" onsubmit="return confirm('WARNING: Are you sure you want to delete ALL Leaderboard configurations and reset all standings?');" style="display:inline; margin:0;">
+                                        <button type="submit" class="btn-danger-outline">
+                                            <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                            Delete All
+                                        </button>
+                                    </form>
+                                <% } %>
+                                <button type="button" class="btn-action" onclick="openCreateCycleModal()">
+                                    <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+                                    Create Leaderboard
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="cycle-cards-grid">
+                            <% if (cycleList.length > 0) { %>
+                                <% cycleList.forEach(c => { %>
+                                    <% 
+                                        const cType = (c.cycleType || 'Daily');
+                                        const displayTitle = c.title || (cType + ' Leaderboard');
+                                    %>
+                                    <div class="cycle-stat-card">
+                                        <div>
+                                            <div class="card-top-bar">
+                                                <div>
+                                                    <div style="font-weight: 800; font-size: 15px; color: #052e1f; margin-bottom: 2px;"><%= displayTitle %></div>
+                                                    <div style="font-size: 11px; color: var(--muted); font-family: monospace;">ID: <%= c.key %></div>
+                                                </div>
+                                                <div style="display: flex; align-items: center; gap: 6px;">
+                                                    <form action="/admin/battle-arena/leaderboard/cycle/toggle/<%= c.key %>" method="POST" style="display:inline; margin:0;">
+                                                        <button type="submit" class="<%= c.isActive ? 'status-tag-active' : 'status-tag-inactive' %>" style="cursor: pointer; border: none; font-size: 11px; padding: 4px 10px;">
+                                                            <%= c.isActive ? 'ACTIVE' : 'INACTIVE' %>
+                                                        </button>
+                                                    </form>
+                                                    <button type="button" class="btn-card-edit"
+                                                        data-config-key="<%= c.key %>"
+                                                        data-title="<%= displayTitle %>"
+                                                        data-days="<%= c.cycleDays || 1 %>"
+                                                        data-active="<%= c.isActive ? 'true' : 'false' %>"
+                                                        data-ranking-basis="<%= c.rankingBasis || 'wins' %>"
+                                                        data-auto-reschedule="<%= c.autoReschedule !== false ? 'true' : 'false' %>"
+                                                        data-auto-reward="<%= c.autoRewardProcess ? 'true' : 'false' %>"
+                                                        data-start-time="<%= c.startTimeFormatted || '' %>"
+                                                        data-payout-time="<%= c.nextPayoutTimeFormatted || '' %>"
+                                                        data-show-winners="<%= c.showWinnersOnly ? 'true' : 'false' %>"
+                                                        data-tiers='<%= JSON.stringify(c.rewardTiers || []) %>'
+                                                        onclick="handleEditBtnClick(this)">
+                                                        Edit
+                                                    </button>
+                                                    <form action="/admin/battle-arena/leaderboard/cycle/delete/<%= c.key %>" method="POST" onsubmit="return confirm('Are you sure you want to delete this Leaderboard (<%= c.key %>)?');" style="display:inline; margin:0;">
+                                                        <button type="submit" class="btn-card-delete">Delete</button>
+                                                    </form>
+                                                </div>
+                                            </div>
+
+                                            <div style="display: flex; gap: 6px; margin: 10px 0 12px; flex-wrap: wrap;">
+                                                <span class="type-tag-paid"><%= (c.durationStr || (c.cycleDays + ' Days')).toUpperCase() %></span>
+                                                <% if (c.rankingBasis === 'points') { %>
+                                                    <span style="font-size: 10.5px; font-weight: 800; background: #ede9fe; color: #6d28d9; padding: 3px 8px; border-radius: 6px; border: 1px solid #ddd6fe;">🎯 POINTS BASED</span>
+                                                <% } else { %>
+                                                    <span style="font-size: 10.5px; font-weight: 800; background: #dcfce7; color: #15803d; padding: 3px 8px; border-radius: 6px; border: 1px solid #bbf7d0;">🏆 WINS BASED</span>
+                                                <% } %>
+                                                <span class="<%= c.autoReschedule !== false ? 'status-tag-active' : 'type-tag-free' %>">
+                                                    <%= c.autoReschedule !== false ? 'AUTO RESCHEDULE: ON' : 'ONE-TIME EVENT' %>
+                                                </span>
+                                                <span class="<%= c.autoRewardProcess ? 'status-tag-active' : 'status-tag-manual' %>">
+                                                    <%= c.autoRewardProcess ? 'AUTOMATIC PAYOUT' : 'MANUAL APPROVAL' %>
+                                                </span>
+                                                <span class="<%= c.showWinnersOnly ? 'type-tag-paid' : 'type-tag-free' %>">
+                                                    <%= c.showWinnersOnly ? 'WINNERS ONLY' : 'ALL PLAYERS' %>
+                                                </span>
+                                            </div>
+
+                                            <div class="time-box-grid">
+                                                <div class="time-box-item">
+                                                    <span class="time-box-lbl">Start Time (IST)</span>
+                                                    <span class="time-box-val"><%= (c.startTime && !isNaN(new Date(c.startTime).getTime())) ? new Date(c.startTime).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true }) : 'N/A' %></span>
+                                                </div>
+                                                <div class="time-box-item">
+                                                    <span class="time-box-lbl">Result Time (IST)</span>
+                                                    <span class="time-box-val" style="color: #052e1f;"><%= (c.nextPayoutTime && !isNaN(new Date(c.nextPayoutTime).getTime())) ? new Date(c.nextPayoutTime).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true }) : 'N/A' %></span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="tiers-summary-box">
+                                            <div class="tiers-header-lbl">Reward Tiers Distribution</div>
+                                            <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+                                                <% if (c.rewardTiers && c.rewardTiers.length > 0) { %>
+                                                    <% c.rewardTiers.forEach((t, idx) => { %>
+                                                        <span class="tier-pill" style="display: inline-flex; align-items: center; gap: 4px;">
+                                                            <span style="color: #64748b;">Rank <%= t.rankStart === t.rankEnd ? t.rankStart : (t.rankStart + '-' + t.rankEnd) %>:</span>
+                                                            <% if (t.iconUrl) { %>
+                                                                <img src="<%= t.iconUrl %>" style="width: 13px; height: 13px; object-fit: contain; border-radius: 2px;" onerror="this.style.display='none'" />
+                                                            <% } %>
+                                                            <strong style="color: #052e1f;"><%= t.customText ? t.customText : (Number(t.coins).toLocaleString() + ' Coins') %></strong>
+                                                        </span>
+                                                    <% }) %>
+                                                <% } else { %>
+                                                    <span style="font-size: 12px; color: var(--muted);">No tiers configured</span>
+                                                <% } %>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <% }) %>
+                            <% } else { %>
+                                <div style="grid-column: 1 / -1; text-align: center; color: var(--muted); padding: 48px; background: #ffffff; border-radius: 16px; border: 1.5px dashed var(--border);">
+                                    <div style="font-weight: 800; font-size: 15px; color: var(--text); margin-bottom: 4px;">No Leaderboards Created Yet</div>
+                                    <p style="font-size: 13px; color: var(--muted); margin: 0 0 16px 0;">Click below to create your custom Daily, Weekly, or Special event leaderboard.</p>
+                                    <button type="button" class="btn-action" onclick="openCreateCycleModal()">+ Create Leaderboard</button>
+                                </div>
+                            <% } %>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab 2: Current Standings -->
+                <div id="current-standings" class="tab-content">
+                    <div class="glass-card">
+                        <div class="overview-head" style="margin-bottom: 12px;">
+                            <div>
+                                <h3 style="margin: 0 0 4px; font-size: 17px; font-weight: 800; color: #052e1f; display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                                    <span>Live Standings (<%= typeof config !== 'undefined' && config.title ? config.title : 'Leaderboard' %>)</span>
+                                    <% if (typeof config !== 'undefined' && config.rankingBasis === 'points') { %>
+                                        <span style="font-size: 10.5px; font-weight: 800; background: #ede9fe; color: #6d28d9; padding: 2px 8px; border-radius: 6px; border: 1px solid #ddd6fe;">🎯 Points Based</span>
+                                    <% } else { %>
+                                        <span style="font-size: 10.5px; font-weight: 800; background: #dcfce7; color: #15803d; padding: 2px 8px; border-radius: 6px; border: 1px solid #bbf7d0;">🏆 Wins Based</span>
+                                    <% } %>
+                                </h3>
+                                <p style="margin: 0; font-size: 13px; color: var(--muted); font-family: monospace;">Leaderboard ID: <%= typeof cycleId !== 'undefined' ? cycleId : 'N/A' %></p>
+                            </div>
+                            <div style="display: flex; gap: 10px; align-items: center;">
+                                <% if (typeof cycleId !== 'undefined' && cycleId) { %>
+                                    <form action="/admin/battle-arena/leaderboard/standings/reset/<%= cycleId %>" method="POST" onsubmit="return confirm('Are you sure you want to reset all player standings and scores for Leaderboard <%= cycleId %>?');" style="display:inline; margin:0;">
+                                        <button type="submit" class="btn-danger-outline" style="padding: 6px 14px; font-size: 12px;">Reset Standings</button>
+                                    </form>
+                                <% } %>
+                                <span class="status-tag-active">Live Active Standings</span>
+                            </div>
+                        </div>
+
+                        <table class="tp-table">
+                            <thead>
+                                <tr>
+                                    <th>Rank</th>
+                                    <th>Player Name / ID</th>
+                                    <th>Total Wins</th>
+                                    <th>Speed Points</th>
+                                    <th>Projected Prize</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% const standingsList = (typeof standings !== 'undefined' && standings) ? standings : []; %>
+                                <% if (standingsList.length) { %>
+                                    <% standingsList.forEach((s, index) => { %>
+                                        <tr class="<%= s.isBanned ? 'banned-row' : '' %>">
+                                            <td>
+                                                <% if (index === 0) { %>
+                                                    <span class="rank-tag-1">Rank 1</span>
+                                                <% } else if (index === 1) { %>
+                                                    <span class="rank-tag-2">Rank 2</span>
+                                                <% } else if (index === 2) { %>
+                                                    <span class="rank-tag-3">Rank 3</span>
+                                                <% } else { %>
+                                                    <span class="rank-tag-def">Rank <%= index + 1 %></span>
+                                                <% } %>
+                                            </td>
+                                            <td>
+                                                <div style="display: flex; align-items: center; gap: 10px;">
+                                                    <% if (s.avatar && s.avatar !== 'null') { %>
+                                                        <img src="<%= s.avatar %>" alt="avatar" style="width: 36px; height: 36px; border-radius: 50%; object-fit: cover; border: 1.5px solid #cbd5e1;" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+                                                        <div style="display: none; width: 36px; height: 36px; border-radius: 50%; background: #e0e7ff; color: #4338ca; font-weight: 800; font-size: 14px; align-items: center; justify-content: center;">
+                                                            <%= (s.userName || 'P').charAt(0).toUpperCase() %>
+                                                        </div>
+                                                    <% } else { %>
+                                                        <div style="width: 36px; height: 36px; border-radius: 50%; background: #e0e7ff; color: #4338ca; font-weight: 800; font-size: 14px; display: flex; align-items: center; justify-content: center;">
+                                                            <%= (s.userName || 'P').charAt(0).toUpperCase() %>
+                                                        </div>
+                                                    <% } %>
+                                                    <div>
+                                                        <div style="font-weight: 800; color: var(--text); font-size: 13.5px;"><%= s.userName || 'Player' %></div>
+                                                        <div style="font-size: 11px; color: var(--muted); font-family: monospace;"><%= s.userId %></div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td style="font-weight: 800; color: #052e1f;"><%= s.winsCount || 0 %> Wins</td>
+                                            <td style="color: #475569; font-weight: 700;"><%= s.totalSpeedPoints || 0 %> Pts</td>
+                                            <td>
+                                                <%
+                                                    const rNum = index + 1;
+                                                    const tier = (config.rewardTiers || []).find(t => rNum >= t.rankStart && rNum <= t.rankEnd);
+                                                    const prizeLabel = tier ? (tier.customText || (tier.coins > 0 ? (Number(tier.coins).toLocaleString() + ' Coins') : '-')) : '-';
+                                                    const prizeIcon = tier ? tier.iconUrl : '';
+                                                %>
+                                                <span class="earnings-val" style="display: inline-flex; align-items: center; gap: 4px;">
+                                                    <% if (prizeIcon) { %>
+                                                        <img src="<%= prizeIcon %>" style="width: 14px; height: 14px; object-fit: contain; border-radius: 3px;" onerror="this.style.display='none'" />
+                                                    <% } %>
+                                                    <%= prizeLabel %>
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <% if (s.isBanned) { %>
+                                                    <span class="status-tag-inactive">Banned</span>
+                                                <% } else { %>
+                                                    <span class="status-tag-active">Active</span>
+                                                <% } %>
+                                            </td>
+                                            <td>
+                                                <div style="display: flex; align-items: center; gap: 6px;">
+                                                    <button type="button" class="btn-card-edit" style="font-size: 11.5px; padding: 4px 10px; border-radius: 6px; background: #e0e7ff; color: #4338ca; border: 1px solid #c7d2fe; white-space: nowrap; font-weight: 700;"
+                                                        data-user-id="<%= s.userId %>"
+                                                        data-cycle-id="<%= cycleId %>"
+                                                        onclick="openUserMatchesModal(this)">
+                                                        View
+                                                    </button>
+                                                    <form action="/admin/battle-arena/leaderboard/ban/<%= s.userId %>" method="POST" style="display:inline; margin: 0;">
+                                                        <input type="hidden" name="ban" value="<%= s.isBanned ? 'false' : 'true' %>">
+                                                        <% if (s.isBanned) { %>
+                                                            <button type="submit" class="btn-secondary" style="color: #16a34a; padding: 4px 10px; font-size: 11.5px;">Unban</button>
+                                                        <% } else { %>
+                                                            <button type="submit" class="btn-secondary" style="color: #dc2626; padding: 4px 10px; font-size: 11.5px;">Ban</button>
+                                                        <% } %>
+                                                    </form>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    <% }) %>
+                                <% } else { %>
+                                    <tr><td colspan="7" style="text-align: center; color: var(--muted); padding: 36px;">No active standings for this leaderboard yet. Free battle games played between the Start Time and Result Time score towards this leaderboard.</td></tr>
+                                <% } %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Tab 3: Historical Records -->
+                <div id="historical-records" class="tab-content">
+                    <% 
+                        const historyList = (typeof history !== 'undefined' && history) ? history : []; 
+                        let totalHistoricalDistributedCoins = 0;
+                        let totalHistoricalParticipants = 0;
+                        let pendingPayoutCount = 0;
+                        
+                        historyList.forEach(h => {
+                            totalHistoricalParticipants += (Number(h.totalPlayers) || 0);
+                            const cyclePrize = (h.standingsSnapshot || []).reduce((acc, s) => acc + (Number(s.projectedPrizeCoins || s.coinsAwarded || 0)), 0);
+                            totalHistoricalDistributedCoins += cyclePrize;
+                            if (h.payoutStatus !== 'PROCESSED') pendingPayoutCount++;
+                        });
+                    %>
+
+                    <!-- Historical Overview Stat Cards -->
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; margin-bottom: 20px;">
+                        <div class="glass-card stat-tile" style="margin-bottom: 0;">
+                            <div class="stat-label">TOTAL ARCHIVED CYCLES</div>
+                            <div class="stat-value"><%= historyList.length %></div>
+                        </div>
+                        <div class="glass-card stat-tile" style="margin-bottom: 0;">
+                            <div class="stat-label">TOTAL COINS DISTRIBUTED</div>
+                            <div class="stat-value color-dark-green stat-flex-row">
+                                🪙 <%= totalHistoricalDistributedCoins.toLocaleString() %>
+                            </div>
+                        </div>
+                        <div class="glass-card stat-tile" style="margin-bottom: 0;">
+                            <div class="stat-label">TOTAL PARTICIPANTS</div>
+                            <div class="stat-value"><%= totalHistoricalParticipants.toLocaleString() %></div>
+                        </div>
+                        <div class="glass-card stat-tile" style="margin-bottom: 0;">
+                            <div class="stat-label">PENDING PAYOUT CYCLES</div>
+                            <div class="stat-value <%= pendingPayoutCount > 0 ? 'color-warning' : 'color-success' %>">
+                                <%= pendingPayoutCount %>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="glass-card">
+                        <div class="overview-head" style="margin-bottom: 12px;">
+                            <div>
+                                <h3 style="margin: 0 0 4px; font-size: 17px; font-weight: 800; color: #052e1f;">Historical Leaderboard Archives</h3>
+                                <p style="margin: 0; font-size: 13px; color: var(--muted);">Past cycle results, Leaderboard ID, top winners snapshot, and total coins distributed</p>
+                            </div>
+                        </div>
+
+                        <table class="tp-table">
+                            <thead>
+                                <tr>
+                                    <th>Leaderboard Name & ID</th>
+                                    <th>Period End (IST)</th>
+                                    <th>Total Players</th>
+                                    <th>Top Winner</th>
+                                    <th>Total Coins Distributed</th>
+                                    <th>Payout Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% if (historyList.length) { %>
+                                    <% historyList.forEach(h => { %>
+                                        <% 
+                                            const isProcessed = h.payoutStatus === 'PROCESSED';
+                                            const snapshotData = encodeURIComponent(JSON.stringify(h.standingsSnapshot || []));
+                                            const totalPrizeCoins = (h.standingsSnapshot || []).reduce((acc, s) => acc + (Number(s.projectedPrizeCoins || s.coinsAwarded || 0)), 0);
+                                        %>
+                                        <tr>
+                                            <td>
+                                                <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 3px; flex-wrap: wrap;">
+                                                    <span style="font-weight: 800; color: #052e1f; font-size: 14px;"><%= h.title || h.cycleType || 'Leaderboard' %></span>
+                                                    <span style="font-size: 10px; font-weight: 700; background: #e2e8f0; color: #475569; padding: 1px 6px; border-radius: 4px;"><%= h.cycleType || 'Cycle' %></span>
+                                                    <% if (h.rankingBasis === 'points') { %>
+                                                        <span style="font-size: 10px; font-weight: 700; background: #ede9fe; color: #6d28d9; padding: 1px 6px; border-radius: 4px; border: 1px solid #ddd6fe;">🎯 Points Based</span>
+                                                    <% } else { %>
+                                                        <span style="font-size: 10px; font-weight: 700; background: #dcfce7; color: #15803d; padding: 1px 6px; border-radius: 4px; border: 1px solid #bbf7d0;">🏆 Wins Based</span>
+                                                    <% } %>
+                                                </div>
+                                                <div style="font-size: 11px; color: var(--muted); font-family: monospace; display: flex; align-items: center; gap: 4px;">
+                                                    <span>ID:</span> <code style="background: #f1f5f9; padding: 1px 5px; border-radius: 4px; color: #0f172a;"><%= h.cycleId %></code>
+                                                </div>
+                                            </td>
+                                            <td style="font-weight: 700;"><%= (h.periodEnd && !isNaN(new Date(h.periodEnd).getTime())) ? new Date(h.periodEnd).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true }) : 'N/A' %></td>
+                                            <td><strong><%= h.totalPlayers || 0 %></strong> <span style="color: var(--muted); font-size: 12px;">Players</span></td>
+                                            <td>
+                                                <div style="display: flex; align-items: center; gap: 8px;">
+                                                    <% if (h.topWinnerAvatar && h.topWinnerAvatar !== 'null') { %>
+                                                        <img src="<%= h.topWinnerAvatar %>" alt="winner" style="width: 28px; height: 28px; border-radius: 50%; object-fit: cover; border: 1.5px solid #cbd5e1;" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+                                                        <div style="display: none; width: 28px; height: 28px; border-radius: 50%; background: #fef3c7; color: #b45309; font-weight: 800; font-size: 11px; align-items: center; justify-content: center;">👑</div>
+                                                    <% } else { %>
+                                                        <div style="width: 28px; height: 28px; border-radius: 50%; background: #fef3c7; color: #b45309; font-weight: 800; font-size: 11px; display: flex; align-items: center; justify-content: center;">👑</div>
+                                                    <% } %>
+                                                    <span style="font-weight: 800; color: var(--text); font-size: 13px;"><%= h.topWinnerName || 'No Winners' %></span>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div style="display: flex; flex-direction: column;">
+                                                    <span class="earnings-val" style="font-weight: 800; color: #052e1f; font-size: 13.5px;">
+                                                        🪙 <%= totalPrizeCoins.toLocaleString() %> Coins
+                                                    </span>
+                                                    <% if (isProcessed) { %>
+                                                        <span class="color-success" style="font-size: 10.5px; font-weight: 700;">✓ Distributed</span>
+                                                    <% } else { %>
+                                                        <span class="color-warning" style="font-size: 10.5px; font-weight: 700;">⏳ Pending Approval</span>
+                                                    <% } %>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <span class="<%= isProcessed ? 'status-tag-active' : 'status-tag-manual' %>">
+                                                    <%= h.payoutStatus %>
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <div style="display: flex; gap: 8px; align-items: center;">
+                                                    <button type="button" class="btn-secondary"
+                                                        data-cycle-id="<%= h.cycleId %>"
+                                                        data-payout-status="<%= h.payoutStatus %>"
+                                                        data-snapshot="<%= snapshotData %>"
+                                                        onclick="openWinnersModal(this)">
+                                                        View Winners
+                                                    </button>
+                                                    <% if (!isProcessed) { %>
+                                                        <form action="/admin/battle-arena/leaderboard/payout/process/<%= h.cycleId %>" method="POST" onsubmit="return confirm('Distribute prize coins to all winners of this cycle now?');" style="margin: 0; display: inline;">
+                                                            <button type="submit" class="btn-action" style="padding: 7px 14px; font-size: 11.5px; background: #16a34a; border-color: #16a34a;">Approve & Pay All</button>
+                                                        </form>
+                                                    <% } %>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    <% }) %>
+                                <% } else { %>
+                                    <tr><td colspan="7" style="text-align: center; color: var(--muted); padding: 36px;">No historical cycles stored yet. End the current cycle to create an archive.</td></tr>
+                                <% } %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- USER MATCH HISTORY POPUP MODAL -->
+    <div id="userMatchesModal" class="modal-overlay" style="z-index: 1100;">
+        <div class="modal-card" style="max-width: 840px; max-height: 90vh; display: flex; flex-direction: column;">
+            <div class="modal-header">
+                <div style="display: flex; align-items: center; gap: 14px;">
+                    <div id="userMatchesAvatarContainer">
+                        <div id="userMatchesAvatarFallback" style="width: 44px; height: 44px; border-radius: 50%; background: rgba(255,255,255,0.2); color: #ffffff; font-weight: 800; font-size: 18px; display: flex; align-items: center; justify-content: center;">P</div>
+                    </div>
+                    <div>
+                        <h3 id="userMatchesHeaderTitle" style="margin: 0; font-size: 17px; font-weight: 800;">Player Match History</h3>
+                        <div id="userMatchesSubTitle" style="font-size: 12px; color: rgba(255,255,255,0.85); margin-top: 2px;"></div>
+                    </div>
+                </div>
+                <button type="button" class="modal-close-btn" onclick="closeUserMatchesModal()">✕</button>
+            </div>
+            <div class="modal-body" style="overflow-y: auto; flex: 1; padding: 20px;">
+                <!-- Summary Stats Bar -->
+                <div id="userMatchesSummary" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 16px;"></div>
+
+                <!-- Matches Table -->
+                <div id="userMatchesLoading" style="text-align: center; padding: 30px; color: var(--muted); font-weight: 600;">Loading match history...</div>
+                <div id="userMatchesTableWrapper" style="display: none; overflow-x: auto;">
+                    <table class="tp-table" style="margin-top: 0;">
+                        <thead>
+                            <tr>
+                                <th>Match ID</th>
+                                <th>Time (IST)</th>
+                                <th>Opponent</th>
+                                <th>Player Score & Stats</th>
+                                <th>Opponent Score</th>
+                                <th>Result</th>
+                            </tr>
+                        </thead>
+                        <tbody id="userMatchesBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- WINNERS LIST MODAL -->
+    <div id="winnersModal" class="modal-overlay">
+        <div class="modal-card" style="max-width: 820px; max-height: 88vh; display: flex; flex-direction: column;">
+            <div class="modal-header">
+                <div>
+                    <h3 id="modalCycleTitle" style="margin: 0; font-size: 17px; font-weight: 800;">Historical Cycle Winners</h3>
+                    <div id="modalCycleSubTitle" style="font-size: 12px; color: rgba(255,255,255,0.85); margin-top: 2px;">Review rankers and release individual or bulk prize coins</div>
+                </div>
+                <button type="button" class="modal-close-btn" onclick="closeWinnersModal()">✕</button>
+            </div>
+            <div class="modal-body" style="overflow-y: auto; flex: 1; padding: 18px 22px;">
+                <!-- Search & Filter Bar -->
+                <div style="display: flex; gap: 10px; margin-bottom: 16px; align-items: center; flex-wrap: wrap;">
+                    <div style="flex: 1; min-width: 240px; position: relative;">
+                        <input type="text" id="winnersSearchInput" class="form-control" placeholder="Search by Player Name or User ID..." oninput="filterWinnersList()" style="padding-left: 36px;" />
+                        <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--muted); pointer-events: none;">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                        </svg>
+                    </div>
+                    <div id="winnersCountBadge" style="font-size: 12px; font-weight: 700; color: var(--muted); padding: 8px 12px; background: #f1f5f9; border-radius: 8px;">
+                        0 Winners
+                    </div>
+                </div>
+
+                <div style="overflow-x: auto;">
+                    <table class="tp-table" style="margin-top: 0;">
+                        <thead>
+                            <tr>
+                                <th>Rank</th>
+                                <th>Player Name / ID</th>
+                                <th>Wins / Speed Points</th>
+                                <th>Prize Coins</th>
+                                <th>Status / Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="modalWinnersBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CREATE / EDIT LEADERBOARD MODAL -->
+    <div id="cycleModal" class="modal-overlay">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 id="modalHeadingTitle">Edit Leaderboard</h3>
+                <button type="button" class="modal-close-btn" onclick="closeCycleModal()">✕</button>
+            </div>
+
+            <form id="cycleConfigForm" action="/admin/battle-arena/leaderboard/cycle/save" method="POST" onsubmit="saveCycleForm(event)">
+                <div class="modal-body">
+                    <input type="hidden" id="modalConfigKey" name="configKey" value="" />
+                    <input type="hidden" id="modalRewardTiersJson" name="rewardTiersJson" value="" />
+                    <input type="hidden" id="modalIsActive" name="isActive" value="true" />
+                    <input type="hidden" id="modalAutoRewardProcess" name="autoRewardProcess" value="true" />
+                    <input type="hidden" id="modalShowWinnersOnly" name="showWinnersOnly" value="true" />
+
+                    <!-- Leaderboard Title -->
+                    <div class="form-group">
+                        <label>Leaderboard Title / Name</label>
+                        <input type="text" id="modalTitle" name="title" class="form-control" placeholder="e.g. Weekly Speed Clash" required />
+                    </div>
+
+                    <input type="hidden" id="modalAutoReschedule" name="autoReschedule" value="true" />
+                    <input type="hidden" id="modalCycleType" name="cycleType" value="Custom" />
+                    <input type="hidden" id="modalCycleDays" name="cycleDays" value="1" />
+                    <input type="hidden" id="modalRankingBasis" name="rankingBasis" value="wins" />
+
+                    <!-- Leaderboard Scoring Basis (Wins vs Points) -->
+                    <div class="form-group">
+                        <label>Leaderboard Scoring Basis</label>
+                        <div class="switch-pill-container">
+                            <button type="button" class="switch-opt active" id="rankingWinsOpt" onclick="toggleRankingBasis('wins')">🏆 WINS BASED</button>
+                            <button type="button" class="switch-opt" id="rankingPointsOpt" onclick="toggleRankingBasis('points')">🎯 POINTS BASED</button>
+                        </div>
+                        <div style="font-size: 11.5px; color: var(--muted); margin-top: 5px;" id="rankingBasisHelp">
+                            Players ranked primarily by total match victories. Speed points used as tie-breaker.
+                        </div>
+                    </div>
+
+                    <!-- Auto Reschedule -->
+                    <div class="form-group">
+                        <label>Auto Reschedule (Recurring Leaderboard)</label>
+                        <div class="switch-pill-container">
+                            <button type="button" class="switch-opt active" id="rescheduleOnOpt" onclick="toggleAutoReschedule(true)">AUTO RESCHEDULE (ON)</button>
+                            <button type="button" class="switch-opt" id="rescheduleOffOpt" onclick="toggleAutoReschedule(false)">ONE-TIME (OFF)</button>
+                        </div>
+                        <div style="font-size: 11.5px; color: var(--muted); margin-top: 5px;">
+                            When ON, once Result Time arrives, the leaderboard automatically archives previous winners and starts the next round for the exact same duration.
+                        </div>
+                    </div>
+
+                    <!-- Status -->
+                    <div class="form-group">
+                        <label>Status</label>
+                        <div class="switch-pill-container">
+                            <button type="button" class="switch-opt active" id="statusEnabledOpt" onclick="toggleStatus(true)">ENABLED</button>
+                            <button type="button" class="switch-opt" id="statusDisabledOpt" onclick="toggleStatus(false)">DISABLED</button>
+                        </div>
+                    </div>
+
+                    <!-- Auto Reward Process -->
+                    <div class="form-group">
+                        <label>Auto Reward Process</label>
+                        <div class="switch-pill-container">
+                            <button type="button" class="switch-opt" id="rewardManualOpt" onclick="toggleAutoReward(false)">MANUAL APPROVAL</button>
+                            <button type="button" class="switch-opt active" id="rewardAutoOpt" onclick="toggleAutoReward(true)">AUTOMATIC</button>
+                        </div>
+                    </div>
+
+                    <!-- Start & Payout Times (IST) -->
+                    <div class="form-grid-2">
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label>Start Time (IST)</label>
+                            <input type="hidden" id="modalStartTimeIso" name="startTime" />
+                            <input type="datetime-local" id="modalStartTime" class="form-control" required />
+                        </div>
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label>Result Time / Payout (IST)</label>
+                            <input type="hidden" id="modalPayoutTimeIso" name="nextPayoutTime" />
+                            <input type="datetime-local" id="modalPayoutTime" class="form-control" required />
+                        </div>
+                    </div>
+
+                    <!-- Show Winners Only -->
+                    <div class="form-group">
+                        <label>Show Winners Only</label>
+                        <div class="switch-pill-container">
+                            <button type="button" class="switch-opt active" id="winnersOnOpt" onclick="toggleShowWinners(true)">ON</button>
+                            <button type="button" class="switch-opt" id="winnersOffOpt" onclick="toggleShowWinners(false)">OFF</button>
+                        </div>
+                    </div>
+
+                    <!-- Reward Tiers -->
+                    <div style="border-top: 1px solid var(--border); margin: 18px 0; padding-top: 14px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
+                            <div>
+                                <span style="font-size: 11px; font-weight: 800; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em;">REWARD TIERS</span>
+                                <div style="font-size: 12px; color: var(--muted);">Rank range & coins awarded</div>
+                            </div>
+                            <div style="display: flex; gap: 6px;">
+                                <button type="button" class="btn-preset-chip" onclick="clearAllTiers()">Clear All</button>
+                            </div>
+                        </div>
+
+                        <div class="tier-grid-headers">
+                            <span class="tier-header-col">Rank</span>
+                            <span class="tier-header-col">Coins</span>
+                            <span class="tier-header-col">Icon Link (Opt)</span>
+                            <span class="tier-header-col">Prize Text (Opt)</span>
+                            <span></span>
+                        </div>
+
+                        <div id="modalRewardTiersContainer"></div>
+
+                        <button type="button" class="btn-add-tier-dashed" onclick="addTierRow('', '', '', '')">
+                            + Add Reward Tier
+                        </button>
+                    </div>
+
+                    <!-- Modal Actions -->
+                    <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--border);">
+                        <button type="button" class="btn-secondary" onclick="closeCycleModal()">Cancel</button>
+                        <button type="submit" class="btn-action">Save Leaderboard</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function switchTab(tabId, btn) {
+            const contents = document.querySelectorAll('.tab-content');
+            contents.forEach(c => c.classList.remove('active'));
+
+            const buttons = document.querySelectorAll('.tab-btn-pill');
+            buttons.forEach(b => b.classList.remove('active'));
+
+            const target = document.getElementById(tabId);
+            if (target) target.classList.add('active');
+            if (btn) btn.classList.add('active');
+        }
+
+        let currentWinnersList = [];
+        let currentCycleId = '';
+        let currentCyclePayoutStatus = 'PENDING';
+
+        function openWinnersModal(btn) {
+            currentCycleId = btn.getAttribute('data-cycle-id') || '';
+            currentCyclePayoutStatus = btn.getAttribute('data-payout-status') || 'PENDING';
+            const rawSnapshotEncoded = btn.getAttribute('data-snapshot') || '';
+            
+            document.getElementById('modalCycleTitle').innerText = `Cycle Winners (${currentCycleId})`;
+            document.getElementById('modalCycleSubTitle').innerText = `Payout Status: ${currentCyclePayoutStatus} • Review and release individual or bulk prizes`;
+            document.getElementById('winnersSearchInput').value = '';
+
+            try {
+                const jsonStr = decodeURIComponent(rawSnapshotEncoded);
+                currentWinnersList = JSON.parse(jsonStr) || [];
+            } catch(e) {
+                currentWinnersList = [];
+            }
+
+            filterWinnersList();
+            document.getElementById('winnersModal').classList.add('open');
+        }
+
+        function filterWinnersList() {
+            const q = (document.getElementById('winnersSearchInput').value || '').toLowerCase().trim();
+            const tbody = document.getElementById('modalWinnersBody');
+            tbody.innerHTML = '';
+
+            const filtered = currentWinnersList.filter(w => {
+                if (!q) return true;
+                const name = (w.userName || '').toLowerCase();
+                const uid = (w.userId || '').toLowerCase();
+                return name.includes(q) || uid.includes(q);
+            });
+
+            document.getElementById('winnersCountBadge').innerText = `${filtered.length} of ${currentWinnersList.length} Winners`;
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--muted); padding: 24px;">No matching winners found for "${q}".</td></tr>`;
+                return;
+            }
+
+            filtered.forEach(w => {
+                const rNum = parseInt(w.rank) || 99;
+                const rClass = rNum <= 3 ? `rank-tag-${rNum}` : 'rank-tag-def';
+                const isPaid = (currentCyclePayoutStatus === 'PROCESSED') || (w.isPaid === true);
+                const coins = Number(w.projectedPrizeCoins || w.coinsAwarded || 0);
+
+                let avatarHtml = '';
+                const initial = (w.userName || 'P').charAt(0).toUpperCase();
+                if (w.avatar && w.avatar !== 'null') {
+                    avatarHtml = `
+                        <img src="${w.avatar}" alt="avatar" style="width: 34px; height: 34px; border-radius: 50%; object-fit: cover; border: 1.5px solid #cbd5e1;" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+                        <div style="display: none; width: 34px; height: 34px; border-radius: 50%; background: #e0e7ff; color: #4338ca; font-weight: 800; font-size: 13px; align-items: center; justify-content: center;">${initial}</div>
+                    `;
+                } else {
+                    avatarHtml = `<div style="width: 34px; height: 34px; border-radius: 50%; background: #e0e7ff; color: #4338ca; font-weight: 800; font-size: 13px; display: flex; align-items: center; justify-content: center;">${initial}</div>`;
+                }
+
+                let actionHtml = '';
+                if (isPaid) {
+                    actionHtml = `<span class="status-tag-active" style="padding: 4px 10px; font-size: 11px;">PAID</span>`;
+                } else {
+                    if (coins > 0) {
+                        actionHtml = `<button type="button" class="btn-action" style="padding: 5px 12px; font-size: 11.5px; background: #16a34a; border-color: #16a34a;" onclick="paySingleUser('${currentCycleId}', '${w.userId}', this)">Pay User</button>`;
+                    } else {
+                        actionHtml = `<span style="color: var(--muted); font-size: 12px; font-weight: 600;">No Prize</span>`;
+                    }
+                }
+
+                tbody.innerHTML += `
+                    <tr>
+                        <td><span class="${rClass}">Rank ${w.rank}</span></td>
+                        <td>
+                            <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px;">
+                                <div style="display: flex; align-items: center; gap: 10px;">
+                                    ${avatarHtml}
+                                    <div>
+                                        <div style="font-weight: 800; color: var(--text); font-size: 13.5px;">${w.userName || 'Player'}</div>
+                                        <div style="font-size: 11px; color: var(--muted); font-family: monospace;">${w.userId || ''}</div>
+                                    </div>
+                                </div>
+                                <button type="button" class="btn-card-edit" style="font-size: 11px; padding: 4px 10px; border-radius: 6px; background: #e0e7ff; color: #4338ca; border: 1px solid #c7d2fe; white-space: nowrap; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 4px;"
+                                    data-user-id="${w.userId}"
+                                    data-cycle-id="${currentCycleId}"
+                                    onclick="openUserMatchesModal(this)"
+                                    title="View player match history for this leaderboard">
+                                    <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                                    View
+                                </button>
+                            </div>
+                        </td>
+                        <td>${w.winsCount || 0} Wins <span style="color: var(--muted); font-size: 12px;">(${w.totalSpeedPoints || 0} pts)</span></td>
+                        <td style="font-weight: 800; color: #052e1f;">${coins > 0 ? (coins.toLocaleString() + ' Coins') : '-'}</td>
+                        <td>${actionHtml}</td>
+                    </tr>
+                `;
+            });
+        }
+
+        async function paySingleUser(cycleId, userId, btn) {
+            if (!confirm(`Are you sure you want to release prize coins to User ID: ${userId}?`)) return;
+            
+            btn.disabled = true;
+            btn.innerText = 'Processing...';
+
+            try {
+                const res = await fetch('/admin/battle-arena/leaderboard/payout/single-user', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ cycleId, userId })
+                });
+                const data = await res.json();
+
+                if (data.success) {
+                    btn.parentElement.innerHTML = '<span class="status-tag-active" style="padding: 4px 10px; font-size: 11px;">PAID</span>';
+                    const found = currentWinnersList.find(x => x.userId === userId);
+                    if (found) found.isPaid = true;
+                    alert(data.message || 'Prize coins credited successfully!');
+                    if (data.allPaid) {
+                        setTimeout(() => window.location.reload(), 1200);
+                    }
+                } else {
+                    alert(data.message || 'Failed to process payout');
+                    btn.disabled = false;
+                    btn.innerText = 'Pay User';
+                }
+            } catch(err) {
+                alert('Network error while processing payout: ' + err.message);
+                btn.disabled = false;
+                btn.innerText = 'Pay User';
+            }
+        }
+
+        function closeWinnersModal() {
+            document.getElementById('winnersModal').classList.remove('open');
+        }
+
+        // --- CYCLE MODAL LOGIC (Indian Standard Time: UTC+05:30) ---
+        function getLocalIsoString(date) {
+            if (!date) return '';
+            if (typeof date === 'string') {
+                if (date.length === 16 && date.includes('T')) return date;
+                if (date.length > 16 && (date.includes('+') || date.endsWith('Z'))) {
+                    const d = new Date(date);
+                    if (isNaN(d.getTime())) return '';
+                    const istTime = new Date(d.getTime() + (5.5 * 60 * 60 * 1000));
+                    return istTime.toISOString().slice(0, 16);
+                }
+            }
+            const d = new Date(date);
+            if (isNaN(d.getTime())) return '';
+            // Shift to IST (UTC + 5 hours 30 mins)
+            const istTime = new Date(d.getTime() + (5.5 * 60 * 60 * 1000));
+            return istTime.toISOString().slice(0, 16);
+        }
+
+        function toggleStatus(val) {
+            document.getElementById('modalIsActive').value = val ? 'true' : 'false';
+            document.getElementById('statusEnabledOpt').classList.toggle('active', val);
+            document.getElementById('statusDisabledOpt').classList.toggle('active', !val);
+        }
+
+        function toggleRankingBasis(val) {
+            const isPoints = val === 'points';
+            document.getElementById('modalRankingBasis').value = isPoints ? 'points' : 'wins';
+            document.getElementById('rankingPointsOpt').classList.toggle('active', isPoints);
+            document.getElementById('rankingWinsOpt').classList.toggle('active', !isPoints);
+            const help = document.getElementById('rankingBasisHelp');
+            if (help) {
+                help.innerText = isPoints
+                    ? 'Players ranked primarily by total Speed / Battle Points. Match victories used as tie-breaker.'
+                    : 'Players ranked primarily by total match victories. Speed points used as tie-breaker.';
+            }
+        }
+
+        function toggleAutoReschedule(val) {
+            document.getElementById('modalAutoReschedule').value = val ? 'true' : 'false';
+            document.getElementById('rescheduleOnOpt').classList.toggle('active', val);
+            document.getElementById('rescheduleOffOpt').classList.toggle('active', !val);
+        }
+
+        function toggleAutoReward(val) {
+            document.getElementById('modalAutoRewardProcess').value = val ? 'true' : 'false';
+            document.getElementById('rewardAutoOpt').classList.toggle('active', val);
+            document.getElementById('rewardManualOpt').classList.toggle('active', !val);
+        }
+
+        function toggleShowWinners(val) {
+            document.getElementById('modalShowWinnersOnly').value = val ? 'true' : 'false';
+            document.getElementById('winnersOnOpt').classList.toggle('active', val);
+            document.getElementById('winnersOffOpt').classList.toggle('active', !val);
+        }
+
+        function renderRewardTiers(tiers) {
+            const container = document.getElementById('modalRewardTiersContainer');
+            container.innerHTML = '';
+            if (tiers && tiers.length > 0) {
+                tiers.forEach(t => {
+                    let rangeStr = t.range;
+                    if (!rangeStr && t.rankStart !== undefined) {
+                        rangeStr = t.rankStart === t.rankEnd ? String(t.rankStart) : `${t.rankStart}-${t.rankEnd}`;
+                    }
+                    addTierRow(rangeStr, t.coins, t.iconUrl || '', t.customText || '');
+                });
+            } else {
+                addTierRow('', '', '', '');
+            }
+        }
+
+        function addTierRow(range, coins, iconUrl, customText) {
+            const container = document.getElementById('modalRewardTiersContainer');
+            const row = document.createElement('div');
+            row.className = 'tier-item-row';
+            row.innerHTML = `
+                <input type="text" class="form-control tier-range-input" placeholder="Rank (1 or 4-10)" value="${range || ''}" required />
+                <input type="number" class="form-control tier-coin-input" placeholder="Coins" value="${coins !== undefined && coins !== null && coins !== '' ? coins : ''}" min="0" />
+                <input type="url" class="form-control tier-icon-input" placeholder="Icon URL (Opt)" value="${iconUrl || ''}" />
+                <input type="text" class="form-control tier-text-input" placeholder="Prize Text (Opt)" value="${customText || ''}" />
+                <button type="button" class="btn-trash-row" onclick="removeTierRow(this)" title="Remove Tier">✕</button>
+            `;
+            container.appendChild(row);
+        }
+
+        function removeTierRow(btn) {
+            const row = btn.closest('.tier-item-row');
+            if (row) row.remove();
+        }
+
+        function clearAllTiers() {
+            document.getElementById('modalRewardTiersContainer').innerHTML = '';
+        }
+
+        function openCreateCycleModal() {
+            document.getElementById('modalConfigKey').value = '';
+            document.getElementById('modalHeadingTitle').innerText = 'Create Leaderboard';
+            document.getElementById('modalTitle').value = '';
+            toggleStatus(true);
+            toggleRankingBasis('wins');
+            toggleAutoReschedule(true);
+            toggleAutoReward(true);
+            toggleShowWinners(true);
+
+            const now = new Date();
+            const nextWeek = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+            document.getElementById('modalStartTime').value = getLocalIsoString(now);
+            document.getElementById('modalPayoutTime').value = getLocalIsoString(nextWeek);
+
+            const container = document.getElementById('modalRewardTiersContainer');
+            container.innerHTML = '';
+            addTierRow('', '', '', '');
+            document.getElementById('cycleModal').classList.add('open');
+        }
+
+        function handleEditBtnClick(btn) {
+            const key = btn.getAttribute('data-config-key') || '';
+            const title = btn.getAttribute('data-title') || '';
+            const isActive = btn.getAttribute('data-active') === 'true';
+            const rankingBasis = btn.getAttribute('data-ranking-basis') || 'wins';
+            const autoReschedule = btn.getAttribute('data-auto-reschedule') !== 'false';
+            const autoReward = btn.getAttribute('data-auto-reward') === 'true';
+            const startTime = btn.getAttribute('data-start-time') || '';
+            const payoutTime = btn.getAttribute('data-payout-time') || '';
+            const showWinners = btn.getAttribute('data-show-winners') === 'true';
+            const rawTiers = btn.getAttribute('data-tiers') || '[]';
+
+            document.getElementById('modalConfigKey').value = key;
+            document.getElementById('modalHeadingTitle').innerText = `Edit ${title || 'Leaderboard'}`;
+            document.getElementById('modalTitle').value = title || 'Battle Leaderboard';
+
+            toggleStatus(isActive);
+            toggleRankingBasis(rankingBasis);
+            toggleAutoReschedule(autoReschedule);
+            toggleAutoReward(autoReward);
+            toggleShowWinners(showWinners);
+
+            const startVal = getLocalIsoString(startTime) || getLocalIsoString(new Date());
+            const payoutVal = getLocalIsoString(payoutTime) || getLocalIsoString(new Date(Date.now() + 7 * 24 * 60 * 60 * 1000));
+
+            document.getElementById('modalStartTime').value = startVal;
+            document.getElementById('modalPayoutTime').value = payoutVal;
+
+            let parsedTiers = [];
+            try {
+                parsedTiers = JSON.parse(rawTiers);
+            } catch(e) {}
+            renderRewardTiers(parsedTiers);
+
+            document.getElementById('cycleModal').classList.add('open');
+        }
+
+        function closeCycleModal() {
+            document.getElementById('cycleModal').classList.remove('open');
+        }
+
+        function saveCycleForm(e) {
+            const rangeInputs = document.querySelectorAll('.tier-range-input');
+            const coinInputs = document.querySelectorAll('.tier-coin-input');
+            const iconInputs = document.querySelectorAll('.tier-icon-input');
+            const textInputs = document.querySelectorAll('.tier-text-input');
+            const tiers = [];
+
+            for (let i = 0; i < rangeInputs.length; i++) {
+                const rVal = rangeInputs[i].value.trim();
+                const cVal = Number(coinInputs[i].value) || 0;
+                const iconVal = iconInputs[i] ? iconInputs[i].value.trim() : '';
+                const textVal = textInputs[i] ? textInputs[i].value.trim() : '';
+                if (rVal) {
+                    tiers.push({
+                        range: rVal,
+                        coins: cVal,
+                        iconUrl: iconVal,
+                        customText: textVal
+                    });
+                }
+            }
+
+            document.getElementById('modalRewardTiersJson').value = JSON.stringify(tiers);
+
+            const sVal = document.getElementById('modalStartTime').value;
+            const pVal = document.getElementById('modalPayoutTime').value;
+            if (sVal) {
+                document.getElementById('modalStartTimeIso').value = sVal.includes('+') || sVal.endsWith('Z') ? sVal : `${sVal}:00+05:30`;
+            }
+            if (pVal) {
+                document.getElementById('modalPayoutTimeIso').value = pVal.includes('+') || pVal.endsWith('Z') ? pVal : `${pVal}:00+05:30`;
+            }
+            return true;
+        }
+
+        // --- USER MATCH HISTORY POPUP MODAL LOGIC ---
+        async function openUserMatchesModal(btn) {
+            const userId = btn.getAttribute('data-user-id');
+            const cycleId = btn.getAttribute('data-cycle-id');
+            
+            document.getElementById('userMatchesHeaderTitle').innerText = 'Player Match History';
+            document.getElementById('userMatchesSubTitle').innerText = `Loading matches for ID: ${userId}...`;
+            document.getElementById('userMatchesLoading').style.display = 'block';
+            document.getElementById('userMatchesTableWrapper').style.display = 'none';
+            document.getElementById('userMatchesSummary').innerHTML = '';
+            document.getElementById('userMatchesAvatarContainer').innerHTML = `<div style="width: 44px; height: 44px; border-radius: 50%; background: rgba(255,255,255,0.2); color: #ffffff; font-weight: 800; font-size: 18px; display: flex; align-items: center; justify-content: center;">P</div>`;
+            document.getElementById('userMatchesModal').classList.add('open');
+
+            try {
+                const res = await fetch(`/admin/battle-arena/leaderboard/user-matches/${encodeURIComponent(cycleId)}/${encodeURIComponent(userId)}`);
+                const data = await res.json();
+
+                if (!data.success) {
+                    document.getElementById('userMatchesLoading').innerText = 'Failed to load matches: ' + (data.message || 'Error');
+                    return;
+                }
+
+                const u = data.user || {};
+                const matches = data.matches || [];
+
+                document.getElementById('userMatchesHeaderTitle').innerText = `${u.name || 'Player'}`;
+                document.getElementById('userMatchesSubTitle').innerText = `User ID: ${u.userId} | Leaderboard ID: ${cycleId}`;
+
+                if (u.avatar && u.avatar !== 'null') {
+                    document.getElementById('userMatchesAvatarContainer').innerHTML = `
+                        <img src="${u.avatar}" alt="avatar" style="width: 44px; height: 44px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(255,255,255,0.7);" onerror="this.outerHTML='<div style=\\'width: 44px; height: 44px; border-radius: 50%; background: rgba(255,255,255,0.2); color: #ffffff; font-weight: 800; font-size: 18px; display: flex; align-items: center; justify-content: center;\\'>${(u.name || 'P').charAt(0).toUpperCase()}</div>';" />
+                    `;
+                } else {
+                    document.getElementById('userMatchesAvatarContainer').innerHTML = `
+                        <div style="width: 44px; height: 44px; border-radius: 50%; background: rgba(255,255,255,0.2); color: #ffffff; font-weight: 800; font-size: 18px; display: flex; align-items: center; justify-content: center;">
+                            ${(u.name || 'P').charAt(0).toUpperCase()}
+                        </div>
+                    `;
+                }
+
+                document.getElementById('userMatchesSummary').innerHTML = `
+                    <div style="background: #f8fafc; border: 1px solid var(--border); border-radius: 10px; padding: 10px 14px; text-align: center;">
+                        <div style="font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase;">Total Matches</div>
+                        <div style="font-size: 17px; font-weight: 800; color: var(--text);">${u.totalMatchesPlayed || 0}</div>
+                    </div>
+                    <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 10px; padding: 10px 14px; text-align: center;">
+                        <div style="font-size: 11px; font-weight: 700; color: #16a34a; text-transform: uppercase;">Total Wins</div>
+                        <div style="font-size: 17px; font-weight: 800; color: #15803d;">${u.totalWins || 0}</div>
+                    </div>
+                    <div style="background: #faf5ff; border: 1px solid #e9d5ff; border-radius: 10px; padding: 10px 14px; text-align: center;">
+                        <div style="font-size: 11px; font-weight: 700; color: #9333ea; text-transform: uppercase;">Total Speed Points</div>
+                        <div style="font-size: 17px; font-weight: 800; color: #7e22ce;">${u.totalSpeedPoints || 0} Pts</div>
+                    </div>
+                `;
+
+                const tbody = document.getElementById('userMatchesBody');
+                tbody.innerHTML = '';
+
+                if (matches.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: var(--muted); padding: 24px;">No free battle matches found for this player in this leaderboard window.</td></tr>';
+                } else {
+                    matches.forEach(m => {
+                        const dateStr = m.playedAt ? new Date(m.playedAt).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit', hour12: true }) : 'N/A';
+                        const opp = m.opponentStats || {};
+                        const my = m.myStats || {};
+                        
+                        let resultBadge = '';
+                        if (m.isWinner) {
+                            resultBadge = '<span class="status-tag-active" style="padding: 3px 10px; font-size: 11px; font-weight: 800;">WIN</span>';
+                        } else if (m.isTie) {
+                            resultBadge = '<span class="status-tag-manual" style="padding: 3px 10px; font-size: 11px; font-weight: 800;">TIED</span>';
+                        } else {
+                            resultBadge = '<span class="status-tag-inactive" style="padding: 3px 10px; font-size: 11px; font-weight: 800;">LOSS</span>';
+                        }
+
+                        tbody.innerHTML += `
+                            <tr>
+                                <td style="font-family: monospace; font-size: 11.5px; font-weight: 800; color: #0f172a; white-space: nowrap;">
+                                    ${m.matchId || '-'}
+                                </td>
+                                <td style="font-size: 12px; font-weight: 600; white-space: nowrap;">${dateStr}</td>
+                                <td>
+                                    <div style="display: flex; align-items: center; gap: 8px;">
+                                        <div style="width: 28px; height: 28px; border-radius: 50%; background: #f1f5f9; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: #475569;">
+                                            ${opp.isBot ? '🤖' : (opp.name || 'O').charAt(0).toUpperCase()}
+                                        </div>
+                                        <div>
+                                            <span style="font-weight: 700; color: var(--text);">${opp.name}</span>
+                                            ${opp.isBot ? '<span style="font-size: 10px; background: #e2e8f0; color: #475569; padding: 1px 5px; border-radius: 4px; margin-left: 4px; font-weight: 700;">BOT</span>' : ''}
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <strong style="color: #052e1f; font-size: 13.5px;">${my.score || 0} Pts</strong>
+                                    <div style="font-size: 11px; color: var(--muted); font-weight: 600;">${my.timeSec || 0}s | ${my.correct || 0}✓ ${my.wrong || 0}✗</div>
+                                </td>
+                                <td>
+                                    <strong style="color: #475569; font-size: 13.5px;">${opp.score || 0} Pts</strong>
+                                    <div style="font-size: 11px; color: var(--muted); font-weight: 600;">${opp.timeSec || 0}s</div>
+                                </td>
+                                <td>${resultBadge}</td>
+                            </tr>
+                        `;
+                    });
+                }
+
+                document.getElementById('userMatchesLoading').style.display = 'none';
+                document.getElementById('userMatchesTableWrapper').style.display = 'block';
+            } catch (err) {
+                document.getElementById('userMatchesLoading').innerText = 'Error loading matches: ' + err.message;
+            }
+        }
+
+        function closeUserMatchesModal() {
+            document.getElementById('userMatchesModal').classList.remove('open');
+        }
+
+        // Close modal on click outside
+        window.addEventListener('click', (e) => {
+            const cycleModal = document.getElementById('cycleModal');
+            const winnersModal = document.getElementById('winnersModal');
+            const userMatchesModal = document.getElementById('userMatchesModal');
+            if (e.target === cycleModal) closeCycleModal();
+            if (e.target === winnersModal) closeWinnersModal();
+            if (e.target === userMatchesModal) closeUserMatchesModal();
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const activeTabParam = urlParams.get('tab');
+            if (activeTabParam === 'current-standings') {
+                const btn = document.querySelector('[data-tab="current-standings"]');
+                if (btn) switchTab('current-standings', btn);
+            } else if (activeTabParam === 'historical-records') {
+                const btn = document.querySelector('[data-tab="historical-records"]');
+                if (btn) switchTab('historical-records', btn);
+            } else if (activeTabParam === 'cycle-settings') {
+                const btn = document.querySelector('[data-tab="cycle-settings"]');
+                if (btn) switchTab('cycle-settings', btn);
+            }
+        });
+    </script>
+    <script src="/js/admin.js"></script>
+</body>
+</html>

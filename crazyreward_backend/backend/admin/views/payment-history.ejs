@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Payment History</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/admin.css">
+    <link rel="icon" href="/images/favicon.png">
+    <style>
+        body.dashboard-body {
+            background-color: #f3f4f6 !important;
+            font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif !important;
+        }
+
+        .history-page-container {
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+
+        /* 1. Page Header Card */
+        .history-header-card {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 24px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .history-header-title h1 {
+            font-size: 24px;
+            font-weight: 800;
+            color: #0f172a;
+            margin: 0 0 4px;
+        }
+
+        .history-header-title p {
+            font-size: 14px;
+            color: #64748b;
+            margin: 0;
+        }
+
+        /* 2. Stats Grid (6 Columns) */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        @media (max-width: 1200px) {
+            .stats-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .stat-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 18px;
+            padding: 20px;
+            text-align: left;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card-label {
+            font-size: 11px;
+            font-weight: 700;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            margin-bottom: 6px;
+        }
+
+        .stat-card-value {
+            font-size: 24px;
+            font-weight: 800;
+            color: #0f172a;
+        }
+
+        .stat-card.green { background: #f0fdf4; border-color: #dcfce7; }
+        .stat-card.green .stat-card-label { color: #166534; }
+        .stat-card.green .stat-card-value { color: #15803d; }
+
+        .stat-card.red { background: #fef2f2; border-color: #fee2e2; }
+        .stat-card.red .stat-card-label { color: #991b1b; }
+        .stat-card.red .stat-card-value { color: #b91c1c; }
+
+        .stat-card.purple { background: #f5f3ff; border-color: #ddd6fe; }
+        .stat-card.purple .stat-card-label { color: #5b21b6; }
+        .stat-card.purple .stat-card-value { color: #6d28d9; }
+
+        /* 3. Filters Card */
+        .filters-section {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 22px;
+            margin-bottom: 24px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+        }
+
+        .filters-row {
+            display: flex;
+            gap: 14px;
+            align-items: flex-end;
+            flex-wrap: wrap;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .filter-group label {
+            font-size: 11px;
+            font-weight: 700;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .filter-group input,
+        .filter-group select {
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            border-radius: 12px;
+            padding: 10px 14px;
+            color: #0f172a;
+            font-size: 14px;
+            font-weight: 600;
+            min-width: 140px;
+        }
+
+        .filter-group input:focus,
+        .filter-group select:focus {
+            outline: none;
+            border-color: #052e1f;
+            box-shadow: 0 0 0 3px rgba(5, 46, 31, 0.12);
+        }
+
+        .search-input {
+            flex: 1;
+            min-width: 240px;
+        }
+
+        .filter-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 18px;
+            padding-top: 16px;
+            border-top: 1px solid #f1f5f9;
+        }
+
+        .btn-apply {
+            background: #052e1f;
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            padding: 10px 22px;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-apply:hover {
+            background: #042418;
+            transform: translateY(-1px);
+        }
+
+        .btn-export {
+            background: #d97706;
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            padding: 10px 22px;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-export:hover {
+            background: #b45309;
+            transform: translateY(-1px);
+        }
+
+        .btn-reset {
+            background: #f1f5f9;
+            color: #475569;
+            border: 1px solid #cbd5e1;
+            border-radius: 12px;
+            padding: 10px 20px;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-reset:hover {
+            background: #e2e8f0;
+            color: #0f172a;
+        }
+
+        /* 4. Table Card */
+        .history-table-container {
+            background: #ffffff;
+            border-radius: 20px;
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+        }
+
+        .table-dark-header {
+            background: #052e1f;
+            color: #ffffff;
+            padding: 16px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .table-header-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .table-header-title h3 {
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 0.6px;
+            margin: 0;
+            color: #ffffff;
+        }
+
+        .accent-bar {
+            width: 4px;
+            height: 16px;
+            background: #d97706;
+            border-radius: 2px;
+        }
+
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .history-table {
+            width: 100%;
+            min-width: 1100px;
+            border-collapse: collapse;
+        }
+
+        .history-table th {
+            background: #f8fafc;
+            padding: 14px 14px;
+            text-align: left;
+            font-size: 11.5px;
+            font-weight: 700;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid #e2e8f0;
+            white-space: nowrap;
+        }
+
+        .history-table td {
+            padding: 12px 14px;
+            border-bottom: 1px solid #f1f5f9;
+            color: #0f172a;
+            font-size: 13.5px;
+            font-weight: 500;
+            vertical-align: middle;
+        }
+
+        .history-table tr:hover td {
+            background: #f8fafc;
+        }
+
+        .history-table tr.row-selected td {
+            background: #f0fdf4 !important;
+        }
+
+        .col-checkbox {
+            width: 44px;
+            text-align: center;
+            padding-left: 14px !important;
+            padding-right: 6px !important;
+        }
+
+        .col-action {
+            width: 115px;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        .row-checkbox, .select-all-checkbox {
+            width: 17px;
+            height: 17px;
+            cursor: pointer;
+            accent-color: #052e1f;
+            vertical-align: middle;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+
+        .status-success { background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; }
+        .status-pending { background: #fffbeb; color: #b45309; border: 1px solid #fde68a; }
+        .status-failed { background: #fef2f2; color: #b91c1c; border: 1px solid #fca5a5; }
+        .status-inprogress { background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; }
+
+        .pagination-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 20px;
+            color: #64748b;
+            font-size: 13.5px;
+            font-weight: 600;
+            background: #ffffff;
+            border-top: 1px solid #f1f5f9;
+        }
+
+        .pagination-controls {
+            display: flex;
+            gap: 8px;
+        }
+
+        .pagination-controls button {
+            background: #f1f5f9;
+            border: 1px solid #cbd5e1;
+            border-radius: 10px;
+            padding: 8px 16px;
+            color: #0f172a;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 700;
+            transition: all 0.2s ease;
+        }
+
+        .pagination-controls button:hover:not(:disabled) {
+            background: #e2e8f0;
+        }
+
+        .pagination-controls button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-delete-row {
+            background: #fee2e2;
+            color: #dc2626;
+            border: 1px solid #fca5a5;
+            border-radius: 8px;
+            padding: 6px 12px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            white-space: nowrap;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+        }
+
+        .btn-delete-row:hover {
+            background: #dc2626;
+            color: #ffffff;
+            border-color: #dc2626;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 6px rgba(220, 38, 38, 0.25);
+        }
+
+        .btn-bulk-delete {
+            background: #dc2626;
+            color: #ffffff;
+            border: 1px solid #b91c1c;
+            border-radius: 10px;
+            padding: 7px 16px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 8px rgba(220, 38, 38, 0.35);
+        }
+
+        .btn-bulk-delete:hover {
+            background: #b91c1c;
+            transform: translateY(-1px);
+        }
+
+        .code-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: #f5f3ff;
+            color: #6d28d9;
+            border: 1px solid #ddd6fe;
+            padding: 4px 9px;
+            border-radius: 8px;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            max-width: 190px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            transition: all 0.2s ease;
+        }
+
+        .code-chip:hover {
+            background: #ede9fe;
+            border-color: #c4b5fd;
+            transform: translateY(-1px);
+        }
+    </style>
+</head>
+
+<body class="dashboard-body">
+
+    <%- include('partials/user_lookup') %>
+
+    <!-- Inline Alert Modal -->
+    <div id="alert-modal" class="modal">
+        <div class="modal-content">
+            <h3>Notification</h3>
+            <p class="alert-message">Something happened</p>
+            <div class="modal-actions">
+                <button id="alert-ok" class="btn-ok">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirm Delete Modal (Single & Bulk) -->
+    <div id="confirm-delete-modal" class="modal" style="display: none;">
+        <div class="modal-content" style="max-width: 420px; text-align: center; border-radius: 20px; padding: 26px;">
+            <div style="width: 56px; height: 56px; border-radius: 50%; background: #fee2e2; color: #dc2626; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; font-size: 26px;">
+                🗑️
+            </div>
+            <h3 id="confirm-delete-title" style="margin: 0 0 8px; font-size: 19px; font-weight: 800; color: #0f172a;">Delete Payment Record</h3>
+            <p id="confirm-delete-msg" style="color: #64748b; font-size: 13.5px; line-height: 1.5; margin: 0 0 20px;">
+                Are you sure you want to permanently delete this payment history record?
+            </p>
+            <div style="display: flex; gap: 10px; justify-content: center;">
+                <button type="button" id="confirm-delete-cancel" style="background: #f1f5f9; border: 1px solid #cbd5e1; color: #475569; padding: 10px 20px; border-radius: 12px; font-weight: 700; font-size: 13.5px; cursor: pointer;">Cancel</button>
+                <button type="button" id="confirm-delete-btn" style="background: #dc2626; border: none; color: #ffffff; padding: 10px 22px; border-radius: 12px; font-weight: 700; font-size: 13.5px; cursor: pointer;">Yes, Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="dashboard-shell">
+        <%- include('partials/sidebar', { activePage: 'payment-history' }) %>
+
+        <div class="dashboard-main">
+            <header class="navbar dashboard-navbar">
+                <div class="nav-left">
+                    <button type="button" class="sidebar-toggle-btn" onclick="toggleSidebar()">
+                        ☰
+                    </button>
+                    <h2>Payment History</h2>
+
+                    <select id="appSelect">
+                        <% firebaseServices.forEach(service=> { %>
+                            <option value="<%= service.appName %>">
+                                <%= service.displayName %>
+                            </option>
+                            <% }) %>
+                    </select>
+                </div>
+
+                <div class="nav-right" onclick="toggleDropdown()">
+                    <div class="avatar">
+                        <%- typeof photo !== 'undefined' && photo ? photo : 'A' %>
+                    </div>
+                    <div class="dropdown" id="dropdown">
+                        <a href="/logout">Logout</a>
+                    </div>
+                </div>
+            </header>
+
+            <main class="container history-page-container">
+                <div class="history-header-card">
+                    <div class="history-header-title">
+                        <h1>Payment History</h1>
+                        <p>View all withdrawal records with filters and export options</p>
+                    </div>
+
+                    <button type="button" class="btn-apply" onclick="openUserLookupModal()">
+                        <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="vertical-align: middle; margin-right: 6px;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                        Search User
+                    </button>
+                </div>
+
+                <!-- Stats Cards -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-card-label">Today</div>
+                        <div class="stat-card-value" id="stat-today">₹0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-card-label">Yesterday</div>
+                        <div class="stat-card-value" id="stat-yesterday">₹0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-card-label">This Month</div>
+                        <div class="stat-card-value" id="stat-month">₹0</div>
+                    </div>
+                    <div class="stat-card green">
+                        <div class="stat-card-label">Range Success Total</div>
+                        <div class="stat-card-value" id="stat-filtered-success">₹0</div>
+                    </div>
+                    <div class="stat-card red">
+                        <div class="stat-card-label">Range Failed Total</div>
+                        <div class="stat-card-value" id="stat-filtered-failed">₹0</div>
+                    </div>
+                    <div class="stat-card purple">
+                        <div class="stat-card-label">Range Success Count</div>
+                        <div class="stat-card-value" id="stat-filtered-success-count">0</div>
+                    </div>
+                </div>
+
+                <!-- Filters -->
+                <div class="filters-section">
+                    <div class="filters-row">
+                        <div class="filter-group">
+                            <label>From Date</label>
+                            <input type="date" id="startDate">
+                        </div>
+                        <div class="filter-group">
+                            <label>To Date</label>
+                            <input type="date" id="endDate">
+                        </div>
+                        <div class="filter-group">
+                            <label>Status</label>
+                            <select id="statusFilter">
+                                <option value="all">All</option>
+                                <option value="success">Success</option>
+                                <option value="pending">Pending</option>
+                                <option value="inprogress">In Progress</option>
+                                <option value="failed">Failed</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label>Method</label>
+                            <select id="methodFilter">
+                                <option value="all">All Methods</option>
+                            </select>
+                        </div>
+                        <div class="filter-group search-input">
+                            <label>Search (User ID / Email)</label>
+                            <input type="text" id="searchInput" placeholder="Enter user ID or email...">
+                        </div>
+                    </div>
+                    <div class="filter-actions">
+                        <button class="btn-apply" onclick="applyFilters()">Apply Filters</button>
+                        <button class="btn-export" onclick="exportCSV()">Export CSV</button>
+                        <button class="btn-reset" onclick="resetFilters()">Reset</button>
+                    </div>
+                </div>
+
+                <!-- History Table -->
+                <div class="history-table-container">
+                    <div class="table-dark-header">
+                        <div class="table-header-title">
+                            <span class="accent-bar"></span>
+                            <h3>WITHDRAWAL TRANSACTION HISTORY</h3>
+                        </div>
+                        <div class="table-header-actions" id="bulkActionsHeader" style="display: none;">
+                            <button type="button" class="btn-bulk-delete" onclick="confirmBulkDeletePayment()">
+                                🗑️ Delete Selected (<span id="bulkSelectedCount">0</span>)
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="tableContent">
+                        <div class="loading-spinner">Loading payment history...</div>
+                    </div>
+                    <div class="pagination-info" id="paginationInfo" style="display: none;">
+                        <span id="paginationText">Showing 0-0 of 0 records</span>
+                        <div class="pagination-controls">
+                            <button id="prevBtn" onclick="changePage(-1)">Previous</button>
+                            <button id="nextBtn" onclick="changePage(1)">Next</button>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="/js/admin.js"></script>
+    <script src="/js/user_lookup.js"></script>
+    <script src="/js/payment-history.js?v=1.6"></script>
+</body>
+
+</html>

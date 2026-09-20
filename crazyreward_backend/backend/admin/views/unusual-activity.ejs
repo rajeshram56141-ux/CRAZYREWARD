@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unusual Activity - Crazyreward Admin</title>
+    <link rel="stylesheet" href="/css/admin.css">
+    <link rel="icon" href="/images/favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #f8fafc;
+            --surface: #ffffff;
+            --border: #e2e8f0;
+            --primary: #052e1f;
+            --primary-hover: #042418;
+            --text: #0f172a;
+            --muted: #64748b;
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', sans-serif !important;
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--text);
+        }
+
+        /* Glassmorphism Cards */
+        .glass-card {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
+            border: 1px solid var(--border);
+        }
+
+        /* Overview Filter Bar */
+        .overview-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .overview-filters {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .overview-filters label {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            font-size: 11px;
+            font-weight: 800;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .overview-filters select {
+            padding: 8px 14px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            background: #ffffff;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text);
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        .overview-filters select:focus {
+            border-color: #052e1f;
+            box-shadow: 0 0 0 3px rgba(5, 46, 31, 0.1);
+        }
+
+        .btn-refresh-stats {
+            background: #052e1f;
+            color: #ffffff;
+            font-weight: 700;
+            font-size: 13px;
+            padding: 10px 18px;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-refresh-stats:hover {
+            background: #042418;
+            transform: translateY(-1px);
+        }
+
+        /* Dashboard Stat Cards */
+        .me-grid-4 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        @media (max-width: 1024px) {
+            .me-grid-4 { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (max-width: 640px) {
+            .me-grid-4 { grid-template-columns: 1fr; }
+        }
+
+        .dash-stat-card {
+            background: #ffffff;
+            border-radius: 18px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+            border: 1px solid #f1f5f9;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .dash-stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+        }
+
+        .stat-icon-circle {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .stat-icon-circle.green { background: #ecfdf5; color: #052e1f; }
+        .stat-icon-circle.orange { background: #fffbeb; color: #d97706; }
+        .stat-icon-circle.teal { background: #f0fdf4; color: #059669; }
+        .stat-icon-circle.red { background: #fef2f2; color: #ef4444; }
+
+        .stat-label {
+            font-size: 11px;
+            font-weight: 800;
+            color: #9ca3af;
+            letter-spacing: 0.6px;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+
+        .stat-value {
+            font-size: 22px;
+            font-weight: 800;
+            color: #111827;
+            letter-spacing: -0.02em;
+        }
+
+        /* Filter Tabs */
+        .ua-tabs {
+            display: flex;
+            background: #f1f5f9;
+            padding: 4px;
+            border-radius: 12px;
+            gap: 4px;
+        }
+
+        .ua-tab {
+            padding: 8px 16px;
+            border: none;
+            background: transparent;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--muted);
+            cursor: pointer;
+            border-radius: 10px;
+            transition: all 0.2s ease;
+        }
+
+        .ua-tab.active {
+            background: #052e1f;
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(5, 46, 31, 0.15);
+        }
+
+        /* Table Card */
+        .chart-card {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 24px;
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.02);
+            margin-bottom: 24px;
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .chart-header h3 {
+            margin: 0 0 4px;
+            font-size: 18px;
+            font-weight: 800;
+            color: #052e1f;
+        }
+
+        .chart-header span {
+            font-size: 13px;
+            color: var(--muted);
+        }
+
+        .ua-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            font-size: 13px;
+        }
+
+        .ua-table th {
+            padding: 12px 14px;
+            font-size: 11px;
+            font-weight: 800;
+            color: #ffffff;
+            background: #052e1f;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .ua-table th:first-child {
+            border-top-left-radius: 10px;
+            border-bottom-left-radius: 10px;
+        }
+
+        .ua-table th:last-child {
+            border-top-right-radius: 10px;
+            border-bottom-right-radius: 10px;
+        }
+
+        .ua-table td {
+            padding: 14px;
+            border-bottom: 1px solid #f1f5f9;
+            color: #1e293b;
+        }
+
+        .ua-table tbody tr {
+            transition: background 0.15s ease;
+        }
+
+        .ua-table tbody tr:hover {
+            background: rgba(5, 46, 31, 0.04);
+        }
+
+        .ua-badge {
+            background: rgba(5, 46, 31, 0.1);
+            color: #052e1f;
+            font-weight: 800;
+            font-size: 12px;
+            padding: 4px 10px;
+            border-radius: 8px;
+        }
+
+        .ua-status {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-weight: 800;
+            font-size: 11px;
+            text-transform: uppercase;
+        }
+
+        .status-active { background: #dcfce7; color: #15803d; }
+        .status-blocked { background: #fef2f2; color: #ef4444; }
+
+        .btn-action-view {
+            background: #052e1f;
+            color: #ffffff;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-action-view:hover {
+            background: #042418;
+        }
+
+        .btn-action-delete {
+            background: #fef2f2;
+            color: #ef4444;
+            border: 1px solid #fee2e2;
+            padding: 6px 14px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-action-delete:hover {
+            background: #ef4444;
+            color: #ffffff;
+        }
+
+        /* Modal Overlay */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal.open {
+            display: flex;
+        }
+
+        .modal-content {
+            background: #ffffff;
+            border-radius: 24px;
+            width: 100%;
+            max-width: 700px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            border: 1px solid var(--border);
+            overflow: hidden;
+            max-height: 85vh;
+            display: flex;
+            flex-direction: column;
+            animation: modalFadeUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes modalFadeUp {
+            from { opacity: 0; transform: translateY(12px) scale(0.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .modal-head {
+            background: linear-gradient(135deg, #052e1f 0%, #0a4731 100%);
+            color: #ffffff;
+            padding: 20px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .modal-head h3 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 800;
+            color: #ffffff;
+        }
+
+        .modal-close-btn {
+            background: rgba(255, 255, 255, 0.15);
+            border: none;
+            color: #ffffff;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s ease;
+        }
+
+        .modal-close-btn:hover {
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        .modal-body {
+            padding: 24px;
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        .ua-pagination {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .ua-pagination button {
+            background: #ffffff;
+            border: 1px solid var(--border);
+            padding: 8px 16px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 13px;
+            color: #052e1f;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .ua-pagination button:hover {
+            background: #052e1f;
+            color: #ffffff;
+        }
+
+        .ua-pagination span {
+            font-weight: 700;
+            font-size: 13px;
+            color: var(--muted);
+        }
+    </style>
+</head>
+
+<body class="dashboard-body">
+    <!-- DETAILS MODAL -->
+    <div id="details-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-head">
+                <h3>Suspicious Activity Details</h3>
+                <button type="button" class="modal-close-btn" onclick="closeDetailsModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="details-user-info" style="margin-bottom: 20px;"></div>
+                <div id="details-activities" style="margin-bottom: 20px;"></div>
+                <div id="details-block-history" style="margin-bottom: 20px;"></div>
+                <div id="details-actions" style="display: flex; gap: 10px; flex-wrap: wrap;"></div>
+            </div>
+            <div style="padding: 16px 24px; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; background: #f8fafc;">
+                <button type="button" class="btn-refresh-stats" onclick="closeDetailsModal()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="dashboard-shell">
+        <%- include('partials/sidebar', { activePage: 'unusual-activity' }) %>
+
+        <div class="dashboard-main">
+            <header class="navbar dashboard-navbar">
+                <div class="nav-left" style="display: flex; align-items: center; gap: 12px; white-space: nowrap;">
+                    <button type="button" class="sidebar-toggle-btn" onclick="toggleSidebar()">☰</button>
+                    <h2 style="margin: 0; font-size: 18px; font-weight: 800; white-space: nowrap;">Unusual Activity</h2>
+
+                    <select id="appSelect" onchange="loadUsers()" style="margin-left: 8px; padding: 6px 12px; border-radius: 10px; border: 1px solid #cbd5e1; font-weight: 700; background: #f8fafc; font-size: 13px; cursor: pointer;">
+                        <% (typeof firebaseServices !== 'undefined' && firebaseServices ? firebaseServices : []).forEach(service => { %>
+                            <option value="<%= service.appName %>">
+                                <%= service.displayName %>
+                            </option>
+                        <% }) %>
+                    </select>
+                </div>
+
+                <div class="nav-right" onclick="toggleDropdown()">
+                    <div class="avatar"><%- typeof photo !== 'undefined' && photo ? photo : 'A' %></div>
+                    <div class="dropdown" id="dropdown">
+                        <a href="/logout">Logout</a>
+                    </div>
+                </div>
+            </header>
+
+            <main class="container dashboard-home">
+                <!-- OVERVIEW CARD -->
+                <section class="glass-card">
+                    <div class="overview-head">
+                        <div>
+                            <h1 style="font-size: 22px; font-weight: 800; color: #052e1f; margin: 0 0 4px;">Unusual Activity Monitoring</h1>
+                            <p style="color: var(--muted); font-size: 13px; margin: 0;">Real-time suspicious user logs, automated pattern detection, and fraud prevention</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- DASHBOARD-STYLED SUMMARY STAT CARDS (4 COLUMNS) -->
+                <div class="me-grid-4">
+                    <div class="dash-stat-card">
+                        <div class="stat-icon-circle green">
+                            <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <div class="stat-label">TOTAL SUSPICIOUS</div>
+                            <div class="stat-value" id="stat-total">0</div>
+                            <div style="font-size: 11px; color: #64748b; font-weight: 600; margin-top: 2px;">Flagged account activities</div>
+                        </div>
+                    </div>
+
+                    <div class="dash-stat-card">
+                        <div class="stat-icon-circle red">
+                            <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
+                            </svg>
+                        </div>
+                        <div>
+                            <div class="stat-label">BLOCKED USERS</div>
+                            <div class="stat-value" id="stat-blocked">0</div>
+                            <div style="font-size: 11px; color: #64748b; font-weight: 600; margin-top: 2px;">Restricted accounts</div>
+                        </div>
+                    </div>
+
+                    <div class="dash-stat-card">
+                        <div class="stat-icon-circle teal">
+                            <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <div class="stat-label">ACTIVE FLAGGED</div>
+                            <div class="stat-value" id="stat-active">0</div>
+                            <div style="font-size: 11px; color: #64748b; font-weight: 600; margin-top: 2px;">Under review accounts</div>
+                        </div>
+                    </div>
+
+                    <div class="dash-stat-card">
+                        <div class="stat-icon-circle orange">
+                            <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <div class="stat-label">TRIGGER DETECTION</div>
+                            <div class="stat-value" id="stat-trigger-scan" style="cursor: pointer; font-size: 16px; background: #052e1f; color: #ffffff; padding: 4px 12px; border-radius: 8px; display: inline-block; margin-top: 2px;" onclick="triggerScan()">Run Scan</div>
+                            <div style="font-size: 11px; color: #64748b; font-weight: 600; margin-top: 4px;">Execute fraud algorithm</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TABLE & FILTER CARD -->
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <div>
+                            <h3>Flagged User Activities</h3>
+                            <span>Select timeframe and activity filters to narrow results</span>
+                        </div>
+
+                        <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+                            <!-- Filter Tabs -->
+                            <div class="ua-tabs">
+                                <button class="ua-tab active" onclick="switchDateRange('all')">All</button>
+                                <button class="ua-tab" onclick="switchDateRange('today')">Today</button>
+                                <button class="ua-tab" onclick="switchDateRange('week')">This Week</button>
+                                <button class="ua-tab" onclick="switchDateRange('blocked')">Blocked</button>
+                            </div>
+
+                            <!-- Filter by Type -->
+                            <div class="overview-filters">
+                                <select id="typeFilter" onchange="loadUsers()">
+                                    <option value="">All Activity Types</option>
+                                    <option value="watch_earn">Watch & Earn</option>
+                                    <option value="daily_task">Daily Task</option>
+                                    <option value="read_earn">Read & Earn</option>
+                                    <option value="play_games">Play Games</option>
+                                    <option value="withdrawal">Withdrawal</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- User List Table -->
+                    <div style="overflow-x: auto;">
+                        <table class="ua-table">
+                            <thead>
+                                <tr>
+                                    <th>User ID</th>
+                                    <th>Email</th>
+                                    <th>Activities</th>
+                                    <th>Last Detected</th>
+                                    <th>Status</th>
+                                    <th style="text-align: right;">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="users-tbody">
+                                <tr>
+                                    <td colspan="6" style="text-align: center; padding: 40px; color: var(--muted);">Loading suspicious user logs...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Pagination -->
+                    <div class="ua-pagination" id="pagination"></div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- UI Controllers & Client Script -->
+    <%- include('partials/user_lookup') %>
+    <script src="/js/admin.js"></script>
+    <script src="/js/user_lookup.js"></script>
+    <script src="/js/unusual-activity.js"></script>
+</body>
+
+</html>

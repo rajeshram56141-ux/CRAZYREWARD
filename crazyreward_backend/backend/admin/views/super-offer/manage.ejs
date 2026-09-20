@@ -1,0 +1,1369 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <title>Super Offer Manager - Admin</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/admin.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --bg-body: #f4f7fa;
+            --bg-card: #ffffff;
+            --primary: #052e1f;
+            --primary-hover: #042418;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border-color: #cbd5e1;
+            --radius-card: 16px;
+            --radius-input: 10px;
+        }
+
+        body.dashboard-body {
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            margin: 0;
+        }
+
+        .super-offer-container {
+            padding: 24px 32px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        /* Top Navigation Tabs */
+        .so-nav-tabs {
+            display: flex;
+            background: #ffffff;
+            padding: 6px;
+            border-radius: var(--radius-card);
+            border: 1px solid var(--border-color);
+            gap: 8px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 8px rgba(15, 23, 42, 0.03);
+        }
+
+        .so-nav-tab {
+            padding: 10px 22px;
+            border: none;
+            background: transparent;
+            font-size: 14px;
+            font-weight: 800;
+            color: var(--text-muted);
+            cursor: pointer;
+            border-radius: 10px;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .so-nav-tab.active {
+            background: var(--primary);
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(5, 46, 31, 0.18);
+        }
+
+        .so-badge-count {
+            background: #ef4444;
+            color: #ffffff;
+            font-size: 11px;
+            font-weight: 900;
+            padding: 2px 8px;
+            border-radius: 10px;
+        }
+
+        /* Top Page Header Bar with Save Button */
+        .page-header-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 24px;
+            background: #ffffff;
+            padding: 20px 24px;
+            border-radius: var(--radius-card);
+            border: 1px solid var(--border-color);
+            box-shadow: 0 2px 8px rgba(15, 23, 42, 0.03);
+        }
+
+        .page-title {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--text-main);
+            margin: 0 0 4px 0;
+            letter-spacing: -0.02em;
+        }
+
+        .page-subtitle {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin: 0;
+            font-weight: 500;
+        }
+
+        .header-save-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        /* 2-Column Grid Layout for Cards */
+        .cards-grid-layout {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
+            align-items: start;
+        }
+
+        @media (max-width: 1100px) {
+            .cards-grid-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Config Card */
+        .config-card {
+            background: var(--bg-card);
+            border-radius: var(--radius-card);
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04);
+            overflow: hidden;
+            height: 100%;
+        }
+
+        .config-card-header {
+            padding: 18px 24px;
+            border-bottom: 1px solid var(--border-color);
+            background: #fafcfb;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .config-card-title {
+            margin: 0;
+            font-size: 16px;
+            font-weight: 800;
+            color: var(--primary);
+        }
+
+        .config-card-body {
+            padding: 24px;
+        }
+
+        /* 2-Column Grid Inside Cards */
+        .form-grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 18px 20px;
+        }
+
+        @media (max-width: 640px) {
+            .form-grid-2 {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .field-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .field-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .field-label {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .field-input, .field-select, .field-textarea {
+            width: 100%;
+            padding: 11px 14px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-input);
+            font-size: 14px;
+            font-family: inherit;
+            color: var(--text-main);
+            background: #ffffff;
+            transition: all 0.2s ease;
+        }
+
+        .field-input:focus, .field-select:focus, .field-textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(5, 46, 31, 0.08);
+        }
+
+        .field-help {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 2px;
+            line-height: 1.4;
+        }
+
+        /* Save Button Primary */
+        .save-btn-main {
+            background: var(--primary);
+            color: #ffffff;
+            padding: 12px 28px;
+            border: none;
+            border-radius: var(--radius-input);
+            font-size: 14px;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 4px 14px rgba(5, 46, 31, 0.2);
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .save-btn-main:hover {
+            background: var(--primary-hover);
+            transform: translateY(-1px);
+        }
+
+        .btn-add-step {
+            background: #f1f5f9;
+            color: #0f172a;
+            border: 1px solid #cbd5e1;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 12.5px;
+            font-weight: 800;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .btn-add-step:hover {
+            background: #e2e8f0;
+        }
+
+        .btn-del-step {
+            background: #fef2f2;
+            color: #ef4444;
+            border: 1px solid #fecaca;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-del-step:hover {
+            background: #fee2e2;
+        }
+
+        /* Save Status Text */
+        .save-status-text {
+            font-size: 13.5px;
+            font-weight: 700;
+        }
+
+        /* Method Toggle Switches & Cards */
+        .switch-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 52px;
+            height: 28px;
+            flex-shrink: 0;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #cbd5e1;
+            transition: .25s ease-in-out;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 22px;
+            width: 22px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .25s ease-in-out;
+            border-radius: 50%;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.25);
+        }
+
+        input:checked + .slider {
+            background-color: #052e1f;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(24px);
+        }
+
+        .methods-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
+            align-items: stretch;
+            margin-bottom: 24px;
+        }
+
+        @media (max-width: 1080px) {
+            .methods-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .method-card {
+            background: var(--bg-card);
+            border-radius: var(--radius-card);
+            border: 2px solid var(--border-color);
+            box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04);
+            overflow: hidden;
+            transition: all 0.25s ease;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .method-card .config-card-body {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .method-card.active-method {
+            border-color: #052e1f;
+            box-shadow: 0 8px 24px rgba(5, 46, 31, 0.14);
+            background: #ffffff;
+        }
+
+        .method-card.active-method .config-card-header {
+            background: #f0fdf4;
+        }
+
+        .method-card.inactive-method {
+            border-color: #e2e8f0;
+            background: #fafbfc;
+            opacity: 0.88;
+        }
+
+        .method-card.inactive-method .config-card-header {
+            background: #fafcfb;
+        }
+
+        .method-card.inactive-method:hover {
+            opacity: 1;
+        }
+
+        .badge-active {
+            background: #dcfce7;
+            color: #166534;
+            font-size: 11.5px;
+            font-weight: 800;
+            padding: 4px 12px;
+            border-radius: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .badge-inactive {
+            background: #f1f5f9;
+            color: #64748b;
+            font-size: 11.5px;
+            font-weight: 700;
+            padding: 4px 12px;
+            border-radius: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .method-flow-tag {
+            background: #f1f5f9;
+            color: #334155;
+            padding: 5px 10px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* Proofs Table */
+        .proofs-table-card {
+            background: #ffffff;
+            border-radius: var(--radius-card);
+            border: 1px solid var(--border-color);
+            padding: 24px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
+        }
+
+        .proofs-toolbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .proof-thumb {
+            width: 54px;
+            height: 54px;
+            border-radius: 8px;
+            object-fit: cover;
+            cursor: pointer;
+            border: 1px solid #e2e8f0;
+            transition: all 0.2s ease;
+        }
+
+        .proof-thumb:hover {
+            transform: scale(1.08);
+            border-color: var(--primary);
+        }
+
+        .btn-approve {
+            background: #15803d;
+            color: #ffffff;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-approve:hover {
+            background: #166534;
+        }
+
+        .btn-reject {
+            background: #dc2626;
+            color: #ffffff;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-reject:hover {
+            background: #b91c1c;
+        }
+
+        /* Modal Styles */
+        .modal-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(4px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+
+        .modal-box {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 24px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+
+<body class="dashboard-body">
+    <div class="dashboard-shell">
+        <%- include('../partials/sidebar', { activePage: 'super-offer' }) %>
+
+        <div class="dashboard-main">
+            <header class="navbar dashboard-navbar">
+                <div class="nav-left" style="display: flex; align-items: center; gap: 12px;">
+                    <button type="button" class="sidebar-toggle-btn" onclick="toggleSidebar()"><i class="fa-solid fa-bars"></i></button>
+                    <h2 style="margin: 0; font-size: 18px; font-weight: 800;">Super Offer Manager</h2>
+                </div>
+                <div class="nav-right">
+                    <div class="user-profile">
+                        <div class="avatar"><%= typeof photo !== 'undefined' && photo ? photo : 'A' %></div>
+                    </div>
+                </div>
+            </header>
+
+            <div class="super-offer-container">
+                <!-- Top Navigation Tabs -->
+                <div class="so-nav-tabs">
+                    <button type="button" id="tabBtnConfig" class="so-nav-tab active" onclick="switchSoTab('config')"><i class="fa-solid fa-sliders" style="margin-right: 8px;"></i> Configuration</button>
+                    <button type="button" id="tabBtnProofs" class="so-nav-tab" onclick="switchSoTab('proofs')">
+                        <i class="fa-solid fa-camera" style="margin-right: 8px;"></i> Pending Proofs
+                        <span class="so-badge-count" id="badgePendingCount"><%= typeof pendingCount !== 'undefined' ? pendingCount : 0 %></span>
+                    </button>
+                </div>
+
+                <!-- TAB 1: CONFIGURATION -->
+                <div id="so-panel-config">
+                    <form id="superOfferForm" onsubmit="saveSuperOfferConfig(event)">
+                        <!-- Top Page Header Bar with Save Button -->
+                        <div class="page-header-bar">
+                            <div>
+                                <h1 class="page-title">Super Offer Configuration</h1>
+                                <p class="page-subtitle">Configure offer rewards, screenshot verification, dynamic app usage steps, and cooldown hours</p>
+                            </div>
+                            <div class="header-save-actions">
+                                <span id="saveStatusHeader" class="save-status-text"></span>
+                                <button type="submit" class="save-btn-main">
+                                    <i class="fa-solid fa-floppy-disk" style="margin-right: 8px;"></i> Save Super Offer Config
+                                </button>
+                            </div>
+                        </div>
+
+<%
+    let currentActiveMethod = config.activeMethod;
+    if (!currentActiveMethod) {
+        if (config.superOfferVerificationEnabled === false && config.installTask === false) {
+            currentActiveMethod = 1;
+        } else if (config.superOfferVerificationEnabled === false && config.installTask !== false) {
+            currentActiveMethod = 2;
+        } else if (config.superOfferVerificationEnabled !== false && config.screenshotVerificationEnabled === false) {
+            currentActiveMethod = 3;
+        } else {
+            currentActiveMethod = 4;
+        }
+    }
+%>
+
+                        <!-- SECTION 1: MASTER CONFIGURATION & INSTRUCTIONS -->
+                        <div class="cards-grid-layout">
+                            <!-- Card 1: Master Configuration -->
+                            <div class="config-card">
+                                <div class="config-card-header">
+                                    <h3 class="config-card-title"><i class="fa-solid fa-gear" style="margin-right: 8px; color: #052e1f;"></i> 1. Master Configuration (Rewards & Limits)</h3>
+                                </div>
+                                <div class="config-card-body">
+                                    <div class="form-grid-2">
+                                        <div class="field-group">
+                                            <label class="field-label" for="reward">Install Reward (Step 1 Coins)</label>
+                                            <input type="number" class="field-input" id="reward" name="reward" min="0" value="<%= config.reward !== undefined ? config.reward : 768 %>" required>
+                                            <span class="field-help">Base coin reward for completing Super Offer</span>
+                                        </div>
+
+                                        <div class="field-group">
+                                            <label class="field-label" for="gemsRequired">Gems Required to Unlock</label>
+                                            <input type="number" class="field-input" id="gemsRequired" name="gemsRequired" min="0" value="<%= config.gemsRequired !== undefined ? config.gemsRequired : 20 %>" required>
+                                            <span class="field-help">Cost in gems required to unlock the offer</span>
+                                        </div>
+
+                                        <div class="field-group">
+                                            <label class="field-label" for="limitType">Limit Type</label>
+                                            <select class="field-select" id="limitType" name="limitType">
+                                                <option value="daily" <%= config.limitType === 'daily' ? 'selected' : '' %>>Daily Limit (Server Date)</option>
+                                                <option value="hours" <%= config.limitType === 'hours' || config.limitType === 'minutes' ? 'selected' : '' %>>Cooldown Gap (in Minutes)</option>
+                                            </select>
+                                            <span class="field-help">How offer availability limits are enforced</span>
+                                        </div>
+
+                                        <div class="field-group">
+                                            <label class="field-label" for="hoursGap">Cooldown Gap (in Minutes)</label>
+                                            <input type="text" class="field-input" id="hoursGap" name="hoursGap" value="<%= config.gapMinutes || config.hoursGap || '60' %>" placeholder="e.g. 10 for 10 mins, 60 for 1 hr">
+                                            <span class="field-help">Required wait duration in MINUTES before offer unlocks again</span>
+                                        </div>
+
+                                        <div class="field-group">
+                                            <label class="field-label" for="dailyLimit">Daily Super Offer Claim Limit</label>
+                                            <input type="text" class="field-input" id="dailyLimit" name="dailyLimit" value="<%= config.superOfferDailyLimit || config.dailyLimit || '10' %>">
+                                            <span class="field-help">Max Super Offer claims allowed per day</span>
+                                        </div>
+
+                                        <div class="field-group">
+                                            <label class="field-label" for="initialUsageSeconds">Initial App Usage Time (Seconds)</label>
+                                            <input type="number" class="field-input" id="initialUsageSeconds" name="initialUsageSeconds" min="10" value="<%= config.initialUsageSeconds !== undefined ? config.initialUsageSeconds : 120 %>">
+                                            <span class="field-help">Required foreground usage for Step 1 (Default: 120s / 2 min)</span>
+                                        </div>
+
+                                        <div class="field-group">
+                                            <label class="field-label" for="adsRequired">Ads Required</label>
+                                            <select class="field-select" id="adsRequired" name="adsRequired">
+                                                <option value="true" <%= config.adsRequired !== false ? 'selected' : '' %>>True (Ad Required to Collect)</option>
+                                                <option value="false" <%= config.adsRequired === false ? 'selected' : '' %>>False (No Ad Required)</option>
+                                            </select>
+                                            <span class="field-help">Whether rewarded ad is required to collect</span>
+                                        </div>
+
+                                        <div class="field-group">
+                                            <label class="field-label" for="installGems">Install Gems Reward</label>
+                                            <input type="number" class="field-input" id="installGems" name="installGems" min="0" value="<%= config.installGems !== undefined ? config.installGems : 10 %>">
+                                            <span class="field-help">Gems granted upon app install completion</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Card 2: Instructions & Tutorial -->
+                            <div class="config-card">
+                                <div class="config-card-header">
+                                    <h3 class="config-card-title"><i class="fa-solid fa-book-open" style="margin-right: 8px; color: #052e1f;"></i> 2. Instructions & Tutorial</h3>
+                                </div>
+                                <div class="config-card-body">
+                                    <div class="field-group" style="margin-bottom: 18px;">
+                                        <label class="field-label" for="tutorialUrl">Tutorial Video URL</label>
+                                        <input type="text" class="field-input" id="tutorialUrl" name="tutorialUrl" value="<%= config.tutorialUrl || '' %>" placeholder="https://youtube.com/...">
+                                        <span class="field-help">Optional video link guiding users on completing Super Offers</span>
+                                    </div>
+
+                                    <div class="field-group">
+                                        <label class="field-label" for="howToPlay">How to Play Steps (One step per line)</label>
+                                        <textarea class="field-textarea" id="howToPlay" name="howToPlay" rows="6" placeholder="Step 1...&#10;Step 2..."><%= (Array.isArray(config.howToPlay) ? config.howToPlay : []).join('\n') %></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- SECTION 2: OPERATING METHODS (SINGLE-ACTIVE TOGGLE SELECTION) -->
+                        <div style="margin-top: 32px; margin-bottom: 18px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px; background: #ffffff; padding: 18px 24px; border-radius: var(--radius-card); border: 1px solid var(--border-color); box-shadow: 0 2px 8px rgba(15, 23, 42, 0.03);">
+                            <div>
+                                <h2 style="font-size: 19px; font-weight: 800; color: #0f172a; margin: 0 0 4px 0;"><i class="fa-solid fa-layer-group" style="margin-right: 8px; color: #052e1f;"></i> Super Offer Operating Methods</h2>
+                                <p style="font-size: 13.5px; color: var(--text-muted); margin: 0;">Toggle ONE method below. Switching methods requires confirmation and automatically deactivates other methods.</p>
+                            </div>
+                            <div id="activeMethodBanner" class="badge-active" style="font-size: 13.5px; padding: 7px 16px;">
+                                Currently Active: Method <span id="activeMethodNumberDisplay"><%= currentActiveMethod %></span>
+                            </div>
+                        </div>
+
+                        <div class="methods-grid">
+                            <!-- METHOD 1 CARD -->
+                            <div id="methodCard1" class="method-card <% if (currentActiveMethod === 1) { %>active-method<% } else { %>inactive-method<% } %>">
+                                <div class="config-card-header">
+                                    <div style="display: flex; align-items: center; gap: 12px;">
+                                        <h3 class="config-card-title" style="font-size: 16.5px;">Method 1: Direct Watch Ad Flow</h3>
+                                        <span id="methodBadge1" class="<% if (currentActiveMethod === 1) { %>badge-active<% } else { %>badge-inactive<% } %>">
+                                            <% if (currentActiveMethod === 1) { %>● ACTIVE<% } else { %>INACTIVE<% } %>
+                                        </span>
+                                    </div>
+                                    <div class="switch-container">
+                                        <span style="font-size: 13px; font-weight: 700; color: var(--text-muted);">Enable Method 1</span>
+                                        <label class="switch">
+                                            <% if (currentActiveMethod === 1) { %>
+                                            <input type="checkbox" id="methodToggle1" checked onclick="handleMethodToggleClick(1, event)">
+                                            <% } else { %>
+                                            <input type="checkbox" id="methodToggle1" onclick="handleMethodToggleClick(1, event)">
+                                            <% } %>
+                                            <span class="slider"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="config-card-body">
+                                    <p style="font-size: 13.5px; color: var(--text-muted); margin: 0 0 16px 0; line-height: 1.5;">
+                                        User unlocks offer using gems ➔ Button changes directly to <strong>Watch Ad</strong> ➔ User watches rewarded ad ➔ Coins credited instantly ➔ If daily limit: button shows <strong>Tomorrow</strong>; if hours/cooldown gap: live countdown timer runs.
+                                    </p>
+                                    <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                                        <span class="method-flow-tag"><i class="fa-solid fa-gem" style="color: #0284c7;"></i> 1. Unlock with Gems</span>
+                                        <span class="method-flow-tag"><i class="fa-solid fa-circle-play" style="color: #6366f1;"></i> 2. Watch Ad Button</span>
+                                        <span class="method-flow-tag"><i class="fa-solid fa-coins" style="color: #eab308;"></i> 3. Coins Credited</span>
+                                        <span class="method-flow-tag"><i class="fa-solid fa-hourglass-half" style="color: #f59e0b;"></i> 4. Tomorrow or Cooldown Gap</span>
+                                        <span class="method-flow-tag" style="background: #e0f2fe; color: #0369a1;"><i class="fa-solid fa-bolt"></i> Main Install Task: OFF</span>
+                                        <span class="method-flow-tag" style="background: #e0f2fe; color: #0369a1;"><i class="fa-solid fa-shield-halved"></i> Verification: OFF</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- METHOD 2 CARD -->
+                            <div id="methodCard2" class="method-card <% if (currentActiveMethod === 2) { %>active-method<% } else { %>inactive-method<% } %>">
+                                <div class="config-card-header">
+                                    <div style="display: flex; align-items: center; gap: 12px;">
+                                        <h3 class="config-card-title" style="font-size: 16.5px;">Method 2: Direct Install Task Flow</h3>
+                                        <span id="methodBadge2" class="<% if (currentActiveMethod === 2) { %>badge-active<% } else { %>badge-inactive<% } %>">
+                                            <% if (currentActiveMethod === 2) { %>● ACTIVE<% } else { %>INACTIVE<% } %>
+                                        </span>
+                                    </div>
+                                    <div class="switch-container">
+                                        <span style="font-size: 13px; font-weight: 700; color: var(--text-muted);">Enable Method 2</span>
+                                        <label class="switch">
+                                            <% if (currentActiveMethod === 2) { %>
+                                            <input type="checkbox" id="methodToggle2" checked onclick="handleMethodToggleClick(2, event)">
+                                            <% } else { %>
+                                            <input type="checkbox" id="methodToggle2" onclick="handleMethodToggleClick(2, event)">
+                                            <% } %>
+                                            <span class="slider"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="config-card-body">
+                                    <p style="font-size: 13.5px; color: var(--text-muted); margin: 0 0 16px 0; line-height: 1.5;">
+                                        Main Super Offer install task is ON. User unlocks with gems ➔ Button becomes <strong>Complete Now</strong> ➔ User installs app & completes initial usage time ➔ Step 1 Coins credited directly. No Step 2 list or screenshot verification required.
+                                    </p>
+                                    <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                                        <span class="method-flow-tag"><i class="fa-solid fa-gem" style="color: #0284c7;"></i> 1. Unlock with Gems</span>
+                                        <span class="method-flow-tag"><i class="fa-solid fa-circle-arrow-down" style="color: #10b981;"></i> 2. Complete Now Button</span>
+                                        <span class="method-flow-tag"><i class="fa-solid fa-mobile-screen-button" style="color: #8b5cf6;"></i> 3. Install & Initial Usage</span>
+                                        <span class="method-flow-tag"><i class="fa-solid fa-coins" style="color: #eab308;"></i> 4. Step 1 Coins Credited</span>
+                                        <span class="method-flow-tag"><i class="fa-solid fa-hourglass-half" style="color: #f59e0b;"></i> 5. Tomorrow or Cooldown Gap</span>
+                                        <span class="method-flow-tag" style="background: #e0f2fe; color: #0369a1;"><i class="fa-solid fa-bolt"></i> Main Install Task: ON</span>
+                                        <span class="method-flow-tag" style="background: #e0f2fe; color: #0369a1;"><i class="fa-solid fa-shield-halved"></i> Verification: OFF</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- METHOD 3 CARD -->
+                            <div id="methodCard3" class="method-card <% if (currentActiveMethod === 3) { %>active-method<% } else { %>inactive-method<% } %>">
+                                <div class="config-card-header">
+                                    <div style="display: flex; align-items: center; gap: 12px;">
+                                        <h3 class="config-card-title" style="font-size: 16.5px;">Method 3: Multi-Step Usage Flow (Without Screenshot Review)</h3>
+                                        <span id="methodBadge3" class="<% if (currentActiveMethod === 3) { %>badge-active<% } else { %>badge-inactive<% } %>">
+                                            <% if (currentActiveMethod === 3) { %>● ACTIVE<% } else { %>INACTIVE<% } %>
+                                        </span>
+                                    </div>
+                                    <div class="switch-container">
+                                        <span style="font-size: 13px; font-weight: 700; color: var(--text-muted);">Enable Method 3</span>
+                                        <label class="switch">
+                                            <% if (currentActiveMethod === 3) { %>
+                                            <input type="checkbox" id="methodToggle3" checked onclick="handleMethodToggleClick(3, event)">
+                                            <% } else { %>
+                                            <input type="checkbox" id="methodToggle3" onclick="handleMethodToggleClick(3, event)">
+                                            <% } %>
+                                            <span class="slider"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="config-card-body">
+                                    <p style="font-size: 13.5px; color: var(--text-muted); margin: 0 0 16px 0; line-height: 1.5;">
+                                        Main Super Offer Install task is ON + Super Offer Verification is ON. <strong>Screenshot verification is OFF (bypassed)</strong>. User completes Step 1 Install ➔ directly accesses dynamic multi-step usage tasks without uploading screenshot proof.
+                                    </p>
+                                    <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px;">
+                                        <span class="method-flow-tag"><i class="fa-solid fa-unlock-keyhole" style="color: #0284c7;"></i> 1. Unlock Offer</span>
+                                        <span class="method-flow-tag"><i class="fa-solid fa-download" style="color: #10b981;"></i> 2. Step 1 Install & Initial Use</span>
+                                        <span class="method-flow-tag"><i class="fa-solid fa-ban" style="color: #ef4444;"></i> 3. Screenshot Review: BYPASSED / OFF</span>
+                                        <span class="method-flow-tag"><i class="fa-solid fa-list-check" style="color: #6366f1;"></i> 4. Dynamic Multi-Step App Usage</span>
+                                    </div>
+
+                                    <div style="background: #ffffff; border: 1.5px solid var(--border-color); border-radius: 12px; padding: 18px;">
+                                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+                                            <strong style="font-size: 14px; color: #052e1f;"><i class="fa-solid fa-list-ol" style="margin-right: 6px; color: #052e1f;"></i> Method 3 Configured Usage Steps:</strong>
+                                            <button type="button" class="btn-add-step" onclick="addNewUsageStep()"><i class="fa-solid fa-plus" style="margin-right: 4px;"></i> Add Step</button>
+                                        </div>
+                                        <div id="usageStepsContainerM3" style="display: flex; flex-direction: column; gap: 14px;"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- METHOD 4 CARD -->
+                            <div id="methodCard4" class="method-card <% if (currentActiveMethod === 4) { %>active-method<% } else { %>inactive-method<% } %>">
+                                <div class="config-card-header">
+                                    <div style="display: flex; align-items: center; gap: 12px;">
+                                        <h3 class="config-card-title" style="font-size: 16.5px;">Method 4: Full Multi-Step Verification (With Screenshot Review)</h3>
+                                        <span id="methodBadge4" class="<% if (currentActiveMethod === 4) { %>badge-active<% } else { %>badge-inactive<% } %>">
+                                            <% if (currentActiveMethod === 4) { %>● ACTIVE<% } else { %>INACTIVE<% } %>
+                                        </span>
+                                    </div>
+                                    <div class="switch-container">
+                                        <span style="font-size: 13px; font-weight: 700; color: var(--text-muted);">Enable Method 4</span>
+                                        <label class="switch">
+                                            <% if (currentActiveMethod === 4) { %>
+                                            <input type="checkbox" id="methodToggle4" checked onclick="handleMethodToggleClick(4, event)">
+                                            <% } else { %>
+                                            <input type="checkbox" id="methodToggle4" onclick="handleMethodToggleClick(4, event)">
+                                            <% } %>
+                                            <span class="slider"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="config-card-body">
+                                    <p style="font-size: 13.5px; color: var(--text-muted); margin: 0 0 16px 0; line-height: 1.5;">
+                                        Full verification pipeline: User completes Step 1 Install ➔ Submits screenshot proof ➔ Proof is verified (Manual or Auto delay) and credited screenshot coins ➔ Subsequent dynamic usage steps unlock.
+                                    </p>
+                                    <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px;">
+                                        <span class="method-flow-tag"><i class="fa-solid fa-unlock-keyhole" style="color: #0284c7;"></i> 1. Unlock Offer</span>
+                                        <span class="method-flow-tag"><i class="fa-solid fa-download" style="color: #10b981;"></i> 2. Step 1 Install Task</span>
+                                        <span class="method-flow-tag"><i class="fa-solid fa-camera" style="color: #8b5cf6;"></i> 3. Screenshot Proof Review (Auto / Manual)</span>
+                                        <span class="method-flow-tag"><i class="fa-solid fa-list-check" style="color: #6366f1;"></i> 4. Dynamic Multi-Step App Usage</span>
+                                    </div>
+
+                                    <!-- Screenshot Verification Settings -->
+                                    <div style="background: #fdf4ff; border: 1.5px solid #f0abfc; border-radius: 12px; padding: 18px; margin-bottom: 20px;">
+                                        <div style="font-size: 14px; font-weight: 800; color: #86198f; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                                            <i class="fa-solid fa-camera"></i> Screenshot Verification & Proof Approval Settings
+                                        </div>
+                                        <div class="form-grid-2">
+                                            <div class="field-group">
+                                                <label class="field-label" for="screenshotCoins">Screenshot Reward Coins</label>
+                                                <input type="number" class="field-input" id="screenshotCoins" name="screenshotCoins" min="0" value="<%= config.screenshotCoins !== undefined ? config.screenshotCoins : 200 %>">
+                                                <span class="field-help">Coins credited when screenshot proof is approved</span>
+                                            </div>
+
+                                            <div class="field-group">
+                                                <label class="field-label" for="screenshotApprovalType">Screenshot Approval Type</label>
+                                                <select class="field-select" id="screenshotApprovalType" name="screenshotApprovalType" onchange="toggleAutoApproveFields()">
+                                                    <option value="auto" <%= config.screenshotApprovalType === 'auto' ? 'selected' : '' %>>Auto (Approve Automatically)</option>
+                                                    <option value="manual" <%= config.screenshotApprovalType !== 'auto' ? 'selected' : '' %>>Manual (Review via Admin Panel)</option>
+                                                </select>
+                                                <span class="field-help">If Auto, proof is auto-approved after delay</span>
+                                            </div>
+
+                                            <div class="field-group" id="autoApproveDelayGroup">
+                                                <label class="field-label" for="screenshotAutoApproveDelay">Auto Approve Delay Range (Seconds)</label>
+                                                <input type="text" class="field-input" id="screenshotAutoApproveDelay" name="screenshotAutoApproveDelay" value="<%= config.screenshotAutoApproveDelay !== undefined ? config.screenshotAutoApproveDelay : '10-15' %>">
+                                                <span class="field-help">Random delay range (e.g. 10-15) before auto-approval executes</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div style="background: #ffffff; border: 1.5px solid var(--border-color); border-radius: 12px; padding: 18px;">
+                                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+                                            <strong style="font-size: 14px; color: #052e1f;"><i class="fa-solid fa-list-ol" style="margin-right: 6px; color: #052e1f;"></i> Method 4 Configured Usage Steps:</strong>
+                                            <button type="button" class="btn-add-step" onclick="addNewUsageStep()"><i class="fa-solid fa-plus" style="margin-right: 4px;"></i> Add Step</button>
+                                        </div>
+                                        <div id="usageStepsContainerM4" style="display: flex; flex-direction: column; gap: 14px;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Hidden fields to preserve state & other appData properties -->
+                        <input type="hidden" id="activeMethod" name="activeMethod" value="<%= currentActiveMethod %>">
+                        <textarea id="initialUsageStepsJson" style="display: none;"><%= JSON.stringify(Array.isArray(config.usageSteps) && config.usageSteps.length > 0 ? config.usageSteps : [
+                            { stepNumber: 1, name: 'Use App Step 1', minutes: 5, coins: 672, hoursGap: 0 },
+                            { stepNumber: 2, name: 'Use App Step 2', minutes: 5, coins: 672, hoursGap: 24 },
+                            { stepNumber: 3, name: 'Use App Step 3', minutes: 5, coins: 1152, hoursGap: 24 }
+                        ]) %></textarea>
+                        <input type="hidden" id="gameGems" value="<%= config.gameGems || 10 %>">
+                        <input type="hidden" id="gameDailyLimit" value="<%= config.gameDailyLimit || '10-20' %>">
+                        <input type="hidden" id="gameInstallTaskTriggerLimit" value="<%= config.gameInstallTaskTriggerLimit || '10-20' %>">
+                        <input type="hidden" id="adType" value="<%= config.adType || 'rewarded' %>">
+                        <input type="hidden" id="installTaskMb" value="<%= config.installTaskMb || 15 %>">
+                        <input type="hidden" id="targetScores" value="<%= (Array.isArray(config.targetScores) ? config.targetScores : [10, 20, 30]).join(', ') %>">
+                    </form>
+                </div>
+
+                <!-- TAB 2: PENDING PROOF VERIFICATIONS -->
+                <div id="so-panel-proofs" style="display: none;">
+                    <div class="proofs-table-card">
+                        <div class="proofs-toolbar">
+                            <div>
+                                <h2 style="font-size: 20px; font-weight: 800; margin: 0 0 4px 0;"><i class="fa-solid fa-camera" style="margin-right: 8px; color: #052e1f;"></i>Super Offer Pending Proofs</h2>
+                                <p style="font-size: 13px; color: var(--text-muted); margin: 0;">Review submitted screenshot proofs, approve coins, and unlock subsequent usage steps for users</p>
+                            </div>
+                            <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                                <input type="text" id="proofSearchInput" placeholder="Search User ID / App..." style="padding: 8px 14px; border: 1px solid var(--border-color); border-radius: 8px; font-size: 13px;" oninput="fetchPendingProofs()">
+                                <select id="proofStatusFilter" style="padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 8px; font-size: 13px;" onchange="fetchPendingProofs()">
+                                    <option value="pending">Pending Only</option>
+                                    <option value="approved">Approved</option>
+                                    <option value="rejected">Rejected</option>
+                                    <option value="all">All</option>
+                                </select>
+                                <button type="button" class="btn-add-step" onclick="fetchPendingProofs()"><i class="fa-solid fa-rotate-right" style="margin-right: 6px;"></i> Refresh</button>
+                            </div>
+                        </div>
+
+                        <div style="overflow-x: auto;">
+                            <table class="table-directory" style="width: 100%; border-collapse: collapse;">
+                                <thead>
+                                    <tr style="border-bottom: 1.5px solid #e2e8f0; text-align: left; font-size: 12px; color: #64748b; text-transform: uppercase;">
+                                        <th style="padding: 12px 10px;">User</th>
+                                        <th style="padding: 12px 10px;">App Name</th>
+                                        <th style="padding: 12px 10px;">Screenshot</th>
+                                        <th style="padding: 12px 10px;">Coins</th>
+                                        <th style="padding: 12px 10px;">Status</th>
+                                        <th style="padding: 12px 10px;">Submitted Date</th>
+                                        <th style="padding: 12px 10px; text-align: right;">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="proofsTableBody">
+                                    <tr>
+                                        <td colspan="7" style="text-align: center; color: var(--text-muted); padding: 36px;">Loading proofs...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- REJECTION MODAL -->
+    <div id="rejectModal" class="modal-backdrop" onclick="if(event.target === this) closeRejectModal()">
+        <div class="modal-box">
+            <h3 style="margin: 0 0 12px 0; font-size: 18px; font-weight: 800; color: #dc2626;"><i class="fa-solid fa-circle-xmark" style="margin-right: 6px;"></i> Reject Screenshot Proof</h3>
+            <p style="font-size: 13px; color: var(--text-muted); margin: 0 0 16px 0;">Please enter a reason for rejecting this screenshot. The user will receive this reason in their notification.</p>
+            <input type="hidden" id="rejectProofId">
+            <div class="field-group" style="margin-bottom: 20px;">
+                <label class="field-label">Rejection Reason</label>
+                <input type="text" class="field-input" id="rejectReasonInput" placeholder="e.g. Screenshot unreadable / Incorrect app screen / Fake proof">
+            </div>
+            <div style="display: flex; justify-content: flex-end; gap: 10px;">
+                <button type="button" class="btn-add-step" onclick="closeRejectModal()">Cancel</button>
+                <button type="button" class="btn-reject" onclick="confirmRejectProof()"><i class="fa-solid fa-xmark" style="margin-right: 4px;"></i> Confirm Rejection</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- IMAGE PREVIEW MODAL -->
+    <div id="imagePreviewModal" class="modal-backdrop" onclick="closeImageModal()">
+        <div style="position: relative; max-width: 90vw; max-height: 90vh;">
+            <img id="modalPreviewImg" src="" style="max-width: 100%; max-height: 85vh; border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.5);">
+        </div>
+    </div>
+
+    <!-- METHOD SWITCH CONFIRMATION MODAL -->
+    <div id="methodSwitchModal" class="modal-backdrop" onclick="if(event.target === this) cancelMethodSwitch()">
+        <div class="modal-box" style="max-width: 480px;">
+            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                <i class="fa-solid fa-triangle-exclamation" style="font-size: 28px; color: #f59e0b;"></i>
+                <h3 style="margin: 0; font-size: 18px; font-weight: 800; color: #0f172a;">Switch Operating Method?</h3>
+            </div>
+            <p id="methodSwitchMessage" style="font-size: 14px; color: var(--text-muted); margin: 0 0 20px 0; line-height: 1.6;">
+                Method is currently active.
+            </p>
+            <div style="display: flex; justify-content: flex-end; gap: 10px;">
+                <button type="button" class="btn-add-step" onclick="cancelMethodSwitch()">Cancel</button>
+                <button type="button" class="save-btn-main" style="padding: 10px 22px; font-size: 13.5px;" onclick="confirmMethodSwitch()"><i class="fa-solid fa-check" style="margin-right: 6px;"></i> Confirm & Switch</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initial active method from server
+        let currentActiveMethod = parseInt(document.getElementById('activeMethod')?.value) || 1;
+        let pendingTargetMethod = null;
+
+        function handleMethodToggleClick(targetMethod, event) {
+            if (targetMethod === currentActiveMethod) {
+                // User clicked the currently active toggle switch (trying to turn it off)
+                event.preventDefault();
+                document.getElementById('methodToggle' + targetMethod).checked = true;
+                alert('Method ' + targetMethod + ' is currently active. At least one method must remain active. To change, click the toggle switch of another method.');
+                return;
+            }
+
+            // User wants to switch to a different method -> Prompt confirmation!
+            event.preventDefault();
+            pendingTargetMethod = targetMethod;
+
+            const modalMsg = document.getElementById('methodSwitchMessage');
+            if (modalMsg) {
+                modalMsg.innerHTML = '<strong>Method ' + currentActiveMethod + '</strong> is currently active.<br><br>Switching to <strong>Method ' + targetMethod + '</strong> will immediately deactivate Method ' + currentActiveMethod + ' and set Method ' + targetMethod + ' as the operational Super Offer flow.<br><br>Do you want to proceed?';
+            }
+            const modal = document.getElementById('methodSwitchModal');
+            if (modal) modal.style.display = 'flex';
+        }
+
+        function confirmMethodSwitch() {
+            if (!pendingTargetMethod) return;
+            currentActiveMethod = pendingTargetMethod;
+            pendingTargetMethod = null;
+
+            const modal = document.getElementById('methodSwitchModal');
+            if (modal) modal.style.display = 'none';
+
+            // Update hidden activeMethod field
+            const activeInput = document.getElementById('activeMethod');
+            if (activeInput) activeInput.value = currentActiveMethod;
+
+            const displayNum = document.getElementById('activeMethodNumberDisplay');
+            if (displayNum) displayNum.innerText = currentActiveMethod;
+
+            // Update UI on all 4 method cards
+            for (let m = 1; m <= 4; m++) {
+                const isThisActive = (m === currentActiveMethod);
+                const toggle = document.getElementById('methodToggle' + m);
+                if (toggle) toggle.checked = isThisActive;
+
+                const badge = document.getElementById('methodBadge' + m);
+                if (badge) {
+                    badge.className = isThisActive ? 'badge-active' : 'badge-inactive';
+                    badge.innerText = isThisActive ? '● ACTIVE' : 'INACTIVE';
+                }
+
+                const card = document.getElementById('methodCard' + m);
+                if (card) {
+                    card.className = 'method-card ' + (isThisActive ? 'active-method' : 'inactive-method');
+                    const header = card.querySelector('.config-card-header');
+                    if (header) {
+                        header.style.background = isThisActive ? '#f0fdf4' : '#fafcfb';
+                    }
+                }
+            }
+
+            // Auto-save configuration immediately so server DB syncs without manual Save click
+            saveSuperOfferConfig(new Event('submit'));
+        }
+
+        function cancelMethodSwitch() {
+            if (pendingTargetMethod) {
+                const toggle = document.getElementById('methodToggle' + pendingTargetMethod);
+                if (toggle) toggle.checked = false;
+            }
+            pendingTargetMethod = null;
+            const modal = document.getElementById('methodSwitchModal');
+            if (modal) modal.style.display = 'none';
+        }
+
+        // Initial config usage steps from server
+        let initialUsageSteps = [];
+        try {
+            const rawJson = document.getElementById('initialUsageStepsJson')?.value || '[]';
+            initialUsageSteps = JSON.parse(rawJson);
+        } catch (e) {
+            initialUsageSteps = [
+                { stepNumber: 1, name: 'Use App Step 1', minutes: 5, coins: 672, hoursGap: 0 },
+                { stepNumber: 2, name: 'Use App Step 2', minutes: 5, coins: 672, hoursGap: 24 },
+                { stepNumber: 3, name: 'Use App Step 3', minutes: 5, coins: 1152, hoursGap: 24 }
+            ];
+        }
+
+        let usageSteps = [...initialUsageSteps];
+
+        function renderUsageSteps() {
+            const containerM3 = document.getElementById('usageStepsContainerM3');
+            const containerM4 = document.getElementById('usageStepsContainerM4');
+
+            [containerM3, containerM4].forEach((container) => {
+                if (!container) return;
+                container.innerHTML = '';
+
+                if (usageSteps.length === 0) {
+                    container.innerHTML = '<p style="font-size: 13px; color: var(--text-muted); margin: 0; padding: 12px 0;">No usage steps configured yet. Click "+ Add Step" to add one.</p>';
+                    return;
+                }
+
+                usageSteps.forEach((step, idx) => {
+                    const stepDiv = document.createElement('div');
+                    stepDiv.style.cssText = 'background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 14px;';
+                    stepDiv.innerHTML = `
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                            <strong style="font-size: 13.5px; color: #052e1f;">Usage Step ${idx + 1}: ${step.name || 'Use App'}</strong>
+                            <button type="button" class="btn-del-step" onclick="removeUsageStep(${idx})"><i class="fa-solid fa-trash-can" style="margin-right: 4px;"></i> Remove</button>
+                        </div>
+                        <div class="form-grid-2">
+                            <div class="field-group">
+                                <label class="field-label">Required Usage (Seconds)</label>
+                                <input type="number" class="field-input" min="1" value="${step.usageSeconds !== undefined ? step.usageSeconds : ((step.minutes || 5) * 60)}" oninput="updateStepData(${idx}, 'usageSeconds', this.value)">
+                                <span class="field-help">Time to use app in seconds (e.g. 30s, 60s = 1m, 300s = 5m)</span>
+                            </div>
+                            <div class="field-group">
+                                <label class="field-label">Coins Reward</label>
+                                <input type="number" class="field-input" min="0" value="${step.coins || 0}" oninput="updateStepData(${idx}, 'coins', this.value)">
+                            </div>
+                            <div class="field-group">
+                                <label class="field-label">Cooldown Gap (Seconds)</label>
+                                <input type="number" class="field-input" min="0" value="${step.cooldownSeconds !== undefined ? step.cooldownSeconds : (step.hoursGap || 0)}" oninput="updateStepData(${idx}, 'cooldownSeconds', this.value)">
+                                <span class="field-help">Wait time in seconds after previous step (e.g. 60, 300, 3600, 86400)</span>
+                            </div>
+                            <div class="field-group">
+                                <label class="field-label">Step Label</label>
+                                <input type="text" class="field-input" value="${step.name || `Use App Step ${idx + 1}`}" oninput="updateStepData(${idx}, 'name', this.value)">
+                            </div>
+                        </div>
+                    `;
+                    container.appendChild(stepDiv);
+                });
+            });
+        }
+
+        function toggleAutoApproveFields() {
+            const el = document.getElementById('screenshotApprovalType');
+            if (!el) return;
+            const val = el.value;
+            const group = document.getElementById('autoApproveDelayGroup');
+            if (group) {
+                group.style.display = val === 'auto' ? '' : 'none';
+            }
+        }
+
+        function addNewUsageStep() {
+            const nextIdx = usageSteps.length + 1;
+            usageSteps.push({
+                stepNumber: nextIdx,
+                name: `Use App Step ${nextIdx}`,
+                usageSeconds: 300,
+                minutes: 5,
+                coins: 500,
+                cooldownSeconds: 86400,
+                hoursGap: 86400
+            });
+            renderUsageSteps();
+        }
+
+        function removeUsageStep(idx) {
+            usageSteps.splice(idx, 1);
+            usageSteps.forEach((s, i) => { s.stepNumber = i + 1; });
+            renderUsageSteps();
+        }
+
+        function updateStepData(idx, field, val) {
+            if (!usageSteps[idx]) return;
+            if (field === 'minutes' || field === 'usageSeconds' || field === 'coins' || field === 'hoursGap' || field === 'cooldownSeconds') {
+                const parsedNum = parseInt(val) || 0;
+                usageSteps[idx][field] = parsedNum;
+                if (field === 'usageSeconds') {
+                    usageSteps[idx]['minutes'] = Math.ceil(parsedNum / 60) || 1;
+                } else if (field === 'minutes') {
+                    usageSteps[idx]['usageSeconds'] = parsedNum * 60;
+                }
+                if (field === 'cooldownSeconds') {
+                    usageSteps[idx]['hoursGap'] = parsedNum;
+                }
+            } else {
+                usageSteps[idx][field] = val;
+            }
+        }
+
+        function switchSoTab(tab) {
+            document.getElementById('tabBtnConfig').classList.toggle('active', tab === 'config');
+            document.getElementById('tabBtnProofs').classList.toggle('active', tab === 'proofs');
+            document.getElementById('so-panel-config').style.display = tab === 'config' ? 'block' : 'none';
+            document.getElementById('so-panel-proofs').style.display = tab === 'proofs' ? 'block' : 'none';
+
+            if (tab === 'proofs') {
+                fetchPendingProofs();
+            }
+        }
+
+        async function saveSuperOfferConfig(e) {
+            e.preventDefault();
+            const statusHeader = document.getElementById('saveStatusHeader');
+            
+            function setStatus(msg, color) {
+                if (statusHeader) { statusHeader.innerText = msg; statusHeader.style.color = color; }
+            }
+
+            setStatus('Saving changes...', '#64748b');
+
+            const rawTargetScores = document.getElementById('targetScores')?.value || '10, 20, 30';
+            const targetScores = rawTargetScores
+                .split(',')
+                .map(s => parseInt(s.trim()))
+                .filter(n => !isNaN(n) && n > 0);
+
+            const rawHowToPlay = document.getElementById('howToPlay')?.value || '';
+            const howToPlay = rawHowToPlay
+                .split('\n')
+                .map(s => s.trim())
+                .filter(Boolean);
+
+            const superOfferLimitVal = document.getElementById('dailyLimit')?.value.trim() || '10';
+            const gameLimitVal = document.getElementById('gameDailyLimit')?.value.trim() || '10-20';
+
+            const payload = {
+                appData: {
+                    superOfferConfig: {
+                        activeMethod: currentActiveMethod,
+                        reward: parseInt(document.getElementById('reward')?.value) || 0,
+                        gemsRequired: parseInt(document.getElementById('gemsRequired')?.value) || 0,
+                        limitType: document.getElementById('limitType')?.value || 'hours',
+                        hoursGap: document.getElementById('hoursGap')?.value || '60',
+                        gapMinutes: document.getElementById('hoursGap')?.value || '60',
+                        dailyLimit: superOfferLimitVal,
+                        superOfferDailyLimit: superOfferLimitVal,
+                        gameDailyLimit: gameLimitVal,
+                        adsRequired: document.getElementById('adsRequired')?.value === 'true',
+                        initialUsageSeconds: parseInt(document.getElementById('initialUsageSeconds')?.value) || 120,
+                        superOfferVerificationEnabled: (currentActiveMethod === 3 || currentActiveMethod === 4),
+                        screenshotVerificationEnabled: (currentActiveMethod === 4),
+                        screenshotCoins: parseInt(document.getElementById('screenshotCoins')?.value) || 200,
+                        screenshotApprovalType: document.getElementById('screenshotApprovalType')?.value || 'auto',
+                        screenshotAutoApproveDelay: document.getElementById('screenshotAutoApproveDelay')?.value.trim() || '10-15',
+                        usageSteps: usageSteps,
+                        installTask: (currentActiveMethod !== 1),
+                        installGems: parseInt(document.getElementById('installGems')?.value) || 0,
+                        gameGems: parseInt(document.getElementById('gameGems')?.value) || 0,
+                        gameInstallTaskTriggerLimit: document.getElementById('gameInstallTaskTriggerLimit')?.value.trim() || '10-20',
+                        adType: document.getElementById('adType')?.value || 'rewarded',
+                        installTaskMb: parseInt(document.getElementById('installTaskMb')?.value) || 15,
+                        targetScores: targetScores.length > 0 ? targetScores : [10, 20, 30],
+                        tutorialUrl: document.getElementById('tutorialUrl')?.value.trim() || '',
+                        howToPlay: howToPlay
+                    }
+                }
+            };
+
+            try {
+                const res = await fetch('/app-data-config/app-data', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+                if (data.success) {
+                    setStatus('Saved successfully! (Method ' + currentActiveMethod + ' Active)', '#10b981');
+                    setTimeout(() => { setStatus('', '#64748b'); }, 3000);
+                } else {
+                    setStatus('Failed: ' + (data.message || 'Error'), '#ef4444');
+                }
+            } catch (err) {
+                console.error(err);
+                setStatus('Request failed', '#ef4444');
+            }
+        }
+
+        async function fetchPendingProofs() {
+            const searchInput = document.getElementById('proofSearchInput');
+            const statusFilter = document.getElementById('proofStatusFilter');
+            const search = searchInput ? searchInput.value.trim() : '';
+            const status = statusFilter ? statusFilter.value : 'pending';
+            const tbody = document.getElementById('proofsTableBody');
+            if (!tbody) return;
+            tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: var(--text-muted); padding: 36px;"><i class="fa-solid fa-spinner fa-spin" style="margin-right: 6px;"></i> Loading proofs...</td></tr>';
+
+            try {
+                const res = await fetch(`/admin/super-offer/pending-proofs?search=${encodeURIComponent(search)}&status=${encodeURIComponent(status)}`);
+                const data = await res.json();
+
+                if (data.success && data.proofs && data.proofs.length > 0) {
+                    tbody.innerHTML = data.proofs.map(p => {
+                        const statusColor = p.status === 'approved' ? '#15803d' : (p.status === 'rejected' ? '#dc2626' : '#d97706');
+                        const statusBg = p.status === 'approved' ? '#dcfce7' : (p.status === 'rejected' ? '#fee2e2' : '#fef3c7');
+                        const dateStr = p.createdAt ? new Date(p.createdAt).toLocaleString('en-IN') : '-';
+
+                        let rawImg = p.imageUrl || p.proofImageUrl || '';
+                        let imgUrl = rawImg;
+                        if (imgUrl && !imgUrl.startsWith('http') && !imgUrl.startsWith('/') && !imgUrl.startsWith('data:')) {
+                            imgUrl = '/' + imgUrl;
+                        }
+                        const isInvalidLocalPath = rawImg.includes('/data/user/') || rawImg.includes('/cache/');
+
+                        let imgHtml = '<span style="color: #94a3b8; font-size: 11.5px;">No Image</span>';
+                        if (isInvalidLocalPath) {
+                            imgHtml = '<span style="color: #ef4444; font-size: 11px; font-weight: 700; background: #fee2e2; padding: 2px 6px; border-radius: 4px;">Old Path (Unreadable)</span>';
+                        } else if (imgUrl) {
+                            imgHtml = `<img src="${imgUrl}" class="proof-thumb" onclick="openImageModal('${imgUrl}')" alt="Proof" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-block';"><span style="display:none; color: #ef4444; font-size: 11px;">Image failed</span>`;
+                        }
+
+                        return `
+                            <tr style="border-bottom: 1px solid #f1f5f9; font-size: 13px;">
+                                <td style="padding: 12px 10px;">
+                                    <strong style="color: #0f172a;">${p.userId}</strong><br>
+                                    <span style="font-size: 11.5px; color: #64748b;">${p.userEmail || '-'}</span>
+                                </td>
+                                <td style="padding: 12px 10px; font-weight: 700;">${p.appName || 'Super Offer'}</td>
+                                <td style="padding: 12px 10px;">
+                                    ${imgHtml}
+                                </td>
+                                <td style="padding: 12px 10px; font-weight: 800; color: #b45309;"><i class="fa-solid fa-coins" style="color: #eab308; margin-right: 4px;"></i> ${p.coins || 0}</td>
+                                <td style="padding: 12px 10px;">
+                                    <span style="background: ${statusBg}; color: ${statusColor}; padding: 3px 8px; border-radius: 6px; font-size: 11px; font-weight: 800; text-transform: uppercase;">
+                                        ${p.status}
+                                    </span>
+                                </td>
+                                <td style="padding: 12px 10px; color: #64748b; font-size: 12px;">${dateStr}</td>
+                                <td style="padding: 12px 10px; text-align: right;">
+                                    ${p.status === 'pending' ? `
+                                        <div style="display: inline-flex; gap: 6px;">
+                                            <button type="button" class="btn-approve" onclick="approveProof('${p._id}')"><i class="fa-solid fa-check" style="margin-right: 4px;"></i> Approve</button>
+                                            <button type="button" class="btn-reject" onclick="openRejectModal('${p._id}')"><i class="fa-solid fa-xmark" style="margin-right: 4px;"></i> Reject</button>
+                                        </div>
+                                    ` : `<span style="color: #94a3b8; font-size: 12px; font-weight: 600;">Reviewed</span>`}
+                                </td>
+                            </tr>
+                        `;
+                    }).join('');
+                } else {
+                    tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: var(--text-muted); padding: 36px;">No proof records found</td></tr>';
+                }
+            } catch (err) {
+                console.error(err);
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: #ef4444; padding: 36px;">Error loading proofs</td></tr>';
+            }
+        }
+
+        async function approveProof(id) {
+            if (!confirm('Approve this proof and credit coins to the user?')) return;
+            try {
+                const res = await fetch(`/admin/super-offer/approve-proof/${id}`, { method: 'POST' });
+                const data = await res.json();
+                if (data.success) {
+                    alert(data.message);
+                    fetchPendingProofs();
+                } else {
+                    alert('Failed: ' + (data.message || 'Error'));
+                }
+            } catch (err) {
+                alert('Request failed');
+            }
+        }
+
+        function openRejectModal(id) {
+            document.getElementById('rejectProofId').value = id;
+            document.getElementById('rejectReasonInput').value = '';
+            document.getElementById('rejectModal').style.display = 'flex';
+        }
+
+        function closeRejectModal() {
+            document.getElementById('rejectModal').style.display = 'none';
+        }
+
+        async function confirmRejectProof() {
+            const id = document.getElementById('rejectProofId').value;
+            const reason = document.getElementById('rejectReasonInput').value.trim();
+            try {
+                const res = await fetch(`/admin/super-offer/reject-proof/${id}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ reason })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    closeRejectModal();
+                    alert('Proof rejected.');
+                    fetchPendingProofs();
+                } else {
+                    alert('Failed: ' + (data.message || 'Error'));
+                }
+            } catch (err) {
+                alert('Request failed');
+            }
+        }
+
+        function openImageModal(url) {
+            document.getElementById('modalPreviewImg').src = url;
+            document.getElementById('imagePreviewModal').style.display = 'flex';
+        }
+
+        function closeImageModal() {
+            document.getElementById('imagePreviewModal').style.display = 'none';
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            renderUsageSteps();
+            toggleAutoApproveFields();
+        });
+    </script>
+    <script src="/js/admin.js"></script>
+</body>
+
+</html>

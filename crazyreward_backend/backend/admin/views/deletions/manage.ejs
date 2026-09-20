@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account Deletions - Admin</title>
+    <link rel="stylesheet" href="/css/admin.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #f8fafc;
+            color: #0f172a;
+            margin: 0;
+        }
+        .main-content {
+            padding: 40px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .table-container {
+            margin-top: 10px;
+            background: #ffffff;
+            border-radius: 16px;
+            border: 1px solid #e2e8f0;
+            overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+        th {
+            background-color: #f1f5f9;
+            color: #475569;
+            font-weight: 700;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 16px 20px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        td {
+            padding: 16px 20px;
+            border-bottom: 1px solid #e2e8f0;
+            color: #334155;
+            font-size: 14px;
+        }
+        tr:last-child td {
+            border-bottom: none;
+        }
+        tr:hover td {
+            background-color: #f8fafc;
+        }
+        .btn-approve {
+            background-color: #10b981;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .btn-approve:hover {
+            background-color: #059669;
+            transform: translateY(-1px);
+        }
+        .btn-reject {
+            background-color: #64748b;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .btn-reject:hover {
+            background-color: #475569;
+            transform: translateY(-1px);
+        }
+        .btn-restore {
+            background-color: #0284c7;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .btn-restore:hover {
+            background-color: #0369a1;
+            transform: translateY(-1px);
+        }
+        .btn-wipe {
+            background-color: #dc2626;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            box-shadow: 0 2px 6px rgba(220, 38, 38, 0.25);
+        }
+        .btn-wipe:hover {
+            background-color: #b91c1c;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 10px rgba(220, 38, 38, 0.4);
+        }
+        .avatar-img {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #cbd5e1;
+            background: #e2e8f0;
+        }
+        .tabs-nav {
+            display: flex;
+            gap: 12px;
+            border-bottom: 2px solid #e2e8f0;
+            margin-bottom: 20px;
+        }
+        .tab-item {
+            padding: 12px 20px;
+            font-size: 14px;
+            font-weight: 700;
+            color: #64748b;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            margin-bottom: -2px;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: none;
+            border-top: none;
+            border-left: none;
+            border-right: none;
+            font-family: inherit;
+        }
+        .tab-item:hover {
+            color: #0f172a;
+        }
+        .tab-item.active {
+            color: #0284c7;
+            border-bottom-color: #0284c7;
+        }
+        .tab-badge {
+            font-size: 11px;
+            font-weight: 800;
+            padding: 2px 8px;
+            border-radius: 999px;
+            background: #ef4444;
+            color: white;
+        }
+        .tab-badge.blue {
+            background: #0284c7;
+        }
+        .tab-badge.gray {
+            background: #64748b;
+        }
+        .status-badge-deleted {
+            background: #fee2e2;
+            color: #dc2626;
+            border: 1px solid #fecaca;
+            font-size: 11px;
+            font-weight: 800;
+            padding: 3px 8px;
+            border-radius: 6px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+    </style>
+</head>
+<body class="dashboard-body">
+    <div class="dashboard-shell">
+        <!-- Sidebar Navigation -->
+        <%- include('../partials/sidebar', { activePage: 'deletions' }) %>
+
+        <div class="dashboard-main">
+            <!-- Top Navbar Header -->
+            <header class="navbar dashboard-navbar">
+                <div class="nav-left" style="display: flex; align-items: center; gap: 12px; white-space: nowrap;">
+                    <button type="button" class="sidebar-toggle-btn" onclick="toggleSidebar()">
+                        ☰
+                    </button>
+                    <h2 style="margin: 0; font-size: 18px; font-weight: 800; white-space: nowrap;">
+                        Account Deletions
+                    </h2>
+                    <select id="appSelect" style="margin-left: 8px; padding: 6px 12px; border-radius: 10px; border: 1px solid #cbd5e1; font-weight: 700; background: #f8fafc; font-size: 13px; cursor: pointer;">
+                        <% (typeof firebaseServices !== 'undefined' && firebaseServices ? firebaseServices : []).forEach(service => { %>
+                            <option value="<%= service.appName %>">
+                                <%= service.displayName %>
+                            </option>
+                        <% }) %>
+                    </select>
+                </div>
+                <div class="nav-right" onclick="toggleDropdown()">
+                    <div class="avatar"><%- typeof photo !== 'undefined' && photo ? photo : 'A' %></div>
+                    <div class="dropdown" id="dropdown">
+                        <a href="/logout">Logout</a>
+                    </div>
+                </div>
+            </header>
+
+            <main class="container dashboard-home">
+                <section class="glass-card">
+                    <!-- Page Title & Actions -->
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 12px;">
+                        <div>
+                            <h2 style="font-size: 20px; font-weight: 800; color: #052e1f; margin: 0 0 4px 0;">Account Deletions & History</h2>
+                            <p style="color: var(--muted); font-size: 13px; margin: 0;">Review pending user deletion requests and manage deleted accounts history.</p>
+                        </div>
+                        <button class="btn-action-primary" onclick="refreshActiveTab()">🔄 Refresh</button>
+                    </div>
+
+                    <!-- Navigation Tabs -->
+                    <div class="tabs-nav">
+                        <button type="button" class="tab-item active" id="tab-pending" onclick="switchTab('pending')">
+                            <i class="fa-solid fa-clock"></i> Pending Requests
+                            <span class="tab-badge" id="pending-count">0</span>
+                        </button>
+                        <button type="button" class="tab-item" id="tab-history" onclick="switchTab('history')">
+                            <i class="fa-solid fa-user-slash"></i> Deleted Accounts History
+                            <span class="tab-badge blue" id="history-count">0</span>
+                        </button>
+                    </div>
+
+                    <!-- Filter / Search Bar -->
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; gap: 12px; flex-wrap: wrap;">
+                        <div style="position: relative; flex: 1; max-width: 420px; min-width: 260px;">
+                            <i class="fa-solid fa-magnifying-glass" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #94a3b8; font-size: 13px;"></i>
+                            <input type="text" id="filterInput" placeholder="Filter by User ID, Email, or Name..." oninput="handleFilter(this.value)" style="width: 100%; padding: 8px 12px 8px 34px; border-radius: 10px; border: 1px solid #cbd5e1; font-size: 13px; font-weight: 600; outline: none; background: #ffffff; box-sizing: border-box;">
+                        </div>
+                        <div id="filter-summary" style="font-size: 12px; color: #64748b; font-weight: 600;"></div>
+                    </div>
+
+                    <!-- VIEW 1: Pending Deletion Requests -->
+                    <div id="pending-view">
+                        <div class="table-container">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Avatar</th>
+                                        <th>User Info</th>
+                                        <th>User ID</th>
+                                        <th>Wallet Details</th>
+                                        <th>Device ID</th>
+                                        <th>Request Date</th>
+                                        <th style="text-align: right;">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="deletions-tbody">
+                                    <tr>
+                                        <td colspan="7" style="text-align: center; color: var(--muted); padding: 40px; font-weight: 600;">Loading requests...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- VIEW 2: Deleted Accounts History -->
+                    <div id="history-view" style="display: none;">
+                        <div class="table-container">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Avatar</th>
+                                        <th>User Info</th>
+                                        <th>User ID</th>
+                                        <th>Wallet Details</th>
+                                        <th>Device ID</th>
+                                        <th>Deleted Date</th>
+                                        <th>Status</th>
+                                        <th style="text-align: right;">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="history-tbody">
+                                    <tr>
+                                        <td colspan="8" style="text-align: center; color: var(--muted); padding: 40px; font-weight: 600;">Loading deleted accounts history...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <!-- Feedback Alerts -->
+    <div id="alert-toast" class="alert-toast"></div>
+
+    <script>
+        let currentTab = 'pending';
+        let pendingRequests = [];
+        let deletedHistory = [];
+
+        function showAlert(message, type = 'info') {
+            const toast = document.getElementById('alert-toast');
+            if (!toast) return;
+            toast.textContent = message;
+            toast.className = `alert-toast show ${type}`;
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        function switchTab(tab) {
+            currentTab = tab;
+            const tabPending = document.getElementById('tab-pending');
+            const tabHistory = document.getElementById('tab-history');
+            const pendingView = document.getElementById('pending-view');
+            const historyView = document.getElementById('history-view');
+            const filterInput = document.getElementById('filterInput');
+
+            if (filterInput) filterInput.value = '';
+            document.getElementById('filter-summary').textContent = '';
+
+            if (tab === 'pending') {
+                tabPending.classList.add('active');
+                tabHistory.classList.remove('active');
+                pendingView.style.display = 'block';
+                historyView.style.display = 'none';
+                if (pendingRequests.length === 0) loadDeletionRequests();
+                else renderPendingTable(pendingRequests);
+            } else {
+                tabPending.classList.remove('active');
+                tabHistory.classList.add('active');
+                pendingView.style.display = 'none';
+                historyView.style.display = 'block';
+                loadDeletedHistory();
+            }
+        }
+
+        function refreshActiveTab() {
+            if (currentTab === 'pending') {
+                loadDeletionRequests();
+            } else {
+                loadDeletedHistory();
+            }
+        }
+
+        // ==================== LOAD PENDING REQUESTS ====================
+        async function loadDeletionRequests() {
+            const tbody = document.getElementById('deletions-tbody');
+            if (!tbody) return;
+
+            tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: var(--muted); padding: 40px; font-weight: 600;">Loading requests...</td></tr>';
+
+            try {
+                const res = await fetch('/api/admin/delete-requests');
+                const json = await res.json();
+
+                if (!res.ok || !json.success) {
+                    throw new Error(json.message || 'Failed to load requests');
+                }
+
+                pendingRequests = json.requests || [];
+                document.getElementById('pending-count').textContent = pendingRequests.length;
+                renderPendingTable(pendingRequests);
+            } catch (err) {
+                console.error(err);
+                tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: #ef4444; padding: 40px; font-weight: 600;">Error: ${err.message}</td></tr>`;
+                showAlert(err.message || 'Failed to load deletion requests', 'error');
+            }
+        }
+
+        function renderPendingTable(list) {
+            const tbody = document.getElementById('deletions-tbody');
+            if (!tbody) return;
+
+            if (list.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: var(--muted); padding: 40px; font-weight: 600;">No pending account deletion requests found.</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = list.map(req => {
+                const avatar = req.photoUrl || 'https://via.placeholder.com/36?text=User';
+                const name = req.displayName || 'Unknown';
+                const email = req.email || 'No email';
+                const coins = req.coins || 0;
+                const gems = req.gems || 0;
+                const joined = req.delete_requested_at ? new Date(req.delete_requested_at).toLocaleString() : 'N/A';
+
+                return `
+                    <tr>
+                        <td>
+                            <img src="${avatar}" class="avatar-img" alt="Avatar" onerror="this.src='https://via.placeholder.com/36?text=User'">
+                        </td>
+                        <td>
+                            <strong style="color: #0f172a;">${name}</strong><br>
+                            <span style="font-size: 12px; color: #64748b;">${email}</span>
+                        </td>
+                        <td><code>${req.userId}</code></td>
+                        <td>
+                            <i class="fa-solid fa-coins" style="color: #d97706; margin-right: 4px;"></i> <strong>${coins.toLocaleString()}</strong> Coins<br>
+                            <i class="fa-solid fa-gem" style="color: #0284c7; margin-right: 4px;"></i> <strong>${gems.toLocaleString()}</strong> Gems
+                        </td>
+                        <td><span style="font-size: 12px; color: #64748b;">${req.deviceId || 'N/A'}</span></td>
+                        <td style="font-weight: 600; color: #475569;">${joined}</td>
+                        <td style="text-align: right;">
+                            <div style="display: flex; gap: 6px; justify-content: flex-end; align-items: center; flex-wrap: nowrap;">
+                                <button class="btn-approve" onclick="actionRequest('${req.userId}', 'approve', '${encodeURIComponent(req.email || '')}')" title="Approve deletion: sets account_deleted true (User will see Account Deleted screen)">
+                                    <i class="fa-solid fa-check"></i> Approve
+                                </button>
+                                <button class="btn-reject" onclick="actionRequest('${req.userId}', 'reject', '${encodeURIComponent(req.email || '')}')" title="Reject deletion request">
+                                    <i class="fa-solid fa-xmark"></i> Reject
+                                </button>
+                                <button class="btn-wipe" onclick="actionRequest('${req.userId}', 'wipe', '${encodeURIComponent(req.email || '')}')" title="DANGER: Permanently wipe ALL data (A to Z) across all databases & Firebase">
+                                    <i class="fa-solid fa-trash-can"></i> Full Wipe
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // ==================== LOAD DELETED ACCOUNTS HISTORY ====================
+        async function loadDeletedHistory() {
+            const tbody = document.getElementById('history-tbody');
+            if (!tbody) return;
+
+            tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; color: var(--muted); padding: 40px; font-weight: 600;">Loading deleted accounts history...</td></tr>';
+
+            try {
+                const res = await fetch('/api/admin/deleted-history');
+                const json = await res.json();
+
+                if (!res.ok || !json.success) {
+                    throw new Error(json.message || 'Failed to load deleted history');
+                }
+
+                deletedHistory = json.history || [];
+                document.getElementById('history-count').textContent = deletedHistory.length;
+                renderHistoryTable(deletedHistory);
+            } catch (err) {
+                console.error(err);
+                tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; color: #ef4444; padding: 40px; font-weight: 600;">Error: ${err.message}</td></tr>`;
+                showAlert(err.message || 'Failed to load deleted history', 'error');
+            }
+        }
+
+        function renderHistoryTable(list) {
+            const tbody = document.getElementById('history-tbody');
+            if (!tbody) return;
+
+            if (list.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; color: var(--muted); padding: 40px; font-weight: 600;">No deleted accounts found in history.</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = list.map(item => {
+                const avatar = item.photoUrl || 'https://via.placeholder.com/36?text=User';
+                const name = item.displayName || 'Unknown';
+                const email = item.email || 'No email';
+                const coins = item.coins || 0;
+                const gems = item.gems || 0;
+                const deletedDateRaw = item.account_deleted_at || item.updatedAt || item.createdAt;
+                const deletedDate = deletedDateRaw ? new Date(deletedDateRaw).toLocaleString() : 'N/A';
+
+                return `
+                    <tr>
+                        <td>
+                            <img src="${avatar}" class="avatar-img" alt="Avatar" onerror="this.src='https://via.placeholder.com/36?text=User'">
+                        </td>
+                        <td>
+                            <strong style="color: #0f172a;">${name}</strong><br>
+                            <span style="font-size: 12px; color: #64748b;">${email}</span>
+                        </td>
+                        <td><code>${item.userId}</code></td>
+                        <td>
+                            <i class="fa-solid fa-coins" style="color: #d97706; margin-right: 4px;"></i> <strong>${coins.toLocaleString()}</strong> Coins<br>
+                            <i class="fa-solid fa-gem" style="color: #0284c7; margin-right: 4px;"></i> <strong>${gems.toLocaleString()}</strong> Gems
+                        </td>
+                        <td><span style="font-size: 12px; color: #64748b;">${item.deviceId || 'N/A'}</span></td>
+                        <td style="font-weight: 600; color: #475569;">${deletedDate}</td>
+                        <td>
+                            <span class="status-badge-deleted">
+                                <i class="fa-solid fa-ban"></i> Deleted
+                            </span>
+                        </td>
+                        <td style="text-align: right;">
+                            <div style="display: flex; gap: 6px; justify-content: flex-end; align-items: center; flex-wrap: nowrap;">
+                                <button class="btn-restore" onclick="actionRequest('${item.userId}', 'restore', '${encodeURIComponent(item.email || '')}')" title="Restore account: sets account_deleted false so user can log in normally">
+                                    <i class="fa-solid fa-rotate-left"></i> Restore
+                                </button>
+                                <button class="btn-wipe" onclick="actionRequest('${item.userId}', 'wipe', '${encodeURIComponent(item.email || '')}')" title="DANGER: Permanently wipe ALL data (A to Z) across all databases & Firebase">
+                                    <i class="fa-solid fa-trash-can"></i> Full Wipe
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // ==================== SEARCH / FILTER ====================
+        function handleFilter(query) {
+            const q = (query || '').toLowerCase().trim();
+            const summary = document.getElementById('filter-summary');
+
+            if (currentTab === 'pending') {
+                if (!q) {
+                    summary.textContent = '';
+                    renderPendingTable(pendingRequests);
+                    return;
+                }
+                const filtered = pendingRequests.filter(item => {
+                    const id = (item.userId || '').toLowerCase();
+                    const email = (item.email || '').toLowerCase();
+                    const name = (item.displayName || '').toLowerCase();
+                    return id.includes(q) || email.includes(q) || name.includes(q);
+                });
+                summary.textContent = `Showing ${filtered.length} of ${pendingRequests.length} requests`;
+                renderPendingTable(filtered);
+            } else {
+                if (!q) {
+                    summary.textContent = '';
+                    renderHistoryTable(deletedHistory);
+                    return;
+                }
+                const filtered = deletedHistory.filter(item => {
+                    const id = (item.userId || '').toLowerCase();
+                    const email = (item.email || '').toLowerCase();
+                    const name = (item.displayName || '').toLowerCase();
+                    return id.includes(q) || email.includes(q) || name.includes(q);
+                });
+                summary.textContent = `Showing ${filtered.length} of ${deletedHistory.length} accounts`;
+                renderHistoryTable(filtered);
+            }
+        }
+
+        // ==================== ACTION REQUEST ====================
+        async function actionRequest(userId, action, encodedEmail = '') {
+            const email = decodeURIComponent(encodedEmail || '');
+            let confirmMsg = '';
+            if (action === 'approve') {
+                confirmMsg = `Are you sure you want to APPROVE account deletion for user "${userId}"?\n\n• The account will be marked as DELETED (NOT blocked).\n• When this user logs in with their Gmail, they will see the Account Deleted screen.`;
+            } else if (action === 'reject') {
+                confirmMsg = `Are you sure you want to REJECT this deletion request?\n\n• The user's account will remain active.`;
+            } else if (action === 'wipe') {
+                confirmMsg = `⚠️ DANGER: FULL DATA WIPE CONFIRMATION!\n\nAre you sure you want to permanently WIPE ALL DATA for user "${userId}" (${email || 'No email'})?\n\nThis will PERMANENTLY ERASE:\n• User document in MongoDB\n• Firebase Authentication account\n• Wallet balance, coins & gems\n• All transaction & payout records\n• All referral & reward history\n• All battle & gameplay logs\n• All support tickets & proofs\n\nThis action CANNOT be undone! Do you want to proceed with Full Wipe?`;
+            } else if (action === 'restore') {
+                confirmMsg = `Are you sure you want to RESTORE account for user "${userId}" (${email || 'No email'})?\n\n• The account will be un-deleted (account_deleted: false).\n• The user will be able to log in normally.`;
+            }
+
+            if (!confirm(confirmMsg)) return;
+
+            const selectedApp = document.getElementById('appSelect')?.value || '';
+
+            try {
+                let actionLabel = 'Processing';
+                if (action === 'approve') actionLabel = 'Approving';
+                else if (action === 'reject') actionLabel = 'Rejecting';
+                else if (action === 'wipe') actionLabel = 'Wiping all data for';
+                else if (action === 'restore') actionLabel = 'Restoring';
+
+                showAlert(`${actionLabel} user...`, 'loading');
+                const res = await fetch(`/api/admin/delete-request/${action}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userId, email, selectedApp })
+                });
+                const json = await res.json();
+
+                if (res.ok && json.success) {
+                    showAlert(json.message || 'Action completed successfully', 'success');
+                    // Reload both lists so counts and tables stay fresh
+                    loadDeletionRequests();
+                    if (currentTab === 'history') {
+                        loadDeletedHistory();
+                    }
+                } else {
+                    throw new Error(json.message || 'Request failed');
+                }
+            } catch (err) {
+                console.error(err);
+                showAlert(err.message || 'Operation failed', 'error');
+            }
+        }
+
+        // Initialize view on load
+        document.addEventListener('DOMContentLoaded', () => {
+            loadDeletionRequests();
+            // Preload history count
+            fetch('/api/admin/deleted-history')
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success && data.history) {
+                        deletedHistory = data.history;
+                        const badge = document.getElementById('history-count');
+                        if (badge) badge.textContent = deletedHistory.length;
+                    }
+                })
+                .catch(() => {});
+        });
+    </script>
+    <script src="/js/admin.js"></script>
+</body>
+</html>

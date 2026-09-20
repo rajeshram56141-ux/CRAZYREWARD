@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Postback Logs - Admin</title>
+    <link rel="stylesheet" href="/css/admin.css">
+    <link rel="icon" href="/images/favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #f8fafc;
+            --surface: #ffffff;
+            --border: #e2e8f0;
+            --primary: #052e1f;
+            --primary-hover: #042418;
+            --text: #0f172a;
+            --muted: #64748b;
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--text);
+        }
+
+        .glass-card {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
+            border: 1px solid var(--border);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        /* Stats Bar */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            background: rgba(5, 46, 31, 0.08);
+            color: #052e1f;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .stat-val {
+            font-size: 22px;
+            font-weight: 800;
+            color: #0f172a;
+        }
+
+        .stat-lbl {
+            font-size: 12px;
+            color: var(--muted);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        /* Table Styling */
+        .table-container {
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: auto;
+            margin-top: 16px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 14px 16px;
+            font-size: 13px;
+            border-bottom: 1px solid var(--border);
+            vertical-align: middle;
+        }
+
+        th {
+            background: #052e1f;
+            color: #ffffff;
+            font-weight: 700;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            text-align: left;
+        }
+
+        .status-pill {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 12px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 800;
+        }
+
+        .status-200 { background: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; }
+        .status-error { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
+
+        .btn-action-primary {
+            background: #052e1f;
+            color: #ffffff;
+            border: none;
+            border-radius: 12px;
+            padding: 10px 18px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-action-primary:hover {
+            background: #042418;
+        }
+    </style>
+</head>
+
+<body class="dashboard-body">
+    <div class="dashboard-shell">
+        <%- include('partials/sidebar', { activePage: 'postback-logs' }) %>
+
+        <div class="dashboard-main">
+            <header class="navbar dashboard-navbar">
+                <div class="nav-left" style="display: flex; align-items: center; gap: 12px; white-space: nowrap;">
+                    <button type="button" class="sidebar-toggle-btn" onclick="toggleSidebar()">☰</button>
+                    <h2 style="margin: 0; font-size: 18px; font-weight: 800; white-space: nowrap;">Live Postback Logs</h2>
+
+                    <select id="appSelect" onchange="changeApp(this.value)" style="margin-left: 8px; padding: 6px 12px; border-radius: 10px; border: 1px solid #cbd5e1; font-weight: 700; background: #f8fafc; font-size: 13px; cursor: pointer;">
+                        <% (typeof firebaseServices !== 'undefined' && firebaseServices ? firebaseServices : []).forEach(service => { %>
+                            <option value="<%= service.appName %>" <%= typeof activeAppName !== 'undefined' && service.appName === activeAppName ? 'selected' : '' %>>
+                                <%= service.displayName %>
+                            </option>
+                        <% }) %>
+                    </select>
+                </div>
+
+                <div class="nav-right" onclick="toggleDropdown()">
+                    <div class="avatar"><%- typeof photo !== 'undefined' && photo ? photo : 'A' %></div>
+                    <div class="dropdown" id="dropdown">
+                        <a href="/logout">Logout</a>
+                    </div>
+                </div>
+            </header>
+
+            <main class="container dashboard-home">
+                <!-- STATS CARDS -->
+                <%
+                    const logList = Array.isArray(logs) ? logs : [];
+                    const successCount = logList.filter(l => l.responseStatus === 200).length;
+                    const errorCount = logList.length - successCount;
+                %>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fa-solid fa-bolt"></i></div>
+                        <div>
+                            <div class="stat-val"><%= logList.length %></div>
+                            <div class="stat-lbl">Recent API Hits</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: rgba(22, 163, 74, 0.1); color: #16a34a;"><i class="fa-solid fa-circle-check"></i></div>
+                        <div>
+                            <div class="stat-val"><%= successCount %></div>
+                            <div class="stat-lbl">Successful (200 OK)</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: rgba(220, 38, 38, 0.1); color: #dc2626;"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                        <div>
+                            <div class="stat-val"><%= errorCount %></div>
+                            <div class="stat-lbl">Error / Blocked</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass-card">
+                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+                        <div>
+                            <h3 style="margin: 0 0 4px 0; font-size: 20px; font-weight: 800; color: #052e1f;">Recent Postback API Hits</h3>
+                            <p style="color: var(--muted); font-size: 13px; margin: 0;">Inspecting latest 300 postback callbacks received from ad networks</p>
+                        </div>
+                        <button type="button" class="btn-action-primary" onclick="window.location.reload()"><i class="fa-solid fa-rotate-right" style="margin-right: 6px;"></i> Refresh</button>
+                    </div>
+
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Date / Time</th>
+                                    <th>App Name</th>
+                                    <th>User ID</th>
+                                    <th>Offer ID</th>
+                                    <th>Payout</th>
+                                    <th style="text-align: right;">Response Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% if(!logs || logs.length === 0) { %>
+                                    <tr><td colspan="6" style="text-align: center; color: var(--muted); padding: 24px; font-weight: 600;">No postback logs found.</td></tr>
+                                <% } %>
+                                <% (logs || []).forEach(log => { %>
+                                    <tr>
+                                        <td style="font-weight: 700; color: var(--muted);"><%= new Date(log.createdAt).toLocaleString() %></td>
+                                        <td><span style="background: rgba(5, 46, 31, 0.08); color: #052e1f; padding: 2px 8px; border-radius: 6px; font-size: 11px; font-weight: 800;"><%= log.appName %></span></td>
+                                        <td style="font-weight: 800; color: #0f172a;"><%= log.userId %></td>
+                                        <td style="font-weight: 700; color: #334155;"><%= log.offerId %></td>
+                                        <td style="font-weight: 800; color: #16a34a;">₹<%= log.payout || 0 %></td>
+                                        <td style="text-align: right;">
+                                            <% if (log.responseStatus === 200) { %>
+                                                <span class="status-pill status-200">200 (Success)</span>
+                                            <% } else { %>
+                                                <span class="status-pill status-error"><%= log.responseStatus %> (Error/Blocked)</span>
+                                            <% } %>
+                                        </td>
+                                    </tr>
+                                <% }) %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="/js/admin.js"></script>
+    <script>
+        function changeApp(appName) {
+            window.location.href = `/postback-logs?appName=${encodeURIComponent(appName)}`;
+        }
+    </script>
+</body>
+</html>

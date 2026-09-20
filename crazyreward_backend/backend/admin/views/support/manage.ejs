@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Support Tickets - Admin</title>
+    <link rel="stylesheet" href="/css/admin.css">
+    <link rel="icon" href="/images/favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #f8fafc;
+            --surface: #ffffff;
+            --border: #e2e8f0;
+            --primary: #052e1f;
+            --primary-hover: #042418;
+            --text: #0f172a;
+            --muted: #64748b;
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--text);
+        }
+
+        .glass-card {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
+            border: 1px solid var(--border);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        /* Stats Bar */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            background: rgba(5, 46, 31, 0.08);
+            color: #052e1f;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .stat-val {
+            font-size: 22px;
+            font-weight: 800;
+            color: #0f172a;
+        }
+
+        .stat-lbl {
+            font-size: 12px;
+            color: var(--muted);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        /* Tabs Header */
+        .tabs-header {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 12px;
+        }
+
+        .tab-btn {
+            padding: 8px 18px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            background: #ffffff;
+            color: #475569;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .tab-btn:hover {
+            background: rgba(5, 46, 31, 0.06);
+            color: #052e1f;
+        }
+
+        .tab-btn.active {
+            background: #052e1f;
+            color: #ffffff;
+            border-color: #052e1f;
+        }
+
+        /* Table Styling */
+        .table-container {
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 14px 16px;
+            font-size: 13px;
+            border-bottom: 1px solid var(--border);
+            vertical-align: middle;
+        }
+
+        th {
+            background: #052e1f;
+            color: #ffffff;
+            font-weight: 700;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            text-align: left;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 12px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+
+        .status-pending { background: #fef3c7; color: #b45309; border: 1px solid #fde68a; }
+        .status-in_progress { background: #dbeafe; color: #1d4ed8; border: 1px solid #bfdbfe; }
+        .status-resolved { background: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; }
+        .status-closed { background: #f1f5f9; color: #64748b; border: 1px solid #cbd5e1; }
+
+        .btn-action-primary {
+            background: #052e1f;
+            color: #ffffff;
+            border: none;
+            border-radius: 10px;
+            padding: 8px 14px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-action-primary:hover {
+            background: #042418;
+        }
+
+        /* Screen-Centered Blur Modal */
+        .modal-bg {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(8px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 999999;
+            padding: 20px;
+        }
+
+        .modal-bg.show {
+            display: flex !important;
+        }
+
+        .modal-card {
+            width: min(600px, 94vw);
+            background: #ffffff;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .modal-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 24px;
+            background: linear-gradient(135deg, #052e1f 0%, #0a4731 100%);
+            color: #ffffff;
+        }
+
+        .modal-head h3 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 800;
+        }
+
+        .close-btn {
+            background: rgba(255, 255, 255, 0.15);
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            color: #ffffff;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .modal-body-scroll {
+            padding: 24px;
+            overflow-y: auto;
+        }
+
+        .detail-row {
+            display: flex;
+            margin-bottom: 10px;
+            font-size: 13px;
+        }
+
+        .detail-label {
+            width: 120px;
+            font-weight: 700;
+            color: var(--muted);
+            text-transform: uppercase;
+            font-size: 11px;
+        }
+
+        .detail-value {
+            flex: 1;
+            color: #0f172a;
+            font-weight: 600;
+            word-break: break-all;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--muted);
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+
+        .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-size: 13px;
+            background: #ffffff;
+        }
+
+        .form-group textarea {
+            min-height: 90px;
+            resize: vertical;
+        }
+    </style>
+</head>
+
+<body class="dashboard-body">
+    <div class="dashboard-shell">
+        <%- include('../partials/sidebar', { activePage: 'support' }) %>
+
+        <div class="dashboard-main">
+            <header class="navbar dashboard-navbar">
+                <div class="nav-left" style="display: flex; align-items: center; gap: 12px; white-space: nowrap;">
+                    <button type="button" class="sidebar-toggle-btn" onclick="toggleSidebar()">
+                        ☰
+                    </button>
+                    <h2 style="margin: 0; font-size: 18px; font-weight: 800; white-space: nowrap;">Support Tickets</h2>
+
+                    <select id="appSelect" style="margin-left: 8px; padding: 6px 12px; border-radius: 10px; border: 1px solid #cbd5e1; font-weight: 700; background: #f8fafc; font-size: 13px; cursor: pointer;">
+                        <% (typeof firebaseServices !== 'undefined' && firebaseServices ? firebaseServices : []).forEach(service => { %>
+                            <option value="<%= service.appName %>">
+                                <%= service.displayName %>
+                            </option>
+                        <% }) %>
+                    </select>
+                </div>
+
+                <div class="nav-right" onclick="toggleDropdown()">
+                    <div class="avatar">
+                        <%- typeof photo !== 'undefined' && photo ? photo : 'A' %>
+                    </div>
+                    <div class="dropdown" id="dropdown">
+                        <a href="/logout">Logout</a>
+                    </div>
+                </div>
+            </header>
+
+            <main class="container dashboard-home">
+                <!-- STATS SUMMARY CARDS -->
+                <%
+                    const totalCount = Array.isArray(tickets) ? tickets.length : 0;
+                    const activeCount = Array.isArray(tickets) ? tickets.filter(t => t.status === 'pending' || t.status === 'in_progress').length : 0;
+                    const resolvedCount = totalCount - activeCount;
+                %>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fa-solid fa-headset"></i></div>
+                        <div>
+                            <div class="stat-val"><%= totalCount %></div>
+                            <div class="stat-lbl">Total Tickets</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: rgba(245, 158, 11, 0.1); color: #f59e0b;"><i class="fa-solid fa-clock"></i></div>
+                        <div>
+                            <div class="stat-val"><%= activeCount %></div>
+                            <div class="stat-lbl">Active Open</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: rgba(22, 163, 74, 0.1); color: #16a34a;"><i class="fa-solid fa-circle-check"></i></div>
+                        <div>
+                            <div class="stat-val"><%= resolvedCount %></div>
+                            <div class="stat-lbl">Resolved Tickets</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- MAIN SUPPORT TICKETS CARD -->
+                <section class="glass-card">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 12px;">
+                        <div>
+                            <h2 style="font-size: 20px; font-weight: 800; color: #052e1f; margin: 0 0 4px 0;">User Support Requests</h2>
+                            <p style="color: var(--muted); font-size: 13px; margin: 0;">View, answer, and manage user issues reported via app</p>
+                        </div>
+                        <button class="btn-action-primary" onclick="window.location.reload()">🔄 Refresh</button>
+                    </div>
+
+                    <div class="tabs-header">
+                        <button class="tab-btn active" id="tabActive" onclick="filterTickets('active')">Active Tickets (<%= activeCount %>)</button>
+                        <button class="tab-btn" id="tabResolved" onclick="filterTickets('resolved')">Resolved History (<%= resolvedCount %>)</button>
+                    </div>
+
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>User ID / Email</th>
+                                    <th>Subject</th>
+                                    <th>Message Preview</th>
+                                    <th>Status</th>
+                                    <th style="text-align: right;">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% if(!tickets || tickets.length === 0) { %>
+                                    <tr><td colspan="6" style="text-align: center; color: var(--muted); padding: 24px; font-weight: 600;">No support tickets found.</td></tr>
+                                <% } %>
+                                <tr id="no-active-msg" style="display: none;"><td colspan="6" style="text-align: center; color: var(--muted); padding: 24px; font-weight: 600;">No active support tickets found.</td></tr>
+                                <tr id="no-resolved-msg" style="display: none;"><td colspan="6" style="text-align: center; color: var(--muted); padding: 24px; font-weight: 600;">No resolved support tickets found.</td></tr>
+
+                                <% (tickets || []).forEach(ticket => { %>
+                                    <% 
+                                        const isResolved = ticket.status === 'resolved' || ticket.status === 'closed'; 
+                                        const rowClass = isResolved ? 'ticket-row-resolved' : 'ticket-row-active';
+                                    %>
+                                    <tr class="ticket-row <%= rowClass %>">
+                                        <td style="font-weight: 700; color: var(--muted);"><%= new Date(ticket.createdAt).toLocaleDateString() %></td>
+                                        <td>
+                                            <span style="font-weight: 800; color: #0f172a;"><%= ticket.email %></span><br>
+                                            <span style="font-size: 11px; color: var(--muted); font-weight: 600;">UID: <%= ticket.userId %></span>
+                                        </td>
+                                        <td><strong style="color: #052e1f;"><%= ticket.subject %></strong></td>
+                                        <td style="max-width: 250px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #334155;"><%= ticket.message %></td>
+                                        <td>
+                                            <span class="status-badge status-<%= ticket.status %>">
+                                                <%= ticket.status.replace('_', ' ') %>
+                                            </span>
+                                        </td>
+                                        <td style="text-align: right;">
+                                            <!-- Hidden data nodes -->
+                                            <span class="data-id" style="display:none;"><%= ticket._id %></span>
+                                            <span class="data-userid" style="display:none;"><%= ticket.userId %></span>
+                                            <span class="data-email" style="display:none;"><%= ticket.email %></span>
+                                            <span class="data-status" style="display:none;"><%= ticket.status %></span>
+                                            <span class="data-subj" style="display:none;"><%= ticket.subject %></span>
+                                            <span class="data-msg" style="display:none;"><%= ticket.message %></span>
+                                            <span class="data-reply" style="display:none;"><%= ticket.adminReply %></span>
+                                            <span class="data-screenshot" style="display:none;"><%= ticket.screenshot || '' %></span>
+
+                                            <button class="btn-action-primary" onclick="openReplyModal(this)">
+                                                Manage
+                                            </button>
+                                        </td>
+                                    </tr>
+                                <% }) %>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <!-- TICKET DETAIL & REPLY MODAL OVERLAY -->
+    <div id="replyModal" class="modal-bg">
+        <div class="modal-card">
+            <div class="modal-head">
+                <h3>Manage Support Ticket</h3>
+                <button type="button" class="close-btn" onclick="closeModal()">&times;</button>
+            </div>
+            
+            <div class="modal-body-scroll">
+                <div style="margin-bottom: 20px; border-bottom: 1px solid #f1f5f9; padding-bottom: 16px;">
+                    <div class="detail-row">
+                        <div class="detail-label">User ID:</div>
+                        <div class="detail-value" id="detailUserId"></div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Email:</div>
+                        <div class="detail-value" id="detailEmail"></div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Subject:</div>
+                        <div class="detail-value" id="detailSubject" style="font-weight: 800; color: #052e1f;"></div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Message:</div>
+                        <div class="detail-value" id="detailMessage" style="white-space: pre-wrap; background: #f8fafc; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--border);"></div>
+                    </div>
+                    <div class="detail-row" id="detailScreenshotRow" style="display: none; margin-top: 10px;">
+                        <div class="detail-label">Attachment:</div>
+                        <div class="detail-value" id="detailScreenshot"></div>
+                    </div>
+                </div>
+
+                <form id="replyForm" onsubmit="submitReply(event)">
+                    <input type="hidden" id="ticketId">
+                    
+                    <div class="form-group">
+                        <label for="ticketStatus">Update Status</label>
+                        <select id="ticketStatus" required>
+                            <option value="pending">Pending</option>
+                            <option value="in_progress">In Progress</option>
+                            <option value="resolved">Resolved</option>
+                            <option value="closed">Closed</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="adminReply">Admin Response</label>
+                        <textarea id="adminReply" placeholder="Enter support response to send to user..."></textarea>
+                    </div>
+
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 24px;">
+                        <button type="button" class="btn-action-primary" style="background-color: #dc2626;" onclick="deleteTicket()">Delete Ticket</button>
+                        <div style="display: flex; gap: 10px;">
+                            <button type="button" class="tab-btn" onclick="closeModal()">Cancel</button>
+                            <button type="submit" class="btn-action-primary">Send Response</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openReplyModal(btn) {
+            try {
+                const parent = btn.parentElement;
+                const id = parent.querySelector('.data-id').textContent.trim();
+                const userId = parent.querySelector('.data-userid').textContent.trim();
+                const email = parent.querySelector('.data-email').textContent.trim();
+                const status = parent.querySelector('.data-status').textContent.trim();
+                const subject = parent.querySelector('.data-subj').textContent.trim();
+                const message = parent.querySelector('.data-msg').textContent.trim();
+                const reply = parent.querySelector('.data-reply').textContent.trim();
+                const screenshot = parent.querySelector('.data-screenshot') ? parent.querySelector('.data-screenshot').textContent.trim() : '';
+
+                document.getElementById('ticketId').value = id;
+                document.getElementById('detailUserId').textContent = userId;
+                document.getElementById('detailEmail').textContent = email;
+                document.getElementById('detailSubject').textContent = subject;
+                document.getElementById('detailMessage').textContent = message;
+
+                const screenshotRow = document.getElementById('detailScreenshotRow');
+                const screenshotVal = document.getElementById('detailScreenshot');
+                if (screenshot && screenshot.length > 0) {
+                    screenshotRow.style.display = 'flex';
+                    screenshotVal.innerHTML = `<a href="${screenshot}" target="_blank"><img src="${screenshot}" style="max-width: 100%; max-height: 220px; border-radius: 12px; border: 1px solid var(--border); box-shadow: 0 2px 8px rgba(0,0,0,0.05);" /></a>`;
+                } else {
+                    screenshotRow.style.display = 'none';
+                    screenshotVal.innerHTML = '';
+                }
+
+                document.getElementById('ticketStatus').value = status;
+                document.getElementById('adminReply').value = reply;
+
+                document.getElementById('replyModal').classList.add('show');
+            } catch (err) {
+                alert('JS Error: ' + err.message);
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('replyModal').classList.remove('show');
+        }
+
+        async function submitReply(event) {
+            event.preventDefault();
+            const id = document.getElementById('ticketId').value;
+            const status = document.getElementById('ticketStatus').value;
+            const adminReply = document.getElementById('adminReply').value;
+
+            try {
+                const response = await fetch('/reply-support-ticket', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ id, status, adminReply })
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    alert('Support ticket updated successfully');
+                    window.location.reload();
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            } catch (err) {
+                console.error(err);
+                alert('Failed to update support ticket');
+            }
+        }
+
+        async function deleteTicket() {
+            const id = document.getElementById('ticketId').value;
+            if (!id) return;
+            
+            if (!confirm('Are you sure you want to permanently delete this support ticket?')) {
+                return;
+            }
+            
+            try {
+                const response = await fetch('/delete-support-ticket', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ id })
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    alert('Support ticket deleted successfully');
+                    window.location.reload();
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            } catch (err) {
+                console.error(err);
+                alert('Failed to delete support ticket');
+            }
+        }
+
+        function filterTickets(type) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            const activeRows = document.querySelectorAll('.ticket-row-active');
+            const resolvedRows = document.querySelectorAll('.ticket-row-resolved');
+            const noActiveMsg = document.getElementById('no-active-msg');
+            const noResolvedMsg = document.getElementById('no-resolved-msg');
+
+            if (type === 'active') {
+                document.getElementById('tabActive').classList.add('active');
+                activeRows.forEach(row => row.style.display = '');
+                resolvedRows.forEach(row => row.style.display = 'none');
+                
+                if (noActiveMsg) noActiveMsg.style.display = activeRows.length === 0 ? '' : 'none';
+                if (noResolvedMsg) noResolvedMsg.style.display = 'none';
+            } else {
+                document.getElementById('tabResolved').classList.add('active');
+                activeRows.forEach(row => row.style.display = 'none');
+                resolvedRows.forEach(row => row.style.display = '');
+                
+                if (noResolvedMsg) noResolvedMsg.style.display = resolvedRows.length === 0 ? '' : 'none';
+                if (noActiveMsg) noActiveMsg.style.display = 'none';
+            }
+        }
+        
+        window.addEventListener('DOMContentLoaded', () => {
+            filterTickets('active');
+        });
+    </script>
+
+    <%- include('../partials/user_lookup') %>
+    <script src="/js/admin.js"></script>
+    <script src="/js/user_lookup.js"></script>
+</body>
+
+</html>

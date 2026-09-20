@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Integrations Hub - Admin</title>
+    <link rel="stylesheet" href="/css/admin.css">
+    <link rel="icon" href="/images/favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-page: #f8fafc;
+            --surface-card: #ffffff;
+            --border-color: #cbd5e1;
+            --primary-dark: #052e1f;
+            --primary-emerald: #10b981;
+            --text-main: #0f172a;
+            --text-secondary: #475569;
+            --text-muted: #64748b;
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg-page);
+            color: var(--text-main);
+        }
+
+        .flex-container {
+            display: flex;
+            gap: 24px;
+            margin-top: 24px;
+            flex-wrap: wrap;
+        }
+
+        .form-card {
+            flex: 1 1 350px;
+            background: var(--surface-card);
+            border-radius: 20px;
+            padding: 28px;
+            border: 1.5px solid var(--border-color);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+
+        .list-card {
+            flex: 2 2 500px;
+            background: var(--surface-card);
+            border-radius: 20px;
+            padding: 28px;
+            border: 1.5px solid var(--border-color);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+
+        .section-title {
+            margin: 0 0 20px 0;
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--primary-dark);
+            letter-spacing: -0.3px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 700;
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 16px;
+            border-radius: 12px;
+            border: 1.5px solid var(--border-color);
+            font-size: 13.5px;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-emerald);
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15);
+        }
+
+        .btn-submit {
+            width: 100%;
+            background: var(--primary-dark);
+            color: #ffffff;
+            border: none;
+            border-radius: 12px;
+            padding: 14px;
+            font-size: 14px;
+            font-weight: 750;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-submit:hover {
+            background: #042217;
+            transform: translateY(-1px);
+        }
+
+        .scope-checkbox-list {
+            background: #f8fafc;
+            border: 1.5px solid var(--border-color);
+            border-radius: 12px;
+            padding: 14px;
+            max-height: 220px;
+            overflow-y: auto;
+        }
+
+        .scope-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 6px;
+            cursor: pointer;
+            transition: background 0.15s ease;
+        }
+
+        .scope-item:hover {
+            background: #f1f5f9;
+            border-radius: 8px;
+        }
+
+        .scope-item input {
+            cursor: pointer;
+            width: 16px;
+            height: 16px;
+            accent-color: var(--primary-emerald);
+        }
+
+        .scope-item-text {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        /* Table Styling */
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        .custom-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        .custom-table th {
+            padding: 14px 16px;
+            border-bottom: 2px solid #e2e8f0;
+            font-weight: 800;
+            font-size: 13px;
+            color: var(--text-secondary);
+            background: #f8fafc;
+        }
+
+        .custom-table td {
+            padding: 14px 16px;
+            border-bottom: 1.5px solid #f1f5f9;
+            font-size: 13.5px;
+            color: var(--text-main);
+        }
+
+        .badge-scope {
+            display: inline-block;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 20px;
+            margin: 2px;
+            text-transform: capitalize;
+        }
+
+        /* Scope Badge Colors */
+        .badge-tasks_manage { background: #dcfce7; color: #15803d; border: 1px solid #86efac; }
+        .badge-tasks_read { background: #e0f2fe; color: #0369a1; border: 1px solid #7dd3fc; }
+        .badge-tasks_create { background: #fef3c7; color: #b45309; border: 1px solid #fde68a; }
+        .badge-tasks_update { background: #f3e8ff; color: #7e22ce; border: 1px solid #d8b4fe; }
+        .badge-tasks_delete { background: #fee2e2; color: #b91c1c; border: 1px solid #fca5a5; }
+        .badge-read_earn_manage { background: #e0e7ff; color: #4338ca; border: 1px solid #c7d2fe; }
+        .badge-giveaways_manage { background: #fdf2f8; color: #be185d; border: 1px solid #fbcfe8; }
+        .badge-promo_codes_manage { background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; }
+        .badge-app_analytics { background: #e6fffa; color: #00a389; border: 1px solid #b2f5ea; }
+        .badge-user_data { background: #ebf8ff; color: #2b6cb0; border: 1px solid #bee3f8; }
+        .badge-payout_history { background: #fffaf0; color: #dd6b20; border: 1px solid #feebc8; }
+        .badge-reward_history { background: #fff5f5; color: #c53030; border: 1px solid #fed7d7; }
+        .badge-offerwall_history { background: #f7fafc; color: #4a5568; border: 1px solid #e2e8f0; }
+        .badge-super_offer_history { background: #faf5ff; color: #9333ea; border: 1px solid #d8b4fe; }
+        .badge-battle_arena_stats { background: #f1f5f9; color: #0f172a; border: 1px solid #cbd5e1; }
+
+        .scope-group-header {
+            font-size: 11px;
+            font-weight: 800;
+            color: #475569;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin: 10px 0 4px 0;
+            padding-bottom: 3px;
+            border-bottom: 1px dashed #cbd5e1;
+        }
+
+        .scope-group-header:first-child {
+            margin-top: 0;
+        }
+
+        .btn-scope-action {
+            background: #f1f5f9;
+            border: 1px solid #cbd5e1;
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+            color: #334155;
+            transition: all 0.15s ease;
+        }
+        .btn-scope-action:hover {
+            background: #e2e8f0;
+            color: #0f172a;
+        }
+
+        .key-text-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: #f1f5f9;
+            padding: 6px 10px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 12px;
+            border: 1px solid #e2e8f0;
+            max-width: 250px;
+            overflow: hidden;
+        }
+
+        .key-text {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            flex-grow: 1;
+        }
+
+        .icon-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 2px;
+            color: var(--text-muted);
+            transition: color 0.15s ease;
+        }
+
+        .icon-btn:hover {
+            color: var(--text-main);
+        }
+
+        .action-btn-pill {
+            background: #ffffff;
+            border: 1.5px solid var(--border-color);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 11.5px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            white-space: nowrap;
+        }
+
+        .btn-docs { color: #2563eb; border-color: #bfdbfe; background: #eff6ff; }
+        .btn-docs:hover { background: #dbeafe; }
+        .btn-delete { color: #dc2626; border-color: #fecaca; background: #fff5f5; }
+        .btn-delete:hover { background: #fee2e2; }
+
+        /* Switch Toggles */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 36px;
+            height: 20px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #cbd5e1;
+            transition: .3s;
+            border-radius: 20px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 14px;
+            width: 14px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .3s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--primary-emerald);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(16px);
+        }
+    </style>
+</head>
+
+<body class="dashboard-body">
+    <div class="dashboard-shell">
+        <%- include('../partials/sidebar', { activePage: 'api-integrations' }) %>
+
+        <div class="dashboard-main">
+            <header class="navbar dashboard-navbar">
+                <div class="nav-left" style="display: flex; align-items: center; gap: 12px;">
+                    <button type="button" class="sidebar-toggle-btn" onclick="toggleSidebar()">☰</button>
+                    <h2 style="margin: 0; font-size: 18px; font-weight: 800;">API Integrations Hub</h2>
+                </div>
+
+                <div class="nav-right" onclick="toggleDropdown()">
+                    <div class="avatar"><%- typeof photo !== 'undefined' && photo ? photo : 'A' %></div>
+                    <div class="dropdown" id="dropdown">
+                        <a href="/logout">Logout</a>
+                    </div>
+                </div>
+            </header>
+
+            <main class="container dashboard-home" style="max-width: 1200px;">
+                <div class="flex-container">
+                    
+                    <!-- KEY CREATOR CARD -->
+                    <div class="form-card">
+                        <h3 class="section-title">Generate API Secret Key</h3>
+                        <form id="keyForm" onsubmit="generateApiKey(event)">
+                            <div class="form-group">
+                                <label for="keyName">Integration / Key Name</label>
+                                <input type="text" id="keyName" class="form-control" placeholder="e.g. Third Party Task Partner" required>
+                            </div>
+                            <div class="form-group">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                                    <label style="margin: 0;">Assign Scopes & Permissions</label>
+                                    <div style="display: flex; gap: 4px;">
+                                        <button type="button" class="btn-scope-action" onclick="selectAllTaskScopes()" title="Select all Task operations">⭐ Tasks (All)</button>
+                                        <button type="button" class="btn-scope-action" onclick="selectAllScopes()" title="Select all scopes">All</button>
+                                        <button type="button" class="btn-scope-action" onclick="clearAllScopes()" title="Clear selection">Clear</button>
+                                    </div>
+                                </div>
+                                <div class="scope-checkbox-list" style="max-height: 280px;">
+                                    <!-- TASKS A TO Z -->
+                                    <div class="scope-group-header">🎯 Tasks Operations (A to Z)</div>
+                                    <label class="scope-item" style="background: #f0fdf4; border-radius: 8px;">
+                                        <input type="checkbox" name="scopes" value="tasks_manage" class="task-scope">
+                                        <span class="scope-item-text" style="color: #15803d; font-weight: 750;">⭐ All Task Permissions (Add, Edit, Delete, Fetch)</span>
+                                    </label>
+                                    <label class="scope-item">
+                                        <input type="checkbox" name="scopes" value="tasks_read" class="task-scope">
+                                        <span class="scope-item-text">Fetch & List Tasks (GET /tasks)</span>
+                                    </label>
+                                    <label class="scope-item">
+                                        <input type="checkbox" name="scopes" value="tasks_create" class="task-scope">
+                                        <span class="scope-item-text">Add New Tasks (POST /tasks)</span>
+                                    </label>
+                                    <label class="scope-item">
+                                        <input type="checkbox" name="scopes" value="tasks_update" class="task-scope">
+                                        <span class="scope-item-text">Edit & Update Tasks (PUT /tasks/:id)</span>
+                                    </label>
+                                    <label class="scope-item">
+                                        <input type="checkbox" name="scopes" value="tasks_delete" class="task-scope">
+                                        <span class="scope-item-text">Delete Tasks (DELETE /tasks/:id)</span>
+                                    </label>
+
+                                    <!-- APP CONTENT MODULES -->
+                                    <div class="scope-group-header">📚 Content & Engagement</div>
+                                    <label class="scope-item">
+                                        <input type="checkbox" name="scopes" value="read_earn_manage">
+                                        <span class="scope-item-text">Articles / Read & Earn CRUD</span>
+                                    </label>
+                                    <label class="scope-item">
+                                        <input type="checkbox" name="scopes" value="giveaways_manage">
+                                        <span class="scope-item-text">Giveaways CRUD</span>
+                                    </label>
+                                    <label class="scope-item">
+                                        <input type="checkbox" name="scopes" value="promo_codes_manage">
+                                        <span class="scope-item-text">Promo Codes CRUD</span>
+                                    </label>
+
+                                    <!-- STATS & RECORDS -->
+                                    <div class="scope-group-header">📊 Stats, Users & Audit Logs</div>
+                                    <label class="scope-item">
+                                        <input type="checkbox" name="scopes" value="app_analytics">
+                                        <span class="scope-item-text">App Overview Stats (App Analytics)</span>
+                                    </label>
+                                    <label class="scope-item">
+                                        <input type="checkbox" name="scopes" value="user_data">
+                                        <span class="scope-item-text">User Accounts Details (User Data)</span>
+                                    </label>
+                                    <label class="scope-item">
+                                        <input type="checkbox" name="scopes" value="payout_history">
+                                        <span class="scope-item-text">Payout & Withdrawal Records</span>
+                                    </label>
+                                    <label class="scope-item">
+                                        <input type="checkbox" name="scopes" value="reward_history">
+                                        <span class="scope-item-text">User Task Reward Logs</span>
+                                    </label>
+                                    <label class="scope-item">
+                                        <input type="checkbox" name="scopes" value="offerwall_history">
+                                        <span class="scope-item-text">Offerwall Callback Postbacks</span>
+                                    </label>
+                                    <label class="scope-item">
+                                        <input type="checkbox" name="scopes" value="super_offer_history">
+                                        <span class="scope-item-text">Super Offer Screenshot Proofs</span>
+                                    </label>
+                                    <label class="scope-item">
+                                        <input type="checkbox" name="scopes" value="battle_arena_stats">
+                                        <span class="scope-item-text">Battle Arena Match Stats</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn-submit">Generate API Key</button>
+                        </form>
+                    </div>
+
+                    <!-- ACTIVE KEYS LIST CARD -->
+                    <div class="list-card">
+                        <h3 class="section-title">Active Developer Integration Keys</h3>
+                        <div class="table-responsive">
+                            <table class="custom-table">
+                                <thead>
+                                    <tr>
+                                        <th>Key Name</th>
+                                        <th>API Secret Key</th>
+                                        <th>Allowed Scopes</th>
+                                        <th>Active</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% if (apiKeys.length === 0) { %>
+                                        <tr>
+                                            <td colspan="5" style="text-align: center; color: var(--text-muted); padding: 24px;">No integration keys generated yet.</td>
+                                        </tr>
+                                    <% } %>
+                                    <% apiKeys.forEach(k => { %>
+                                        <tr>
+                                            <td style="font-weight: 700; color: var(--text-main);"><%= k.name %></td>
+                                            <td>
+                                                <div class="key-text-wrapper">
+                                                    <span class="key-text" id="key-<%= k._id %>" data-raw="<%= k.apiKey %>">dp_sec_••••••••••••••••••••</span>
+                                                    <button class="icon-btn" onclick="toggleKeyVisibility('<%= k._id %>')"><i class="fa-solid fa-eye"></i></button>
+                                                    <button class="icon-btn" onclick="copyKeyText('<%= k._id %>')"><i class="fa-solid fa-copy"></i></button>
+                                                </div>
+                                            </td>
+                                            <td style="max-width: 240px;">
+                                                <% (k.scopes || []).forEach(s => { %>
+                                                    <span class="badge-scope badge-<%= s %>"><%= s.replace(/_/g, ' ') %></span>
+                                                <% }) %>
+                                            </td>
+                                            <td>
+                                                <label class="switch">
+                                                    <input type="checkbox" <%= k.isActive ? 'checked' : '' %> onclick="toggleApiKey('<%= k._id %>')">
+                                                    <span class="slider"></span>
+                                                </label>
+                                            </td>
+                                            <td>
+                                                <div style="display: flex; gap: 8px;">
+                                                    <button class="action-btn-pill btn-docs" onclick="viewDocs('<%= k.name %>', '<%= k.apiKey %>', '<%= (k.scopes || []).join(',') %>')">View Docs</button>
+                                                    <button class="action-btn-pill btn-delete" onclick="deleteApiKey('<%= k._id %>')">Delete</button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    <% }) %>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- DOCUMENTATION MODAL PANEL -->
+    <div id="docsModal" style="display: none; position: fixed; z-index: 20000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.5);">
+        <div style="background-color: #ffffff; margin: 3% auto; padding: 28px; border: 1px solid var(--border-color); width: 92%; max-width: 820px; border-radius: 24px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.15);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 2px solid #f1f5f9; padding-bottom: 12px;">
+                <div>
+                    <h3 style="margin: 0; color: var(--primary-dark); font-weight: 800; font-size: 18px;" id="docTitle">Integration Documentation</h3>
+                    <p style="margin: 3px 0 0 0; color: var(--text-secondary); font-size: 12.5px;">Complete REST API endpoints reference & cURL examples</p>
+                </div>
+                <span onclick="closeDocsModal()" style="color: var(--text-muted); font-size: 28px; font-weight: bold; cursor: pointer; line-height: 1;">&times;</span>
+            </div>
+            
+            <div id="docContent" style="max-height: 600px; overflow-y: auto; padding-right: 4px;">
+                <!-- Filled dynamically by javascript -->
+            </div>
+        </div>
+    </div>
+
+    <%- include('../partials/user_lookup') %>
+    <script src="/js/admin.js"></script>
+    <script src="/js/user_lookup.js"></script>
+    <script>
+        function selectAllTaskScopes() {
+            document.querySelectorAll('.task-scope').forEach(cb => cb.checked = true);
+        }
+
+        function selectAllScopes() {
+            document.querySelectorAll('input[name="scopes"]').forEach(cb => cb.checked = true);
+        }
+
+        function clearAllScopes() {
+            document.querySelectorAll('input[name="scopes"]').forEach(cb => cb.checked = false);
+        }
+
+        async function generateApiKey(e) {
+            e.preventDefault();
+            const name = document.getElementById('keyName').value;
+            const checkboxes = document.querySelectorAll('input[name="scopes"]:checked');
+            const scopes = Array.from(checkboxes).map(cb => cb.value);
+
+            if (scopes.length === 0) {
+                alert('Please select at least one scope/permission for this API key.');
+                return;
+            }
+
+            try {
+                const res = await fetch('/api-integrations/key/add', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, scopes })
+                });
+                const result = await res.json();
+                if (result.success) {
+                    alert('Developer API Key generated successfully!');
+                    window.location.reload();
+                } else {
+                    alert(result.message || 'Failed to generate key');
+                }
+            } catch (err) {
+                console.error(err);
+                alert('Connection error');
+            }
+        }
+
+        async function deleteApiKey(id) {
+            if (!confirm('Are you sure you want to revoke and delete this API Key? Any third-party panel using it will lose access immediately.')) return;
+            try {
+                const res = await fetch(`/api-integrations/key/delete/${id}`, {
+                    method: 'POST'
+                });
+                const result = await res.json();
+                if (result.success) {
+                    window.location.reload();
+                } else {
+                    alert(result.message || 'Failed to delete key');
+                }
+            } catch (err) {
+                console.error(err);
+                alert('Connection error');
+            }
+        }
+
+        async function toggleApiKey(id) {
+            try {
+                const res = await fetch(`/api-integrations/key/toggle/${id}`, {
+                    method: 'POST'
+                });
+                const result = await res.json();
+                if (!result.success) {
+                    alert(result.message || 'Failed to update key status');
+                    window.location.reload();
+                }
+            } catch (err) {
+                console.error(err);
+                alert('Connection error');
+                window.location.reload();
+            }
+        }
+
+        function toggleKeyVisibility(id) {
+            const keyEl = document.getElementById(`key-${id}`);
+            const rawVal = keyEl.getAttribute('data-raw');
+            if (keyEl.textContent.includes('•')) {
+                keyEl.textContent = rawVal;
+            } else {
+                keyEl.textContent = 'dp_sec_' + '•'.repeat(24);
+            }
+        }
+
+        function copyKeyText(id) {
+            const keyEl = document.getElementById(`key-${id}`);
+            const rawVal = keyEl.getAttribute('data-raw');
+            navigator.clipboard.writeText(rawVal).then(() => {
+                alert('API Key copied to clipboard!');
+            }).catch(err => {
+                console.error('Failed to copy: ', err);
+            });
+        }
+
+        function closeDocsModal() {
+            document.getElementById('docsModal').style.display = 'none';
+        }
+
+        function viewDocs(name, apiKey, scopesStr) {
+            const scopes = scopesStr ? scopesStr.split(',').map(s => s.trim()).filter(Boolean) : [];
+            const docModal = document.getElementById('docsModal');
+            const docTitle = document.getElementById('docTitle');
+            const docContent = document.getElementById('docContent');
+
+            docTitle.textContent = `API Docs - ${name}`;
+
+            let origin = window.location.origin;
+            origin = origin.replace('://admin.', '://');
+
+            let html = `
+                <div style="margin-bottom: 16px;">
+                    <p style="margin: 0 0 6px 0; color:var(--text-secondary); font-size:12px; font-weight:800; text-transform:uppercase; letter-spacing:0.5px;">Base URL</p>
+                    <div style="background:#f8fafc; border:1px solid var(--border-color); padding:10px 14px; border-radius:10px; font-family:monospace; font-size:12.5px; color:var(--text-main);">
+                        ${origin}/api/integrations
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 22px;">
+                    <p style="margin: 0 0 6px 0; color:var(--text-secondary); font-size:12px; font-weight:800; text-transform:uppercase; letter-spacing:0.5px;">Authentication (Pass any one)</p>
+                    <div style="background:#f8fafc; border:1px solid var(--border-color); padding:12px 14px; border-radius:10px; font-family:monospace; font-size:12px; color:var(--text-main); display:flex; flex-direction:column; gap:6px;">
+                        <div><strong>Header:</strong> <code>x-api-key: <span style="color:#2563eb;">${apiKey}</span></code></div>
+                        <div><strong>Bearer:</strong> <code>Authorization: Bearer <span style="color:#2563eb;">${apiKey}</span></code></div>
+                        <div><strong>Query:</strong> <code>?api_key=<span style="color:#2563eb;">${apiKey}</span></code></div>
+                    </div>
+                </div>
+
+                <h4 style="margin: 0 0 16px 0; color:var(--primary-dark); font-size:14px; border-bottom:2px solid #f1f5f9; padding-bottom:8px; font-weight:800; letter-spacing:-0.2px;">AVAILABLE ENDPOINTS (BASED ON KEY SCOPES)</h4>
+            `;
+
+            if (scopes.length === 0) {
+                html += `
+                    <div style="padding: 24px; text-align: center; color: var(--text-muted); font-weight: 550; font-size: 13.5px;">
+                        No permissions/scopes assigned to this key.
+                    </div>
+                `;
+            } else {
+                const hasTaskManage = scopes.includes('tasks_manage') || scopes.includes('*');
+                const hasTaskRead = hasTaskManage || scopes.includes('tasks_read');
+                const hasTaskCreate = hasTaskManage || scopes.includes('tasks_create');
+                const hasTaskUpdate = hasTaskManage || scopes.includes('tasks_update');
+                const hasTaskDelete = hasTaskManage || scopes.includes('tasks_delete');
+
+                // 1. TASKS: FETCH
+                if (hasTaskRead) {
+                    html += `
+                        <div style="margin-bottom: 20px; border:1.5px solid #7dd3fc; border-radius:14px; overflow:hidden;">
+                            <div style="background:#f0f9ff; padding:10px 16px; display:flex; align-items:center; gap:8px;">
+                                <span style="background:#0284c7; color:#fff; font-size:10.5px; font-weight:800; padding:2px 8px; border-radius:6px; text-transform:uppercase;">GET</span>
+                                <code style="font-size:13px; font-weight:700; color:var(--text-main);">/tasks</code>
+                                <span style="margin-left:auto; font-size:11px; color:#0369a1; font-weight:700;">Fetch & Search Tasks</span>
+                            </div>
+                            <div style="padding:14px 16px; background:#fff; font-size:13px;">
+                                <p style="margin:0 0 10px 0; color:var(--text-secondary); line-height:1.5;">Returns paginated list of all active/configured tasks. Filterable by category, provider, country, or search term.</p>
+                                <strong style="display:block; margin-bottom:4px; font-size:12px; color:var(--text-main);">Query Parameters:</strong>
+                                <ul style="margin:0 0 10px 0; padding-left:20px; color:var(--text-secondary); font-size:12px; line-height:1.6;">
+                                    <li><code>page</code> (optional): Page number (defaults to 1)</li>
+                                    <li><code>limit</code> (optional): Items per page (defaults to 20, max 100)</li>
+                                    <li><code>search</code> or <code>q</code> (optional): Search by offerName, offerId, or provider</li>
+                                    <li><code>offerType</code> (optional): Filter e.g. 'DailyTask'</li>
+                                    <li><code>offerCategory</code> (optional): Filter e.g. 'App', 'Game', 'Web'</li>
+                                    <li><code>country</code> (optional): ISO-2 code e.g. 'IN', 'US'</li>
+                                </ul>
+                                <strong style="display:block; margin-bottom:4px; font-size:12px; color:var(--text-main);">cURL Example:</strong>
+                                <pre style="background:#1e293b; color:#f8fafc; padding:10px; border-radius:8px; margin:0 0 10px 0; overflow-x:auto; font-family:monospace; font-size:11px;">curl -X GET "${origin}/api/integrations/tasks?limit=10&search=telegram" \\
+  -H "x-api-key: ${apiKey}"</pre>
+                            </div>
+                        </div>
+
+                        <div style="margin-bottom: 20px; border:1.5px solid #7dd3fc; border-radius:14px; overflow:hidden;">
+                            <div style="background:#f0f9ff; padding:10px 16px; display:flex; align-items:center; gap:8px;">
+                                <span style="background:#0284c7; color:#fff; font-size:10.5px; font-weight:800; padding:2px 8px; border-radius:6px; text-transform:uppercase;">GET</span>
+                                <code style="font-size:13px; font-weight:700; color:var(--text-main);">/tasks/:id</code>
+                                <span style="margin-left:auto; font-size:11px; color:#0369a1; font-weight:700;">Get Single Task</span>
+                            </div>
+                            <div style="padding:14px 16px; background:#fff; font-size:13px;">
+                                <p style="margin:0 0 10px 0; color:var(--text-secondary); line-height:1.5;">Fetch single task details using either MongoDB <code>_id</code> or unique <code>offerId</code>.</p>
+                                <pre style="background:#1e293b; color:#f8fafc; padding:10px; border-radius:8px; margin:0; overflow-x:auto; font-family:monospace; font-size:11px;">curl -X GET "${origin}/api/integrations/tasks/dt_12345" \\
+  -H "x-api-key: ${apiKey}"</pre>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                // 2. TASKS: CREATE
+                if (hasTaskCreate) {
+                    html += `
+                        <div style="margin-bottom: 20px; border:1.5px solid #fde68a; border-radius:14px; overflow:hidden;">
+                            <div style="background:#fffbeb; padding:10px 16px; display:flex; align-items:center; gap:8px;">
+                                <span style="background:#d97706; color:#fff; font-size:10.5px; font-weight:800; padding:2px 8px; border-radius:6px; text-transform:uppercase;">POST</span>
+                                <code style="font-size:13px; font-weight:700; color:var(--text-main);">/tasks</code>
+                                <span style="margin-left:auto; font-size:11px; color:#b45309; font-weight:700;">Add New Task</span>
+                            </div>
+                            <div style="padding:14px 16px; background:#fff; font-size:13px;">
+                                <p style="margin:0 0 10px 0; color:var(--text-secondary); line-height:1.5;">Creates a new task in the app database and automatically invalidates the app cache.</p>
+                                <strong style="display:block; margin-bottom:4px; font-size:12px; color:var(--text-main);">Required Fields:</strong>
+                                <span style="color:#b45309; font-size:12px; font-weight:600;">offerName, imagePath</span> (offerId is auto-generated if omitted).
+                                <strong style="display:block; margin-top:8px; margin-bottom:4px; font-size:12px; color:var(--text-main);">cURL Example:</strong>
+                                <pre style="background:#1e293b; color:#f8fafc; padding:10px; border-radius:8px; margin:0 0 10px 0; overflow-x:auto; font-family:monospace; font-size:11px;">curl -X POST "${origin}/api/integrations/tasks" \\
+  -H "x-api-key: ${apiKey}" \\
+  -H "Content-Type: application/json" \\
+  -d '{
+    "offerName": "Join Telegram Community",
+    "imagePath": "https://example.com/icon.png",
+    "clickUrl": "https://t.me/example_channel",
+    "coins": 250,
+    "payout": 2.5,
+    "provider": "DailyTask",
+    "offerType": "DailyTask",
+    "offerCategory": "Community",
+    "offerDescription": [
+      "Open Telegram app",
+      "Join channel and stay active for 24h"
+    ],
+    "countries": ["ALL"],
+    "trackingTime": 30
+  }'</pre>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                // 3. TASKS: UPDATE
+                if (hasTaskUpdate) {
+                    html += `
+                        <div style="margin-bottom: 20px; border:1.5px solid #d8b4fe; border-radius:14px; overflow:hidden;">
+                            <div style="background:#faf5ff; padding:10px 16px; display:flex; align-items:center; gap:8px;">
+                                <span style="background:#7e22ce; color:#fff; font-size:10.5px; font-weight:800; padding:2px 8px; border-radius:6px; text-transform:uppercase;">PUT / PATCH</span>
+                                <code style="font-size:13px; font-weight:700; color:var(--text-main);">/tasks/:id</code>
+                                <span style="margin-left:auto; font-size:11px; color:#7e22ce; font-weight:700;">Edit & Update Task</span>
+                            </div>
+                            <div style="padding:14px 16px; background:#fff; font-size:13px;">
+                                <p style="margin:0 0 10px 0; color:var(--text-secondary); line-height:1.5;">Updates any field of an existing task by Mongo <code>_id</code> or <code>offerId</code>.</p>
+                                <pre style="background:#1e293b; color:#f8fafc; padding:10px; border-radius:8px; margin:0 0 10px 0; overflow-x:auto; font-family:monospace; font-size:11px;">curl -X PUT "${origin}/api/integrations/tasks/dt_12345" \\
+  -H "x-api-key: ${apiKey}" \\
+  -H "Content-Type: application/json" \\
+  -d '{
+    "coins": 350,
+    "offerName": "Updated Task Name",
+    "clickUrl": "https://example.com/new-link"
+  }'</pre>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                // 4. TASKS: DELETE
+                if (hasTaskDelete) {
+                    html += `
+                        <div style="margin-bottom: 20px; border:1.5px solid #fca5a5; border-radius:14px; overflow:hidden;">
+                            <div style="background:#fff5f5; padding:10px 16px; display:flex; align-items:center; gap:8px;">
+                                <span style="background:#dc2626; color:#fff; font-size:10.5px; font-weight:800; padding:2px 8px; border-radius:6px; text-transform:uppercase;">DELETE</span>
+                                <code style="font-size:13px; font-weight:700; color:var(--text-main);">/tasks/:id</code>
+                                <span style="margin-left:auto; font-size:11px; color:#b91c1c; font-weight:700;">Delete Task</span>
+                            </div>
+                            <div style="padding:14px 16px; background:#fff; font-size:13px;">
+                                <p style="margin:0 0 10px 0; color:var(--text-secondary); line-height:1.5;">Permanently removes task from app database and refreshes app cache.</p>
+                                <pre style="background:#1e293b; color:#f8fafc; padding:10px; border-radius:8px; margin:0; overflow-x:auto; font-family:monospace; font-size:11px;">curl -X DELETE "${origin}/api/integrations/tasks/dt_12345" \\
+  -H "x-api-key: ${apiKey}"</pre>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                // 5. READ & EARN
+                if (scopes.includes('read_earn_manage') || scopes.includes('*')) {
+                    html += `
+                        <div style="margin-bottom: 20px; border:1.5px solid #c7d2fe; border-radius:14px; overflow:hidden;">
+                            <div style="background:#eef2ff; padding:10px 16px; display:flex; align-items:center; gap:8px;">
+                                <span style="background:#4338ca; color:#fff; font-size:10.5px; font-weight:800; padding:2px 8px; border-radius:6px; text-transform:uppercase;">CRUD</span>
+                                <code style="font-size:13px; font-weight:700; color:var(--text-main);">/read-earn</code>
+                                <span style="margin-left:auto; font-size:11px; color:#4338ca; font-weight:700;">Articles / Read & Earn</span>
+                            </div>
+                            <div style="padding:14px 16px; background:#fff; font-size:13px;">
+                                <p style="margin:0 0 6px 0; color:var(--text-secondary);">Supports <code>GET /read-earn</code>, <code>POST /read-earn</code>, <code>PUT /read-earn/:id</code>, <code>DELETE /read-earn/:id</code>.</p>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                // 6. GIVEAWAYS
+                if (scopes.includes('giveaways_manage') || scopes.includes('*')) {
+                    html += `
+                        <div style="margin-bottom: 20px; border:1.5px solid #fbcfe8; border-radius:14px; overflow:hidden;">
+                            <div style="background:#fdf2f8; padding:10px 16px; display:flex; align-items:center; gap:8px;">
+                                <span style="background:#be185d; color:#fff; font-size:10.5px; font-weight:800; padding:2px 8px; border-radius:6px; text-transform:uppercase;">CRUD</span>
+                                <code style="font-size:13px; font-weight:700; color:var(--text-main);">/giveaways</code>
+                                <span style="margin-left:auto; font-size:11px; color:#be185d; font-weight:700;">Giveaways Management</span>
+                            </div>
+                            <div style="padding:14px 16px; background:#fff; font-size:13px;">
+                                <p style="margin:0 0 6px 0; color:var(--text-secondary);">Supports <code>GET /giveaways</code>, <code>POST /giveaways</code>, <code>PUT /giveaways/:id</code>, <code>DELETE /giveaways/:id</code>.</p>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                // 7. PROMO CODES
+                if (scopes.includes('promo_codes_manage') || scopes.includes('*')) {
+                    html += `
+                        <div style="margin-bottom: 20px; border:1.5px solid #bbf7d0; border-radius:14px; overflow:hidden;">
+                            <div style="background:#f0fdf4; padding:10px 16px; display:flex; align-items:center; gap:8px;">
+                                <span style="background:#166534; color:#fff; font-size:10.5px; font-weight:800; padding:2px 8px; border-radius:6px; text-transform:uppercase;">CRUD</span>
+                                <code style="font-size:13px; font-weight:700; color:var(--text-main);">/promo-codes</code>
+                                <span style="margin-left:auto; font-size:11px; color:#166534; font-weight:700;">Promo Codes Management</span>
+                            </div>
+                            <div style="padding:14px 16px; background:#fff; font-size:13px;">
+                                <p style="margin:0 0 6px 0; color:var(--text-secondary);">Supports <code>GET /promo-codes</code>, <code>POST /promo-codes</code>, <code>PUT /promo-codes/:id</code>, <code>DELETE /promo-codes/:id</code>.</p>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                // 8. APP ANALYTICS
+                if (scopes.includes('app_analytics')) {
+                    html += `
+                        <div style="margin-bottom: 20px; border:1.5px solid #b2f5ea; border-radius:14px; overflow:hidden;">
+                            <div style="background:#e6fffa; padding:10px 16px; display:flex; align-items:center; gap:8px;">
+                                <span style="background:#319795; color:#fff; font-size:10px; font-weight:800; padding:2px 8px; border-radius:6px; text-transform:uppercase;">GET</span>
+                                <code style="font-size:13px; font-weight:700; color:var(--text-main);">/app-analytics</code>
+                            </div>
+                            <div style="padding:14px 16px; background:#fff; font-size:13px;">
+                                <p style="margin:0 0 10px 0; color:var(--text-secondary); line-height:1.5;">Returns totals overview (users, active today, coins/gems in circulation, payouts count).</p>
+                                <pre style="background:#1e293b; color:#f8fafc; padding:10px; border-radius:8px; margin:0; overflow-x:auto; font-family:monospace; font-size:11px;">curl -X GET "${origin}/api/integrations/app-analytics" \\
+  -H "x-api-key: ${apiKey}"</pre>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                // 9. USER DATA
+                if (scopes.includes('user_data')) {
+                    html += `
+                        <div style="margin-bottom: 20px; border:1.5px solid #bee3f8; border-radius:14px; overflow:hidden;">
+                            <div style="background:#ebf8ff; padding:10px 16px; display:flex; align-items:center; gap:8px;">
+                                <span style="background:#3182ce; color:#fff; font-size:10px; font-weight:800; padding:2px 8px; border-radius:6px; text-transform:uppercase;">GET</span>
+                                <code style="font-size:13px; font-weight:700; color:var(--text-main);">/user-data</code>
+                            </div>
+                            <div style="padding:14px 16px; background:#fff; font-size:13px;">
+                                <p style="margin:0 0 10px 0; color:var(--text-secondary); line-height:1.5;">Queries registered users profiles (coins, gems, gaid, device, signup date).</p>
+                                <pre style="background:#1e293b; color:#f8fafc; padding:10px; border-radius:8px; margin:0; overflow-x:auto; font-family:monospace; font-size:11px;">curl -X GET "${origin}/api/integrations/user-data?limit=50&page=1" \\
+  -H "x-api-key: ${apiKey}"</pre>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                // 10. PAYOUT HISTORY
+                if (scopes.includes('payout_history')) {
+                    html += `
+                        <div style="margin-bottom: 20px; border:1.5px solid #feebc8; border-radius:14px; overflow:hidden;">
+                            <div style="background:#fffaf0; padding:10px 16px; display:flex; align-items:center; gap:8px;">
+                                <span style="background:#dd6b20; color:#fff; font-size:10px; font-weight:800; padding:2px 8px; border-radius:6px; text-transform:uppercase;">GET</span>
+                                <code style="font-size:13px; font-weight:700; color:var(--text-main);">/payout-history</code>
+                            </div>
+                            <div style="padding:14px 16px; background:#fff; font-size:13px;">
+                                <p style="margin:0 0 10px 0; color:var(--text-secondary); line-height:1.5;">Queries withdrawal transaction records.</p>
+                                <pre style="background:#1e293b; color:#f8fafc; padding:10px; border-radius:8px; margin:0; overflow-x:auto; font-family:monospace; font-size:11px;">curl -X GET "${origin}/api/integrations/payout-history?status=pending" \\
+  -H "x-api-key: ${apiKey}"</pre>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                // 11. REWARD HISTORY
+                if (scopes.includes('reward_history')) {
+                    html += `
+                        <div style="margin-bottom: 20px; border:1.5px solid #fed7d7; border-radius:14px; overflow:hidden;">
+                            <div style="background:#fff5f5; padding:10px 16px; display:flex; align-items:center; gap:8px;">
+                                <span style="background:#e53e3e; color:#fff; font-size:10px; font-weight:800; padding:2px 8px; border-radius:6px; text-transform:uppercase;">GET</span>
+                                <code style="font-size:13px; font-weight:700; color:var(--text-main);">/reward-history</code>
+                            </div>
+                            <div style="padding:14px 16px; background:#fff; font-size:13px;">
+                                <p style="margin:0 0 10px 0; color:var(--text-secondary); line-height:1.5;">Queries user task and offer reward claim logs.</p>
+                                <pre style="background:#1e293b; color:#f8fafc; padding:10px; border-radius:8px; margin:0; overflow-x:auto; font-family:monospace; font-size:11px;">curl -X GET "${origin}/api/integrations/reward-history?limit=20" \\
+  -H "x-api-key: ${apiKey}"</pre>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                // 12. OFFERWALL HISTORY
+                if (scopes.includes('offerwall_history')) {
+                    html += `
+                        <div style="margin-bottom: 20px; border:1.5px solid #e2e8f0; border-radius:14px; overflow:hidden;">
+                            <div style="background:#f8fafc; padding:10px 16px; display:flex; align-items:center; gap:8px;">
+                                <span style="background:#475569; color:#fff; font-size:10px; font-weight:800; padding:2px 8px; border-radius:6px; text-transform:uppercase;">GET</span>
+                                <code style="font-size:13px; font-weight:700; color:var(--text-main);">/offerwall-history</code>
+                            </div>
+                            <div style="padding:14px 16px; background:#fff; font-size:13px;">
+                                <p style="margin:0 0 10px 0; color:var(--text-secondary); line-height:1.5;">Queries third-party offerwall postbacks received by app.</p>
+                                <pre style="background:#1e293b; color:#f8fafc; padding:10px; border-radius:8px; margin:0; overflow-x:auto; font-family:monospace; font-size:11px;">curl -X GET "${origin}/api/integrations/offerwall-history?limit=10" \\
+  -H "x-api-key: ${apiKey}"</pre>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                // 13. SUPER OFFER HISTORY
+                if (scopes.includes('super_offer_history')) {
+                    html += `
+                        <div style="margin-bottom: 20px; border:1.5px solid #d8b4fe; border-radius:14px; overflow:hidden;">
+                            <div style="background:#faf5ff; padding:10px 16px; display:flex; align-items:center; gap:8px;">
+                                <span style="background:#9333ea; color:#fff; font-size:10px; font-weight:800; padding:2px 8px; border-radius:6px; text-transform:uppercase;">GET</span>
+                                <code style="font-size:13px; font-weight:700; color:var(--text-main);">/super-offer-history</code>
+                            </div>
+                            <div style="padding:14px 16px; background:#fff; font-size:13px;">
+                                <p style="margin:0 0 10px 0; color:var(--text-secondary); line-height:1.5;">Queries Super Offer screenshot proof submissions.</p>
+                                <pre style="background:#1e293b; color:#f8fafc; padding:10px; border-radius:8px; margin:0; overflow-x:auto; font-family:monospace; font-size:11px;">curl -X GET "${origin}/api/integrations/super-offer-history?status=pending" \\
+  -H "x-api-key: ${apiKey}"</pre>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                // 14. BATTLE ARENA STATS
+                if (scopes.includes('battle_arena_stats')) {
+                    html += `
+                        <div style="margin-bottom: 20px; border:1.5px solid #cbd5e1; border-radius:14px; overflow:hidden;">
+                            <div style="background:#f1f5f9; padding:10px 16px; display:flex; align-items:center; gap:8px;">
+                                <span style="background:#0f172a; color:#fff; font-size:10px; font-weight:800; padding:2px 8px; border-radius:6px; text-transform:uppercase;">GET</span>
+                                <code style="font-size:13px; font-weight:700; color:var(--text-main);">/battle-arena-stats</code>
+                            </div>
+                            <div style="padding:14px 16px; background:#fff; font-size:13px;">
+                                <p style="margin:0 0 10px 0; color:var(--text-secondary); line-height:1.5;">Queries Battle Arena matches, scores, and winner distributions.</p>
+                                <pre style="background:#1e293b; color:#f8fafc; padding:10px; border-radius:8px; margin:0; overflow-x:auto; font-family:monospace; font-size:11px;">curl -X GET "${origin}/api/integrations/battle-arena-stats?limit=20" \\
+  -H "x-api-key: ${apiKey}"</pre>
+                            </div>
+                        </div>
+                    `;
+                }
+            }
+
+            docContent.innerHTML = html;
+            docModal.style.display = 'block';
+        }
+    </script>
+</body>
+
+</html>

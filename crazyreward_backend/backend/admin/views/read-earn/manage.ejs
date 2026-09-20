@@ -1,0 +1,1293 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Read & Earn Manager - Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/admin.css">
+    <link rel="icon" href="/images/favicon.png">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --bg: #f8fafc;
+            --surface: #ffffff;
+            --border: #e2e8f0;
+            --primary: #052e1f;
+            --primary-hover: #042418;
+            --text: #0f172a;
+            --muted: #64748b;
+            --danger: #dc2626;
+            --success: #16a34a;
+            --warning-bg: #fffbeb;
+            --warning-border: #fde68a;
+            --warning-text: #92400e;
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--text);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            background: rgba(5, 46, 31, 0.08);
+            color: #052e1f;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .stat-val {
+            font-size: 22px;
+            font-weight: 800;
+            color: #0f172a;
+            line-height: 1.2;
+        }
+
+        .stat-lbl {
+            font-size: 12px;
+            color: var(--muted);
+            font-weight: 600;
+            margin-top: 2px;
+        }
+
+        .top-urls-card {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+            margin-bottom: 24px;
+        }
+
+        .top-urls-card h3 {
+            margin: 0 0 14px;
+            font-size: 16px;
+            font-weight: 800;
+            color: #0f172a;
+        }
+
+        .top-urls-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .top-urls-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 14px;
+            background: #f8fafc;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-size: 13px;
+        }
+
+        .top-urls-link {
+            color: #052e1f;
+            font-weight: 700;
+            text-decoration: none;
+            max-width: 70%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .top-urls-count {
+            background: rgba(5, 46, 31, 0.08);
+            color: #052e1f;
+            padding: 4px 10px;
+            border-radius: 9999px;
+            font-weight: 800;
+            font-size: 11px;
+        }
+
+        .settings-card {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+            margin-bottom: 24px;
+        }
+
+        .pending-note {
+            margin-bottom: 12px;
+            border: 1px solid var(--warning-border);
+            border-radius: 12px;
+            background: var(--warning-bg);
+            color: var(--warning-text);
+            font-size: 12px;
+            font-weight: 700;
+            padding: 10px 14px;
+            display: none;
+        }
+
+        .settings-grid {
+            display: flex;
+            gap: 16px;
+            align-items: flex-end;
+            flex-wrap: wrap;
+        }
+
+        .action-toolbar {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 16px 20px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+        }
+
+        .btn-action-sm {
+            padding: 9px 14px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 700;
+            border: 1px solid var(--border);
+            background: #fff;
+            color: #0f172a;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .btn-action-sm:hover {
+            background: #f1f5f9;
+            border-color: #cbd5e1;
+        }
+
+        .btn-action-sm.primary {
+            background: #052e1f;
+            color: #fff;
+            border: none;
+        }
+
+        .btn-action-sm.primary:hover {
+            background: #042418;
+        }
+
+        .btn-action-sm.danger {
+            color: #dc2626;
+            border-color: #fecaca;
+            background: #fff5f5;
+        }
+
+        .btn-action-sm.danger-solid {
+            background: #dc2626;
+            color: #fff;
+            border: none;
+        }
+
+        .btn-action-sm.success {
+            color: #16a34a;
+            border-color: #bbf7d0;
+            background: #f0fdf4;
+        }
+
+        .table-card {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.03);
+            margin-bottom: 24px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 900px;
+        }
+
+        th, td {
+            padding: 12px 16px;
+            font-size: 13px;
+            border-bottom: 1px solid var(--border);
+            vertical-align: middle;
+        }
+
+        th {
+            background: #052e1f;
+            color: #ffffff;
+            font-weight: 700;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            text-align: left;
+        }
+
+        input[type="text"], input[type="url"], input[type="number"], select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-size: 13px;
+            background: #fff;
+            color: #0f172a;
+            transition: all 0.2s ease;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #052e1f;
+            box-shadow: 0 0 0 3px rgba(5, 46, 31, 0.1);
+        }
+
+        /* Screen-Centered Modal Overlays */
+        .modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(8px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 999999;
+            padding: 20px;
+        }
+
+        .modal.is-open {
+            display: flex !important;
+        }
+
+        .modal-card {
+            width: min(900px, 94vw);
+            background: #fff;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .modal-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border);
+            background: #f8fafc;
+        }
+
+        .modal-head h3 {
+            margin: 0;
+            font-size: 20px;
+            font-weight: 800;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--muted);
+            font-weight: 700;
+        }
+
+        .stats-body {
+            padding: 24px;
+            overflow-y: auto;
+        }
+
+        .confirm-modal-card {
+            background: #fff;
+            width: min(440px, 90vw);
+            border-radius: 20px;
+            padding: 24px;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        }
+
+        .confirm-modal-card h4 {
+            margin: 0 0 10px;
+            font-size: 18px;
+            font-weight: 800;
+        }
+
+        .confirm-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        /* Toast Container */
+        .toast-container {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            z-index: 1000000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .toast {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 14px 18px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 300px;
+            transform: translateX(120%);
+            transition: all 0.3s ease;
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+    </style>
+</head>
+
+<body class="dashboard-body">
+    <div class="dashboard-shell">
+        <%- include('../partials/sidebar', { activePage: 'read-earn' }) %>
+
+        <div class="dashboard-main">
+            <header class="navbar dashboard-navbar">
+                <div class="nav-left" style="display: flex; align-items: center; gap: 12px; white-space: nowrap;">
+                    <button type="button" class="sidebar-toggle-btn" onclick="toggleSidebar()">
+                        ☰
+                    </button>
+                    <h2 style="margin: 0; font-size: 18px; font-weight: 800; white-space: nowrap;">Read & Earn Manager</h2>
+
+                    <select id="appSelect" style="margin-left: 8px; padding: 6px 12px; border-radius: 10px; border: 1px solid #cbd5e1; font-weight: 700; background: #f8fafc; font-size: 13px; cursor: pointer;">
+                        <% (typeof firebaseServices !== 'undefined' && firebaseServices ? firebaseServices : []).forEach(service => { %>
+                            <option value="<%= service.appName %>" <%= typeof activeAppName !== 'undefined' && service.appName === activeAppName ? 'selected' : '' %>>
+                                <%= service.displayName %>
+                            </option>
+                        <% }) %>
+                    </select>
+                </div>
+
+                <div class="nav-right" onclick="toggleDropdown()">
+                    <div class="avatar">
+                        <%- typeof photo !== 'undefined' && photo ? photo : 'A' %>
+                    </div>
+                    <div class="dropdown" id="dropdown">
+                        <a href="/logout">Logout</a>
+                    </div>
+                </div>
+            </header>
+
+            <main class="container dashboard-home">
+
+                <!-- STATS CARDS -->
+                <% if (typeof stats === 'undefined' || !stats) { stats = { totalUrls: 0, totalClicks: 0, todayClicks: 0, topUrls: [] }; } %>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
+                        </div>
+                        <div>
+                            <div class="stat-val"><%= stats.totalUrls || 0 %></div>
+                            <div class="stat-lbl">Total URLs</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: rgba(22, 163, 74, 0.1); color: #16a34a;">
+                            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M18 20V10m-6 10V4M6 20v-6"/></svg>
+                        </div>
+                        <div>
+                            <div class="stat-val"><%= Number(stats.totalClicks || 0).toLocaleString('en-IN') %></div>
+                            <div class="stat-lbl">All-Time Clicks</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: rgba(37, 99, 235, 0.1); color: #2563eb;">
+                            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                        </div>
+                        <div>
+                            <div class="stat-val"><%= Number(stats.todayClicks || 0).toLocaleString('en-IN') %></div>
+                            <div class="stat-lbl">Today's Clicks</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TOP 5 URLS CARD -->
+                <div class="top-urls-card">
+                    <h3 style="display: inline-flex; align-items: center; gap: 6px; margin: 0 0 16px;">
+                        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" style="color: #d97706;"><path d="M6 9H4.5a2.5 2.5 0 010-5H6M18 9h1.5a2.5 2.5 0 000-5H18M4 22h16M10 14.66V17c0 .55-.45 1-1 1H4v2h16v-2h-5c-.55 0-1-.45-1-1v-2.34M12 2a4 4 0 00-4 4v5c0 2.2 1.8 4 4 4s4-1.8 4-4V6a4 4 0 00-4-4z"/></svg>
+                        Top 5 URLs by Clicks
+                    </h3>
+                    <ul class="top-urls-list">
+                        <% if (Array.isArray(stats.topUrls) && stats.topUrls.length > 0) { %>
+                            <% stats.topUrls.forEach(function(item) { %>
+                                <li class="top-urls-item">
+                                    <a href="<%= item.url %>" target="_blank" class="top-urls-link" title="<%= item.url %>">
+                                        <%= item.url %>
+                                    </a>
+                                    <span class="top-urls-count"><%= Number(item.count || 0).toLocaleString('en-IN') %> clicks</span>
+                                </li>
+                            <% }); %>
+                        <% } else { %>
+                            <li class="top-urls-item" style="color: var(--muted); justify-content: center;">No clicks recorded yet</li>
+                        <% } %>
+                    </ul>
+                </div>
+
+                <!-- GLOBAL SETTINGS CARD -->
+                <div class="settings-card">
+                    <div id="pendingLimitNote" class="pending-note"></div>
+                    <div class="settings-grid">
+                        <div style="flex: 1; min-width: 180px;">
+                            <label style="display:block; font-size:12px; font-weight:700; color:var(--muted); text-transform:uppercase; margin-bottom:6px;">Daily Limit *</label>
+                            <input id="limits" type="number" min="1" step="1" placeholder="5" />
+                        </div>
+                        <div style="flex: 1; min-width: 180px;">
+                            <label style="display:block; font-size:12px; font-weight:700; color:var(--muted); text-transform:uppercase; margin-bottom:6px;">Config Status</label>
+                            <select id="configEnabled">
+                                <option value="true">Enabled</option>
+                                <option value="false">Disabled</option>
+                            </select>
+                        </div>
+                        <div>
+                            <button id="saveAll" class="btn-action-sm primary" type="button" style="padding: 11px 20px;">
+                                <i class="fa-solid fa-floppy-disk" style="margin-right: 6px;"></i> Save Configuration
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ACTION TOOLBAR -->
+                <div class="action-toolbar">
+                    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                        <button id="checkStats" class="btn-action-sm" type="button" style="display: inline-flex; align-items: center; gap: 4px;">
+                            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M18 20V10m-6 10V4M6 20v-6"/></svg> Check Stats
+                        </button>
+                        <button id="bulkEnable" class="btn-action-sm success" type="button" style="display: inline-flex; align-items: center; gap: 4px;">
+                            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg> Bulk Enable
+                        </button>
+                        <button id="bulkDisable" class="btn-action-sm danger" type="button" style="display: inline-flex; align-items: center; gap: 4px;">
+                            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M4.93 4.93l14.14 14.14"/></svg> Bulk Disable
+                        </button>
+                        <button id="bulkDelete" class="btn-action-sm danger-solid" type="button" style="display: inline-flex; align-items: center; gap: 4px;">
+                            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg> Bulk Delete
+                        </button>
+                    </div>
+                    <div class="right-group">
+                        <button id="addRow" class="btn-action-sm primary" type="button" style="display: inline-flex; align-items: center; gap: 4px;">
+                            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg> Add URL
+                        </button>
+                    </div>
+                </div>
+
+                <!-- URL DATA TABLE CARD -->
+                <div class="table-card">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width:40px; text-align: center;"><input type="checkbox" id="selectAll" /></th>
+                                <th>URL</th>
+                                <th style="width:100px; text-align: center;">Clicks</th>
+                                <th style="width:120px;">Payout (₹)</th>
+                                <th style="width:140px;">Tracking Time</th>
+                                <th style="width:100px;">Enabled</th>
+                                <th style="width:150px;">Verification</th>
+                                <th style="width:100px;">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="rows"></tbody>
+                    </table>
+                </div>
+
+                <div id="msg" class="message" style="margin-top:12px; font-weight:700;"></div>
+
+            </main>
+        </div>
+    </div>
+
+    <!-- STATS MODAL OVERLAY -->
+    <div id="statsModal" class="modal">
+        <div class="modal-card">
+            <div class="modal-head">
+                <div>
+                    <h3>Read & Earn Stats</h3>
+                    <p style="margin:4px 0 0; color:var(--muted); font-size:13px;">Conversions and payout trend (IST)</p>
+                </div>
+                <button class="modal-close" type="button" onclick="closeStatsModal()">&times;</button>
+            </div>
+            <div class="stats-body">
+                <div style="display:flex; gap:12px; align-items:flex-end; margin-bottom:20px; flex-wrap:wrap;">
+                    <div>
+                        <label style="display:block; font-size:11px; font-weight:700; color:var(--muted); text-transform:uppercase; margin-bottom:4px;">Start Date</label>
+                        <input id="statsStart" type="date" style="padding:8px 12px; border-radius:10px; border:1px solid var(--border);" />
+                    </div>
+                    <div>
+                        <label style="display:block; font-size:11px; font-weight:700; color:var(--muted); text-transform:uppercase; margin-bottom:4px;">End Date</label>
+                        <input id="statsEnd" type="date" style="padding:8px 12px; border-radius:10px; border:1px solid var(--border);" />
+                    </div>
+                    <button class="btn-action-sm primary" type="button" onclick="reloadReadEarnStats()" style="padding:10px 16px;">Refresh Stats</button>
+                </div>
+
+                <div class="stats-grid" style="margin-bottom:20px;">
+                    <div class="stat-card">
+                        <div>
+                            <div class="stat-lbl">Total Conversions</div>
+                            <div id="statsConv" class="stat-val">0</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div>
+                            <div class="stat-lbl">Total Payout (₹)</div>
+                            <div id="statsPayout" class="stat-val" style="color:#16a34a;">0</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div>
+                            <div class="stat-lbl">Selected URLs</div>
+                            <div id="statsUrls" class="stat-val">0</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="height: 240px; margin-bottom: 24px;">
+                    <canvas id="readEarnPerfChart"></canvas>
+                </div>
+
+                <div style="overflow-x: auto; border: 1px solid var(--border); border-radius: 12px;">
+                    <table style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>URL</th>
+                                <th>Conversions</th>
+                                <th>Payout (₹)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="statsRows">
+                            <tr>
+                                <td colspan="4" style="text-align:center;color:#64748b;">No data</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CONFIRMATION MODAL OVERLAY -->
+    <div id="confirmModal" class="modal">
+        <div class="confirm-modal-card">
+            <h4>Confirm Action</h4>
+            <p id="confirmText" style="color:var(--muted); margin: 10px 0 20px;">Are you sure?</p>
+            <div class="confirm-actions">
+                <button id="confirmNo" class="btn-action-sm" type="button">Cancel</button>
+                <button id="confirmYes" class="btn-action-sm danger" type="button">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- VERIFICATION SETUP MODAL OVERLAY -->
+    <div id="verifModal" class="modal">
+        <div class="confirm-modal-card" style="width: min(500px, 92vw); text-align: left;">
+            <h4 style="margin-bottom: 16px;">Verification Setup</h4>
+            <div style="margin-bottom: 14px;">
+                <label style="display:block; font-size:12px; font-weight:700; color:var(--muted); text-transform:uppercase; margin-bottom:6px;">Article Title *</label>
+                <input id="verifModalTitle" type="text" placeholder="e.g. How to Earn Coins" />
+            </div>
+            <div style="margin-bottom: 20px;">
+                <label style="display:block; font-size:12px; font-weight:700; color:var(--muted); text-transform:uppercase; margin-bottom:6px;">Article Domain / Hostname *</label>
+                <input id="verifModalDomain" type="text" placeholder="e.g. techblog.com" />
+            </div>
+            <div class="confirm-actions" style="justify-content: flex-end;">
+                <button id="verifModalCancel" class="btn-action-sm" type="button">Cancel</button>
+                <button id="verifModalSave" class="btn-action-sm primary" type="button">Save Details</button>
+            </div>
+        </div>
+    </div>
+
+    <script id="initialConfig" type="application/json"><%- JSON.stringify(config || null) %></script>
+    <script src="/js/admin.js"></script>
+    <script>
+        const rows = document.getElementById('rows');
+        const msg = document.getElementById('msg');
+        const pendingLimitNote = document.getElementById('pendingLimitNote');
+        const initial = JSON.parse(document.getElementById('initialConfig').textContent || 'null');
+
+        let perfChart = null;
+
+        function showToast(message, type = 'success') {
+            let container = document.querySelector('.toast-container');
+            if (!container) {
+                container = document.createElement('div');
+                container.className = 'toast-container';
+                document.body.appendChild(container);
+            }
+
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${type}`;
+            
+            let icon = '<i class="fa-solid fa-circle-info" style="color: #0284c7; font-size: 18px;"></i>';
+            if (type === 'success') icon = '<i class="fa-solid fa-circle-check" style="color: #16a34a; font-size: 18px;"></i>';
+            if (type === 'error') icon = '<i class="fa-solid fa-circle-xmark" style="color: #dc2626; font-size: 18px;"></i>';
+
+            toast.innerHTML = `
+                <span class="toast-icon">${icon}</span>
+                <div class="toast-content">${message}</div>
+                <button class="toast-close" type="button">&times;</button>
+            `;
+
+            container.appendChild(toast);
+            toast.offsetHeight;
+            toast.classList.add('show');
+
+            const closeBtn = toast.querySelector('.toast-close');
+            const dismiss = () => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 400);
+            };
+
+            closeBtn.onclick = dismiss;
+            setTimeout(dismiss, 4000);
+        }
+
+        function fmt(num, max = 2) {
+            return new Intl.NumberFormat('en-IN', {
+                maximumFractionDigits: max,
+                minimumFractionDigits: 0,
+            }).format(Number(num) || 0);
+        }
+
+        function showMessage(text, type = '') {
+            msg.textContent = text || '';
+            msg.className = `message ${type}`.trim();
+        }
+
+        let activeVerificationRow = null;
+        let originalVerificationEnabled = 'false';
+        let originalVerificationTitle = '';
+        let originalVerificationDomain = '';
+
+        function openVerificationModal(tr, triggeredByToggle = false) {
+            activeVerificationRow = tr;
+            const selectEl = tr.querySelector('[data-k="verificationEnabled"]');
+            const titleInput = tr.querySelector('[data-k="verificationTitle"]');
+            const domainInput = tr.querySelector('[data-k="verificationDomain"]');
+
+            if (triggeredByToggle) {
+                originalVerificationEnabled = 'false';
+            } else {
+                originalVerificationEnabled = selectEl ? selectEl.value : 'false';
+            }
+            originalVerificationTitle = titleInput ? titleInput.value : '';
+            originalVerificationDomain = domainInput ? domainInput.value : '';
+
+            document.getElementById('verifModalTitle').value = originalVerificationTitle;
+            document.getElementById('verifModalDomain').value = originalVerificationDomain;
+
+            document.getElementById('verifModal').classList.add('is-open');
+        }
+
+        async function handleVerificationToggle(selectEl) {
+            const tr = selectEl.closest('tr');
+            if (selectEl.value === 'true') {
+                openVerificationModal(tr, true);
+            } else {
+                const titleInput = tr.querySelector('[data-k="verificationTitle"]');
+                const domainInput = tr.querySelector('[data-k="verificationDomain"]');
+                
+                if (titleInput && domainInput && (titleInput.value || domainInput.value)) {
+                    const ok = await showConfirm('Disable verification? This will clear the verification details.');
+                    if (!ok) {
+                        selectEl.value = 'true';
+                        return;
+                    }
+                }
+                
+                if (titleInput) titleInput.value = '';
+                if (domainInput) domainInput.value = '';
+                const badge = tr.querySelector('.verif-title-badge');
+                if (badge) badge.style.display = 'none';
+
+                document.getElementById('saveAll').click();
+            }
+        }
+
+        function editVerificationTitle(badgeEl) {
+            const tr = badgeEl.closest('tr');
+            const selectEl = tr.querySelector('[data-k="verificationEnabled"]');
+            if (selectEl && selectEl.value === 'true') {
+                openVerificationModal(tr, false);
+            }
+        }
+
+        function rowTemplate(data = {}) {
+            const tr = document.createElement('tr');
+            tr.dataset.id = String(data._id || '').trim();
+            const clicks = Number(data.clicks || 0);
+            tr.innerHTML = `
+                <td style="text-align: center;"><input type="checkbox" class="row-select" /></td>
+                <td><input type="url" data-k="url" placeholder="https://..." value="${(data.url || '').replace(/\"/g, '&quot;')}" /></td>
+                <td style="text-align: center;"><span class="click-badge" style="font-weight: 700; background: rgba(5, 46, 31, 0.08); color: #052e1f; padding: 4px 8px; border-radius: 6px; font-size: 13px;">${clicks}</span></td>
+                <td><input type="number" data-k="payout" min="0" step="0.01" value="${Number(data.payout || 0)}" /></td>
+                <td><input type="number" data-k="trackingTime" min="0" step="1" value="${Number(data.trackingTime || 0)}" /></td>
+                <td>
+                    <select data-k="enabled">
+                        <option value="true" ${data.enabled !== false ? 'selected' : ''}>Yes</option>
+                        <option value="false" ${data.enabled === false ? 'selected' : ''}>No</option>
+                    </select>
+                </td>
+                <td>
+                    <select data-k="verificationEnabled" onchange="handleVerificationToggle(this)">
+                        <option value="false" ${data.verificationEnabled !== true ? 'selected' : ''}>No</option>
+                        <option value="true" ${data.verificationEnabled === true ? 'selected' : ''}>Yes</option>
+                    </select>
+                    <input type="hidden" data-k="verificationTitle" value="${(data.verificationTitle || '').replace(/\"/g, '&quot;')}" />
+                    <input type="hidden" data-k="verificationDomain" value="${(data.verificationDomain || '').replace(/\"/g, '&quot;')}" />
+                    <div class="verif-title-badge" style="font-size: 11px; color: var(--muted); margin-top: 4px; cursor: pointer; display: ${data.verificationEnabled === true ? 'block' : 'none'}; text-align: left;" onclick="editVerificationTitle(this)">
+                        <span style="display: inline-flex; align-items: center; gap: 3px; vertical-align: middle;">
+                            <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg> Title:
+                        </span>
+                        <span class="verif-title-text" style="text-decoration: underline;">${(data.verificationTitle || '').replace(/\"/g, '&quot;')}</span><br/>
+                        <span style="display: inline-flex; align-items: center; gap: 3px; vertical-align: middle;">
+                            <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg> Domain:
+                        </span>
+                        <span class="verif-domain-text" style="text-decoration: underline;">${(data.verificationDomain || '').replace(/\"/g, '&quot;')}</span>
+                    </div>
+                </td>
+                <td><button type="button" class="btn-action-sm danger remove">Delete</button></td>
+            `;
+            return tr;
+        }
+
+        function collectRows() {
+            return Array.from(rows.querySelectorAll('tr')).map((tr) => ({
+                id: tr.dataset.id || '',
+                url: tr.querySelector('[data-k="url"]').value.trim(),
+                payout: tr.querySelector('[data-k="payout"]').value,
+                trackingTime: tr.querySelector('[data-k="trackingTime"]').value,
+                enabled: tr.querySelector('[data-k="enabled"]').value,
+                verificationEnabled: tr.querySelector('[data-k="verificationEnabled"]').value,
+                verificationTitle: tr.querySelector('[data-k="verificationTitle"]').value,
+                verificationDomain: tr.querySelector('[data-k="verificationDomain"]').value,
+            })).filter((item) => item.url);
+        }
+
+        function getOfferIdsForStats() {
+            return Array.from(rows.querySelectorAll('tr'))
+                .map((tr) => String(tr.dataset.id || '').trim())
+                .filter(Boolean);
+        }
+
+        function addRow(data) {
+            rows.appendChild(rowTemplate(data));
+        }
+
+        function setPendingLimitNote(configObj) {
+            const pendingLimit = Number(configObj?.pendingLimits);
+            const hasPending = Number.isFinite(pendingLimit) && pendingLimit > 0;
+            const applyAtRaw = configObj?.pendingLimitsApplyAt;
+
+            if (!hasPending || !applyAtRaw) {
+                pendingLimitNote.style.display = 'none';
+                pendingLimitNote.textContent = '';
+                return;
+            }
+
+            const applyAt = new Date(applyAtRaw);
+            if (Number.isNaN(applyAt.getTime())) {
+                pendingLimitNote.style.display = 'none';
+                pendingLimitNote.textContent = '';
+                return;
+            }
+
+            const applyAtLabel = applyAt.toLocaleString('en-IN', {
+                day: '2-digit',
+                month: 'short',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: true,
+                timeZone: 'Asia/Kolkata',
+            });
+
+            pendingLimitNote.style.display = 'block';
+            pendingLimitNote.textContent = `Pending daily limit ${pendingLimit} will apply on ${applyAtLabel} IST.`;
+        }
+
+        function showConfirm(message) {
+            return new Promise((resolve) => {
+                const modal = document.getElementById('confirmModal');
+                const yesBtn = document.getElementById('confirmYes');
+                const noBtn = document.getElementById('confirmNo');
+                const text = document.getElementById('confirmText');
+
+                text.textContent = message || 'Are you sure?';
+                modal.classList.add('is-open');
+
+                const cleanup = () => {
+                    modal.classList.remove('is-open');
+                    yesBtn.onclick = null;
+                    noBtn.onclick = null;
+                };
+
+                yesBtn.onclick = () => {
+                    cleanup();
+                    resolve(true);
+                };
+
+                noBtn.onclick = () => {
+                    cleanup();
+                    resolve(false);
+                };
+            });
+        }
+
+        function getISTDateString(daysAgo = 0) {
+            const now = new Date();
+            now.setDate(now.getDate() - daysAgo);
+            const dateStr = now.toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
+            return dateStr;
+        }
+
+        function closeStatsModal() {
+            document.getElementById('statsModal').classList.remove('is-open');
+        }
+
+        function openStatsModal() {
+            const startInput = document.getElementById('statsStart');
+            const endInput = document.getElementById('statsEnd');
+
+            if (!startInput.value) startInput.value = getISTDateString(7);
+            if (!endInput.value) endInput.value = getISTDateString(0);
+
+            document.getElementById('statsModal').classList.add('is-open');
+            reloadReadEarnStats();
+        }
+
+        function updateStatsTable(rowsData) {
+            const body = document.getElementById('statsRows');
+            const list = Array.isArray(rowsData) ? rowsData : [];
+
+            if (!list.length) {
+                body.innerHTML = '<tr><td colspan="4" style="text-align:center;color:#64748b;">No data found in selected range</td></tr>';
+                return;
+            }
+
+            body.innerHTML = list.map((row) => `
+                <tr>
+                    <td>${row.date || '-'}</td>
+                    <td style="max-width:220px;">
+                        ${Array.isArray(row.urls) && row.urls.length
+                            ? row.urls.map(u => `<a href="${u}" target="_blank" style="color:#052e1f;font-weight:700;">${shortUrl(u)}</a>`).join('<br/>')
+                            : '-'}
+                    </td>
+                    <td>${fmt(row.count || 0, 0)}</td>
+                    <td>₹${fmt(row.payout || 0, 2)}</td>
+                </tr>
+            `).join('');
+        }
+
+        function shortUrl(url) {
+            try {
+                const u = new URL(url);
+                return u.hostname;
+            } catch {
+                return url;
+            }
+        }
+
+        function updateStatsChart(graphData) {
+            const ctx = document.getElementById('readEarnPerfChart').getContext('2d');
+            if (perfChart && typeof perfChart.destroy === 'function') {
+                perfChart.destroy();
+            }
+
+            const points = Array.isArray(graphData) ? graphData : [];
+            if (!points.length) {
+                perfChart = new Chart(ctx, {
+                    type: 'line',
+                    data: { labels: [], datasets: [] },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: { y: { beginAtZero: true } },
+                    },
+                });
+                return;
+            }
+
+            perfChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: points.map((x) => x.date),
+                    datasets: [
+                        {
+                            label: 'Conversions',
+                            data: points.map((x) => Number(x.count) || 0),
+                            borderColor: '#052e1f',
+                            backgroundColor: 'rgba(5, 46, 31, 0.1)',
+                            fill: true,
+                            tension: 0.35,
+                            borderWidth: 3,
+                            pointRadius: 3,
+                        },
+                        {
+                            label: 'Payout (₹)',
+                            data: points.map((x) => Number(x.payout) || 0),
+                            borderColor: '#16a34a',
+                            backgroundColor: 'rgba(22, 163, 74, 0.1)',
+                            fill: true,
+                            tension: 0.35,
+                            borderWidth: 2,
+                            pointRadius: 2,
+                            yAxisID: 'y2',
+                        },
+                    ],
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: { mode: 'index', intersect: false },
+                    plugins: { legend: { labels: { usePointStyle: true } } },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: { color: '#f1f5f9' },
+                            title: { display: true, text: 'Conversions' },
+                        },
+                        y2: {
+                            beginAtZero: true,
+                            position: 'right',
+                            grid: { display: false },
+                            title: { display: true, text: 'Payout (₹)' },
+                        },
+                    },
+                },
+            });
+        }
+
+        async function reloadReadEarnStats() {
+            const start = String(document.getElementById('statsStart').value || '').trim();
+            const end = String(document.getElementById('statsEnd').value || '').trim();
+            const offerIds = getOfferIdsForStats();
+
+            if (!start || !end) {
+                showToast('Please select stats date range', 'error');
+                return;
+            }
+            if (start > end) {
+                showToast('Stats start date cannot be greater than end date', 'error');
+                return;
+            }
+
+            document.getElementById('statsConv').textContent = '...';
+            document.getElementById('statsPayout').textContent = '...';
+            document.getElementById('statsUrls').textContent = fmt(offerIds.length, 0);
+
+            try {
+                const res = await fetch('/read-earn-stats', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ offerIds, start, end }),
+                });
+                const json = await res.json();
+
+                if (!res.ok || !json.success) {
+                    throw new Error(json.message || 'Failed to fetch stats');
+                }
+
+                const totalCount = Number(json.totals?.count || 0);
+                const totalPayout = Number(json.totals?.payout || 0);
+
+                document.getElementById('statsConv').textContent = fmt(totalCount, 0);
+                document.getElementById('statsPayout').textContent = `₹${fmt(totalPayout, 2)}`;
+                updateStatsChart(json.graphData || []);
+                updateStatsTable(json.csvData || []);
+            } catch (err) {
+                document.getElementById('statsConv').textContent = '0';
+                document.getElementById('statsPayout').textContent = '₹0';
+                updateStatsChart([]);
+                updateStatsTable([]);
+                showToast(err.message || 'Failed to fetch stats', 'error');
+            }
+        }
+
+        const selectAll = document.getElementById('selectAll');
+        
+        selectAll.addEventListener('change', (e) => {
+            const checked = e.target.checked;
+            rows.querySelectorAll('.row-select').forEach(cb => {
+                cb.checked = checked;
+            });
+        });
+
+        rows.addEventListener('change', (e) => {
+            if (e.target.classList.contains('row-select')) {
+                const allCbs = Array.from(rows.querySelectorAll('.row-select'));
+                const checkedCbs = allCbs.filter(cb => cb.checked);
+                selectAll.checked = allCbs.length > 0 && checkedCbs.length === allCbs.length;
+            }
+        });
+
+        document.getElementById('bulkEnable').addEventListener('click', () => {
+            const selectedRows = Array.from(rows.querySelectorAll('tr')).filter(tr => tr.querySelector('.row-select')?.checked);
+            if (selectedRows.length === 0) {
+                showToast('Please select at least one URL row', 'error');
+                return;
+            }
+            selectedRows.forEach(tr => {
+                tr.querySelector('[data-k="enabled"]').value = 'true';
+            });
+            showToast(`Enabled ${selectedRows.length} selected URLs. Click Save Configuration to apply!`, 'success');
+        });
+
+        document.getElementById('bulkDisable').addEventListener('click', () => {
+            const selectedRows = Array.from(rows.querySelectorAll('tr')).filter(tr => tr.querySelector('.row-select')?.checked);
+            if (selectedRows.length === 0) {
+                showToast('Please select at least one URL row', 'error');
+                return;
+            }
+            selectedRows.forEach(tr => {
+                tr.querySelector('[data-k="enabled"]').value = 'false';
+            });
+            showToast(`Disabled ${selectedRows.length} selected URLs. Click Save Configuration to apply!`, 'success');
+        });
+
+        document.getElementById('bulkDelete').addEventListener('click', async () => {
+            const selectedRows = Array.from(rows.querySelectorAll('tr')).filter(tr => tr.querySelector('.row-select')?.checked);
+            if (selectedRows.length === 0) {
+                showToast('Please select at least one URL row to delete', 'error');
+                return;
+            }
+
+            const savedRows = selectedRows.filter(tr => String(tr.dataset.id || '').trim());
+            const ok = await showConfirm(`Delete ${selectedRows.length} selected URL row(s)?`);
+            if (!ok) return;
+
+            if (savedRows.length > 0) {
+                const ids = savedRows.map(tr => String(tr.dataset.id || '').trim());
+                try {
+                    showToast('Deleting selected URLs...', 'info');
+                    const res = await fetch('/read-earn/urls/bulk-delete', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ ids }),
+                    });
+                    const json = await res.json();
+                    if (!res.ok || !json.success) {
+                        throw new Error(json.message || 'Failed to bulk delete URLs');
+                    }
+                    selectedRows.forEach(tr => tr.remove());
+                    document.getElementById('selectAll').checked = false;
+                    showToast(json.message || 'Selected URLs deleted successfully', 'success');
+                    setTimeout(() => location.reload(), 1200);
+                } catch (err) {
+                    showToast(err.message || 'Failed to bulk delete URLs', 'error');
+                }
+            } else {
+                selectedRows.forEach(tr => tr.remove());
+                document.getElementById('selectAll').checked = false;
+                showToast('Selected new URL rows removed', 'success');
+            }
+        });
+
+        document.getElementById('addRow').addEventListener('click', () => {
+            const tr = rowTemplate({});
+            rows.appendChild(tr);
+            tr.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            const urlInput = tr.querySelector('[data-k="url"]');
+            if (urlInput) urlInput.focus();
+        });
+        document.getElementById('checkStats').addEventListener('click', openStatsModal);
+
+        rows.addEventListener('click', async (e) => {
+            if (!e.target.classList.contains('remove')) return;
+
+            const tr = e.target.closest('tr');
+            if (!tr) return;
+
+            const rowId = String(tr.dataset.id || '').trim();
+            const ok = await showConfirm('Delete this URL row?');
+            if (!ok) return;
+
+            if (!rowId) {
+                tr.remove();
+                showToast('New URL row removed', 'success');
+                return;
+            }
+
+            try {
+                showToast('Deleting URL...', 'info');
+                const res = await fetch(`/read-earn/url/${encodeURIComponent(rowId)}`, { method: 'DELETE' });
+                const json = await res.json();
+                if (!res.ok || !json.success) {
+                    throw new Error(json.message || 'Failed to delete URL');
+                }
+                tr.remove();
+                showToast('URL deleted successfully', 'success');
+                setTimeout(() => location.reload(), 1200);
+            } catch (err) {
+                showToast(err.message || 'Failed to delete URL', 'error');
+            }
+        });
+
+        document.getElementById('saveAll').addEventListener('click', async () => {
+            showToast('Saving configuration...', 'info');
+            const rowsData = collectRows();
+            const payload = {
+                limits: document.getElementById('limits').value,
+                enabled: document.getElementById('configEnabled').value,
+                urlsList: rowsData,
+            };
+
+            try {
+                const res = await fetch('/read-earn/save', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload),
+                });
+                const json = await res.json();
+                if (!res.ok || !json.success) {
+                    throw new Error(json.message || 'Failed to save config');
+                }
+
+                showToast(json.message || 'Configuration saved successfully!', 'success');
+                setPendingLimitNote(json.config || {});
+                
+                setTimeout(() => {
+                    location.reload();
+                }, 1200);
+            } catch (err) {
+                showToast(err.message || 'Server error', 'error');
+            }
+        });
+
+        if (initial) {
+            document.getElementById('limits').value = Number(initial.limits || 1);
+            document.getElementById('configEnabled').value = String(initial.enabled !== false);
+            (Array.isArray(initial.urlsList) ? initial.urlsList : []).forEach(addRow);
+            setPendingLimitNote(initial);
+        } else {
+            document.getElementById('limits').value = 5;
+            addRow({});
+            setPendingLimitNote({});
+        }
+
+        document.getElementById('statsModal').addEventListener('click', (event) => {
+            if (event.target.id === 'statsModal') closeStatsModal();
+        });
+
+        document.getElementById('verifModalSave').addEventListener('click', () => {
+            if (!activeVerificationRow) return;
+
+            const urlInput = activeVerificationRow.querySelector('[data-k="url"]');
+            if (!urlInput || !urlInput.value.trim()) {
+                alert('Please enter a URL first before setting up verification!');
+                return;
+            }
+
+            const title = document.getElementById('verifModalTitle').value.trim();
+            const domain = document.getElementById('verifModalDomain').value.trim();
+
+            if (!title || !domain) {
+                alert('Both Title and Domain are required for verification!');
+                return;
+            }
+
+            const titleInput = activeVerificationRow.querySelector('[data-k="verificationTitle"]');
+            const domainInput = activeVerificationRow.querySelector('[data-k="verificationDomain"]');
+            const badge = activeVerificationRow.querySelector('.verif-title-badge');
+            const textSpan = activeVerificationRow.querySelector('.verif-title-text');
+            const domainSpan = activeVerificationRow.querySelector('.verif-domain-text');
+            
+            titleInput.value = title;
+            domainInput.value = domain;
+            textSpan.textContent = title;
+            domainSpan.textContent = domain;
+            badge.style.display = 'block';
+
+            document.getElementById('verifModal').classList.remove('is-open');
+            activeVerificationRow = null;
+            document.getElementById('saveAll').click();
+        });
+
+        document.getElementById('verifModalCancel').addEventListener('click', () => {
+            if (activeVerificationRow) {
+                const selectEl = activeVerificationRow.querySelector('[data-k="verificationEnabled"]');
+                const titleInput = activeVerificationRow.querySelector('[data-k="verificationTitle"]');
+                const domainInput = activeVerificationRow.querySelector('[data-k="verificationDomain"]');
+                const badge = activeVerificationRow.querySelector('.verif-title-badge');
+                const textSpan = activeVerificationRow.querySelector('.verif-title-text');
+                const domainSpan = activeVerificationRow.querySelector('.verif-domain-text');
+
+                if (selectEl) selectEl.value = originalVerificationEnabled;
+                if (titleInput) titleInput.value = originalVerificationTitle;
+                if (domainInput) domainInput.value = originalVerificationDomain;
+
+                if (originalVerificationEnabled === 'true') {
+                    if (textSpan) textSpan.textContent = originalVerificationTitle;
+                    if (domainSpan) domainSpan.textContent = originalVerificationDomain;
+                    if (badge) badge.style.display = 'block';
+                } else {
+                    if (badge) badge.style.display = 'none';
+                }
+            }
+            document.getElementById('verifModal').classList.remove('is-open');
+            activeVerificationRow = null;
+        });
+
+        document.getElementById('verifModal').addEventListener('click', (event) => {
+            if (event.target.id === 'verifModal') {
+                document.getElementById('verifModalCancel').click();
+            }
+        });
+
+        document.getElementById('confirmModal').addEventListener('click', (event) => {
+            if (event.target.id === 'confirmModal') {
+                document.getElementById('confirmNo').click();
+            }
+        });
+    </script>
+</body>
+
+</html>

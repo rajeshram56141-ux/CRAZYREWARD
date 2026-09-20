@@ -1,0 +1,621 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Battle Create - Battle Room Manager</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/admin.css">
+    <style>
+        :root {
+            --bg: #f8fafc;
+            --surface: #ffffff;
+            --border: #e2e8f0;
+            --primary: #052e1f;
+            --primary-hover: #042418;
+            --text: #0f172a;
+            --muted: #64748b;
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', sans-serif !important;
+        }
+
+        .glass-card {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
+            border: 1px solid var(--border);
+        }
+
+        .overview-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        /* 4-Column Stat Cards Grid */
+        .me-grid-4 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        @media (max-width: 1024px) {
+            .me-grid-4 { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (max-width: 640px) {
+            .me-grid-4 { grid-template-columns: 1fr; }
+        }
+
+        .dash-stat-card {
+            background: #ffffff;
+            border-radius: 18px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+            border: 1px solid #f1f5f9;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .dash-stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+        }
+
+        .stat-icon-circle {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .stat-icon-circle.green { background: #ecfdf5; color: #052e1f; }
+        .stat-icon-circle.orange { background: #fffbeb; color: #d97706; }
+        .stat-icon-circle.teal { background: #f0fdf4; color: #059669; }
+        .stat-icon-circle.purple { background: #faf5ff; color: #7e22ce; }
+
+        .stat-label {
+            font-size: 11px;
+            font-weight: 800;
+            color: #9ca3af;
+            letter-spacing: 0.6px;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+
+        .stat-value {
+            font-size: 22px;
+            font-weight: 800;
+            color: #111827;
+            letter-spacing: -0.02em;
+        }
+
+        .btn-action { background: #052e1f; color: #ffffff; font-weight: 700; padding: 12px 24px; border-radius: 12px; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; font-size: 14px; transition: all 0.2s ease; }
+        .btn-action:hover { background: #042418; transform: translateY(-1px); }
+
+        /* Task Performance Style Table */
+        .tp-table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 13px; margin-top: 16px; }
+        .tp-table th { padding: 12px 14px; font-size: 11px; font-weight: 800; color: #ffffff; background: #052e1f; text-transform: uppercase; letter-spacing: 0.05em; }
+        .tp-table th:first-child { border-top-left-radius: 10px; border-bottom-left-radius: 10px; }
+        .tp-table th:last-child { border-top-right-radius: 10px; border-bottom-right-radius: 10px; }
+        .tp-table td { padding: 14px; border-bottom: 1px solid #f1f5f9; color: #1e293b; font-weight: 600; vertical-align: middle; }
+        
+        .type-tag-paid { background: #fef3c7; color: #d97706; padding: 4px 10px; border-radius: 8px; font-weight: 800; font-size: 11px; }
+        .type-tag-free { background: #dbeafe; color: #2563eb; padding: 4px 10px; border-radius: 8px; font-weight: 800; font-size: 11px; }
+        .status-tag-active { background: #dcfce7; color: #15803d; padding: 4px 10px; border-radius: 8px; font-weight: 800; font-size: 11px; }
+        .repeat-tag { background: #f1f5f9; color: #475569; padding: 4px 10px; border-radius: 8px; font-weight: 700; font-size: 11px; display: inline-flex; align-items: center; gap: 4px; }
+        .game-tag { background: #f0fdf4; color: #166534; padding: 4px 10px; border-radius: 8px; font-weight: 800; font-size: 11px; border: 1px solid #bbf7d0; }
+
+        /* Modal Styles */
+        .modal-overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(8px); display: none; align-items: center; justify-content: center; z-index: 99999; padding: 20px; }
+        .modal-overlay.open { display: flex; }
+        .modal-card { width: min(720px, 94vw); background: #ffffff; border-radius: 24px; overflow: hidden; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); border: 1px solid #e2e8f0; }
+        .modal-header { padding: 20px 24px; background: #052e1f; color: #ffffff; display: flex; align-items: center; justify-content: space-between; }
+        .modal-header h3 { margin: 0; font-size: 18px; font-weight: 800; display: flex; align-items: center; gap: 10px; }
+        .modal-close-btn { background: rgba(255, 255, 255, 0.15); border: none; color: #ffffff; width: 32px; height: 32px; border-radius: 8px; cursor: pointer; font-size: 18px; font-weight: 800; display: flex; align-items: center; justify-content: center; }
+        .modal-body { padding: 24px; max-height: 80vh; overflow-y: auto; }
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
+        .form-group { display: flex; flex-direction: column; gap: 6px; }
+        .form-group label { font-size: 11px; font-weight: 800; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+        .form-control { width: 100%; padding: 12px 16px; border: 1px solid var(--border); border-radius: 12px; font-size: 13px; font-weight: 700; color: var(--text); background: #ffffff; outline: none; transition: all 0.2s ease; }
+        .form-control:focus { border-color: #052e1f; box-shadow: 0 0 0 3px rgba(5, 46, 31, 0.1); }
+    </style>
+</head>
+<body class="dashboard-body">
+    <div class="dashboard-shell">
+        <%- include('../partials/sidebar', { activePage: 'battle-create' }) %>
+
+        <div class="dashboard-main">
+            <header class="navbar dashboard-navbar">
+                <div class="nav-left" style="display: flex; align-items: center; gap: 12px; white-space: nowrap;">
+                    <button type="button" class="sidebar-toggle-btn" onclick="if(typeof toggleSidebar === 'function') toggleSidebar();">☰</button>
+                    <h2 style="margin: 0; font-size: 18px; font-weight: 800; white-space: nowrap;">Battle Create</h2>
+                </div>
+
+                <div class="nav-right" onclick="if(typeof toggleDropdown === 'function') toggleDropdown();">
+                    <div class="avatar"><%= (typeof admin !== 'undefined' && admin && (admin.name || admin.username || admin.email)) ? (admin.name || admin.username || admin.email).charAt(0).toUpperCase() : 'A' %></div>
+                    <div class="dropdown" id="dropdown">
+                        <a href="/logout">Logout</a>
+                    </div>
+                </div>
+            </header>
+
+            <main class="container wrap" style="padding: 24px;">
+                <!-- Overview Header Bar -->
+                <section class="glass-card overview-head">
+                    <div>
+                        <h1 style="font-size: 22px; font-weight: 800; color: #052e1f; margin: 0 0 4px; display: flex; align-items: center; gap: 10px;">
+                            <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                            </svg>
+                            Battle Create & Tournament Config
+                        </h1>
+                        <p style="color: var(--muted); font-size: 13px; margin: 0;">Configure 1v1 battle rooms, assigned Quiz Games, entry fees, and recurring match timers</p>
+                    </div>
+                    <button type="button" class="btn-action" onclick="openCreateRoomModal()">
+                        <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
+                        </svg>
+                        Create Battle Room
+                    </button>
+                </section>
+
+                <!-- 4-Column Stat Cards Grid -->
+                <div class="me-grid-4">
+                    <div class="dash-stat-card">
+                        <div class="stat-icon-circle green">
+                            <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <div class="stat-label">ACTIVE BATTLE ROOMS</div>
+                            <div class="stat-value"><%= (stats && stats.activeRoomsCount) || 0 %></div>
+                            <div style="font-size: 11px; color: #64748b; font-weight: 600; margin-top: 2px;">Configured rooms</div>
+                        </div>
+                    </div>
+
+                    <div class="dash-stat-card">
+                        <div class="stat-icon-circle teal">
+                            <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <div class="stat-label">LIVE MATCHES PLAYING</div>
+                            <div class="stat-value"><%= (stats && stats.liveMatchesCount) || 0 %></div>
+                            <div style="font-size: 11px; color: #64748b; font-weight: 600; margin-top: 2px;">In-progress 1v1 clashes</div>
+                        </div>
+                    </div>
+
+                    <div class="dash-stat-card">
+                        <div class="stat-icon-circle orange">
+                            <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <div class="stat-label">MATCHES COMPLETED TODAY</div>
+                            <div class="stat-value"><%= (stats && stats.completedMatchesToday) || 0 %></div>
+                            <div style="font-size: 11px; color: #64748b; font-weight: 600; margin-top: 2px;">Finished today</div>
+                        </div>
+                    </div>
+
+                    <div class="dash-stat-card">
+                        <div class="stat-icon-circle purple">
+                            <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <div class="stat-label">PLATFORM FEE REVENUE</div>
+                            <div class="stat-value"><%= (stats && stats.totalRevenueCoins) || 0 %> Coins</div>
+                            <div style="font-size: 11px; color: #64748b; font-weight: 600; margin-top: 2px;">Total commission cut</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Existing Rooms Table -->
+                <div class="glass-card">
+                    <div style="font-size: 17px; font-weight: 800; color: #052e1f; margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between;">
+                        <span style="display: flex; align-items: center; gap: 10px;">
+                            <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 10h16M4 14h16M4 18h16"/>
+                            </svg>
+                            Active & Configured Battle Rooms (<%= rooms ? rooms.length : 0 %>)
+                        </span>
+                    </div>
+                    <table class="tp-table">
+                        <thead>
+                            <tr>
+                                <th>Room Title</th>
+                                <th>Assigned Quiz Game</th>
+                                <th>Type</th>
+                                <th>Entry Fee</th>
+                                <th>Platform Cut</th>
+                                <th>Winner Prize</th>
+                                <th>Match Duration</th>
+                                <th>Match Time</th>
+                                <th>AI Bot</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% if (rooms && rooms.length) { %>
+                                <% rooms.forEach(function(r, idx) { %>
+                                    <tr>
+                                        <td style="font-weight: 800; color: #0f172a;">
+                                            <div><%= r.title %></div>
+                                            <% if (r.subtitle) { %>
+                                                <div style="font-size: 11px; font-weight: 500; color: #64748b; margin-top: 2px;"><%= r.subtitle %></div>
+                                            <% } %>
+                                        </td>
+                                        <td><span class="game-tag"><%= r.assignedGameTitle || 'General Quiz Clash' %></span></td>
+                                        <td>
+                                            <span class="<%= r.entryType === 'Paid' ? 'type-tag-paid' : 'type-tag-free' %>">
+                                                <%= r.entryType %>
+                                            </span>
+                                        </td>
+                                        <td>Coins <%= r.entryFeeCoins %></td>
+                                        <td><%= r.platformCutPercent %>%</td>
+                                        <td style="color: #16a34a; font-weight: 900;">Coins <%= r.netPrizePoolCoins %></td>
+                                        <td><%= r.timePerQuestionSec %>s</td>
+                                        <td><%= r.matchingTimeoutSec || 35 %>s</td>
+                                        <td><span class="<%= r.enableAiBot ? 'type-tag-paid' : 'type-tag-free' %>"><%= r.enableAiBot ? 'ON' : 'OFF' %></span></td>
+                                        <td><span class="status-tag-active"><%= r.status %></span></td>
+                                        <td style="display: flex; gap: 8px; align-items: center;">
+                                            <button type="button" style="background: #e2e8f0; color: #0f172a; font-weight: 800; padding: 4px 10px; border-radius: 8px; border: none; cursor: pointer; font-size: 11px;" onclick="openEditRoomModalIndex('<%= idx %>')">Edit</button>
+                                            <a href="/admin/battle-arena/rooms/delete/<%= r.roomId || r._id %>" style="color: #ef4444; font-weight: 800; text-decoration: none;" onclick="return confirm('Delete room?')">Delete</a>
+                                        </td>
+                                    </tr>
+                                <% }) %>
+                            <% } else { %>
+                                <tr><td colspan="11" style="text-align: center; color: #94a3b8; padding: 24px;">No battle rooms created yet. Click "+ Create Battle Room" above!</td></tr>
+                            <% } %>
+                        </tbody>
+                    </table>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Create Battle Room Modal Popup -->
+    <div id="createRoomModal" class="modal-overlay">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>
+                    <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
+                    </svg>
+                    Create Battle Room
+                </h3>
+                <button type="button" class="modal-close-btn" onclick="closeCreateRoomModal()">✕</button>
+            </div>
+            <div class="modal-body">
+                <form action="/admin/battle-arena/rooms/create" method="POST">
+                    <div class="form-grid">
+                        <div class="form-group" style="grid-column: 1 / -1;">
+                            <label>Battle Title</label>
+                            <input type="text" class="form-control" name="title" placeholder="e.g. Master Clash Arena" required />
+                        </div>
+                        <div class="form-group" style="grid-column: 1 / -1;">
+                            <label>Subtitle / Description</label>
+                            <input type="text" class="form-control" name="subtitle" placeholder="e.g. 1v1 Battle Clash - Fast Paced" />
+                        </div>
+                        <div class="form-group">
+                            <label>Select Assigned Quiz Game</label>
+                            <select class="form-control" name="assignedGameTitle" required>
+                                <% (availableGames || ['General Quiz Clash']).forEach(function(g) { %>
+                                    <option value="<%= g %>"><%= g %></option>
+                                <% }); %>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Player Capacity</label>
+                            <input type="number" class="form-control" name="capacity" min="2" max="1000" value="2" required />
+                        </div>
+                        <div class="form-group">
+                            <label>Entry Fee Type</label>
+                            <select class="form-control" name="entryType" required>
+                                <option value="Paid">Paid (Coins Deducted)</option>
+                                <option value="Free">Free (Requires Ad watch)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Ad Requirement Type (For Free Rooms)</label>
+                            <select class="form-control" name="adType" id="createAdType" onchange="toggleSkipAd('create')">
+                                <option value="None">None</option>
+                                <option value="Rewarded">Rewarded Video Ad</option>
+                                <option value="Interstitial">Interstitial Ad</option>
+                            </select>
+                        </div>
+                        <div class="form-group" id="createSkipAdContainer" style="display: none;">
+                            <label>Skip Ad (Matches Count)</label>
+                            <input type="number" class="form-control" name="skipAdMatches" id="createSkipAdMatches" min="0" value="0" placeholder="e.g. 4" />
+                            <small class="text-muted" style="font-size: 11px; color: #64748b;">Matches to play without ad after 1 ad watch (0 = every match)</small>
+                        </div>
+                        <div class="form-group">
+                            <label>Entry Fee (Coins)</label>
+                            <input type="number" class="form-control" name="entryFeeCoins" value="100" required />
+                        </div>
+                        <div class="form-group">
+                            <label>Platform Cut (%)</label>
+                            <input type="number" class="form-control" name="platformCutPercent" value="10" required />
+                        </div>
+                        <input type="hidden" name="questionCount" value="50" />
+                        <div class="form-group">
+                            <label>Match Duration (Seconds)</label>
+                            <input type="number" class="form-control" name="timePerQuestionSec" value="60" required />
+                        </div>
+                        <div class="form-group">
+                            <label>Matching Timeout (Sec)</label>
+                            <input type="number" class="form-control" name="matchingTimeoutSec" value="35" min="5" max="120" required />
+                        </div>
+                        <div class="form-group">
+                            <label>AI Opponent Auto-Match</label>
+                            <select class="form-control" name="enableAiBot">
+                                <option value="false" selected>OFF (Cancel & Refund)</option>
+                                <option value="true">ON (Auto AI Match)</option>
+                            </select>
+                        </div>
+                        <!-- Manual Prize Pool Section -->
+                        <div style="grid-column: 1 / -1; margin-top: 15px; border-top: 1px solid #e2e8f0; padding-top: 15px;">
+                            <label style="margin: 0 0 10px 0; color: #1e293b; font-size: 14px; font-weight: 700; display: flex; align-items: center; gap: 8px;">
+                                🏆 Manual Prize Pool by Rank (Optional)
+                            </label>
+                            <div id="createRankRewardsContainer" style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 12px;">
+                                <!-- Dynamic rewards injected here -->
+                            </div>
+                            <button type="button" onclick="addCreateRankRewardRow()" class="btn-action" style="background: #607456; padding: 6px 12px; font-size: 12px; width: fit-content; border: none; border-radius: 8px; color: white; cursor: pointer;">
+                                ➕ Add Rank Reward
+                            </button>
+                            <input type="hidden" name="rankRewardsJson" id="createRankRewardsJson" value="[]" />
+                        </div>
+                    </div>
+                    <div style="margin-top: 24px; text-align: right; display: flex; gap: 12px; justify-content: flex-end;">
+                        <button type="button" style="background: #e2e8f0; color: #475569; font-weight: 700; padding: 12px 24px; border-radius: 12px; border: none; cursor: pointer;" onclick="closeCreateRoomModal()">Cancel</button>
+                        <button type="submit" class="btn-action">Create Battle Room</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Battle Room Modal Popup -->
+    <div id="editRoomModal" class="modal-overlay">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>
+                    <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                    </svg>
+                    Edit Battle Room
+                </h3>
+                <button type="button" class="modal-close-btn" onclick="closeEditRoomModal()">✕</button>
+            </div>
+            <div class="modal-body">
+                <form id="editRoomForm" action="" method="POST">
+                    <div class="form-grid">
+                        <div class="form-group" style="grid-column: 1 / -1;">
+                            <label>Battle Title</label>
+                            <input type="text" class="form-control" id="editTitle" name="title" required />
+                        </div>
+                        <div class="form-group" style="grid-column: 1 / -1;">
+                            <label>Subtitle / Description</label>
+                            <input type="text" class="form-control" id="editSubtitle" name="subtitle" placeholder="e.g. 1v1 Battle Clash - Fast Paced" />
+                        </div>
+                        <div class="form-group" style="grid-column: 1 / -1;">
+                            <label>Select Assigned Quiz Game</label>
+                            <select class="form-control" id="editAssignedGameTitle" name="assignedGameTitle" required>
+                                <% (availableGames || ['General Quiz Clash']).forEach(function(g) { %>
+                                    <option value="<%= g %>"><%= g %></option>
+                                <% }); %>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Player Capacity</label>
+                            <input type="number" class="form-control" id="editCapacity" name="capacity" min="2" max="1000" required />
+                        </div>
+                        <div class="form-group">
+                            <label>Entry Type</label>
+                            <select class="form-control" id="editEntryType" name="entryType">
+                                <option value="Paid">Paid (Coins Deducted)</option>
+                                <option value="Free">Free (Requires Ad watch)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Ad Requirement Type (For Free Rooms)</label>
+                            <select class="form-control" id="editAdType" name="adType" onchange="toggleSkipAd('edit')">
+                                <option value="None">None</option>
+                                <option value="Rewarded">Rewarded Video Ad</option>
+                                <option value="Interstitial">Interstitial Ad</option>
+                            </select>
+                        </div>
+                        <div class="form-group" id="editSkipAdContainer" style="display: none;">
+                            <label>Skip Ad (Matches Count)</label>
+                            <input type="number" class="form-control" id="editSkipAdMatches" name="skipAdMatches" min="0" value="0" placeholder="e.g. 4" />
+                            <small class="text-muted" style="font-size: 11px; color: #64748b;">Matches to play without ad after 1 ad watch (0 = every match)</small>
+                        </div>
+                        <div class="form-group">
+                            <label>Entry Fee (Coins)</label>
+                            <input type="number" class="form-control" id="editEntryFeeCoins" name="entryFeeCoins" required />
+                        </div>
+                        <div class="form-group">
+                            <label>Platform Cut (%)</label>
+                            <input type="number" class="form-control" id="editPlatformCutPercent" name="platformCutPercent" required />
+                        </div>
+                        <input type="hidden" id="editQuestionCount" name="questionCount" />
+                        <div class="form-group">
+                            <label>Match Duration (Seconds)</label>
+                            <input type="number" class="form-control" id="editTimePerQuestionSec" name="timePerQuestionSec" required />
+                        </div>
+                        <div class="form-group">
+                            <label>Matching Timeout (Sec)</label>
+                            <input type="number" class="form-control" id="editMatchingTimeoutSec" name="matchingTimeoutSec" min="5" max="120" required />
+                        </div>
+                        <div class="form-group">
+                            <label>AI Opponent Auto-Match</label>
+                            <select class="form-control" id="editEnableAiBot" name="enableAiBot">
+                                <option value="false">OFF (Cancel & Refund)</option>
+                                <option value="true">ON (Auto AI Match)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Room Status</label>
+                            <select class="form-control" id="editStatus" name="status">
+                                <option value="Active">Active</option>
+                                <option value="Draft">Draft</option>
+                                <option value="Closed">Closed</option>
+                            </select>
+                        </div>
+                        <!-- Manual Prize Pool Section for Edit -->
+                        <div style="grid-column: 1 / -1; margin-top: 15px; border-top: 1px solid #e2e8f0; padding-top: 15px;">
+                            <label style="margin: 0 0 10px 0; color: #1e293b; font-size: 14px; font-weight: 700; display: flex; align-items: center; gap: 8px;">
+                                🏆 Manual Prize Pool by Rank (Optional)
+                            </label>
+                            <div id="editRankRewardsContainer" style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 12px;">
+                                <!-- Dynamic rewards injected here -->
+                            </div>
+                            <button type="button" onclick="addEditRankRewardRow()" class="btn-action" style="background: #607456; padding: 6px 12px; font-size: 12px; width: fit-content; border: none; border-radius: 8px; color: white; cursor: pointer;">
+                                ➕ Add Rank Reward
+                            </button>
+                            <input type="hidden" name="rankRewardsJson" id="editRankRewardsJson" value="[]" />
+                        </div>
+                    </div>
+                    <div style="margin-top: 24px; text-align: right; display: flex; gap: 12px; justify-content: flex-end;">
+                        <button type="button" style="background: #e2e8f0; color: #475569; font-weight: 700; padding: 12px 24px; border-radius: 12px; border: none; cursor: pointer;" onclick="closeEditRoomModal()">Cancel</button>
+                        <button type="submit" class="btn-action">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script type="application/json" id="roomsJsonData"><%- JSON.stringify(rooms || []) %></script>
+    <script>
+        const allRoomsData = JSON.parse(document.getElementById('roomsJsonData').textContent || '[]');
+
+        // Rank Rewards Handling
+        let createRankRewards = [];
+        let editRankRewards = [];
+
+        function renderRankRewards(containerId, list, hiddenInputId) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+            
+            list.forEach((item, idx) => {
+                const row = document.createElement('div');
+                row.style.display = 'flex';
+                row.style.gap = '10px';
+                row.style.alignItems = 'center';
+                row.style.marginBottom = '6px';
+                
+                row.innerHTML = `
+                    <span style="font-weight: bold; color: #475569; font-size: 13px;">Rank:</span>
+                    <input type="number" class="form-control" style="width: 80px;" value="${item.rank}" onchange="updateRankRewardField('${containerId}', ${idx}, 'rank', this.value, '${hiddenInputId}')" min="1" required />
+                    <span style="font-weight: bold; color: #475569; font-size: 13px;">Coins:</span>
+                    <input type="number" class="form-control" style="width: 120px;" value="${item.coins}" onchange="updateRankRewardField('${containerId}', ${idx}, 'coins', this.value, '${hiddenInputId}')" min="0" required />
+                    <button type="button" onclick="removeRankRewardRow('${containerId}', ${idx}, '${hiddenInputId}')" style="background: #ef4444; color: white; padding: 6px 12px; border-radius: 8px; border: none; cursor: pointer; font-size: 11px;">Remove</button>
+                `;
+                container.appendChild(row);
+            });
+            
+            document.getElementById(hiddenInputId).value = JSON.stringify(list);
+        }
+
+        function addCreateRankRewardRow() {
+            createRankRewards.push({ rank: createRankRewards.length + 1, coins: 50 });
+            renderRankRewards('createRankRewardsContainer', createRankRewards, 'createRankRewardsJson');
+        }
+
+        function addEditRankRewardRow() {
+            editRankRewards.push({ rank: editRankRewards.length + 1, coins: 50 });
+            renderRankRewards('editRankRewardsContainer', editRankRewards, 'editRankRewardsJson');
+        }
+
+        function removeRankRewardRow(containerId, idx, hiddenInputId) {
+            if (containerId === 'createRankRewardsContainer') {
+                createRankRewards.splice(idx, 1);
+                renderRankRewards('createRankRewardsContainer', createRankRewards, 'createRankRewardsJson');
+            } else {
+                editRankRewards.splice(idx, 1);
+                renderRankRewards('editRankRewardsContainer', editRankRewards, 'editRankRewardsJson');
+            }
+        }
+
+        function updateRankRewardField(containerId, idx, field, val, hiddenInputId) {
+            const numVal = Number(val) || 0;
+            if (containerId === 'createRankRewardsContainer') {
+                createRankRewards[idx][field] = numVal;
+                document.getElementById(hiddenInputId).value = JSON.stringify(createRankRewards);
+            } else {
+                editRankRewards[idx][field] = numVal;
+                document.getElementById(hiddenInputId).value = JSON.stringify(editRankRewards);
+            }
+        }
+
+        function openCreateRoomModal() {
+            createRankRewards = [];
+            renderRankRewards('createRankRewardsContainer', createRankRewards, 'createRankRewardsJson');
+            document.getElementById('createRoomModal').classList.add('open');
+        }
+        function closeCreateRoomModal() {
+            document.getElementById('createRoomModal').classList.remove('open');
+        }
+        function openEditRoomModalIndex(idx) {
+            const index = Number(idx);
+            if (isNaN(index) || !allRoomsData[index]) return;
+            const room = allRoomsData[index];
+ 
+            document.getElementById('editRoomForm').action = '/admin/battle-arena/rooms/edit/' + (room.roomId || room._id);
+            document.getElementById('editTitle').value = room.title || '';
+            document.getElementById('editSubtitle').value = room.subtitle || room.description || '';
+            document.getElementById('editAssignedGameTitle').value = room.assignedGameTitle || 'General Quiz Clash';
+            document.getElementById('editCapacity').value = room.capacity || 2;
+            document.getElementById('editEntryType').value = room.entryType || 'Paid';
+            document.getElementById('editAdType').value = room.adType || 'None';
+            document.getElementById('editSkipAdMatches').value = room.skipAdMatches !== undefined ? room.skipAdMatches : 0;
+            toggleSkipAd('edit');
+            document.getElementById('editEntryFeeCoins').value = room.entryFeeCoins || 0;
+            document.getElementById('editPlatformCutPercent').value = room.platformCutPercent || 10;
+            document.getElementById('editQuestionCount').value = room.questionCount || 7;
+            document.getElementById('editTimePerQuestionSec').value = room.timePerQuestionSec || 20;
+            document.getElementById('editMatchingTimeoutSec').value = room.matchingTimeoutSec || 35;
+            document.getElementById('editEnableAiBot').value = (room.enableAiBot === true || room.enableAiBot === 'true') ? 'true' : 'false';
+            document.getElementById('editStatus').value = room.status || 'Active';
+            
+            // Populate editRankRewards array
+            editRankRewards = room.rankRewards || [];
+            renderRankRewards('editRankRewardsContainer', editRankRewards, 'editRankRewardsJson');
+
+            document.getElementById('editRoomModal').classList.add('open');
+        }
+        function closeEditRoomModal() {
+            document.getElementById('editRoomModal').classList.remove('open');
+        }
+        function toggleSkipAd(prefix) {
+            const selectEl = document.getElementById(prefix + 'AdType');
+            const container = document.getElementById(prefix + 'SkipAdContainer');
+            if (selectEl && container) {
+                container.style.display = (selectEl.value && selectEl.value !== 'None') ? 'block' : 'none';
+            }
+        }
+    </script>
+    <script src="/js/admin.js"></script>
+</body>
+</html>

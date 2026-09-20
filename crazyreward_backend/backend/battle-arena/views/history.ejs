@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Battle Matches History - Crazyreward Admin</title>
+    <link rel="stylesheet" href="/css/admin.css">
+    <link rel="icon" href="/images/favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #f8fafc;
+            --surface: #ffffff;
+            --border: #e2e8f0;
+            --primary: #052e1f;
+            --primary-hover: #042418;
+            --text: #0f172a;
+            --muted: #64748b;
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', sans-serif !important;
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--text);
+        }
+
+        .glass-card {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
+            border: 1px solid var(--border);
+        }
+
+        .page-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .page-title {
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--text);
+            margin: 0 0 4px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .page-sub {
+            font-size: 13px;
+            color: var(--muted);
+            margin: 0;
+            font-weight: 500;
+        }
+
+        /* Tabs selector styles matching dashboard themes */
+        .tab-container {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .tab-btn {
+            background: #ffffff;
+            border: 1px solid var(--border);
+            color: var(--muted);
+            padding: 10px 20px;
+            border-radius: 12px;
+            font-weight: 800;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .tab-btn.active {
+            background: var(--primary);
+            color: #ffffff;
+            border-color: var(--primary);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Status Badges */
+        .badge-pill {
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 0.03em;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            text-transform: uppercase;
+        }
+
+        .badge-pending { background: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
+        .badge-approved { background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
+        .badge-rejected { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        .data-table th {
+            text-align: left;
+            padding: 12px 16px;
+            background: #f8fafc;
+            color: var(--muted);
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .data-table td {
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--border);
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .btn-manage-action {
+            background: rgba(5, 46, 31, 0.08);
+            border: 1px solid rgba(5, 46, 31, 0.2);
+            color: var(--primary);
+            font-weight: 800;
+            font-size: 12px;
+            padding: 6px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-manage-action:hover {
+            background: var(--primary);
+            color: #ffffff;
+        }
+
+        /* Modal Overlay & Container */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(15, 23, 42, 0.5);
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 999;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.25s ease;
+        }
+
+        .modal-overlay.open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-card {
+            background: #ffffff;
+            border-radius: 20px;
+            width: 100%;
+            max-width: 720px;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 28px;
+            box-shadow: 0 20px 40px rgba(15, 23, 42, 0.15);
+            border: 1px solid var(--border);
+        }
+
+        .modal-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .modal-heading {
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--text);
+        }
+
+        .modal-close-icon {
+            background: #f1f5f9;
+            border: none;
+            color: var(--muted);
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body class="dashboard-body">
+    <div class="dashboard-shell">
+        <%- include('../partials/sidebar', { activePage: 'battle-history' }) %>
+
+        <div class="dashboard-main">
+            <header class="navbar dashboard-navbar">
+                <div class="nav-left" style="display: flex; align-items: center; gap: 12px;">
+                    <button type="button" class="sidebar-toggle-btn" onclick="if(typeof toggleSidebar === 'function') toggleSidebar();">☰</button>
+                    <h2 style="margin: 0; font-size: 18px; font-weight: 800; color: var(--text);">Battle Arena History</h2>
+                </div>
+
+                <div class="nav-right" onclick="if(typeof toggleDropdown === 'function') toggleDropdown();">
+                    <div class="avatar"><%= (typeof admin !== 'undefined' && admin && (admin.name || admin.username || admin.email)) ? (admin.name || admin.username || admin.email).charAt(0).toUpperCase() : 'A' %></div>
+                    <div class="dropdown" id="dropdown">
+                        <a href="/logout">Logout</a>
+                    </div>
+                </div>
+            </header>
+
+            <main class="container wrap" style="padding: 24px;">
+                <div class="glass-card page-head">
+                    <div>
+                        <h1 class="page-title">
+                            <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            Live Battle Matches (Data of battlematches)
+                        </h1>
+                        <p class="page-sub">Review live and completed custom quiz battles, active user pairings, points, and net coin payouts.</p>
+                    </div>
+                </div>
+
+                <!-- Database / Live Search Input Form -->
+                <form action="/admin/battle-arena/history" method="GET" class="glass-card" style="padding: 16px; margin-bottom: 20px; display: flex; align-items: center; gap: 12px;">
+                    <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" style="color: var(--muted); flex-shrink: 0;">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                    </svg>
+                    <input type="text" name="search" id="userSearchInput" value="<%= typeof searchQuery !== 'undefined' && searchQuery ? searchQuery : '' %>" placeholder="Search matches by Player Name, User ID or Match ID..." oninput="filterMatchesBySearch()" style="width: 100%; border: none; outline: none; font-size: 14px; font-weight: 600; color: var(--text); background: transparent;">
+                    <% if (typeof searchQuery !== 'undefined' && searchQuery) { %>
+                        <a href="/admin/battle-arena/history" class="btn-manage-action" style="background: rgba(153, 27, 27, 0.08); border-color: rgba(153, 27, 27, 0.2); color: #991b1b; text-decoration: none; display: flex; align-items: center; padding: 6px 14px; border-radius: 8px;">Clear</a>
+                    <% } %>
+                    <button type="submit" class="btn-manage-action" style="padding: 6px 18px;">Search DB</button>
+                </form>
+
+                <%
+                const allMatches = typeof matches !== 'undefined' && matches ? matches : [];
+                const activeMatches = allMatches.filter(m => m.status !== 'COMPLETED' && m.status !== 'CANCELLED' && m.status !== 'FORFEITED');
+                const completedMatches = allMatches.filter(m => m.status === 'COMPLETED');
+                const cancelledMatches = allMatches.filter(m => m.status === 'CANCELLED' || m.status === 'FORFEITED');
+                %>
+
+                <!-- Tab Selector Navigation -->
+                <div class="tab-container">
+                    <button type="button" class="tab-btn active" onclick="switchTab('active-matches')">Active (<%= activeMatches.length %>)</button>
+                    <button type="button" class="tab-btn" onclick="switchTab('completed-matches')">Completed (<%= completedMatches.length %>)</button>
+                    <button type="button" class="tab-btn" onclick="switchTab('cancelled-matches')">Cancelled (<%= cancelledMatches.length %>)</button>
+                </div>
+
+                <!-- ACTIVE MATCHES TAB CONTENT -->
+                <div id="active-matches" class="tab-content active">
+                    <div class="glass-card" style="padding: 0; overflow: hidden;">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Match ID</th>
+                                    <th>Room ID</th>
+                                    <th>Winner (Details)</th>
+                                    <th>Net Prize</th>
+                                    <th>Status</th>
+                                    <th>Created Date</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% if (activeMatches.length > 0) { %>
+                                    <% activeMatches.forEach(match => { %>
+                                        <tr>
+                                            <td><code style="color: #6366f1; font-weight: 800;"><%= match.matchId %></code></td>
+                                            <td><code><%= match.roomId %></code></td>
+                                            <td>
+                                                <% if (match.players && match.players.length > 0) { %>
+                                                    <% match.players.forEach(p => { %>
+                                                        <div style="margin-bottom: 6px; font-size: 12px;">
+                                                            <strong><%= p.userName %></strong>
+                                                            <div style="font-size: 10px; color: var(--muted); font-family: monospace;">ID: <%= p.userId %></div>
+                                                        </div>
+                                                    <% }); %>
+                                                <% } else { %>
+                                                    <div style="font-size: 12px;">
+                                                        <strong>P1:</strong> <%= match.player1 ? match.player1.userName : 'N/A' %>
+                                                        <div style="font-size: 10px; color: var(--muted); font-family: monospace;">ID: <%= match.player1 ? match.player1.userId : 'N/A' %></div>
+                                                    </div>
+                                                    <div style="margin-top: 4px; font-size: 12px;">
+                                                        <strong>P2:</strong> <%= match.player2 ? match.player2.userName : 'N/A' %>
+                                                        <div style="font-size: 10px; color: var(--muted); font-family: monospace;">ID: <%= match.player2 ? match.player2.userId : 'N/A' %></div>
+                                                    </div>
+                                                <% } %>
+                                            </td>
+                                            <td style="color: #16a34a; font-weight: 800;"><%= match.netPrizeAwarded || 0 %> Coins</td>
+                                            <td>
+                                                <span class="badge-pill badge-pending"><%= match.status %></span>
+                                            </td>
+                                            <td><%= new Date(match.createdAt).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }) %></td>
+                                            <td>
+                                                <button type="button" class="btn-manage-action" style="margin-right: 6px;" onclick="viewMatchDetails('<%= match.matchId %>')">
+                                                    View Stats
+                                                </button>
+                                                <button type="button" class="btn-manage-action" style="background: rgba(153, 27, 27, 0.08); border-color: rgba(153, 27, 27, 0.2); color: #991b1b;" onclick="deleteMatch('<%= match.matchId %>')">
+                                                    Delete
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    <% }); %>
+                                <% } else { %>
+                                    <tr>
+                                        <td colspan="7" style="text-align: center; padding: 32px; color: var(--muted);">No active matches found in this category.</td>
+                                    </tr>
+                                <% } %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- COMPLETED MATCHES TAB CONTENT -->
+                <div id="completed-matches" class="tab-content">
+                    <div class="glass-card" style="padding: 0; overflow: hidden;">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Match ID</th>
+                                    <th>Room ID</th>
+                                    <th>Winner (Details)</th>
+                                    <th>Net Prize</th>
+                                    <th>Status</th>
+                                    <th>Created Date</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% if (completedMatches.length > 0) { %>
+                                    <% completedMatches.forEach(match => { %>
+                                        <tr>
+                                            <td><code style="color: #6366f1; font-weight: 800;"><%= match.matchId %></code></td>
+                                            <td><code><%= match.roomId %></code></td>
+                                            <td>
+                                                <% if (match.winnerUserId) { %>
+                                                    <%
+                                                    const participants = (match.players && match.players.length > 0)
+                                                        ? match.players
+                                                        : [match.player1, match.player2].filter(p => p !== null && p !== undefined);
+                                                    const winnerObj = participants.find(p => p.userId === match.winnerUserId);
+                                                    %>
+                                                    <% if (winnerObj) { %>
+                                                        <div style="font-weight: 800; color: #15803d;">
+                                                            🏆 <%= winnerObj.userName %>
+                                                        </div>
+                                                        <div style="font-size: 11px; color: var(--muted); font-family: monospace;">
+                                                            ID: <%= winnerObj.userId %>
+                                                        </div>
+                                                        <div style="font-size: 12px; color: #4f46e5; font-weight: 800; margin-top: 2px;">
+                                                            Score: <%= winnerObj.speedScore %> Pts
+                                                        </div>
+                                                    <% } else { %>
+                                                        <div style="font-weight: 800; color: #15803d;">
+                                                            🏆 <%= match.winnerUserId === 'ai_bot_opponent' ? 'AI Bot' : match.winnerUserId %>
+                                                        </div>
+                                                        <div style="font-size: 11px; color: var(--muted); font-family: monospace;">
+                                                            ID: <%= match.winnerUserId %>
+                                                        </div>
+                                                    <% } %>
+                                                <% } else { %>
+                                                    <span class="badge-pill badge-pending" style="background: #e2e8f0; color: #475569;">Draw / Tie</span>
+                                                <% } %>
+                                            </td>
+                                            <td style="color: #16a34a; font-weight: 800;"><%= match.netPrizeAwarded || 0 %> Coins</td>
+                                            <td>
+                                                <span class="badge-pill badge-approved"><%= match.status %></span>
+                                            </td>
+                                            <td><%= new Date(match.createdAt).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }) %></td>
+                                            <td>
+                                                <button type="button" class="btn-manage-action" style="margin-right: 6px;" onclick="viewMatchDetails('<%= match.matchId %>')">
+                                                    View Stats
+                                                </button>
+                                                <button type="button" class="btn-manage-action" style="background: rgba(153, 27, 27, 0.08); border-color: rgba(153, 27, 27, 0.2); color: #991b1b;" onclick="deleteMatch('<%= match.matchId %>')">
+                                                    Delete
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    <% }); %>
+                                <% } else { %>
+                                    <tr>
+                                        <td colspan="7" style="text-align: center; padding: 32px; color: var(--muted);">No completed matches found in this category.</td>
+                                    </tr>
+                                <% } %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- CANCELLED MATCHES TAB CONTENT -->
+                <div id="cancelled-matches" class="tab-content">
+                    <div class="glass-card" style="padding: 0; overflow: hidden;">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Match ID</th>
+                                    <th>Room ID</th>
+                                    <th>Winner (Details)</th>
+                                    <th>Net Prize</th>
+                                    <th>Status</th>
+                                    <th>Created Date</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% if (cancelledMatches.length > 0) { %>
+                                    <% cancelledMatches.forEach(match => { %>
+                                        <tr>
+                                            <td><code style="color: #6366f1; font-weight: 800;"><%= match.matchId %></code></td>
+                                            <td><code><%= match.roomId %></code></td>
+                                            <td>
+                                                <span class="badge-pill badge-rejected" style="font-size: 10px;">Cancelled</span>
+                                            </td>
+                                            <td style="color: #16a34a; font-weight: 800;"><%= match.netPrizeAwarded || 0 %> Coins</td>
+                                            <td>
+                                                <span class="badge-pill badge-rejected"><%= match.status %></span>
+                                            </td>
+                                            <td><%= new Date(match.createdAt).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }) %></td>
+                                            <td>
+                                                <button type="button" class="btn-manage-action" style="margin-right: 6px;" onclick="viewMatchDetails('<%= match.matchId %>')">
+                                                    View Stats
+                                                </button>
+                                                <button type="button" class="btn-manage-action" style="background: rgba(153, 27, 27, 0.08); border-color: rgba(153, 27, 27, 0.2); color: #991b1b;" onclick="deleteMatch('<%= match.matchId %>')">
+                                                    Delete
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    <% }); %>
+                                <% } else { %>
+                                    <tr>
+                                        <td colspan="7" style="text-align: center; padding: 32px; color: var(--muted);">No cancelled matches found in this category.</td>
+                                    </tr>
+                                <% } %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- VIEW DETAILS POPUP MODAL -->
+    <div class="modal-overlay" id="detailsModal">
+        <div class="modal-card">
+            <div class="modal-top">
+                <div class="modal-heading">Match Player Statistics</div>
+                <button type="button" class="modal-close-icon" onclick="closeDetailsModal()">✕</button>
+            </div>
+
+            <div style="margin-bottom: 20px; font-size: 13px; color: var(--text); border-left: 4px solid var(--primary); padding-left: 12px; line-height: 1.6;">
+                <strong>Match ID:</strong> <span id="detailsMatchId" style="font-family: monospace; font-weight: 800; color: #6366f1;"></span><br>
+                <strong>Room ID:</strong> <span id="detailsRoomId" style="font-family: monospace; font-weight: 800;"></span>
+            </div>
+
+            <div style="font-size: 11px; font-weight: 800; color: var(--muted); letter-spacing: 0.04em; margin-bottom: 12px; text-transform: uppercase;">PLAYER RANKS & RESPONSES BREAKDOWN</div>
+
+            <div style="max-height: 350px; overflow-y: auto; margin-bottom: 24px; border: 1px solid var(--border); border-radius: 12px;">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>Player Name / ID</th>
+                            <th>Points</th>
+                            <th>Correct</th>
+                            <th>Wrong</th>
+                            <th>Skipped</th>
+                            <th>Average Time</th>
+                        </tr>
+                    </thead>
+                    <tbody id="detailsTableBody"></tbody>
+                </table>
+            </div>
+
+            <div style="display: flex; justify-content: flex-end;">
+                <button type="button" class="btn-manage-action" style="padding: 8px 24px; border-radius: 10px;" onclick="closeDetailsModal()">Close Panel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hidden element containing serialized matches JSON to prevent JS editor syntax squiggles -->
+    <div id="matchesDataJson" style="display: none;"><%= JSON.stringify(allMatches) %></div>
+
+    <script>
+        // Parse the JSON string from the hidden HTML element, ensuring no EJS tags are inside the script block!
+        const MATCHES_DATA = JSON.parse(document.getElementById('matchesDataJson').innerText);
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+
+            const clickedBtn = event.currentTarget;
+            if (clickedBtn) clickedBtn.classList.add('active');
+
+            const targetContent = document.getElementById(tabId);
+            if (targetContent) targetContent.classList.add('active');
+        }
+
+        function filterMatchesBySearch() {
+            const query = document.getElementById('userSearchInput').value.toLowerCase().trim();
+            const rows = document.querySelectorAll('.data-table tbody tr');
+
+            rows.forEach(row => {
+                // If it is the empty state row, skip it
+                if (row.cells.length === 1 && (row.cells[0].colSpan === 8 || row.cells[0].colSpan === 7)) {
+                    return;
+                }
+
+                // Get matchId (cell 0), roomId (cell 1), players text (cell 2), status (cell 4)
+                const matchId = row.cells[0].innerText.toLowerCase();
+                const roomId = row.cells[1].innerText.toLowerCase();
+                const playersText = row.cells[2].innerText.toLowerCase();
+                const status = row.cells[4].innerText.toLowerCase();
+
+                const isMatch = matchId.includes(query) || 
+                                roomId.includes(query) || 
+                                playersText.includes(query) ||
+                                status.includes(query);
+
+                if (isMatch) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+
+        function viewMatchDetails(matchId) {
+            const match = MATCHES_DATA.find(m => m.matchId === matchId);
+            if (!match) {
+                console.error('Match not found locally:', matchId);
+                return;
+            }
+
+            document.getElementById('detailsMatchId').innerText = match.matchId;
+            document.getElementById('detailsRoomId').innerText = match.roomId;
+
+            const participants = (match.players && match.players.length > 0)
+                ? match.players
+                : [match.player1, match.player2].filter(p => p !== null && p !== undefined);
+
+            const sorted = [...participants].sort((a, b) => {
+                if (b.speedScore !== a.speedScore) return b.speedScore - a.speedScore;
+                return a.totalTimeTakenSec - b.totalTimeTakenSec;
+            });
+
+            const tbody = document.getElementById('detailsTableBody');
+            tbody.innerHTML = '';
+
+            sorted.forEach((p, index) => {
+                const rankNum = index + 1;
+                const points = p.speedScore || 0;
+                const correct = p.correctCount || 0;
+                const wrong = p.wrongCount || 0;
+                const skipped = p.skippedCount || 0;
+                const timeSec = p.totalTimeTakenSec || 0;
+                const totalQ = correct + wrong + skipped;
+                const avgTimeStr = totalQ > 0 ? (timeSec / totalQ).toFixed(1) + 's' : 'N/A';
+
+                tbody.innerHTML += `
+                    <tr>
+                        <td><span style="font-weight: 800; color: var(--primary);">#${rankNum}</span></td>
+                        <td>
+                            <strong>${p.userName || p.userId}</strong>
+                            <div style="font-size: 9px; color: var(--muted); font-family: monospace; margin-top: 2px;">ID: ${p.userId}</div>
+                            ${p.userId === 'ai_bot_opponent' ? '<span style="background: #e0f2fe; color: #0369a1; font-size: 9px; padding: 1px 4px; border-radius: 4px; font-weight: 800; margin-top: 4px; display: inline-block;">BOT</span>' : ''}
+                        </td>
+                        <td><span style="color: #4f46e5; font-weight: 800;">${points} pts</span></td>
+                        <td style="color: #16a34a; font-weight: 800;">${correct}</td>
+                        <td style="color: #dc2626; font-weight: 800;">${wrong}</td>
+                        <td style="color: #4b5563; font-weight: 800;">${skipped}</td>
+                        <td>${timeSec}s (${avgTimeStr}/q)</td>
+                    </tr>
+                `;
+            });
+
+            document.getElementById('detailsModal').classList.add('open');
+        }
+
+        function closeDetailsModal() {
+            document.getElementById('detailsModal').classList.remove('open');
+        }
+
+        async function deleteMatch(matchId) {
+            if (!confirm(`Are you sure you want to delete match ${matchId}? This will remove all stats for this match.`)) {
+                return;
+            }
+
+            try {
+                const res = await fetch(`/admin/battle-arena/history/delete/${matchId}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                const data = await res.json();
+                if (data.success) {
+                    alert(data.message);
+                    location.reload();
+                } else {
+                    alert(data.message || 'Failed to delete match');
+                }
+            } catch (err) {
+                alert('Error deleting match: ' + err);
+            }
+        }
+    </script>
+    <script src="/js/admin.js"></script>
+</body>
+</html>

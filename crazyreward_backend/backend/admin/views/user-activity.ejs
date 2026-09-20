@@ -1,0 +1,1172 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Activity - Crazyreward Admin</title>
+    <link rel="stylesheet" href="/css/admin.css">
+    <link rel="icon" href="/images/favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --bg: #f8fafc;
+            --surface: #ffffff;
+            --border: #e2e8f0;
+            --primary: #052e1f;
+            --primary-hover: #042418;
+            --text: #0f172a;
+            --muted: #64748b;
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', sans-serif !important;
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--text);
+        }
+
+        /* Glassmorphism Cards */
+        .glass-card {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
+            border: 1px solid var(--border);
+        }
+
+        .directory-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .directory-toolbar {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .directory-toolbar input {
+            flex: 1;
+            min-width: 260px;
+            padding: 10px 16px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text);
+            background: #ffffff;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        .directory-toolbar input:focus {
+            border-color: #052e1f;
+            box-shadow: 0 0 0 3px rgba(5, 46, 31, 0.1);
+        }
+
+        .btn-refresh-stats {
+            background: #052e1f;
+            color: #ffffff;
+            font-weight: 700;
+            font-size: 13px;
+            padding: 10px 18px;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-refresh-stats:hover {
+            background: #042418;
+            transform: translateY(-1px);
+        }
+
+        .btn-ghost-sm {
+            background: #f1f5f9;
+            color: var(--muted);
+            font-weight: 700;
+            font-size: 13px;
+            padding: 10px 18px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-ghost-sm:hover {
+            background: #e2e8f0;
+            color: var(--text);
+        }
+
+        /* Directory Table */
+        .directory-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            font-size: 13px;
+        }
+
+        .directory-table th {
+            padding: 12px 14px;
+            font-size: 11px;
+            font-weight: 800;
+            color: #ffffff;
+            background: #052e1f;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .directory-table th:first-child {
+            border-top-left-radius: 10px;
+            border-bottom-left-radius: 10px;
+        }
+
+        .directory-table th:last-child {
+            border-top-right-radius: 10px;
+            border-bottom-right-radius: 10px;
+        }
+
+        .directory-table td {
+            padding: 14px;
+            border-bottom: 1px solid #f1f5f9;
+            color: #1e293b;
+        }
+
+        .directory-table tbody tr {
+            transition: background 0.15s ease;
+
+        }
+
+        .directory-table tbody tr:hover {
+            background: rgba(5, 46, 31, 0.04);
+            cursor: pointer;
+        }
+
+        .directory-pagination {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        .directory-pagination button {
+            background: #ffffff;
+            border: 1px solid var(--border);
+            padding: 8px 16px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 13px;
+            color: #052e1f;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .directory-pagination button:hover:not(:disabled) {
+            background: #052e1f;
+            color: #ffffff;
+        }
+
+        .directory-pagination button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* User Profile Card */
+        .user-profile-card {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 24px;
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.02);
+        }
+
+        .ua-avatar {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #052e1f;
+            box-shadow: 0 4px 12px rgba(5, 46, 31, 0.15);
+        }
+
+        .ua-user-info h2 {
+            margin: 0 0 4px;
+            font-size: 20px;
+            font-weight: 800;
+            color: #052e1f;
+        }
+
+        .ua-user-info p {
+            margin: 0 0 8px;
+            font-size: 13px;
+            color: var(--muted);
+        }
+
+        .ua-meta-row {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--muted);
+        }
+
+        .ua-meta-item {
+            background: #f1f5f9;
+            padding: 4px 10px;
+            border-radius: 8px;
+        }
+
+        .ua-status-chips {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .ua-status-chip {
+            font-size: 11px;
+            font-weight: 800;
+            padding: 4px 10px;
+            border-radius: 8px;
+            text-transform: uppercase;
+        }
+
+        .ua-status-chip.ok {
+            background: #dcfce7;
+            color: #15803d;
+        }
+
+        .ua-status-chip.blocked {
+            background: #fef2f2;
+            color: #ef4444;
+        }
+
+        /* Detail View Filter & Tabs */
+        .ua-date-filter-bar {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 16px 20px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .ua-date-filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .ua-date-filter-group label {
+            font-size: 11px;
+            font-weight: 800;
+            color: var(--muted);
+            text-transform: uppercase;
+        }
+
+        .ua-date-filter-group input {
+            padding: 8px 12px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 700;
+            outline: none;
+        }
+
+        .ua-tabs {
+            display: flex;
+            background: #f1f5f9;
+            padding: 4px;
+            border-radius: 12px;
+            gap: 4px;
+            margin-bottom: 24px;
+            overflow-x: auto;
+        }
+
+        .ua-tab {
+            padding: 10px 18px;
+            border: none;
+            background: transparent;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--muted);
+            cursor: pointer;
+            border-radius: 10px;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .ua-tab.active {
+            background: #052e1f;
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(5, 46, 31, 0.15);
+        }
+
+        .ua-tab-panel {
+            display: none;
+        }
+
+        .ua-tab-panel.active {
+            display: block;
+        }
+
+        /* Detail Cards & Tables */
+        .ua-card {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 24px;
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.02);
+            margin-bottom: 24px;
+        }
+
+        .ua-card h3 {
+            margin: 0 0 16px;
+            font-size: 18px;
+            font-weight: 800;
+            color: #052e1f;
+        }
+
+        .ua-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        @media (max-width: 768px) {
+            .ua-stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .ua-stat-card {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 20px;
+            border: 1px solid #f1f5f9;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+        }
+
+        .ua-stat-label {
+            font-size: 11px;
+            font-weight: 800;
+            color: var(--muted);
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+
+        .ua-stat-value {
+            font-size: 24px;
+            font-weight: 800;
+            color: #0f172a;
+        }
+
+        .ua-stat-value.stat-green {
+            color: #15803d;
+        }
+
+        .ua-stat-value.stat-blue {
+            color: #052e1f;
+        }
+
+        .ua-details-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .ua-details-table td {
+            padding: 12px 14px;
+            border-bottom: 1px solid #f1f5f9;
+            font-size: 13px;
+        }
+
+        .ua-detail-label {
+            font-weight: 700;
+            color: var(--muted);
+            width: 40%;
+        }
+
+        .ua-detail-value {
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        .ua-edit-input {
+            padding: 8px 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            width: 100%;
+            outline: none;
+        }
+
+        .ua-edit-input:focus {
+            border-color: #052e1f;
+        }
+
+        .btn-back {
+            background: #052e1f;
+            color: #ffffff;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-bottom: 20px;
+        }
+
+        .btn-back:hover {
+            background: #042418;
+            transform: translateY(-1px);
+        }
+
+        /* Referral Levels Grid */
+        .ua-ref-level-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        .ua-ref-level {
+            background: #f8fafc;
+            border-radius: 14px;
+            padding: 16px;
+            border: 1px solid var(--border);
+            text-align: center;
+        }
+
+        .ua-ref-level-title {
+            font-size: 12px;
+            font-weight: 800;
+            color: #052e1f;
+            margin-bottom: 4px;
+        }
+
+        .ua-ref-level-users {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--muted);
+        }
+
+        .ua-ref-level-coins {
+            font-size: 18px;
+            font-weight: 800;
+            color: #15803d;
+            margin-top: 4px;
+        }
+    </style>
+</head>
+
+<body class="dashboard-body">
+    <div class="dashboard-shell">
+        <%- include('partials/sidebar', { activePage: 'user-activity' }) %>
+
+            <div class="dashboard-main">
+                <header class="navbar dashboard-navbar">
+                    <div class="nav-left" style="display: flex; align-items: center; gap: 12px; white-space: nowrap;">
+                        <button type="button" class="sidebar-toggle-btn" onclick="toggleSidebar()">☰</button>
+                        <h2 style="margin: 0; font-size: 18px; font-weight: 800; white-space: nowrap;">User Activity
+                        </h2>
+
+                        <select id="appSelect" onchange="onAppChange()"
+                            style="margin-left: 8px; padding: 6px 12px; border-radius: 10px; border: 1px solid #cbd5e1; font-weight: 700; background: #f8fafc; font-size: 13px; cursor: pointer;">
+                            <% (typeof firebaseServices !=='undefined' && firebaseServices ? firebaseServices :
+                                []).forEach(service=> { %>
+                                <option value="<%= service.appName %>">
+                                    <%= service.displayName %>
+                                </option>
+                                <% }) %>
+                        </select>
+                    </div>
+
+                    <div class="nav-right" onclick="toggleDropdown()">
+                        <div class="avatar"><%- typeof photo !=='undefined' && photo ? photo : 'A' %></div>
+                        <div class="dropdown" id="dropdown">
+                            <a href="/logout">Logout</a>
+                        </div>
+                    </div>
+                </header>
+
+                <main class="container dashboard-home">
+                    <!-- USER LIST DIRECTORY VIEW -->
+                    <div id="user-list-view">
+                        <section class="glass-card">
+                            <div class="directory-head">
+                                <div>
+                                    <h1 style="font-size: 22px; font-weight: 800; color: #052e1f; margin: 0 0 4px;">User
+                                        Activity & Profile Directory</h1>
+                                    <p style="color: var(--muted); font-size: 13px; margin: 0;">Search, manage, and
+                                        inspect individual user metrics, wallet balances, and tasks</p>
+                                </div>
+                                <div style="display: flex; gap: 8px; align-items: center;">
+                                    <button class="btn-danger-lg" style="background: #ef4444; color: white; border: none; padding: 8px 16px; border-radius: 8px; font-weight: 700; cursor: pointer; display: none;" id="bulkDeleteBtn" onclick="performBulkDeleteUsers()"><i class="fa-solid fa-trash-can" style="margin-right: 4px;"></i> Bulk Delete (<span id="selectedCount">0</span>)</button>
+                                    <button class="btn-refresh-stats" onclick="refreshUserDirectory()"><i class="fa-solid fa-rotate-right" style="margin-right: 4px;"></i> Refresh
+                                        List</button>
+                                </div>
+                            </div>
+
+                            <div class="directory-toolbar">
+                                <input id="directory-search" type="text"
+                                    placeholder="Search by Email / User ID / Refer Code"
+                                    onkeyup="if(event.key==='Enter') searchUserDirectory()">
+                                <button class="btn-refresh-stats" onclick="searchUserDirectory()">Search</button>
+                                <button class="btn-ghost-sm" onclick="clearUserDirectorySearch()">Clear</button>
+                            </div>
+
+                            <div style="overflow-x: auto;">
+                                <table class="directory-table">
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 40px; text-align: center; vertical-align: middle;">
+                                                <input type="checkbox" id="selectAllUsers" onchange="toggleSelectAllUsers(this)" style="cursor: pointer; transform: scale(1.2);">
+                                            </th>
+                                            <th>#</th>
+                                            <th class="sortable" onclick="sortUserDirectory('name')">User Info <span
+                                                    class="sort-icon">↕</span></th>
+                                            <th class="sortable" onclick="sortUserDirectory('email')">Handle <span
+                                                    class="sort-icon">↕</span></th>
+                                            <th class="sortable" onclick="sortUserDirectory('coins')">Coins <span
+                                                    class="sort-icon">↕</span></th>
+                                            <th class="sortable" onclick="sortUserDirectory('firstLogin')">Joined Date
+                                                <span class="sort-icon">↕</span></th>
+                                            <th class="sortable" onclick="sortUserDirectory('blocked')">Status <span
+                                                    class="sort-icon">↕</span></th>
+                                            <th style="text-align: right;">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="directory-body">
+                                        <tr>
+                                            <td colspan="8"
+                                                style="text-align: center; color: var(--muted); padding: 40px;">Loading
+                                                users...</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div class="directory-pagination">
+                                <button id="directory-prev" onclick="loadPrevUserPage()" disabled>Previous</button>
+                                <span id="directory-page-info">Page 1</span>
+                                <button id="directory-next" onclick="loadNextUserPage()" disabled>Next</button>
+                            </div>
+                        </section>
+                    </div>
+
+                    <!-- USER DETAIL VIEW (hidden by default) -->
+                    <div id="user-detail-view" style="display: none;">
+                        <div
+                            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 12px;">
+                            <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+                                <button class="btn-back" onclick="goBackToList()">← Back to User Directory</button>
+                                
+                                <div style="display: flex; align-items: center; gap: 6px; background: #ffffff; padding: 4px 6px 4px 12px; border-radius: 10px; border: 1.5px solid #cbd5e1; box-shadow: 0 1px 4px rgba(0,0,0,0.04);">
+                                    <i class="fa-solid fa-magnifying-glass" style="color: #64748b; font-size: 13px;"></i>
+                                    <input type="text" id="ua-header-search-input" placeholder="Enter User ID / Email / Ref Code..." 
+                                        style="border: none; outline: none; font-size: 13px; font-weight: 600; color: #1e293b; width: 240px; background: transparent;"
+                                        onkeydown="if(event.key === 'Enter'){ searchUserDirectly(); }">
+                                    <button type="button" onclick="searchUserDirectly()" 
+                                        style="background: #10b981; color: #ffffff; border: none; border-radius: 6px; padding: 6px 14px; font-size: 12px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 4px; transition: background 0.2s;">
+                                        Search
+                                    </button>
+                                </div>
+                            </div>
+
+                            <button type="button" class="btn-refresh-stats" onclick="refreshUserDetail()"
+                                style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 18px; border-radius: 8px; font-size: 13px; font-weight: 800; background: #052e1f; color: #ffffff; border: none; cursor: pointer;">
+                                🔄 Refresh User Data
+                            </button>
+                        </div>
+
+                        <div id="user-detail-content">
+                            <!-- User Profile Header Card -->
+                            <div class="user-profile-card">
+                                <img id="ua-user-avatar" src="https://via.placeholder.com/80?text=User"
+                                    class="ua-avatar" alt="User">
+                                <div class="ua-user-info">
+                                    <h2 id="ua-user-name">Loading...</h2>
+                                    <p id="ua-user-email">Loading...</p>
+                                    <div class="ua-meta-row">
+                                        <span class="ua-meta-item">ID: <strong id="ua-user-id"
+                                                style="color: #0f172a;">-</strong></span>
+                                        <span class="ua-meta-item">Referral Code: <strong id="ua-referral-code"
+                                                style="color: #0f172a;">-</strong></span>
+                                    </div>
+                                    <div class="ua-status-chips">
+                                        <span id="ua-status-chip" class="ua-status-chip ok">Active</span>
+                                        <span id="ua-deleted-chip" class="ua-status-chip ok">Account Deleted:
+                                            False</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Date Filter Bar -->
+                            <div class="ua-date-filter-bar">
+                                <div class="ua-date-filter-group">
+                                    <label>From Date</label>
+                                    <input type="date" id="ua-start-date">
+                                </div>
+                                <div class="ua-date-filter-group">
+                                    <label>To Date</label>
+                                    <input type="date" id="ua-end-date">
+                                </div>
+                                <button class="btn-refresh-stats" onclick="applyDateFilter()">Apply Filter</button>
+                                <button class="btn-ghost-sm" onclick="clearDateFilter()">Clear</button>
+                            </div>
+
+                            <!-- Tabs Navigation -->
+                            <div class="ua-tabs">
+                                <button class="ua-tab active" onclick="switchTab('overview')">Overview</button>
+                                <button class="ua-tab" onclick="switchTab('tasks')">Tasks</button>
+                                <button class="ua-tab" onclick="switchTab('earnings')">Earnings</button>
+                                <button class="ua-tab" onclick="switchTab('referrals')">Referrals</button>
+                                <button class="ua-tab" onclick="switchTab('payouts')">Payouts</button>
+                                <button class="ua-tab" onclick="switchTab('super-offer')">Super Offer</button>
+                                <button class="ua-tab" onclick="switchTab('activity')">Activity Log</button>
+                            </div>
+
+                            <!-- Tab Panels -->
+                            <!-- Overview Tab -->
+                            <div id="ua-tab-overview" class="ua-tab-panel active">
+                                <div class="ua-stats-grid">
+                                    <div class="ua-stat-card">
+                                        <div class="ua-stat-label">Wallet Balance</div>
+                                        <div class="ua-stat-value stat-blue" id="ua-wallet-balance">₹0.00</div>
+                                    </div>
+                                    <div class="ua-stat-card">
+                                        <div class="ua-stat-label">Total Earned</div>
+                                        <div class="ua-stat-value stat-green" id="ua-total-earned">₹0.00</div>
+                                    </div>
+                                    <div class="ua-stat-card">
+                                        <div class="ua-stat-label">Total Referrals</div>
+                                        <div class="ua-stat-value" id="ua-total-referrals">0</div>
+                                    </div>
+                                </div>
+
+                                <!-- Editable User Details Table -->
+                                <div class="ua-card">
+                                    <h3>User Details & Editable Attributes</h3>
+                                    <div style="overflow-x: auto;">
+                                        <table class="ua-details-table">
+                                            <tbody id="ua-user-details-tbody">
+                                                <!-- Populated dynamically by JS -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div style="margin-top: 20px; text-align: right;">
+                                        <button class="btn-refresh-stats" onclick="saveUserDetails()"><i class="fa-solid fa-floppy-disk" style="margin-right: 4px;"></i> Save User
+                                            Changes</button>
+                                    </div>
+                                </div>
+
+                                <div class="ua-card">
+                                    <h3>Profile Summary</h3>
+                                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;">
+                                        <div>
+                                            <span
+                                                style="font-size: 11px; font-weight: 800; color: var(--muted); text-transform: uppercase;">Full
+                                                Name</span>
+                                            <div style="font-size: 14px; font-weight: 700; color: #0f172a;"
+                                                id="ua-profile-name">-</div>
+                                        </div>
+                                        <div>
+                                            <span
+                                                style="font-size: 11px; font-weight: 800; color: var(--muted); text-transform: uppercase;">Email
+                                                Address</span>
+                                            <div style="font-size: 14px; font-weight: 700; color: #0f172a;"
+                                                id="ua-profile-email">-</div>
+                                        </div>
+                                        <div>
+                                            <span
+                                                style="font-size: 11px; font-weight: 800; color: var(--muted); text-transform: uppercase;">User
+                                                ID</span>
+                                            <div style="font-size: 14px; font-weight: 700; color: #0f172a;"
+                                                id="ua-profile-userid">-</div>
+                                        </div>
+                                        <div>
+                                            <span
+                                                style="font-size: 11px; font-weight: 800; color: var(--muted); text-transform: uppercase;">Referral
+                                                Code</span>
+                                            <div style="font-size: 14px; font-weight: 700; color: #0f172a;"
+                                                id="ua-profile-referral">-</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Tasks Tab -->
+                            <div id="ua-tab-tasks" class="ua-tab-panel">
+                                <div style="display: flex; flex-direction: column; gap: 24px;">
+                                    
+                                    <!-- Card 1: Super Offer Settings -->
+                                    <div class="ua-card">
+                                        <h3>Super Offer Settings</h3>
+                                        <div style="overflow-x: auto;">
+                                            <table class="ua-details-table">
+                                                <tbody>
+                                                    <tr>
+                                                        <td class="ua-detail-label">Super Offer Assigned Mode</td>
+                                                        <td class="ua-detail-value">
+                                                            <select class="ua-edit-input" data-field="superOfferAssignType"
+                                                                id="ua-task-assign-type">
+                                                                <option value="hours">Hours Gap</option>
+                                                                <option value="daily">Daily Limit (Server Date)</option>
+                                                            </select>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="ua-detail-label" id="ua-task-limit-label">Super Offer Unlock Limit (Daily Limit)</td>
+                                                        <td class="ua-detail-value">
+                                                            <input type="number" class="ua-edit-input"
+                                                                data-field="superOfferLimit" id="ua-task-limit"
+                                                                value="10" />
+                                                            <span id="ua-task-limit-help" style="font-size: 12px; color: var(--muted); margin-left: 8px;">Max times user can spend gems to unlock Super Offer per day</span>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="ua-detail-label">Super Offer Unlock Progress Today</td>
+                                                        <td class="ua-detail-value">
+                                                            <input type="number" min="0" class="ua-edit-input"
+                                                                data-field="superOfferClaimsToday"
+                                                                id="ua-task-claims-today-input"
+                                                                style="width:100px; display:inline-block;" value="0" />
+                                                            / <span id="ua-task-total-limit" style="font-weight:800;">10</span> Completed Today
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="ua-detail-label">Last Assigned Date & Time (IST)</td>
+                                                        <td class="ua-detail-value">
+                                                            <input type="datetime-local" class="ua-edit-input"
+                                                                data-field="superOfferAssignedAt"
+                                                                id="ua-task-assigned-at-input" />
+                                                            <span style="font-size: 12px; color: var(--muted); margin-left: 8px;">Indian Standard Time (IST)</span>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="ua-detail-label">Super Offer Status (isOfferUnlocked)</td>
+                                                        <td class="ua-detail-value">
+                                                            <select class="ua-edit-input" data-field="isSuperOfferUnlocked" id="ua-task-is-unlocked">
+                                                                <option value="false">Locked</option>
+                                                                <option value="true">Unlocked</option>
+                                                            </select>
+                                                            <span style="font-size: 12px; color: var(--muted); margin-left: 8px;">Whether offer is currently unlocked by user</span>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+
+                                    <!-- Card 2: Diamond Catch Settings -->
+                                    <div class="ua-card">
+                                         <h3>Diamond Catch Settings</h3>
+                                        <div style="overflow-x: auto;">
+                                            <table class="ua-details-table">
+                                                <tbody>
+                                                    <tr>
+                                                        <td class="ua-detail-label">Game Play Daily Limit (Daily Limit)</td>
+                                                        <td class="ua-detail-value">
+                                                            <input type="number" class="ua-edit-input"
+                                                                data-field="gameDailyLimit" id="ua-task-game-limit"
+                                                                value="10" />
+                                                            <span style="font-size: 12px; color: var(--muted); margin-left: 8px;">Max times user can play game and collect gems per day</span>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="ua-detail-label">Game Play Progress Today</td>
+                                                        <td class="ua-detail-value">
+                                                            <input type="number" min="0" class="ua-edit-input"
+                                                                data-field="gameClaimsToday" id="ua-game-claims-today-input"
+                                                                style="width:100px; display:inline-block;" value="0" />
+                                                            / <span id="ua-game-total-limit" style="font-weight:800;">10</span> Completed Today
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="ua-detail-label">Game Install Task Trigger Claim #</td>
+                                                        <td class="ua-detail-value">
+                                                            <input type="number" class="ua-edit-input"
+                                                                data-field="superOfferGameInstallTriggerAt"
+                                                                id="ua-task-game-trigger" value="2" />
+                                                            <span style="font-size: 12px; color: var(--muted); margin-left: 8px;">Claim count # today that triggers Install Task popup on Collect</span>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="ua-detail-label">Last Assigned Date & Time (IST)</td>
+                                                        <td class="ua-detail-value">
+                                                            <input type="datetime-local" class="ua-edit-input"
+                                                                data-field="gameAssignedAt"
+                                                                id="ua-task-game-assigned-at-input" />
+                                                            <span style="font-size: 12px; color: var(--muted); margin-left: 8px;">Indian Standard Time (IST)</span>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+
+                                     <!-- Card 3: Battle Settings -->
+                                     <div class="ua-card">
+                                         <h3>Battle Settings</h3>
+                                        <div style="overflow-x: auto;">
+                                            <table class="ua-details-table">
+                                                <tbody>
+                                                    <tr>
+                                                        <td class="ua-detail-label">Battle Install Task Target Count</td>
+                                                        <td class="ua-detail-value">
+                                                            <input type="number" class="ua-edit-input"
+                                                                data-field="battleInstallTaskNumber" id="ua-task-battle-limit"
+                                                                value="0" />
+                                                            <span style="font-size: 12px; color: var(--muted); margin-left: 8px;">Target count user must complete to unlock free battle</span>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="ua-detail-label">Battle Install Task Completed Today</td>
+                                                        <td class="ua-detail-value">
+                                                            <select class="ua-edit-input" data-field="battleInstallTaskCompletedToday"
+                                                                id="ua-task-battle-completed-today">
+                                                                <option value="true">True (Installed)</option>
+                                                                <option value="false">False (Pending)</option>
+                                                            </select>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="ua-detail-label">Last Assigned Date & Time (IST)</td>
+                                                        <td class="ua-detail-value">
+                                                            <input type="datetime-local" class="ua-edit-input"
+                                                                data-field="battleInstallTaskAssignedDate"
+                                                                id="ua-task-battle-assigned-at-input" />
+                                                            <span style="font-size: 12px; color: var(--muted); margin-left: 8px;">Indian Standard Time (IST)</span>
+                                                        </td>
+                                                    </tr>
+                                                     <tr>
+                                                         <td class="ua-detail-label">Free Battles Joined Today</td>
+                                                         <td class="ua-detail-value">
+                                                             <input type="number" class="ua-edit-input"
+                                                                 data-field="freeBattlesJoinedToday" id="ua-task-free-joined-count"
+                                                                 value="0" />
+                                                             <span style="font-size: 12px; color: var(--muted); margin-left: 8px;">Number of free battles joined today</span>
+                                                         </td>
+                                                     </tr>
+                                                     <tr>
+                                                         <td class="ua-detail-label">Free Battle Daily Limit</td>
+                                                         <td class="ua-detail-value">
+                                                             <input type="number" class="ua-edit-input"
+                                                                 data-field="battleDailyLimit" id="ua-task-battle-daily-limit"
+                                                                 value="0" />
+                                                             <span style="font-size: 12px; color: var(--muted); margin-left: 8px;">Maximum free battles user can join daily</span>
+                                                         </td>
+                                                     </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+
+                                    <!-- Card 4: Daily Challenge Progress -->
+                                    <div class="ua-card">
+                                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+                                            <h3 style="margin: 0;"><i class="fa-solid fa-trophy" style="color: #f59e0b; margin-right: 6px;"></i> Daily Challenge Progress</h3>
+                                            <div id="ua-dc-header-status" style="font-size: 12px; font-weight: 700;">-</div>
+                                        </div>
+                                        <div id="ua-dc-container">
+                                            <div style="text-align: center; color: var(--muted); padding: 16px;">Loading Daily Challenge data...</div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Bottom Save Action Panel -->
+                                    <div style="text-align: right; margin-top: -12px;">
+                                        <button class="btn-refresh-stats" onclick="saveUserDetails()"><i class="fa-solid fa-floppy-disk" style="margin-right: 4px;"></i> Save Task & Game Settings</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Earnings Tab -->
+                            <div id="ua-tab-earnings" class="ua-tab-panel">
+                                <div class="ua-stats-grid" style="grid-template-columns: repeat(2, 1fr); margin-bottom: 20px;">
+                                    <div class="ua-stat-card" style="border-left: 4px solid #16a34a;">
+                                        <div class="ua-stat-label">Total Redeem Coins</div>
+                                        <div class="ua-stat-value stat-green" id="ua-earnings-total-redeem-coins">0 Coins</div>
+                                        <div style="font-size: 13px; font-weight: 600; color: #15803d; margin-top: 4px;" id="ua-earnings-total-redeem-amount">≈ ₹0.00 (Completed)</div>
+                                    </div>
+                                    <div class="ua-stat-card" style="border-left: 4px solid #f59e0b;">
+                                        <div class="ua-stat-label">Total Pending Redeem Coins</div>
+                                        <div class="ua-stat-value" style="color: #d97706;" id="ua-earnings-pending-redeem-coins">0 Coins</div>
+                                        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 6px; font-size: 12px; font-weight: 600; flex-wrap: wrap; gap: 6px;">
+                                            <span style="color: #b45309;" id="ua-earnings-pending-redeem-amount">In Process: ₹0.00</span>
+                                            <span style="color: #0369a1; background: #e0f2fe; padding: 2px 8px; border-radius: 6px;" id="ua-earnings-remaining-wallet-coins">Available Balance: 0 Coins (₹0.00)</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="ua-card">
+                                    <h3>Today's Earnings</h3>
+                                    <div style="font-size: 24px; font-weight: 800; color: #15803d; margin-bottom: 12px;"
+                                        id="ua-today-total">₹0.00</div>
+                                    <div id="ua-today-earnings-list">
+                                        <div style="text-align: center; color: var(--muted); padding: 20px;">No earnings
+                                            today</div>
+                                    </div>
+                                </div>
+
+                                <div class="ua-card">
+                                    <h3>All-Time Earnings</h3>
+                                    <div style="font-size: 24px; font-weight: 800; color: #052e1f; margin-bottom: 12px;"
+                                        id="ua-alltime-total">₹0.00</div>
+                                    <div id="ua-alltime-earnings-list">
+                                        <div style="text-align: center; color: var(--muted); padding: 20px;">No earnings
+                                            found</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Referrals Tab -->
+                            <div id="ua-tab-referrals" class="ua-tab-panel">
+                                <div class="ua-stats-grid">
+                                    <div class="ua-stat-card">
+                                        <div class="ua-stat-label">Total Referrals</div>
+                                        <div class="ua-stat-value" id="ua-ref-total">0</div>
+                                    </div>
+                                    <div class="ua-stat-card">
+                                        <div class="ua-stat-label">Total Earnings</div>
+                                        <div class="ua-stat-value stat-green" id="ua-ref-earnings">₹0.00</div>
+                                    </div>
+                                </div>
+
+                                <div class="ua-card">
+                                    <h3>Multi-Level Referral Breakdown</h3>
+                                    <div class="ua-ref-level-grid">
+                                        <div class="ua-ref-level">
+                                            <div class="ua-ref-level-title">Level 1 (Direct)</div>
+                                            <div class="ua-ref-level-users" id="ua-ref-l1-users">0 users</div>
+                                            <div class="ua-ref-level-coins" id="ua-ref-l1-coins">₹0.00</div>
+                                        </div>
+                                        <div class="ua-ref-level">
+                                            <div class="ua-ref-level-title">Level 2 (Secondary)</div>
+                                            <div class="ua-ref-level-users" id="ua-ref-l2-users">0 users</div>
+                                            <div class="ua-ref-level-coins" id="ua-ref-l2-coins">₹0.00</div>
+                                        </div>
+                                        <div class="ua-ref-level">
+                                            <div class="ua-ref-level-title">Level 3 (Extended)</div>
+                                            <div class="ua-ref-level-users" id="ua-ref-l3-users">0 users</div>
+                                            <div class="ua-ref-level-coins" id="ua-ref-l3-coins">₹0.00</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Payouts Tab -->
+                            <div id="ua-tab-payouts" class="ua-tab-panel">
+                                <div class="ua-card">
+                                    <h3>Payout History</h3>
+                                    <div id="ua-payouts-list">
+                                        <div style="text-align: center; color: var(--muted); padding: 20px;">No payout
+                                            records</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Activity Log Tab -->
+                            <div id="ua-tab-activity" class="ua-tab-panel">
+                                <div class="ua-card">
+                                    <h3>Activity Timeline Log</h3>
+                                    <div id="ua-activity-list">
+                                        <div style="text-align: center; color: var(--muted); padding: 20px;">No activity
+                                            records</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Super Offer Tab -->
+                            <div id="ua-tab-super-offer" class="ua-tab-panel">
+                                <div class="ua-stats-grid">
+                                    <div class="ua-stat-card">
+                                        <div class="ua-stat-label">Total Offers Started</div>
+                                        <div class="ua-stat-value stat-blue" id="ua-so-total-started">0</div>
+                                    </div>
+                                    <div class="ua-stat-card">
+                                        <div class="ua-stat-label">Completed / Approved</div>
+                                        <div class="ua-stat-value stat-green" id="ua-so-total-completed">0</div>
+                                    </div>
+                                    <div class="ua-stat-card">
+                                        <div class="ua-stat-label">Pending Proofs</div>
+                                        <div class="ua-stat-value stat-orange" id="ua-so-total-pending">0</div>
+                                    </div>
+                                    <div class="ua-stat-card">
+                                        <div class="ua-stat-label">Removed Offers</div>
+                                        <div class="ua-stat-value stat-red" id="ua-so-total-removed">0</div>
+                                    </div>
+                                    <div class="ua-stat-card">
+                                        <div class="ua-stat-label">Total Coins Earned</div>
+                                        <div class="ua-stat-value stat-gold" id="ua-so-total-coins">0 Coins</div>
+                                    </div>
+                                </div>
+
+                                <div class="ua-card">
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 12px;">
+                                        <h3 style="margin: 0; font-size: 16px; font-weight: 700;">Super Offer Activity & Installed Apps</h3>
+                                        <button type="button" class="btn-ghost-sm" onclick="loadUserSuperOfferData()">🔄 Refresh</button>
+                                    </div>
+
+                                    <!-- Sub Navigation Tabs -->
+                                    <div style="display: flex; gap: 8px; margin-bottom: 16px; border-bottom: 2px solid #f1f5f9; padding-bottom: 8px; flex-wrap: wrap;">
+                                        <button type="button" id="so-subtab-pending" class="so-subtab-btn" onclick="switchSoSubtab('pending')" style="padding: 8px 16px; border-radius: 8px; border: none; font-weight: 700; font-size: 12.5px; cursor: pointer; background: #3b82f6; color: #ffffff;">
+                                            <i class="fa-solid fa-hourglass-half" style="margin-right: 6px;"></i> Pending Offers (<span id="so-count-pending">0</span>)
+                                        </button>
+                                        <button type="button" id="so-subtab-completed" class="so-subtab-btn" onclick="switchSoSubtab('completed')" style="padding: 8px 16px; border-radius: 8px; border: none; font-weight: 700; font-size: 12.5px; cursor: pointer; background: #e2e8f0; color: #475569;">
+                                            <i class="fa-solid fa-circle-check" style="margin-right: 6px;"></i> Completed Offers (<span id="so-count-completed">0</span>)
+                                        </button>
+                                        <button type="button" id="so-subtab-timeline" class="so-subtab-btn" onclick="switchSoSubtab('timeline')" style="padding: 8px 16px; border-radius: 8px; border: none; font-weight: 700; font-size: 12.5px; cursor: pointer; background: #e2e8f0; color: #475569;">
+                                            <i class="fa-solid fa-clipboard-list" style="margin-right: 6px;"></i> All Activity Log
+                                        </button>
+                                    </div>
+
+                                    <!-- Panel 1: Pending Offers -->
+                                    <div id="so-panel-pending" class="so-panel-view">
+                                        <div style="overflow-x: auto;">
+                                            <table class="table-directory" style="width: 100%; border-collapse: collapse;">
+                                                <thead>
+                                                    <tr style="border-bottom: 1.5px solid var(--border); text-align: left; font-size: 11.5px; color: var(--muted); text-transform: uppercase;">
+                                                        <th style="padding: 12px 10px;">App Name</th>
+                                                        <th style="padding: 12px 10px;">Package Name</th>
+                                                        <th style="padding: 12px 10px;">Current Status</th>
+                                                        <th style="padding: 12px 10px;">Coins (Earned / Total)</th>
+                                                        <th style="padding: 12px 10px;">Last Activity</th>
+                                                        <th style="padding: 12px 10px; text-align: right;">Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="ua-so-pending-tbody">
+                                                    <tr><td colspan="6" style="text-align: center; color: var(--muted); padding: 36px;">No pending offers found for this user.</td></tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+
+                                    <!-- Panel 2: Completed Offers -->
+                                    <div id="so-panel-completed" class="so-panel-view" style="display: none;">
+                                        <div style="overflow-x: auto;">
+                                            <table class="table-directory" style="width: 100%; border-collapse: collapse;">
+                                                <thead>
+                                                    <tr style="border-bottom: 1.5px solid var(--border); text-align: left; font-size: 11.5px; color: var(--muted); text-transform: uppercase;">
+                                                        <th style="padding: 12px 10px;">App Name</th>
+                                                        <th style="padding: 12px 10px;">Package Name</th>
+                                                        <th style="padding: 12px 10px;">Overall Status</th>
+                                                        <th style="padding: 12px 10px;">Coins (Earned / Total)</th>
+                                                        <th style="padding: 12px 10px;">Completion Date</th>
+                                                        <th style="padding: 12px 10px; text-align: right;">Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="ua-so-completed-tbody">
+                                                    <tr><td colspan="6" style="text-align: center; color: var(--muted); padding: 36px;">No completed offers found for this user.</td></tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+
+                                    <!-- Panel 3: All Activity Timeline -->
+                                    <div id="so-panel-timeline" class="so-panel-view" style="display: none;">
+                                        <div style="display: flex; justify-content: flex-end; margin-bottom: 12px;">
+                                            <select id="ua-so-status-filter" style="padding: 6px 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 12.5px;" onchange="loadUserSuperOfferData()">
+                                                <option value="all">All Statuses</option>
+                                                <option value="completed">Completed</option>
+                                                <option value="approved">Approved</option>
+                                                <option value="pending_proof">Pending Proof</option>
+                                                <option value="rejected">Rejected</option>
+                                                <option value="removed">Removed</option>
+                                            </select>
+                                        </div>
+                                        <div style="overflow-x: auto;">
+                                            <table class="table-directory" style="width: 100%; border-collapse: collapse;">
+                                                <thead>
+                                                    <tr style="border-bottom: 1.5px solid var(--border); text-align: left; font-size: 11.5px; color: var(--muted); text-transform: uppercase;">
+                                                        <th style="padding: 12px 10px;">App Name</th>
+                                                        <th style="padding: 12px 10px;">Package Name</th>
+                                                        <th style="padding: 12px 10px;">Step Details</th>
+                                                        <th style="padding: 12px 10px;">Status</th>
+                                                        <th style="padding: 12px 10px;">Coins</th>
+                                                        <th style="padding: 12px 10px;">Usage Time</th>
+                                                        <th style="padding: 12px 10px;">Proof Image</th>
+                                                        <th style="padding: 12px 10px;">Date & Time (IST)</th>
+                                                        <th style="padding: 12px 10px; text-align: right;">Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="ua-so-history-tbody">
+                                                    <tr>
+                                                        <td colspan="9" style="text-align: center; color: var(--muted); padding: 36px;">No super offer history found for this user.</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </main>
+            </div>
+    </div>
+
+    <!-- Super Offer Detailed Step Stats Modal -->
+    <div id="soStatsModal" style="display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.65); backdrop-filter: blur(4px); z-index: 9999; align-items: center; justify-content: center;">
+        <div style="background: #ffffff; border-radius: 16px; width: 92%; max-width: 650px; max-height: 90vh; overflow-y: auto; padding: 24px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.2);">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 1px solid #f1f5f9; padding-bottom: 14px; margin-bottom: 16px;">
+                <div>
+                    <h3 id="soModalAppName" style="margin: 0; font-size: 18px; font-weight: 800; color: #0f172a;">App Step Breakdown</h3>
+                    <span id="soModalPkgName" style="font-size: 12px; font-family: monospace; color: #64748b;">com.example.app</span>
+                </div>
+                <button type="button" onclick="closeSoStatsModal()" style="border: none; background: #f1f5f9; width: 32px; height: 32px; border-radius: 50%; font-weight: 800; cursor: pointer; color: #64748b;">✕</button>
+            </div>
+
+            <div id="soModalOverallStatus" style="margin-bottom: 16px; padding: 12px; border-radius: 10px; background: #f8fafc; border: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center;">
+                <!-- Dynamically filled -->
+            </div>
+
+            <h4 style="margin: 0 0 12px 0; font-size: 13px; font-weight: 700; color: #334155; text-transform: uppercase; letter-spacing: 0.5px;">Step Completion Progress</h4>
+            
+            <div id="soModalStepsList" style="display: flex; flex-direction: column; gap: 12px;">
+                <!-- Dynamically filled -->
+            </div>
+
+            <div style="margin-top: 24px; text-align: right;">
+                <button type="button" class="btn-ghost-sm" onclick="closeSoStatsModal()" style="padding: 8px 18px; font-size: 13px; font-weight: 700;">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- UI Controllers & Client Script -->
+    <%- include('partials/user_lookup') %>
+        <script src="/js/admin.js?v=<%= Date.now() %>"></script>
+        <script src="/js/user_lookup.js"></script>
+        <script src="/js/user-activity.js?v=<%= Date.now() %>"></script>
+</body>
+
+</html>

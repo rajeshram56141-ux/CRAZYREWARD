@@ -1,0 +1,1308 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Promoters Manager - Admin</title>
+    <link rel="stylesheet" href="/css/admin.css">
+    <link rel="icon" href="/images/favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        :root {
+            --bg: #f8fafc;
+            --surface: #ffffff;
+            --border: #e2e8f0;
+            --primary: #052e1f;
+            --primary-hover: #042418;
+            --text: #0f172a;
+            --muted: #64748b;
+            --danger: #dc2626;
+            --success: #16a34a;
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--text);
+        }
+
+        .promoter-layout {
+            display: grid;
+            grid-template-columns: 1fr 1.6fr;
+            gap: 24px;
+            margin-top: 24px;
+            align-items: start;
+        }
+
+        @media (max-width: 1024px) {
+            .promoter-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .glass-card {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
+            border: 1px solid var(--border);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .glass-card:hover {
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+        }
+
+        /* KPI Mini Cards */
+        .kpi-mini-card {
+            background: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 16px 20px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+        }
+
+        .kpi-mini-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: #052e1f;
+        }
+
+        .kpi-mini-card.success::before {
+            background: #16a34a;
+        }
+
+        .kpi-mini-card.warning::before {
+            background: #dc2626;
+        }
+
+        .kpi-mini-label {
+            font-size: 11px;
+            color: var(--muted);
+            font-weight: 700;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        .kpi-mini-value {
+            font-size: 22px;
+            font-weight: 800;
+            color: #0f172a;
+        }
+
+        /* Level Cards */
+        .level-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px;
+            margin-bottom: 24px;
+        }
+
+        .level-card {
+            background: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 14px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+            text-align: center;
+            border-bottom: 4px solid var(--lvl-color);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .level-card.level-1 { --lvl-color: #052e1f; }
+        .level-card.level-2 { --lvl-color: #16a34a; }
+        .level-card.level-3 { --lvl-color: #f59e0b; }
+
+        .level-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.06);
+        }
+
+        .level-title {
+            font-size: 12px;
+            font-weight: 800;
+            color: #0f172a;
+            margin-bottom: 8px;
+        }
+
+        .level-stats {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+
+        .level-stat-val {
+            font-size: 16px;
+            font-weight: 800;
+            color: #0f172a;
+        }
+
+        .level-stat-lbl {
+            font-size: 10px;
+            color: var(--muted);
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .level-card .coins-stat {
+            display: none !important;
+        }
+
+        .level-card.selected .coins-stat {
+            display: flex !important;
+        }
+
+        /* Presets Buttons */
+        .presets-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 16px;
+            align-items: center;
+        }
+
+        .btn-preset {
+            padding: 6px 14px;
+            background: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 700;
+            color: #475569;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-preset:hover {
+            background: rgba(5, 46, 31, 0.06);
+            color: #052e1f;
+        }
+
+        .btn-preset.active {
+            background: #052e1f;
+            color: #ffffff;
+            border-color: #052e1f;
+        }
+
+        /* Action Buttons */
+        .btn-action-primary {
+            background: #052e1f;
+            color: #ffffff;
+            border: none;
+            border-radius: 12px;
+            padding: 10px 18px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 12px rgba(5, 46, 31, 0.2);
+            transition: all 0.2s ease;
+        }
+
+        .btn-action-primary:hover {
+            background: #042418;
+            transform: translateY(-1px);
+        }
+
+        .btn-sm-info {
+            background: rgba(5, 46, 31, 0.08);
+            color: #052e1f;
+            border: 1px solid rgba(5, 46, 31, 0.15);
+            border-radius: 8px;
+            padding: 6px 12px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-sm-info:hover {
+            background: #052e1f;
+            color: #ffffff;
+        }
+
+        .btn-sm-danger {
+            background: #fef2f2;
+            color: #dc2626;
+            border: 1px solid #fecaca;
+            border-radius: 8px;
+            padding: 6px 12px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-sm-danger:hover {
+            background: #dc2626;
+            color: #ffffff;
+        }
+
+        /* Table Styling */
+        .table-container {
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            overflow: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 12px 14px;
+            font-size: 13px;
+            border-bottom: 1px solid var(--border);
+            vertical-align: middle;
+        }
+
+        th {
+            background: #052e1f;
+            color: #ffffff;
+            font-weight: 700;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            text-align: left;
+        }
+
+        tr.selected-promoter-row {
+            background: rgba(5, 46, 31, 0.06) !important;
+        }
+
+        /* Detail Placeholder */
+        .detail-placeholder {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--muted);
+        }
+
+        .detail-placeholder svg {
+            width: 56px;
+            height: 56px;
+            color: #94a3b8;
+            margin-bottom: 12px;
+        }
+
+        .detail-placeholder h3 {
+            margin: 0 0 6px;
+            font-size: 18px;
+            font-weight: 800;
+            color: #0f172a;
+        }
+
+        /* Modals Screen-Centered Blur Overlay */
+        .modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(8px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 999999;
+            padding: 20px;
+        }
+
+        .modal.is-open {
+            display: flex !important;
+        }
+
+        .modal-card {
+            width: min(560px, 94vw);
+            background: #ffffff;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+
+        .modal-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 24px;
+            background: linear-gradient(135deg, #052e1f 0%, #0a4731 100%);
+            color: #ffffff;
+        }
+
+        .modal-head h3 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 800;
+        }
+
+        .modal-close {
+            background: rgba(255, 255, 255, 0.15);
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            color: #ffffff;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .modal-body {
+            padding: 24px;
+        }
+    </style>
+</head>
+
+<body class="dashboard-body theme-ads">
+
+    <div class="dashboard-shell">
+        <%- include('../partials/sidebar', { activePage: 'promoters' }) %>
+
+        <div class="dashboard-main">
+            <header class="navbar dashboard-navbar">
+                <div class="nav-left" style="display: flex; align-items: center; gap: 12px; white-space: nowrap;">
+                    <button type="button" class="sidebar-toggle-btn" onclick="toggleSidebar()">
+                        ☰
+                    </button>
+                    <h2 style="margin: 0; font-size: 18px; font-weight: 800; white-space: nowrap;">Promoters Manager</h2>
+
+                    <select id="appSelect" onchange="onAppChange()" style="margin-left: 8px; padding: 6px 12px; border-radius: 10px; border: 1px solid #cbd5e1; font-weight: 700; background: #f8fafc; font-size: 13px; cursor: pointer;">
+                        <% firebaseServices.forEach(service => { %>
+                            <option value="<%= service.appName %>">
+                                <%= service.displayName %>
+                            </option>
+                        <% }) %>
+                    </select>
+                </div>
+
+                <div class="nav-right" onclick="toggleDropdown()">
+                    <div class="avatar">
+                        <%- typeof photo !== 'undefined' && photo ? photo : 'A' %>
+                    </div>
+                    <div class="dropdown" id="dropdown">
+                        <a href="/logout">Logout</a>
+                    </div>
+                </div>
+            </header>
+
+            <main class="container dashboard-home">
+                <!-- PAGE HEADER CARD -->
+                <section class="glass-card" style="margin-bottom: 24px; padding: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+                    <div>
+                        <h1 style="font-size: 22px; font-weight: 800; color: #0f172a; margin: 0 0 4px 0;">Promoters Dashboard</h1>
+                        <p style="color: var(--muted); font-size: 13px; margin: 0;">Track top referrers, manage levels, and configure withdrawal permissions</p>
+                    </div>
+                    <button class="btn-action-primary" onclick="openAddPromoterModal()">
+                        <i class="fa-solid fa-plus" style="margin-right: 4px;"></i> Add Promoter
+                    </button>
+                </section>
+
+                <!-- DATE FILTER TOOLBAR & PROFIT / LOSS -->
+                <section class="glass-card" style="margin-bottom: 24px; padding: 18px; display: flex; gap: 14px; align-items: center; flex-wrap: wrap; background: #ffffff;">
+                    <div style="font-weight: 800; font-size: 12px; color: #052e1f; text-transform: uppercase; letter-spacing: 0.5px;"><i class="fa-solid fa-calendar-days" style="margin-right: 4px;"></i> Date Range:</div>
+                    <select id="globalPresetSelect" onchange="onGlobalPresetChange()" style="padding: 8px 12px; border-radius: 10px; border: 1px solid var(--border); font-weight: 700; font-size: 13px; background: #f8fafc; cursor: pointer;">
+                        <option value="lifetime">Lifetime</option>
+                        <option value="today">Today</option>
+                        <option value="yesterday">Yesterday</option>
+                        <option value="thismonth">This Month</option>
+                        <option value="lastmonth">Last Month</option>
+                        <option value="custom" style="display:none;">Custom</option>
+                    </select>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <input type="date" id="globalStartDate" onchange="onGlobalDateChange()" style="padding: 7px 12px; border-radius: 10px; border: 1px solid var(--border); font-size: 13px; background: white;">
+                        <span style="color: var(--muted); font-size: 13px; font-weight: 700;">to</span>
+                        <input type="date" id="globalEndDate" onchange="onGlobalDateChange()" style="padding: 7px 12px; border-radius: 10px; border: 1px solid var(--border); font-size: 13px; background: white;">
+                    </div>
+                    <button class="btn-action-primary" onclick="checkProfitLoss()" style="margin-left: auto; background: #10b981;">
+                        📊 Check P/L
+                    </button>
+                </section>
+
+                <!-- COST SUMMARY KPI CARDS -->
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 16px; margin-bottom: 24px;">
+                    <div class="kpi-mini-card">
+                        <span class="kpi-mini-label">Today's Cost</span>
+                        <span class="kpi-mini-value" id="costToday">₹0</span>
+                    </div>
+                    <div class="kpi-mini-card">
+                        <span class="kpi-mini-label">Yesterday's Cost</span>
+                        <span class="kpi-mini-value" id="costYesterday">₹0</span>
+                    </div>
+                    <div class="kpi-mini-card">
+                        <span class="kpi-mini-label">This Month</span>
+                        <span class="kpi-mini-value" id="costThisMonth">₹0</span>
+                    </div>
+                    <div class="kpi-mini-card">
+                        <span class="kpi-mini-label">Last Month</span>
+                        <span class="kpi-mini-value" id="costLastMonth">₹0</span>
+                    </div>
+                    <div class="kpi-mini-card success">
+                        <span class="kpi-mini-label">Filtered Cost</span>
+                        <span class="kpi-mini-value" id="costFiltered" style="color: #16a34a;">₹0</span>
+                    </div>
+                </div>
+
+                <div class="promoter-layout">
+                    <!-- LEFT COLUMN: TOP PROMOTERS LIST -->
+                    <div class="glass-card" style="padding: 20px;">
+                        <h3 style="font-size: 16px; font-weight: 800; color: #052e1f; margin: 0 0 16px 0; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;">
+                            <span>Top Promoters</span>
+                            <div style="display: flex; gap: 8px; align-items: center;">
+                                <span id="promotersCountBadge" style="background: rgba(5, 46, 31, 0.08); color: #052e1f; border: 1px solid rgba(5, 46, 31, 0.15); border-radius: 999px; padding: 4px 12px; font-size: 12px; font-weight: 800;">0 Promoters</span>
+                                <button onclick="downloadPromotersCSV()" style="padding: 6px 12px; font-size: 12px; font-weight: 700; border-radius: 8px; background: rgba(5, 46, 31, 0.08); color: #052e1f; border: 1px solid rgba(5, 46, 31, 0.15); cursor: pointer; display: flex; align-items: center; gap: 4px;">
+                                    📥 CSV
+                                </button>
+                            </div>
+                        </h3>
+                        <div class="table-container">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th style="width: 50px;">Rank</th>
+                                        <th>Promoter</th>
+                                        <th style="text-align: right;">Direct</th>
+                                        <th style="text-align: right;">Total</th>
+                                        <th style="text-align: right;">Price (₹)</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="promotersTableBody">
+                                    <tr>
+                                        <td colspan="5" style="text-align: center; color: var(--muted); padding: 24px; font-weight: 600;">
+                                            Select App or wait, loading promoters...
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- RIGHT COLUMN: PROMOTER DETAIL DASHBOARD -->
+                    <div id="promoterDetailCard" class="glass-card">
+                        <div class="detail-placeholder" id="detailPlaceholder">
+                            <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.109A11.386 11.386 0 0110.089 20c-2.202 0-4.277-.625-6.043-1.717m15.986 0c.937-.54 1.76-1.25 2.427-2.072M10.5 17.5l-3-3m0 0l-3 3m3-3v12M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            <h3>Select a Promoter</h3>
+                            <p>Click any promoter from the left list to inspect detailed metrics, referral levels, and payout controls.</p>
+                        </div>
+
+                        <!-- Active stats block -->
+                        <div id="detailContent" style="display: none;">
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; border-bottom: 1px solid #f1f5f9; padding-bottom: 16px; flex-wrap: wrap; gap: 12px;">
+                                <div>
+                                    <h3 id="detName" style="font-size: 18px; font-weight: 800; color: #052e1f; margin: 0 0 2px 0;">Promoter Name</h3>
+                                    <p id="detEmail" style="font-size: 13px; color: var(--muted); margin: 0 0 4px 0;">promoter@email.com</p>
+                                    <span style="font-size: 11px; color: var(--muted); font-weight: 600;">Code: <strong id="detCode" style="color: #052e1f;">CODE</strong> | UID: <strong id="detUid" style="color: #334155;">UID</strong></span>
+                                </div>
+                                <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 8px;">
+                                    <div id="detPayoutBadge">
+                                        <span style="background: rgba(22, 163, 74, 0.1); color: #16a34a; border: 1px solid rgba(22, 163, 74, 0.2); border-radius: 999px; padding: 4px 10px; font-size: 12px; font-weight: 800;">Withdraw Allowed</span>
+                                    </div>
+                                    <div style="display: flex; gap: 8px;">
+                                        <button class="btn-sm-info" id="btnToggleWithdraw" onclick="togglePayoutBlock()">
+                                            Withdraw Control
+                                        </button>
+                                        <button class="btn-sm-danger" id="btnRemovePromoter" onclick="confirmRemovePromoter()">
+                                            Remove Promoter
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Payout Block Reason Alert Banner -->
+                            <div id="detBlockReasonBanner" style="display: none; background: #fef2f2; border: 1px solid #fecaca; border-radius: 12px; padding: 12px; margin-bottom: 20px;">
+                                <p style="margin: 0; font-size: 12px; color: #b91c1c; font-weight: 700;">
+                                    ⚠️ Withdrawals Blocked Reason: <span id="detBlockReasonText" style="font-weight: 500;">No reason provided.</span>
+                                </p>
+                            </div>
+
+                            <!-- Promoter Media & Deal Details -->
+                            <div style="background: #ffffff; border: 1px solid var(--border); border-radius: 14px; padding: 18px; margin-bottom: 20px;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 1px solid #f1f5f9; padding-bottom: 8px;">
+                                    <h4 style="margin: 0; font-size: 13px; font-weight: 800; color: #052e1f; text-transform: uppercase; letter-spacing: 0.5px;">📢 Media & Deal Details</h4>
+                                    <button class="btn-sm-info" id="btnEditMongoDetails" onclick="toggleEditMongoDetails(true)">Edit Details</button>
+                                </div>
+                                
+                                <div id="mongoDetailsView">
+                                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; font-size: 13px; margin-bottom: 12px;">
+                                        <div>
+                                            <span style="color: var(--muted); font-weight: 700; font-size: 11px; text-transform: uppercase;">CHANNEL NAME</span>
+                                            <div id="detChannelName" style="font-weight: 800; color: #0f172a; margin-top: 2px; font-size: 14px;">N/A</div>
+                                        </div>
+                                        <div>
+                                            <span style="color: var(--muted); font-weight: 700; font-size: 11px; text-transform: uppercase;">PRICE (INR)</span>
+                                            <div id="detPriceInR" style="font-weight: 800; color: #16a34a; margin-top: 2px; font-size: 14px;">₹0</div>
+                                        </div>
+                                    </div>
+                                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; font-size: 13px; margin-bottom: 12px;">
+                                        <div>
+                                            <span style="color: var(--muted); font-weight: 700; font-size: 11px; text-transform: uppercase;">PROMO DATE</span>
+                                            <div id="detPromoDate" style="font-weight: 800; color: #0f172a; margin-top: 2px; font-size: 14px;">N/A</div>
+                                        </div>
+                                    </div>
+                                    <div style="font-size: 13px;">
+                                        <span style="color: var(--muted); font-weight: 700; font-size: 11px; text-transform: uppercase;">VIDEO LINK</span>
+                                        <div style="margin-top: 2px;">
+                                            <a id="detVideoLink" href="#" target="_blank" style="color: #052e1f; font-weight: 800; text-decoration: underline; word-break: break-all; display: inline-block;">N/A</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div id="mongoDetailsEdit" style="display: none;">
+                                    <div style="margin-bottom: 12px;">
+                                        <label style="display: block; font-size: 11px; font-weight: 700; color: #475569; margin-bottom: 4px;">Channel Name</label>
+                                        <input type="text" id="editChannelName" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border); border-radius: 8px;" />
+                                    </div>
+                                    <div style="margin-bottom: 12px;">
+                                        <label style="display: block; font-size: 11px; font-weight: 700; color: #475569; margin-bottom: 4px;">Price in INR (₹)</label>
+                                        <input type="number" id="editPriceInInr" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border); border-radius: 8px;" />
+                                    </div>
+                                    <div style="margin-bottom: 12px;">
+                                        <label style="display: block; font-size: 11px; font-weight: 700; color: #475569; margin-bottom: 4px;">Promo Date</label>
+                                        <input type="date" id="editPromoDate" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border); border-radius: 8px;" />
+                                    </div>
+                                    <div style="margin-bottom: 12px;">
+                                        <label style="display: block; font-size: 11px; font-weight: 700; color: #475569; margin-bottom: 4px;">Video Link</label>
+                                        <input type="text" id="editVideoLink" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border); border-radius: 8px;" />
+                                    </div>
+                                    <div style="display: flex; gap: 8px; justify-content: flex-end; margin-top: 16px;">
+                                        <button class="btn-preset" onclick="toggleEditMongoDetails(false)">Cancel</button>
+                                        <button class="btn-action-primary" onclick="submitUpdateMongoDetails()">Save Details</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Preset Filters & Custom Date Range -->
+                            <div style="background: #f8fafc; border-radius: 14px; padding: 16px; border: 1px solid var(--border); margin-bottom: 24px;">
+                                <div class="presets-row">
+                                    <span style="font-size: 12px; font-weight: 700; color: #475569; margin-right: 8px;">Presets:</span>
+                                    <button class="btn-preset active" data-preset="lifetime" onclick="applyPreset('lifetime')">Lifetime</button>
+                                    <button class="btn-preset" data-preset="today" onclick="applyPreset('today')">Today</button>
+                                    <button class="btn-preset" data-preset="yesterday" onclick="applyPreset('yesterday')">Yesterday</button>
+                                    <button class="btn-preset" data-preset="last7" onclick="applyPreset('last7')">Last 7 Days</button>
+                                    <button class="btn-preset" data-preset="thismonth" onclick="applyPreset('thismonth')">This Month</button>
+                                </div>
+
+                                <div style="display: flex; gap: 12px; align-items: flex-end; flex-wrap: wrap;">
+                                    <div style="flex: 1; min-width: 120px;">
+                                        <label style="display: block; font-size: 11px; font-weight: 700; color: #475569; margin-bottom: 4px;">Start Date</label>
+                                        <input type="date" id="filterStartDate" style="width: 100%; padding: 6px 10px; border-radius: 8px; border: 1px solid var(--border); font-size: 13px; outline: none;">
+                                    </div>
+                                    <div style="flex: 1; min-width: 120px;">
+                                        <label style="display: block; font-size: 11px; font-weight: 700; color: #475569; margin-bottom: 4px;">End Date</label>
+                                        <input type="date" id="filterEndDate" style="width: 100%; padding: 6px 10px; border-radius: 8px; border: 1px solid var(--border); font-size: 13px; outline: none;">
+                                    </div>
+                                    <button class="btn-preset active" onclick="applyCustomFilter()" style="padding: 7px 16px; font-size: 13px;">Filter</button>
+                                </div>
+                            </div>
+
+                            <!-- General Stats Mini Cards -->
+                            <div class="stats-grid-3">
+                                <div class="kpi-mini-card">
+                                    <span class="kpi-mini-label">Filtered Refers</span>
+                                    <span class="kpi-mini-value" id="statsRefers">0</span>
+                                </div>
+                                <div class="kpi-mini-card success">
+                                    <span class="kpi-mini-label">Filtered Coins</span>
+                                    <span class="kpi-mini-value" id="statsCoins" style="color: #16a34a;">0</span>
+                                </div>
+                                <div class="kpi-mini-card">
+                                    <span class="kpi-mini-label">Status</span>
+                                    <span class="kpi-mini-value" id="statsStatus">Active</span>
+                                </div>
+                            </div>
+
+                            <!-- Levels Breakdown Section -->
+                            <h4 style="font-size: 14px; font-weight: 800; color: #052e1f; margin-bottom: 12px; display: flex; justify-content: space-between;">
+                                <span>Referral Levels Breakdown</span>
+                                <span style="font-size: 11px; color: var(--muted); font-weight: 600; font-style: italic;">💡 Click card to filter users list</span>
+                            </h4>
+                            <div class="level-grid">
+                                <div class="level-card level-1" id="lvlCard1" onclick="selectLevelFilter(1)">
+                                    <div class="level-title">Level 1 (Direct)</div>
+                                    <div class="level-stats">
+                                        <div class="level-stat-group">
+                                            <span class="level-stat-val" id="lvl1Count">0</span>
+                                            <span class="level-stat-lbl">Users</span>
+                                        </div>
+                                        <div class="level-stat-group coins-stat">
+                                            <span class="level-stat-val" id="lvl1Coins">0</span>
+                                            <span class="level-stat-lbl">Coins</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="level-card level-2" id="lvlCard2" onclick="selectLevelFilter(2)">
+                                    <div class="level-title">Level 2</div>
+                                    <div class="level-stats">
+                                        <div class="level-stat-group">
+                                            <span class="level-stat-val" id="lvl2Count">0</span>
+                                            <span class="level-stat-lbl">Users</span>
+                                        </div>
+                                        <div class="level-stat-group coins-stat">
+                                            <span class="level-stat-val" id="lvl2Coins">0</span>
+                                            <span class="level-stat-lbl">Coins</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="level-card level-3" id="lvlCard3" onclick="selectLevelFilter(3)">
+                                    <div class="level-title">Level 3</div>
+                                    <div class="level-stats">
+                                        <div class="level-stat-group">
+                                            <span class="level-stat-val" id="lvl3Count">0</span>
+                                            <span class="level-stat-lbl">Users</span>
+                                        </div>
+                                        <div class="level-stat-group coins-stat">
+                                            <span class="level-stat-val" id="lvl3Coins">0</span>
+                                            <span class="level-stat-lbl">Coins</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Referred Users Search & Table -->
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 12px;">
+                                <h4 style="font-size: 14px; font-weight: 800; color: #052e1f; margin: 0;" id="usersListTitle">Referred Users (Level 1)</h4>
+                                <input type="text" id="userSearchInput" onkeyup="filterReferredUsersTable()" placeholder="🔍 Search referred user..." style="padding: 6px 12px; border-radius: 8px; border: 1px solid var(--border); font-size: 12px; width: 200px;">
+                            </div>
+
+                            <div class="table-container">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>User</th>
+                                            <th>Level</th>
+                                            <th>Joined Date</th>
+                                            <th style="text-align: right;">Total Earned</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="referredUsersTableBody">
+                                        <tr>
+                                            <td colspan="4" style="text-align: center; color: var(--muted); padding: 20px;">
+                                                No users found for this level.
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- ADD PROMOTER MODAL OVERLAY -->
+    <div id="addPromoterModal" class="modal">
+        <div class="modal-card">
+            <div class="modal-head">
+                <h3><i class="fa-solid fa-plus" style="margin-right: 6px;"></i> Add New Promoter</h3>
+                <button type="button" class="modal-close" onclick="closeAddPromoterModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div style="margin-bottom: 14px; position: relative;">
+                    <label style="display: block; font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; margin-bottom: 6px;">Search User (Name / Email / UID) *</label>
+                    <input type="text" id="addSearchInput" onkeyup="searchUsersForPromoter(this.value)" placeholder="Type user name or email..." style="width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: 10px; font-size: 13px;" />
+                    <div id="userSearchResults" style="display: none; position: absolute; top: 100%; left: 0; right: 0; background: white; border: 1px solid var(--border); border-radius: 10px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); max-height: 200px; overflow-y: auto; z-index: 10;"></div>
+                </div>
+
+                <input type="hidden" id="addSelectedUserId" />
+
+                <div style="margin-bottom: 14px;">
+                    <label style="display: block; font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; margin-bottom: 6px;">Channel / Media Name *</label>
+                    <input type="text" id="addChannelName" placeholder="e.g. Technical Guruji / Insta Page" style="width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: 10px; font-size: 13px;" />
+                </div>
+
+                <div style="margin-bottom: 14px;">
+                    <label style="display: block; font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; margin-bottom: 6px;">Price in INR (₹) *</label>
+                    <input type="number" id="addPriceInInr" placeholder="e.g. 5000" style="width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: 10px; font-size: 13px;" />
+                </div>
+
+                <div style="margin-bottom: 14px;">
+                    <label style="display: block; font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; margin-bottom: 6px;">Promo Date *</label>
+                    <input type="date" id="addPromoDate" style="width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: 10px; font-size: 13px;" />
+                </div>
+
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; margin-bottom: 6px;">Video Link</label>
+                    <input type="text" id="addVideoLink" placeholder="https://youtube.com/watch?v=..." style="width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: 10px; font-size: 13px;" />
+                </div>
+
+                <div style="display: flex; gap: 10px; justify-content: flex-end;">
+                    <button type="button" class="btn-preset" onclick="closeAddPromoterModal()">Cancel</button>
+                    <button type="button" class="btn-action-primary" onclick="submitAddPromoter()">Add Promoter</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PROFIT / LOSS REPORT MODAL OVERLAY -->
+    <div id="profitLossModal" class="modal">
+        <div class="modal-card" style="width: min(720px, 94vw);">
+            <div class="modal-head">
+                <h3>📊 Profit / Loss Analysis Report</h3>
+                <button type="button" class="modal-close" onclick="closeProfitLossModal()">&times;</button>
+            </div>
+            <div class="modal-body" id="profitLossReportContent">
+                <div style="text-align: center; color: var(--muted); padding: 30px;">Loading P/L calculation...</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/admin.js"></script>
+    <script>
+        let loadedPromoters = [];
+        let currentPromoterId = null;
+        let currentDetailData = null;
+        let selectedLevel = 1;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Set initial dates for global date range
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('globalEndDate').value = today;
+            document.getElementById('globalStartDate').value = getFirstDayOfMonth();
+            
+            // Initial load of promoters
+            loadPromotersList();
+            fetchCostSummary();
+        });
+
+        function getFirstDayOfMonth() {
+            const date = new Date();
+            return new Date(date.getFullYear(), date.getMonth(), 1).toISOString().split('T')[0];
+        }
+
+        function getSelectedApp() {
+            return document.getElementById('appSelect')?.value || '';
+        }
+
+        function onAppChange() {
+            currentPromoterId = null;
+            document.getElementById('detailPlaceholder').style.display = 'block';
+            document.getElementById('detailContent').style.display = 'none';
+            loadPromotersList();
+            fetchCostSummary();
+        }
+
+        function onGlobalPresetChange() {
+            const preset = document.getElementById('globalPresetSelect').value;
+            const today = new Date();
+            let start = '', end = '';
+
+            if (preset === 'today') {
+                start = end = today.toISOString().split('T')[0];
+            } else if (preset === 'yesterday') {
+                const yest = new Date(today);
+                yest.setDate(yest.getDate() - 1);
+                start = end = yest.toISOString().split('T')[0];
+            } else if (preset === 'thismonth') {
+                start = getFirstDayOfMonth();
+                end = today.toISOString().split('T')[0];
+            } else if (preset === 'lastmonth') {
+                const first = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+                const last = new Date(today.getFullYear(), today.getMonth(), 0);
+                start = first.toISOString().split('T')[0];
+                end = last.toISOString().split('T')[0];
+            }
+
+            if (preset !== 'lifetime') {
+                document.getElementById('globalStartDate').value = start;
+                document.getElementById('globalEndDate').value = end;
+            }
+
+            loadPromotersList();
+            fetchCostSummary();
+            if (currentPromoterId) loadPromoterDetail(currentPromoterId);
+        }
+
+        function onGlobalDateChange() {
+            document.getElementById('globalPresetSelect').value = 'custom';
+            loadPromotersList();
+            fetchCostSummary();
+            if (currentPromoterId) loadPromoterDetail(currentPromoterId);
+        }
+
+        // Fetch promoters list from API
+        async function loadPromotersList() {
+            const app = getSelectedApp();
+            const tableBody = document.getElementById('promotersTableBody');
+            const badge = document.getElementById('promotersCountBadge');
+
+            const preset = document.getElementById('globalPresetSelect').value;
+            const start = document.getElementById('globalStartDate').value;
+            const end = document.getElementById('globalEndDate').value;
+
+            tableBody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--muted); padding: 20px; font-weight: 600;">Loading promoters...</td></tr>`;
+
+            try {
+                let url = `/api/promoters/list?app=${encodeURIComponent(app)}`;
+                if (preset !== 'lifetime' && start && end) {
+                    url += `&start=${encodeURIComponent(start)}&end=${encodeURIComponent(end)}`;
+                }
+
+                const res = await fetch(url);
+                const data = await res.json();
+
+                if (!res.ok || !data.success) throw new Error(data.message || 'Failed to load');
+
+                badge.innerText = `${data.promoters.length} Promoters`;
+                loadedPromoters = data.promoters;
+
+                if (data.promoters.length === 0) {
+                    tableBody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--muted); padding: 20px; font-weight: 600;">No promoters found for this app.</td></tr>`;
+                    return;
+                }
+
+                tableBody.innerHTML = data.promoters.map((prom, index) => {
+                    const isSelected = String(prom.userId) === String(currentPromoterId);
+                    return `
+                        <tr class="${isSelected ? 'selected-promoter-row' : ''}" onclick="selectPromoter('${prom.userId}')" style="cursor: pointer;">
+                            <td style="font-weight: 800; color: #052e1f;">#${index + 1}</td>
+                            <td>
+                                <div style="font-weight: 800; color: #0f172a;">${escapeHtml(prom.name || 'User')}</div>
+                                <div style="font-size: 11px; color: var(--muted);">${escapeHtml(prom.email || '')}</div>
+                            </td>
+                            <td style="text-align: right; font-weight: 800;">${prom.directRefers || 0}</td>
+                            <td style="text-align: right; font-weight: 800; color: #052e1f;">${prom.totalRefers || 0}</td>
+                            <td style="text-align: right; font-weight: 800; color: #16a34a;">₹${Number(prom.priceInInr || 0).toLocaleString('en-IN')}</td>
+                        </tr>
+                    `;
+                }).join('');
+            } catch (err) {
+                tableBody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: #dc2626; padding: 20px; font-weight: 600;">Error loading promoters.</td></tr>`;
+            }
+        }
+
+        function selectPromoter(userId) {
+            currentPromoterId = userId;
+            loadPromotersList();
+            loadPromoterDetail(userId);
+        }
+
+        async function loadPromoterDetail(userId) {
+            const app = getSelectedApp();
+            document.getElementById('detailPlaceholder').style.display = 'none';
+            document.getElementById('detailContent').style.display = 'block';
+
+            const preset = document.getElementById('globalPresetSelect').value;
+            const start = document.getElementById('globalStartDate').value;
+            const end = document.getElementById('globalEndDate').value;
+
+            try {
+                let url = `/api/promoters/detail?app=${encodeURIComponent(app)}&userId=${encodeURIComponent(userId)}`;
+                if (preset !== 'lifetime' && start && end) {
+                    url += `&start=${encodeURIComponent(start)}&end=${encodeURIComponent(end)}`;
+                }
+
+                const res = await fetch(url);
+                const data = await res.json();
+
+                if (!res.ok || !data.success) throw new Error(data.message || 'Failed to fetch details');
+
+                currentDetailData = data;
+                renderPromoterDetailData(data);
+            } catch (err) {
+                alert('Error loading promoter details: ' + err.message);
+            }
+        }
+
+        function renderPromoterDetailData(data) {
+            const prom = data.promoter;
+            document.getElementById('detName').textContent = prom.name || 'User';
+            document.getElementById('detEmail').textContent = prom.email || '';
+            document.getElementById('detCode').textContent = prom.referralCode || 'N/A';
+            document.getElementById('detUid').textContent = prom.userId || '';
+
+            // Withdraw status badge
+            const badgeBox = document.getElementById('detPayoutBadge');
+            const reasonBanner = document.getElementById('detBlockReasonBanner');
+            const reasonText = document.getElementById('detBlockReasonText');
+
+            if (data.isBlocked) {
+                badgeBox.innerHTML = `<span style="background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; border-radius: 999px; padding: 4px 10px; font-size: 12px; font-weight: 800;">🚫 Withdraw Blocked</span>`;
+                reasonBanner.style.display = 'block';
+                reasonText.textContent = data.blockReason || 'No reason specified';
+            } else {
+                badgeBox.innerHTML = `<span style="background: rgba(22, 163, 74, 0.1); color: #16a34a; border: 1px solid rgba(22, 163, 74, 0.2); border-radius: 999px; padding: 4px 10px; font-size: 12px; font-weight: 800;">✅ Withdraw Allowed</span>`;
+                reasonBanner.style.display = 'none';
+            }
+
+            // MongoDB deal details
+            document.getElementById('detChannelName').textContent = prom.channelName || 'N/A';
+            document.getElementById('detPriceInR').textContent = `₹${Number(prom.priceInInr || 0).toLocaleString('en-IN')}`;
+            document.getElementById('detPromoDate').textContent = prom.promoDate ? new Date(prom.promoDate).toLocaleDateString('en-IN') : 'N/A';
+
+            const videoLink = document.getElementById('detVideoLink');
+            if (prom.videoLink) {
+                videoLink.href = prom.videoLink;
+                videoLink.textContent = prom.videoLink;
+            } else {
+                videoLink.href = '#';
+                videoLink.textContent = 'N/A';
+            }
+
+            // General filtered stats
+            document.getElementById('statsRefers').textContent = data.totals?.refers || 0;
+            document.getElementById('statsCoins').textContent = Number(data.totals?.coins || 0).toLocaleString('en-IN');
+            document.getElementById('statsStatus').textContent = data.isBlocked ? 'Blocked' : 'Active';
+
+            // Levels stats
+            document.getElementById('lvl1Count').textContent = data.levels?.lvl1?.count || 0;
+            document.getElementById('lvl1Coins').textContent = Number(data.levels?.lvl1?.coins || 0).toLocaleString('en-IN');
+            document.getElementById('lvl2Count').textContent = data.levels?.lvl2?.count || 0;
+            document.getElementById('lvl2Coins').textContent = Number(data.levels?.lvl2?.coins || 0).toLocaleString('en-IN');
+            document.getElementById('lvl3Count').textContent = data.levels?.lvl3?.count || 0;
+            document.getElementById('lvl3Coins').textContent = Number(data.levels?.lvl3?.coins || 0).toLocaleString('en-IN');
+
+            selectLevelFilter(1);
+        }
+
+        function selectLevelFilter(lvl) {
+            selectedLevel = lvl;
+            [1, 2, 3].forEach(l => {
+                const card = document.getElementById(`lvlCard${l}`);
+                if (card) {
+                    if (l === lvl) card.classList.add('selected');
+                    else card.classList.remove('selected');
+                }
+            });
+
+            document.getElementById('usersListTitle').textContent = `Referred Users (Level ${lvl})`;
+            renderReferredUsersTable();
+        }
+
+        function renderReferredUsersTable() {
+            if (!currentDetailData || !currentDetailData.usersByLevel) return;
+            const users = currentDetailData.usersByLevel[`lvl${selectedLevel}`] || [];
+            const tbody = document.getElementById('referredUsersTableBody');
+
+            if (users.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: var(--muted); padding: 20px; font-weight: 600;">No users found for Level ${selectedLevel}.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = users.map(u => `
+                <tr>
+                    <td>
+                        <div style="font-weight: 800; color: #0f172a;">${escapeHtml(u.name || 'User')}</div>
+                        <div style="font-size: 11px; color: var(--muted);">${escapeHtml(u.email || '')}</div>
+                    </td>
+                    <td><span style="background: rgba(5, 46, 31, 0.08); color: #052e1f; padding: 2px 8px; border-radius: 6px; font-size: 11px; font-weight: 800;">Lvl ${selectedLevel}</span></td>
+                    <td style="font-size: 12px; color: var(--muted);">${u.createdAt ? new Date(u.createdAt).toLocaleDateString('en-IN') : '-'}</td>
+                    <td style="text-align: right; font-weight: 800; color: #16a34a;"><i class="fa-solid fa-coins" style="color: #d97706; margin-right: 3px;"></i> ${Number(u.coinsEarned || 0).toLocaleString('en-IN')}</td>
+                </tr>
+            `).join('');
+        }
+
+        function filterReferredUsersTable() {
+            const q = document.getElementById('userSearchInput').value.toLowerCase();
+            const rows = document.querySelectorAll('#referredUsersTableBody tr');
+            rows.forEach(r => {
+                const text = r.textContent.toLowerCase();
+                r.style.display = text.includes(q) ? '' : 'none';
+            });
+        }
+
+        async function togglePayoutBlock() {
+            if (!currentPromoterId || !currentDetailData) return;
+            const isBlocked = currentDetailData.isBlocked;
+
+            let reason = '';
+            if (!isBlocked) {
+                reason = prompt('Reason for blocking withdrawals (Optional):') || '';
+            }
+
+            try {
+                const res = await fetch('/api/promoters/update-details', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        app: getSelectedApp(),
+                        userId: currentPromoterId,
+                        isBlocked: !isBlocked,
+                        blockReason: reason
+                    })
+                });
+
+                const json = await res.json();
+                if (!res.ok || !json.success) throw new Error(json.message || 'Failed to update status');
+
+                loadPromoterDetail(currentPromoterId);
+            } catch (err) {
+                alert(err.message || 'Failed to update withdrawal status');
+            }
+        }
+
+        async function confirmRemovePromoter() {
+            if (!currentPromoterId) return;
+            if (!confirm('Remove this promoter from the promoters catalog?')) return;
+
+            try {
+                const res = await fetch('/api/promoters/remove', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ app: getSelectedApp(), userId: currentPromoterId })
+                });
+
+                const json = await res.json();
+                if (!res.ok || !json.success) throw new Error(json.message || 'Failed to remove promoter');
+
+                currentPromoterId = null;
+                document.getElementById('detailPlaceholder').style.display = 'block';
+                document.getElementById('detailContent').style.display = 'none';
+                loadPromotersList();
+            } catch (err) {
+                alert(err.message || 'Failed to remove promoter');
+            }
+        }
+
+        function toggleEditMongoDetails(showEdit) {
+            document.getElementById('mongoDetailsView').style.display = showEdit ? 'none' : 'block';
+            document.getElementById('mongoDetailsEdit').style.display = showEdit ? 'block' : 'none';
+
+            if (showEdit && currentDetailData && currentDetailData.promoter) {
+                const p = currentDetailData.promoter;
+                document.getElementById('editChannelName').value = p.channelName || '';
+                document.getElementById('editPriceInInr').value = p.priceInInr || 0;
+                document.getElementById('editPromoDate').value = p.promoDate ? p.promoDate.split('T')[0] : '';
+                document.getElementById('editVideoLink').value = p.videoLink || '';
+            }
+        }
+
+        async function submitUpdateMongoDetails() {
+            if (!currentPromoterId) return;
+
+            const payload = {
+                app: getSelectedApp(),
+                userId: currentPromoterId,
+                channelName: document.getElementById('editChannelName').value.trim(),
+                priceInInr: Number(document.getElementById('editPriceInInr').value) || 0,
+                promoDate: document.getElementById('editPromoDate').value,
+                videoLink: document.getElementById('editVideoLink').value.trim(),
+            };
+
+            try {
+                const res = await fetch('/api/promoters/update-details', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const json = await res.json();
+                if (!res.ok || !json.success) throw new Error(json.message || 'Failed to update details');
+
+                toggleEditMongoDetails(false);
+                loadPromoterDetail(currentPromoterId);
+                loadPromotersList();
+            } catch (err) {
+                alert(err.message || 'Failed to update details');
+            }
+        }
+
+        async function fetchCostSummary() {
+            try {
+                const app = getSelectedApp();
+                const preset = document.getElementById('globalPresetSelect').value;
+                const start = document.getElementById('globalStartDate').value;
+                const end = document.getElementById('globalEndDate').value;
+
+                let url = `/api/promoters/cost-summary?app=${encodeURIComponent(app)}`;
+                if (preset !== 'lifetime' && start && end) {
+                    url += `&start=${encodeURIComponent(start)}&end=${encodeURIComponent(end)}`;
+                }
+
+                const res = await fetch(url);
+                const data = await res.json();
+                if (!res.ok || !data.success) return;
+
+                document.getElementById('costToday').textContent = `₹${Number(data.costs?.today || 0).toLocaleString('en-IN')}`;
+                document.getElementById('costYesterday').textContent = `₹${Number(data.costs?.yesterday || 0).toLocaleString('en-IN')}`;
+                document.getElementById('costThisMonth').textContent = `₹${Number(data.costs?.thisMonth || 0).toLocaleString('en-IN')}`;
+                document.getElementById('costLastMonth').textContent = `₹${Number(data.costs?.lastMonth || 0).toLocaleString('en-IN')}`;
+                document.getElementById('costFiltered').textContent = `₹${Number(data.costs?.filtered || 0).toLocaleString('en-IN')}`;
+            } catch (err) {}
+        }
+
+        async function checkProfitLoss() {
+            const modal = document.getElementById('profitLossModal');
+            const container = document.getElementById('profitLossReportContent');
+            modal.classList.add('is-open');
+
+            container.innerHTML = `<div style="text-align: center; color: var(--muted); padding: 30px;">Calculating P/L statement...</div>`;
+
+            try {
+                const res = await fetch('/api/promoters/profit-loss', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        app: getSelectedApp(),
+                        start: document.getElementById('globalStartDate').value,
+                        end: document.getElementById('globalEndDate').value
+                    })
+                });
+
+                const json = await res.json();
+                if (!res.ok || !json.success) throw new Error(json.message || 'Failed to calculate P/L');
+
+                const netProfit = Number(json.netProfit || 0);
+                const isProfitable = netProfit >= 0;
+
+                container.innerHTML = `
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 24px;">
+                        <div style="background: #f8fafc; border: 1px solid var(--border); border-radius: 14px; padding: 16px;">
+                            <div style="font-size: 11px; color: var(--muted); font-weight: 700; text-transform: uppercase;">Total Revenue</div>
+                            <div style="font-size: 20px; font-weight: 800; color: #16a34a; margin-top: 4px;">₹${Number(json.totalRevenue || 0).toLocaleString('en-IN')}</div>
+                        </div>
+                        <div style="background: #f8fafc; border: 1px solid var(--border); border-radius: 14px; padding: 16px;">
+                            <div style="font-size: 11px; color: var(--muted); font-weight: 700; text-transform: uppercase;">Promoter Costs</div>
+                            <div style="font-size: 20px; font-weight: 800; color: #dc2626; margin-top: 4px;">₹${Number(json.totalCost || 0).toLocaleString('en-IN')}</div>
+                        </div>
+                        <div style="background: ${isProfitable ? '#f0fdf4' : '#fef2f2'}; border: 1px solid ${isProfitable ? '#bbf7d0' : '#fecaca'}; border-radius: 14px; padding: 16px;">
+                            <div style="font-size: 11px; color: ${isProfitable ? '#16a34a' : '#dc2626'}; font-weight: 700; text-transform: uppercase;">Net Profit / Loss</div>
+                            <div style="font-size: 20px; font-weight: 800; color: ${isProfitable ? '#16a34a' : '#dc2626'}; margin-top: 4px;">₹${netProfit.toLocaleString('en-IN')}</div>
+                        </div>
+                    </div>
+                `;
+            } catch (err) {
+                container.innerHTML = `<div style="text-align: center; color: #dc2626; padding: 30px; font-weight: 700;">Error: ${err.message}</div>`;
+            }
+        }
+
+        function closeProfitLossModal() {
+            document.getElementById('profitLossModal').classList.remove('is-open');
+        }
+
+        function openAddPromoterModal() {
+            document.getElementById('addPromoterModal').classList.add('is-open');
+        }
+
+        function closeAddPromoterModal() {
+            document.getElementById('addPromoterModal').classList.remove('is-open');
+        }
+
+        let searchTimeout = null;
+        function searchUsersForPromoter(query) {
+            clearTimeout(searchTimeout);
+            const container = document.getElementById('userSearchResults');
+
+            if (!query || query.length < 2) {
+                container.style.display = 'none';
+                return;
+            }
+
+            searchTimeout = setTimeout(async () => {
+                try {
+                    const app = getSelectedApp();
+                    const res = await fetch(`/api/promoters/search-users?app=${encodeURIComponent(app)}&query=${encodeURIComponent(query)}`);
+                    const data = await res.json();
+
+                    if (!data.success || !data.users || data.users.length === 0) {
+                        container.innerHTML = `<div style="padding: 10px; font-size: 12px; color: var(--muted); text-align: center;">No users found</div>`;
+                        container.style.display = 'block';
+                        return;
+                    }
+
+                    container.innerHTML = data.users.map(u => `
+                        <div onclick="selectUserForPromoter('${u.userId}', '${escapeHtml(u.name || '')}', '${escapeHtml(u.email || '')}')" style="padding: 10px 14px; border-bottom: 1px solid #f1f5f9; cursor: pointer;">
+                            <div style="font-weight: 800; font-size: 13px; color: #0f172a;">${escapeHtml(u.name || 'User')}</div>
+                            <div style="font-size: 11px; color: var(--muted);">${escapeHtml(u.email || '')} | UID: ${u.userId}</div>
+                        </div>
+                    `).join('');
+                    container.style.display = 'block';
+                } catch (err) {}
+            }, 300);
+        }
+
+        function selectUserForPromoter(userId, name, email) {
+            document.getElementById('addSelectedUserId').value = userId;
+            document.getElementById('addSearchInput').value = `${name} (${email})`;
+            document.getElementById('userSearchResults').style.display = 'none';
+        }
+
+        async function submitAddPromoter() {
+            const userId = document.getElementById('addSelectedUserId').value;
+            const channelName = document.getElementById('addChannelName').value.trim();
+            const priceInInr = Number(document.getElementById('addPriceInInr').value) || 0;
+            const promoDate = document.getElementById('addPromoDate').value;
+            const videoLink = document.getElementById('addVideoLink').value.trim();
+
+            if (!userId) {
+                alert('Please search and select a user first!');
+                return;
+            }
+
+            try {
+                const res = await fetch('/api/promoters/add', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        app: getSelectedApp(),
+                        userId,
+                        channelName,
+                        priceInInr,
+                        promoDate,
+                        videoLink
+                    })
+                });
+
+                const json = await res.json();
+                if (!res.ok || !json.success) throw new Error(json.message || 'Failed to add promoter');
+
+                closeAddPromoterModal();
+                loadPromotersList();
+            } catch (err) {
+                alert(err.message || 'Failed to add promoter');
+            }
+        }
+
+        function downloadPromotersCSV() {
+            if (!loadedPromoters || loadedPromoters.length === 0) {
+                alert('No promoters to export.');
+                return;
+            }
+
+            const app = getSelectedApp();
+            let csv = 'Rank,Name,Email,UID,Referral Code,Direct Refers,Total Refers,Price INR\n';
+
+            loadedPromoters.forEach((p, idx) => {
+                csv += `"${idx + 1}","${p.name || ''}","${p.email || ''}","${p.userId || ''}","${p.referralCode || ''}","${p.directRefers || 0}","${p.totalRefers || 0}","${p.priceInInr || 0}"\n`;
+            });
+
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', `promoters_${app}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;');
+        }
+    </script>
+</body>
+
+</html>

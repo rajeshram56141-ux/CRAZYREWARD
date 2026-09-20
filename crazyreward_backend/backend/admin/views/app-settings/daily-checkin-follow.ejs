@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Check-in & Follow Settings - Admin</title>
+    <link rel="stylesheet" href="/css/admin.css">
+    <link rel="icon" href="/images/favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #f8fafc;
+            --surface: #ffffff;
+            --border: #e2e8f0;
+            --primary: #052e1f;
+            --primary-hover: #042418;
+            --text: #0f172a;
+            --muted: #64748b;
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--text);
+        }
+
+        .glass-card {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
+            border: 1px solid var(--border);
+        }
+
+        .btn-action-primary {
+            background: #052e1f;
+            color: #ffffff;
+            border: none;
+            border-radius: 12px;
+            padding: 10px 18px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-action-primary:hover {
+            background: #042418;
+        }
+
+        .settings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 24px;
+            margin-top: 16px;
+        }
+
+        .settings-section {
+            background: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.01);
+        }
+
+        .settings-section h3 {
+            margin-top: 0;
+            margin-bottom: 16px;
+            font-size: 16px;
+            font-weight: 800;
+            color: #052e1f;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 8px;
+        }
+
+        .field-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .field-wrap {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .field-wrap label {
+            font-weight: 700;
+            font-size: 13px;
+            color: #475569;
+        }
+
+        .field-wrap input, .field-wrap select {
+            padding: 10px 14px;
+            border: 1px solid #cbd5e1;
+            border-radius: 10px;
+            font-size: 13px;
+            background: #f8fafc;
+            font-weight: 500;
+        }
+
+        .field-wrap input:focus, .field-wrap select:focus {
+            outline: none;
+            border-color: #052e1f;
+            background: #ffffff;
+        }
+    </style>
+</head>
+
+<body class="dashboard-body">
+    <div class="dashboard-shell">
+        <%- include('../partials/sidebar', { activePage: 'daily-checkin-follow' }) %>
+
+        <div class="dashboard-main">
+            <header class="navbar dashboard-navbar">
+                <div class="nav-left" style="display: flex; align-items: center; gap: 12px; white-space: nowrap;">
+                    <button type="button" class="sidebar-toggle-btn" onclick="toggleSidebar()">☰</button>
+                    <h2 style="margin: 0; font-size: 18px; font-weight: 800; white-space: nowrap;">Daily Check-in & Follow Settings</h2>
+
+                    <select id="appSelect" onchange="onAppChanged()" style="margin-left: 8px; padding: 6px 12px; border-radius: 10px; border: 1px solid #cbd5e1; font-weight: 700; background: #f8fafc; font-size: 13px; cursor: pointer;">
+                        <% (typeof firebaseServices !== 'undefined' && firebaseServices ? firebaseServices : []).forEach(service => { %>
+                            <option value="<%= service.appName %>" <%= typeof activeAppName !== 'undefined' && service.appName === activeAppName ? 'selected' : '' %>>
+                                <%= service.displayName %>
+                            </option>
+                        <% }) %>
+                    </select>
+                </div>
+
+                <div class="nav-right" onclick="toggleDropdown()">
+                    <div class="avatar"><%- typeof photo !== 'undefined' && photo ? photo : 'A' %></div>
+                    <div class="dropdown" id="dropdown">
+                        <a href="/logout">Logout</a>
+                    </div>
+                </div>
+            </header>
+
+            <main class="container dashboard-home">
+                <section class="glass-card">
+                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; margin-bottom: 20px;">
+                        <div>
+                            <h2 style="margin: 0 0 4px 0; font-size: 20px; font-weight: 800; color: #052e1f;">Daily Check-in & Social Follow Rules</h2>
+                            <p style="color: var(--muted); font-size: 13px; margin: 0;">Manage daily streak rewards and follow-to-earn configurations</p>
+                        </div>
+                        <button type="button" class="btn-action-primary" onclick="saveSettings()"><i class="fa-solid fa-floppy-disk" style="margin-right: 6px;"></i> Save Settings</button>
+                    </div>
+
+                    <div id="status-alert" style="display: none; padding: 12px 16px; border-radius: 8px; margin-bottom: 16px; font-weight: 600; font-size: 13px;"></div>
+
+                    <div class="settings-grid" id="settings-container">
+                        <!-- 1. DAILY CHECK-IN -->
+                        <div class="settings-section">
+                            <h3>Daily Check-in (Streak)</h3>
+                            <div class="field-group">
+                                <div class="field-wrap">
+                                    <label>Streak Reward (Coins per Day)</label>
+                                    <input type="number" id="streak-coins" min="0" value="0" />
+                                </div>
+                                <div class="field-wrap">
+                                    <label>Require Rewarded Video Ad</label>
+                                    <select id="streak-ads">
+                                        <option value="true">Yes</option>
+                                        <option value="false">No</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 2. SOCIAL FOLLOW -->
+                        <div class="settings-section">
+                            <h3>Social Follow Settings</h3>
+                            <div class="field-group">
+                                <div class="field-wrap">
+                                    <label>Follow Reward (Coins)</label>
+                                    <input type="number" id="follow-coins" min="0" value="0" />
+                                </div>
+                                <div class="field-wrap">
+                                    <label>Telegram Channel Link</label>
+                                    <input type="text" id="telegram-link" placeholder="https://t.me/..." />
+                                </div>
+                                <div class="field-wrap">
+                                    <label>WhatsApp Support/Group Link</label>
+                                    <input type="text" id="whatsapp-link" placeholder="https://chat.whatsapp.com/..." />
+                                </div>
+                                <div class="field-wrap">
+                                    <label>YouTube Channel/Tutorial Link</label>
+                                    <input type="text" id="youtube-link" placeholder="https://youtube.com/..." />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <%- include('../partials/user_lookup') %>
+    <script src="/js/admin.js"></script>
+    <script src="/js/user_lookup.js"></script>
+    <script>
+        async function loadSettings() {
+            const selectedApp = document.getElementById('appSelect').value;
+            if (!selectedApp) return;
+
+            try {
+                const res = await fetch(`/app-data-config?appName=${encodeURIComponent(selectedApp)}`);
+                const json = await res.json();
+                if (!json.success) throw new Error(json.message || 'Failed to fetch settings');
+
+                const appData = json.appData || {};
+                const streakConfig = appData.streakConfig || {};
+                const urlConfig = appData.urlConfig || {};
+
+                // Daily Check-in
+                document.getElementById('streak-coins').value = Number(streakConfig.coins ?? appData.streakCoins) || 0;
+                document.getElementById('streak-ads').value = String(streakConfig.rewardedAds === true);
+
+                // Social Follow
+                document.getElementById('follow-coins').value = Number(appData.followCoins) || 0;
+                document.getElementById('telegram-link').value = String(urlConfig.telegramLink || '').trim();
+                document.getElementById('whatsapp-link').value = String(urlConfig.whatsappLink || '').trim();
+                document.getElementById('youtube-link').value = String(urlConfig.youtubeLink || '').trim();
+            } catch (err) {
+                showAlert(err.message || 'Failed to load settings', 'error');
+            }
+        }
+
+        async function saveSettings() {
+            const selectedApp = document.getElementById('appSelect').value;
+            if (!selectedApp) return;
+
+            const streakCoins = Number(document.getElementById('streak-coins').value) || 0;
+            const streakRewardedAds = document.getElementById('streak-ads').value === 'true';
+
+            const followCoins = Number(document.getElementById('follow-coins').value) || 0;
+            const telegramLink = String(document.getElementById('telegram-link').value || '').trim();
+            const whatsappLink = String(document.getElementById('whatsapp-link').value || '').trim();
+            const youtubeLink = String(document.getElementById('youtube-link').value || '').trim();
+
+            showAlert('Saving settings...', 'loading');
+
+            try {
+                const payload = {
+                    selectedApp,
+                    appData: {
+                        followCoins: followCoins,
+                        streakConfig: {
+                            coins: streakCoins,
+                            rewardedAds: streakRewardedAds
+                        },
+                        urlConfig: {
+                            telegramLink: telegramLink,
+                            whatsappLink: whatsappLink,
+                            youtubeLink: youtubeLink
+                        }
+                    }
+                };
+
+                const res = await fetch('/app-data-config/app-data', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const json = await res.json();
+                if (!res.ok || !json.success) throw new Error(json.message || 'Failed to save settings');
+
+                showAlert('Daily Check-in & Follow settings saved successfully!', 'success');
+                setTimeout(loadSettings, 1000);
+            } catch (err) {
+                showAlert(err.message || 'Failed to save settings', 'error');
+            }
+        }
+
+        function showAlert(msg, type) {
+            const alertEl = document.getElementById('status-alert');
+            alertEl.style.display = 'block';
+            alertEl.innerText = msg;
+            if (type === 'loading') {
+                alertEl.style.background = '#fef3c7';
+                alertEl.style.color = '#b45309';
+                alertEl.style.border = '1px solid #fde68a';
+            } else if (type === 'success') {
+                alertEl.style.background = '#dcfce7';
+                alertEl.style.color = '#15803d';
+                alertEl.style.border = '1px solid #bbf7d0';
+            } else {
+                alertEl.style.background = '#fee2e2';
+                alertEl.style.color = '#b91c1c';
+                alertEl.style.border = '1px solid #fecaca';
+            }
+        }
+
+        function onAppChanged() {
+            const selectedApp = document.getElementById('appSelect').value;
+            window.location.href = `/manage-daily-checkin-follow?appName=${encodeURIComponent(selectedApp)}`;
+        }
+
+        window.addEventListener('DOMContentLoaded', loadSettings);
+    </script>
+</body>
+
+</html>

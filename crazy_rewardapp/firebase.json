@@ -1,0 +1,21 @@
+{
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "crazy-reward-7a1cc",
+          "appId": "1:534146066275:android:9797178e284494e33f1556",
+          "fileOutput": "android/app/google-services.json"
+        }
+      }
+    },
+    "dart": {
+      "lib/services/firebase_options.dart": {
+        "projectId": "crazy-reward-7a1cc",
+        "configurations": {
+          "android": "1:534146066275:android:9797178e284494e33f1556"
+        }
+      }
+    }
+  }
+}
