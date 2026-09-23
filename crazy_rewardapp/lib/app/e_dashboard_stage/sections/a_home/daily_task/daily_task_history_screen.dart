@@ -84,7 +84,7 @@ class DailyTaskHistoryScreen extends HookConsumerWidget {
         backgroundColor: Colors.white,
         body: Stack(
           children: [
-            // 1. Solid Clean White Background
+            // 1. Clean Solid White Background
             Positioned.fill(
               child: Container(
                 color: Colors.white,
@@ -94,7 +94,7 @@ class DailyTaskHistoryScreen extends HookConsumerWidget {
             // 2. Main Scrollable Content
             Positioned.fill(
               child: RefreshIndicator(
-                color: const Color(0xFFAB31DE),
+                color: const Color(0xFF26262B),
                 backgroundColor: Colors.white,
                 edgeOffset: topPadding + 60.h,
                 onRefresh: () async {
@@ -105,7 +105,7 @@ class DailyTaskHistoryScreen extends HookConsumerWidget {
                     parent: BouncingScrollPhysics(),
                   ),
                   slivers: [
-                    // Executive Top Header Bar
+                    // Top Bar Header
                     SliverToBoxAdapter(
                       child: Padding(
                         padding: EdgeInsets.fromLTRB(
@@ -127,35 +127,35 @@ class DailyTaskHistoryScreen extends HookConsumerWidget {
                                 alignment: Alignment.center,
                                 decoration: BoxDecoration(
                                   color: Colors.white,
-                                  borderRadius: BorderRadius.circular(15.r),
+                                  borderRadius: BorderRadius.circular(14.r),
                                   border: Border.all(
-                                    color: const Color(0xFFF1F5F9),
+                                    color: const Color(0xFFE2E8F0),
                                     width: 1.2,
                                   ),
                                   boxShadow: [
                                     BoxShadow(
-                                      color: const Color(0xFFAB31DE).withValues(alpha: 0.08),
-                                      blurRadius: 10,
-                                      offset: const Offset(0, 3),
+                                      color: Colors.black.withValues(alpha: 0.04),
+                                      blurRadius: 8,
+                                      offset: const Offset(0, 2),
                                     ),
                                   ],
                                 ),
                                 child: Icon(
                                   Icons.arrow_back_rounded,
-                                  color: const Color(0xFFAB31DE),
-                                  size: 22.sp,
+                                  color: const Color(0xFF26262B),
+                                  size: 20.sp,
                                 ),
                               ),
                             ),
-                            SizedBox(width: 12.w),
+                            SizedBox(width: 14.w),
 
                             Text(
-                              'Daily Task History',
-                              style: GoogleFonts.outfit(
-                                color: const Color(0xFF1E1B4B),
-                                fontSize: 18.5.sp,
+                              'Hot Offers History',
+                              style: GoogleFonts.kaushanScript(
+                                color: const Color(0xFF26262B),
+                                fontSize: 24.sp,
                                 fontWeight: FontWeight.w800,
-                                letterSpacing: -0.2,
+                                letterSpacing: 0.5,
                               ),
                             ),
                           ],
@@ -216,7 +216,7 @@ class DailyTaskHistoryScreen extends HookConsumerWidget {
                         });
 
                         return SliverPadding(
-                          padding: EdgeInsets.fromLTRB(16.w, 8.h, 16.w, 40.h),
+                          padding: EdgeInsets.fromLTRB(16.w, 4.h, 16.w, 40.h),
                           sliver: SliverList(
                             delegate: SliverChildListDelegate([
                               // Executive Overview Stats Banner
@@ -228,16 +228,16 @@ class DailyTaskHistoryScreen extends HookConsumerWidget {
 
                               SizedBox(height: 18.h),
 
-                              // Executive Tab Switcher Pill Bar (Active vs Completed)
+                              // Tab Switcher Pill Bar (Active vs Completed)
                               Container(
                                 height: 48.h,
                                 padding: EdgeInsets.all(4.w),
                                 decoration: BoxDecoration(
-                                  color: const Color(0xFFFAF5FF),
+                                  color: const Color(0xFFF8FAFC),
                                   borderRadius: BorderRadius.circular(24.r),
                                   border: Border.all(
-                                    color: const Color(0xFFE39FFF).withValues(alpha: 0.6),
-                                    width: 1,
+                                    color: const Color(0xFFE2E8F0),
+                                    width: 1.2,
                                   ),
                                 ),
                                 child: Row(
@@ -251,27 +251,17 @@ class DailyTaskHistoryScreen extends HookConsumerWidget {
                                         child: AnimatedContainer(
                                           duration: const Duration(milliseconds: 180),
                                           decoration: BoxDecoration(
-                                            gradient: selectedTab.value == 0
-                                                ? const LinearGradient(
-                                                    colors: [
-                                                      Color(0xFFE39FFF),
-                                                      Color(0xFFAB31DE),
-                                                    ],
-                                                    begin: Alignment.topCenter,
-                                                    end: Alignment.bottomCenter,
-                                                  )
-                                                : null,
                                             color: selectedTab.value == 0
-                                                ? null
+                                                ? const Color(0xFF26262B)
                                                 : Colors.transparent,
                                             borderRadius:
                                                 BorderRadius.circular(20.r),
                                             boxShadow: selectedTab.value == 0
                                                 ? [
                                                     BoxShadow(
-                                                      color: const Color(0xFFAB31DE).withValues(alpha: 0.25),
+                                                      color: Colors.black.withValues(alpha: 0.15),
                                                       blurRadius: 8,
-                                                      offset: const Offset(0, 3),
+                                                      offset: const Offset(0, 2),
                                                     ),
                                                   ]
                                                 : null,
@@ -291,14 +281,14 @@ class DailyTaskHistoryScreen extends HookConsumerWidget {
                                               SizedBox(width: 6.w),
                                               Text(
                                                 'Active • ${activeTasks.length}',
-                                                style: GoogleFonts.outfit(
+                                                style: GoogleFonts.poppins(
                                                   color: selectedTab.value == 0
                                                       ? Colors.white
                                                       : const Color(0xFF64748B),
-                                                  fontSize: 13.sp,
+                                                  fontSize: 12.5.sp,
                                                   fontWeight: selectedTab.value == 0
-                                                      ? FontWeight.w800
-                                                      : FontWeight.w600,
+                                                      ? FontWeight.w700
+                                                      : FontWeight.w500,
                                                 ),
                                               ),
                                             ],
@@ -315,27 +305,17 @@ class DailyTaskHistoryScreen extends HookConsumerWidget {
                                         child: AnimatedContainer(
                                           duration: const Duration(milliseconds: 180),
                                           decoration: BoxDecoration(
-                                            gradient: selectedTab.value == 1
-                                                ? const LinearGradient(
-                                                    colors: [
-                                                      Color(0xFFE39FFF),
-                                                      Color(0xFFAB31DE),
-                                                    ],
-                                                    begin: Alignment.topCenter,
-                                                    end: Alignment.bottomCenter,
-                                                  )
-                                                : null,
                                             color: selectedTab.value == 1
-                                                ? null
+                                                ? const Color(0xFF26262B)
                                                 : Colors.transparent,
                                             borderRadius:
                                                 BorderRadius.circular(20.r),
                                             boxShadow: selectedTab.value == 1
                                                 ? [
                                                     BoxShadow(
-                                                      color: const Color(0xFFAB31DE).withValues(alpha: 0.25),
+                                                      color: Colors.black.withValues(alpha: 0.15),
                                                       blurRadius: 8,
-                                                      offset: const Offset(0, 3),
+                                                      offset: const Offset(0, 2),
                                                     ),
                                                   ]
                                                 : null,
@@ -355,14 +335,14 @@ class DailyTaskHistoryScreen extends HookConsumerWidget {
                                               SizedBox(width: 6.w),
                                               Text(
                                                 'Completed • ${completedTasks.length}',
-                                                style: GoogleFonts.outfit(
+                                                style: GoogleFonts.poppins(
                                                   color: selectedTab.value == 1
                                                       ? Colors.white
                                                       : const Color(0xFF64748B),
-                                                  fontSize: 13.sp,
+                                                  fontSize: 12.5.sp,
                                                   fontWeight: selectedTab.value == 1
-                                                      ? FontWeight.w800
-                                                      : FontWeight.w600,
+                                                      ? FontWeight.w700
+                                                      : FontWeight.w500,
                                                 ),
                                               ),
                                             ],
@@ -514,9 +494,9 @@ class _OverviewStatsCard extends StatelessWidget {
         ),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF0F172A).withValues(alpha: 0.03),
-            blurRadius: 8,
-            offset: const Offset(0, 3),
+            color: Colors.black.withValues(alpha: 0.02),
+            blurRadius: 6,
+            offset: const Offset(0, 2),
           ),
         ],
       ),
@@ -542,10 +522,10 @@ class _OverviewStatsCard extends StatelessWidget {
             value,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: GoogleFonts.outfit(
+            style: GoogleFonts.poppins(
               color: const Color(0xFF1E1B4B),
-              fontSize: 13.5.sp,
-              fontWeight: FontWeight.w800,
+              fontSize: 13.sp,
+              fontWeight: FontWeight.w700,
             ),
           ),
           SizedBox(height: 2.h),
@@ -553,10 +533,10 @@ class _OverviewStatsCard extends StatelessWidget {
             label,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: GoogleFonts.outfit(
+            style: GoogleFonts.poppins(
               color: labelColor,
               fontSize: 10.sp,
-              fontWeight: FontWeight.w700,
+              fontWeight: FontWeight.w600,
             ),
           ),
         ],
@@ -570,20 +550,15 @@ class _OverviewStatsCard extends StatelessWidget {
       padding: EdgeInsets.all(12.w),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(22.r),
+        borderRadius: BorderRadius.circular(20.r),
         border: Border.all(
-          color: const Color(0xFFF1F5F9),
+          color: const Color(0xFFE2E8F0),
           width: 1.2,
         ),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF0F172A).withValues(alpha: 0.04),
-            blurRadius: 14,
-            offset: const Offset(0, 4),
-          ),
-          BoxShadow(
-            color: const Color(0xFFAB31DE).withValues(alpha: 0.05),
-            blurRadius: 8,
+            color: Colors.black.withValues(alpha: 0.04),
+            blurRadius: 10,
             offset: const Offset(0, 3),
           ),
         ],
@@ -594,12 +569,12 @@ class _OverviewStatsCard extends StatelessWidget {
             child: _buildTopStatCard(
               label: 'Active Tasks',
               value: '$activeCount Active',
-              iconBg: const Color(0xFFFAF5FF),
-              iconBorder: const Color(0xFFF3E8FF),
-              labelColor: const Color(0xFFAB31DE),
+              iconBg: const Color(0xFFF8FAFC),
+              iconBorder: const Color(0xFFE2E8F0),
+              labelColor: const Color(0xFF64748B),
               icon: Icon(
                 Icons.timelapse_rounded,
-                color: const Color(0xFFAB31DE),
+                color: const Color(0xFF26262B),
                 size: 18.sp,
               ),
             ),
@@ -632,12 +607,6 @@ class _OverviewStatsCard extends StatelessWidget {
                 width: 18.w,
                 height: 18.w,
                 fit: BoxFit.contain,
-                errorBuilder: (_, __, ___) => Image.asset(
-                  'assets/icons/coin.png',
-                  width: 18.w,
-                  height: 18.w,
-                  fit: BoxFit.contain,
-                ),
               ),
             ),
           ),
@@ -686,23 +655,18 @@ class _ActiveTaskCard extends StatelessWidget {
       },
       child: Container(
         width: double.infinity,
-        padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 12.h),
+        padding: EdgeInsets.all(12.w),
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(20.r),
+          borderRadius: BorderRadius.circular(18.r),
           border: Border.all(
-            color: const Color(0xFFF1F5F9),
+            color: const Color(0xFFE2E8F0),
             width: 1.2,
           ),
           boxShadow: [
             BoxShadow(
-              color: const Color(0xFF0F172A).withValues(alpha: 0.04),
-              blurRadius: 14,
-              offset: const Offset(0, 4),
-            ),
-            BoxShadow(
-              color: const Color(0xFFAB31DE).withValues(alpha: 0.04),
-              blurRadius: 8,
+              color: Colors.black.withValues(alpha: 0.03),
+              blurRadius: 10,
               offset: const Offset(0, 3),
             ),
           ],
@@ -715,23 +679,23 @@ class _ActiveTaskCard extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Container(
-                  width: 48.w,
-                  height: 48.w,
+                  width: 50.w,
+                  height: 50.w,
                   decoration: BoxDecoration(
-                    color: const Color(0xFFFAF5FF),
+                    color: Colors.white,
                     borderRadius: BorderRadius.circular(14.r),
                     border: Border.all(
-                      color: const Color(0xFFF3E8FF),
+                      color: const Color(0xFFE2E8F0),
                       width: 1,
                     ),
                   ),
                   child: ClipRRect(
-                    borderRadius: BorderRadius.circular(14.r),
+                    borderRadius: BorderRadius.circular(13.r),
                     child: task.imagePath.trim().isNotEmpty
                         ? InternetImage(
                             url: task.imagePath,
-                            width: 48,
-                            height: 48,
+                            width: 50,
+                            height: 50,
                             fit: BoxFit.cover,
                           )
                         : _FallbackTaskIcon(name: task.offerName),
@@ -739,14 +703,10 @@ class _ActiveTaskCard extends StatelessWidget {
                 ),
                 SizedBox(height: 5.h),
                 Container(
-                  padding: EdgeInsets.symmetric(horizontal: 7.w, vertical: 2.5.h),
+                  padding: EdgeInsets.symmetric(horizontal: 7.w, vertical: 2.h),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFFAF5FF),
-                    borderRadius: BorderRadius.circular(12.r),
-                    border: Border.all(
-                      color: const Color(0xFFE39FFF).withValues(alpha: 0.5),
-                      width: 0.8,
-                    ),
+                    color: const Color(0xFFFEF3C7),
+                    borderRadius: BorderRadius.circular(10.r),
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
@@ -759,11 +719,11 @@ class _ActiveTaskCard extends StatelessWidget {
                       ),
                       SizedBox(width: 3.w),
                       Text(
-                        '+$earnedCoins coins',
-                        style: GoogleFonts.outfit(
-                          color: const Color(0xFF1E1B4B),
-                          fontSize: 9.5.sp,
-                          fontWeight: FontWeight.w800,
+                        '+$earnedCoins',
+                        style: GoogleFonts.poppins(
+                          color: const Color(0xFFD97706),
+                          fontSize: 10.sp,
+                          fontWeight: FontWeight.w700,
                         ),
                       ),
                     ],
@@ -774,7 +734,7 @@ class _ActiveTaskCard extends StatelessWidget {
 
             SizedBox(width: 12.w),
 
-            // 2. Middle: Title + Day/Step progress + Date Timestamp
+            // 2. Middle: Title + Day/Step progress + Status Tag
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -784,42 +744,41 @@ class _ActiveTaskCard extends StatelessWidget {
                     task.offerName,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: GoogleFonts.outfit(
+                    style: GoogleFonts.poppins(
                       color: const Color(0xFF1E1B4B),
-                      fontSize: 15.sp,
-                      fontWeight: FontWeight.w800,
-                      letterSpacing: -0.2,
+                      fontSize: 14.5.sp,
+                      fontWeight: FontWeight.w700,
                     ),
                   ),
-                  SizedBox(height: 2.h),
+                  SizedBox(height: 3.h),
                   if (totalSteps > 0)
                     Text(
                       task.dailyRewardEnabled
                           ? 'Day $doneSteps/$totalSteps'
                           : 'Step $doneSteps/$totalSteps',
-                      style: GoogleFonts.outfit(
-                        color: const Color(0xFFAB31DE),
-                        fontSize: 11.5.sp,
-                        fontWeight: FontWeight.w700,
+                      style: GoogleFonts.poppins(
+                        color: const Color(0xFF26262B),
+                        fontSize: 11.sp,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
-                  SizedBox(height: 3.h),
+                  SizedBox(height: 4.h),
                   Container(
                     padding: EdgeInsets.symmetric(horizontal: 7.w, vertical: 2.h),
                     decoration: BoxDecoration(
-                      color: isEligibleNextDay ? const Color(0xFFECFDF5) : const Color(0xFFFAF5FF),
+                      color: isEligibleNextDay ? const Color(0xFFECFDF5) : const Color(0xFFF1F5F9),
                       borderRadius: BorderRadius.circular(6.r),
                       border: Border.all(
-                        color: isEligibleNextDay ? const Color(0xFFD1FAE5) : const Color(0xFFF3E8FF),
+                        color: isEligibleNextDay ? const Color(0xFFD1FAE5) : const Color(0xFFE2E8F0),
                         width: 0.8,
                       ),
                     ),
                     child: Text(
                       badgeText,
-                      style: GoogleFonts.outfit(
-                        color: isEligibleNextDay ? const Color(0xFF059669) : const Color(0xFFAB31DE),
+                      style: GoogleFonts.poppins(
+                        color: isEligibleNextDay ? const Color(0xFF059669) : const Color(0xFF64748B),
                         fontSize: 9.5.sp,
-                        fontWeight: FontWeight.w700,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
                   ),
@@ -829,23 +788,16 @@ class _ActiveTaskCard extends StatelessWidget {
 
             SizedBox(width: 8.w),
 
-            // 3. Right: Circular Purple Gradient Forward Arrow Button
+            // 3. Right: Forward Button
             Container(
-              width: 34.w,
-              height: 34.w,
+              width: 36.w,
+              height: 36.w,
               decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                gradient: const LinearGradient(
-                  colors: [
-                    Color(0xFFE39FFF),
-                    Color(0xFFAB31DE),
-                  ],
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                ),
+                color: const Color(0xFF26262B),
+                borderRadius: BorderRadius.circular(12.r),
                 boxShadow: [
                   BoxShadow(
-                    color: const Color(0xFFAB31DE).withValues(alpha: 0.25),
+                    color: Colors.black.withValues(alpha: 0.12),
                     blurRadius: 6,
                     offset: const Offset(0, 2),
                   ),
@@ -897,25 +849,18 @@ class _CompletedTaskCard extends StatelessWidget {
 
     return Container(
       width: double.infinity,
-      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 12.h),
+      padding: EdgeInsets.all(12.w),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(20.r),
+        borderRadius: BorderRadius.circular(18.r),
         border: Border.all(
-          color: isRejected ? const Color(0xFFFEE2E2) : const Color(0xFFF1F5F9),
+          color: isRejected ? const Color(0xFFFEE2E2) : const Color(0xFFE2E8F0),
           width: 1.2,
         ),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF0F172A).withValues(alpha: 0.04),
-            blurRadius: 14,
-            offset: const Offset(0, 4),
-          ),
-          BoxShadow(
-            color: isRejected
-                ? const Color(0xFFEF4444).withValues(alpha: 0.04)
-                : const Color(0xFF059669).withValues(alpha: 0.04),
-            blurRadius: 8,
+            color: Colors.black.withValues(alpha: 0.03),
+            blurRadius: 10,
             offset: const Offset(0, 3),
           ),
         ],
@@ -928,8 +873,8 @@ class _CompletedTaskCard extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Container(
-                width: 48.w,
-                height: 48.w,
+                width: 50.w,
+                height: 50.w,
                 decoration: BoxDecoration(
                   color: isRejected ? const Color(0xFFFEF2F2) : const Color(0xFFECFDF5),
                   borderRadius: BorderRadius.circular(14.r),
@@ -939,29 +884,23 @@ class _CompletedTaskCard extends StatelessWidget {
                   ),
                 ),
                 child: ClipRRect(
-                  borderRadius: BorderRadius.circular(14.r),
+                  borderRadius: BorderRadius.circular(13.r),
                   child: task.imagePath.trim().isNotEmpty
                       ? InternetImage(
                           url: task.imagePath,
-                          width: 48,
-                          height: 48,
+                          width: 50,
+                          height: 50,
                           fit: BoxFit.cover,
                         )
                       : _FallbackTaskIcon(name: task.offerName),
                 ),
               ),
-
               SizedBox(height: 5.h),
-
               Container(
-                padding: EdgeInsets.symmetric(horizontal: 7.w, vertical: 2.5.h),
+                padding: EdgeInsets.symmetric(horizontal: 7.w, vertical: 2.h),
                 decoration: BoxDecoration(
-                  color: isRejected ? const Color(0xFFFEF2F2) : const Color(0xFFECFDF5),
-                  borderRadius: BorderRadius.circular(12.r),
-                  border: Border.all(
-                    color: isRejected ? const Color(0xFFFECACA) : const Color(0xFFA7F3D0),
-                    width: 0.8,
-                  ),
+                  color: isRejected ? const Color(0xFFFEE2E2) : const Color(0xFFDCFCE7),
+                  borderRadius: BorderRadius.circular(10.r),
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
@@ -974,11 +913,11 @@ class _CompletedTaskCard extends StatelessWidget {
                     ),
                     SizedBox(width: 3.w),
                     Text(
-                      '$earnedCoins coins',
-                      style: GoogleFonts.outfit(
-                        color: isRejected ? const Color(0xFFDC2626) : const Color(0xFF059669),
-                        fontSize: 9.5.sp,
-                        fontWeight: FontWeight.w800,
+                      '+$earnedCoins',
+                      style: GoogleFonts.poppins(
+                        color: isRejected ? const Color(0xFFDC2626) : const Color(0xFF16A34A),
+                        fontSize: 10.sp,
+                        fontWeight: FontWeight.w700,
                       ),
                     ),
                   ],
@@ -989,7 +928,7 @@ class _CompletedTaskCard extends StatelessWidget {
 
           SizedBox(width: 12.w),
 
-          // 2. Middle: Title + Sub Description + Date Timestamp
+          // 2. Middle: Title + Subtext + Date
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -999,11 +938,10 @@ class _CompletedTaskCard extends StatelessWidget {
                   task.offerName,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: GoogleFonts.outfit(
+                  style: GoogleFonts.poppins(
                     color: const Color(0xFF1E1B4B),
-                    fontSize: 15.sp,
-                    fontWeight: FontWeight.w800,
-                    letterSpacing: -0.2,
+                    fontSize: 14.5.sp,
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
                 SizedBox(height: 2.h),
@@ -1011,14 +949,14 @@ class _CompletedTaskCard extends StatelessWidget {
                   subText,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: GoogleFonts.outfit(
-                    color: isRejected ? const Color(0xFFDC2626) : const Color(0xFF64748B),
-                    fontSize: 11.5.sp,
-                    fontWeight: isRejected ? FontWeight.w600 : FontWeight.w400,
+                  style: GoogleFonts.poppins(
+                    color: isRejected ? const Color(0xFFEF4444) : const Color(0xFF64748B),
+                    fontSize: 11.sp,
+                    fontWeight: FontWeight.w400,
                   ),
                 ),
                 if (dateStr.isNotEmpty) ...[
-                  SizedBox(height: 3.h),
+                  SizedBox(height: 4.h),
                   Row(
                     children: [
                       Icon(
@@ -1027,16 +965,12 @@ class _CompletedTaskCard extends StatelessWidget {
                         size: 11.sp,
                       ),
                       SizedBox(width: 3.w),
-                      Expanded(
-                        child: Text(
-                          dateStr,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: GoogleFonts.outfit(
-                            color: const Color(0xFF64748B),
-                            fontSize: 10.sp,
-                            fontWeight: FontWeight.w500,
-                          ),
+                      Text(
+                        dateStr,
+                        style: GoogleFonts.poppins(
+                          color: const Color(0xFF94A3B8),
+                          fontSize: 10.sp,
+                          fontWeight: FontWeight.w500,
                         ),
                       ),
                     ],
@@ -1048,35 +982,17 @@ class _CompletedTaskCard extends StatelessWidget {
 
           SizedBox(width: 8.w),
 
-          // 3. Right: "Done" vs "Rejected" Status Chip
+          // 3. Right: Completed Status Badge
           Container(
-            padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+            padding: EdgeInsets.all(8.w),
             decoration: BoxDecoration(
-              color: isRejected ? const Color(0xFFFEF2F2) : const Color(0xFFECFDF5),
-              borderRadius: BorderRadius.circular(12.r),
-              border: Border.all(
-                color: isRejected ? const Color(0xFFFECACA) : const Color(0xFFA7F3D0),
-                width: 1,
-              ),
+              color: isRejected ? const Color(0xFFFEE2E2) : const Color(0xFFDCFCE7),
+              shape: BoxShape.circle,
             ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(
-                  isRejected ? Icons.cancel_rounded : Icons.verified_rounded,
-                  color: isRejected ? const Color(0xFFDC2626) : const Color(0xFF059669),
-                  size: 14.sp,
-                ),
-                SizedBox(width: 4.w),
-                Text(
-                  isRejected ? 'Rejected' : 'Done',
-                  style: GoogleFonts.outfit(
-                    color: isRejected ? const Color(0xFFDC2626) : const Color(0xFF059669),
-                    fontSize: 11.5.sp,
-                    fontWeight: FontWeight.w800,
-                  ),
-                ),
-              ],
+            child: Icon(
+              isRejected ? Icons.close_rounded : Icons.check_rounded,
+              color: isRejected ? const Color(0xFFDC2626) : const Color(0xFF16A34A),
+              size: 16.sp,
             ),
           ),
         ],
@@ -1085,7 +1001,9 @@ class _CompletedTaskCard extends StatelessWidget {
   }
 }
 
-// Fallback letter icon if image missing
+// ---------------------------------------------------------------------------
+// FALLBACK TASK ICON
+// ---------------------------------------------------------------------------
 class _FallbackTaskIcon extends StatelessWidget {
   const _FallbackTaskIcon({required this.name});
 
@@ -1093,16 +1011,16 @@ class _FallbackTaskIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final letter = name.isNotEmpty ? name[0].toUpperCase() : 'T';
+    final firstChar = name.isNotEmpty ? name[0].toUpperCase() : 'T';
     return Container(
-      color: const Color(0xFFFAF5FF),
+      color: const Color(0xFFF1F5F9),
       alignment: Alignment.center,
       child: Text(
-        letter,
-        style: GoogleFonts.outfit(
-          color: const Color(0xFFAB31DE),
-          fontSize: 20.sp,
-          fontWeight: FontWeight.w800,
+        firstChar,
+        style: GoogleFonts.poppins(
+          color: const Color(0xFF26262B),
+          fontSize: 18.sp,
+          fontWeight: FontWeight.w700,
         ),
       ),
     );
@@ -1110,7 +1028,7 @@ class _FallbackTaskIcon extends StatelessWidget {
 }
 
 // ---------------------------------------------------------------------------
-// EMPTY ACTIVE HISTORY WIDGET
+// EMPTY STATES
 // ---------------------------------------------------------------------------
 class _EmptyActiveHistoryWidget extends StatelessWidget {
   const _EmptyActiveHistoryWidget({required this.onBrowse});
@@ -1119,103 +1037,80 @@ class _EmptyActiveHistoryWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 32.w, vertical: 30.h),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              width: 80.w,
-              height: 80.w,
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: 40.h, horizontal: 20.w),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            width: 70.w,
+            height: 70.w,
+            decoration: BoxDecoration(
+              color: const Color(0xFFF8FAFC),
+              shape: BoxShape.circle,
+              border: Border.all(color: const Color(0xFFE2E8F0)),
+            ),
+            alignment: Alignment.center,
+            child: Icon(
+              Icons.rocket_launch_rounded,
+              size: 32.sp,
+              color: const Color(0xFF64748B),
+            ),
+          ),
+          SizedBox(height: 16.h),
+          Text(
+            'No Active Tasks',
+            style: GoogleFonts.poppins(
+              color: const Color(0xFF1E1B4B),
+              fontSize: 16.sp,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+          SizedBox(height: 6.h),
+          Text(
+            'You don\'t have any tasks in progress. Explore hot offers to start earning coins!',
+            textAlign: TextAlign.center,
+            style: GoogleFonts.poppins(
+              color: const Color(0xFF64748B),
+              fontSize: 12.sp,
+              height: 1.35,
+            ),
+          ),
+          SizedBox(height: 18.h),
+          GestureDetector(
+            onTap: () {
+              HapticFeedback.lightImpact();
+              onBrowse();
+            },
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 22.w, vertical: 10.h),
               decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: const Color(0xFFFAF5FF),
-                border: Border.all(
-                  color: const Color(0xFFE39FFF).withValues(alpha: 0.6),
-                  width: 1.5,
-                ),
-              ),
-              child: Center(
-                child: Icon(
-                  Icons.timelapse_rounded,
-                  color: const Color(0xFFAB31DE),
-                  size: 38.sp,
-                ),
-              ),
-            ),
-
-            SizedBox(height: 16.h),
-
-            Text(
-              'No Active Tasks',
-              textAlign: TextAlign.center,
-              style: GoogleFonts.outfit(
-                color: const Color(0xFF1E1B4B),
-                fontSize: 17.sp,
-                fontWeight: FontWeight.w800,
-                letterSpacing: -0.2,
-              ),
-            ),
-
-            SizedBox(height: 6.h),
-
-            Text(
-              'You have no daily tasks in progress or eligible for next day. Start a daily task to track active milestones here!',
-              textAlign: TextAlign.center,
-              style: GoogleFonts.outfit(
-                color: const Color(0xFF64748B),
-                fontSize: 12.sp,
-                fontWeight: FontWeight.w400,
-                height: 1.4,
-              ),
-            ),
-
-            SizedBox(height: 20.h),
-
-            GestureDetector(
-              onTap: () {
-                HapticFeedback.lightImpact();
-                onBrowse();
-              },
-              child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 22.w, vertical: 11.h),
-                decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                    colors: [
-                      Color(0xFFE39FFF),
-                      Color(0xFFAB31DE),
-                    ],
+                color: const Color(0xFF26262B),
+                borderRadius: BorderRadius.circular(14.r),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.15),
+                    blurRadius: 8,
+                    offset: const Offset(0, 3),
                   ),
-                  borderRadius: BorderRadius.circular(14.r),
-                  boxShadow: [
-                    BoxShadow(
-                      color: const Color(0xFFAB31DE).withValues(alpha: 0.25),
-                      blurRadius: 8,
-                      offset: const Offset(0, 3),
-                    ),
-                  ],
-                ),
-                child: Text(
-                  'Explore Daily Tasks',
-                  style: GoogleFonts.outfit(
-                    color: Colors.white,
-                    fontSize: 13.sp,
-                    fontWeight: FontWeight.w800,
-                  ),
+                ],
+              ),
+              child: Text(
+                'Explore Hot Offers',
+                style: GoogleFonts.poppins(
+                  color: Colors.white,
+                  fontSize: 13.sp,
+                  fontWeight: FontWeight.w700,
                 ),
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
 }
 
-// ---------------------------------------------------------------------------
-// EMPTY COMPLETED HISTORY WIDGET
-// ---------------------------------------------------------------------------
 class _EmptyTaskHistoryWidget extends StatelessWidget {
   const _EmptyTaskHistoryWidget({required this.onBrowse});
 
@@ -1223,103 +1118,80 @@ class _EmptyTaskHistoryWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 32.w, vertical: 30.h),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              width: 80.w,
-              height: 80.w,
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: 40.h, horizontal: 20.w),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            width: 70.w,
+            height: 70.w,
+            decoration: BoxDecoration(
+              color: const Color(0xFFF8FAFC),
+              shape: BoxShape.circle,
+              border: Border.all(color: const Color(0xFFE2E8F0)),
+            ),
+            alignment: Alignment.center,
+            child: Icon(
+              Icons.emoji_events_rounded,
+              size: 32.sp,
+              color: const Color(0xFF64748B),
+            ),
+          ),
+          SizedBox(height: 16.h),
+          Text(
+            'No Completed Tasks Yet',
+            style: GoogleFonts.poppins(
+              color: const Color(0xFF1E1B4B),
+              fontSize: 16.sp,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+          SizedBox(height: 6.h),
+          Text(
+            'Complete task milestones to see your rewards history and achievements here.',
+            textAlign: TextAlign.center,
+            style: GoogleFonts.poppins(
+              color: const Color(0xFF64748B),
+              fontSize: 12.sp,
+              height: 1.35,
+            ),
+          ),
+          SizedBox(height: 18.h),
+          GestureDetector(
+            onTap: () {
+              HapticFeedback.lightImpact();
+              onBrowse();
+            },
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 22.w, vertical: 10.h),
               decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: const Color(0xFFECFDF5),
-                border: Border.all(
-                  color: const Color(0xFFA7F3D0),
-                  width: 1.5,
-                ),
-              ),
-              child: Center(
-                child: Icon(
-                  Icons.assignment_turned_in_rounded,
-                  color: const Color(0xFF059669),
-                  size: 38.sp,
-                ),
-              ),
-            ),
-
-            SizedBox(height: 16.h),
-
-            Text(
-              'No Completed Tasks Yet',
-              textAlign: TextAlign.center,
-              style: GoogleFonts.outfit(
-                color: const Color(0xFF1E1B4B),
-                fontSize: 17.sp,
-                fontWeight: FontWeight.w800,
-                letterSpacing: -0.2,
-              ),
-            ),
-
-            SizedBox(height: 6.h),
-
-            Text(
-              'You haven\'t fully completed any daily tasks yet. Complete all milestones of an offer to see it here!',
-              textAlign: TextAlign.center,
-              style: GoogleFonts.outfit(
-                color: const Color(0xFF64748B),
-                fontSize: 12.sp,
-                fontWeight: FontWeight.w400,
-                height: 1.4,
-              ),
-            ),
-
-            SizedBox(height: 20.h),
-
-            GestureDetector(
-              onTap: () {
-                HapticFeedback.lightImpact();
-                onBrowse();
-              },
-              child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 22.w, vertical: 11.h),
-                decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                    colors: [
-                      Color(0xFFE39FFF),
-                      Color(0xFFAB31DE),
-                    ],
+                color: const Color(0xFF26262B),
+                borderRadius: BorderRadius.circular(14.r),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.15),
+                    blurRadius: 8,
+                    offset: const Offset(0, 3),
                   ),
-                  borderRadius: BorderRadius.circular(14.r),
-                  boxShadow: [
-                    BoxShadow(
-                      color: const Color(0xFFAB31DE).withValues(alpha: 0.25),
-                      blurRadius: 8,
-                      offset: const Offset(0, 3),
-                    ),
-                  ],
-                ),
-                child: Text(
-                  'Browse Daily Tasks',
-                  style: GoogleFonts.outfit(
-                    color: Colors.white,
-                    fontSize: 13.sp,
-                    fontWeight: FontWeight.w800,
-                  ),
+                ],
+              ),
+              child: Text(
+                'Browse Tasks',
+                style: GoogleFonts.poppins(
+                  color: Colors.white,
+                  fontSize: 13.sp,
+                  fontWeight: FontWeight.w700,
                 ),
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
 }
 
-// ---------------------------------------------------------------------------
-// ERROR STATE WIDGET
-// ---------------------------------------------------------------------------
 class _HistoryErrorWidget extends StatelessWidget {
   const _HistoryErrorWidget({
     required this.error,
@@ -1331,54 +1203,48 @@ class _HistoryErrorWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 32.w),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.cloud_off_rounded,
-              color: const Color(0xFFEF4444),
-              size: 44.sp,
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: 40.h, horizontal: 20.w),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.error_outline_rounded,
+            size: 40.sp,
+            color: const Color(0xFFEF4444),
+          ),
+          SizedBox(height: 12.h),
+          Text(
+            'Failed to load history',
+            style: GoogleFonts.poppins(
+              color: const Color(0xFF1E1B4B),
+              fontSize: 15.sp,
+              fontWeight: FontWeight.w700,
             ),
-            SizedBox(height: 16.h),
-            Text(
-              'Failed to Load History',
-              style: GoogleFonts.outfit(
-                color: const Color(0xFF1E1B4B),
-                fontSize: 16.sp,
-                fontWeight: FontWeight.w800,
+          ),
+          SizedBox(height: 16.h),
+          ElevatedButton(
+            onPressed: () {
+              HapticFeedback.lightImpact();
+              onRetry();
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFF26262B),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12.r),
+              ),
+              padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
+            ),
+            child: Text(
+              'Retry',
+              style: GoogleFonts.poppins(
+                color: Colors.white,
+                fontSize: 13.sp,
+                fontWeight: FontWeight.w600,
               ),
             ),
-            SizedBox(height: 6.h),
-            Text(
-              error,
-              textAlign: TextAlign.center,
-              style: GoogleFonts.outfit(
-                color: const Color(0xFF64748B),
-                fontSize: 12.sp,
-              ),
-            ),
-            SizedBox(height: 20.h),
-            ElevatedButton(
-              onPressed: onRetry,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFFAB31DE),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12.r),
-                ),
-              ),
-              child: Text(
-                'Retry',
-                style: GoogleFonts.outfit(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

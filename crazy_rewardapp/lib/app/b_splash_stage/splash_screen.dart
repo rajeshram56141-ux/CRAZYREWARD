@@ -300,9 +300,9 @@ class _SplashFuturisticCyberLoaderState extends State<_SplashFuturisticCyberLoad
         Text(
           'LOADING...',
           style: GoogleFonts.poppins(
-            color: const Color(0xFFA78BFA).withValues(alpha: 0.8),
+            color: Colors.black,
             fontSize: 10.sp,
-            fontWeight: FontWeight.w600,
+            fontWeight: FontWeight.w700,
             letterSpacing: 2.5,
           ),
         ),

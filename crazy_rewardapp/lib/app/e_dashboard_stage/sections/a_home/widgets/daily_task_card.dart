@@ -1,5 +1,3 @@
-import 'dart:async';
-import 'dart:ui';
 import 'dart:math' as math;
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
@@ -15,7 +13,6 @@ import '../../../../../widgets/common/custom_loading.dart';
 import '../../../../../widgets/common/internet_image.dart';
 import '../../../../../widgets/common/shimmer_tag.dart';
 import '../daily_task/daily_task_model.dart';
-import '../../../../b_splash_stage/splash_service.dart';
 
 class HomeDailyTaskSection extends HookConsumerWidget {
   const HomeDailyTaskSection({
@@ -34,214 +31,95 @@ class HomeDailyTaskSection extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final loadingId = useState<String?>(null);
-    final isPaused = useState<bool>(false);
-    final previewTasks = offers.take(5).toList(); // Max 5 cards
+    final featuredOffer = offers.isNotEmpty ? offers.first : null;
 
-    if (previewTasks.isEmpty) {
+    if (featuredOffer == null) {
       return const SizedBox();
     }
 
-    const initialPage = 1000;
-    final pageController = usePageController(
-      viewportFraction: 0.88,
-      initialPage: initialPage,
-      keys: const ['hot_offers_carousel_v7'],
-    );
-
-    final pageValue = useState<double>(initialPage.toDouble());
-    final activeIndex = useState<int>(initialPage % previewTasks.length);
-
-    useEffect(() {
-      void listener() {
-        if (pageController.hasClients) {
-          pageValue.value = pageController.page ?? initialPage.toDouble();
-          final pageIndex = (pageController.page!.round()) % previewTasks.length;
-          if (activeIndex.value != pageIndex) {
-            activeIndex.value = pageIndex;
-          }
-        }
-      }
-      pageController.addListener(listener);
-      return () => pageController.removeListener(listener);
-    }, [pageController, previewTasks.length]);
-
-    // Auto-scroll loop
-    useEffect(() {
-      final timer = Timer.periodic(const Duration(milliseconds: 4500), (timer) {
-        if (!isPaused.value && pageController.hasClients) {
-          final nextPage = (pageController.page?.round() ?? initialPage) + 1;
-          pageController.animateToPage(
-            nextPage,
-            duration: const Duration(milliseconds: 650),
-            curve: Curves.easeInOutCubic,
-          );
-        }
-      });
-      return timer.cancel;
-    }, [previewTasks, isPaused.value]);
-
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 0.w, vertical: 8.h),
+      padding: EdgeInsets.only(top: 0.h, bottom: 0.h),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          // 1. Header Row (Purple Flame Icon + "Hot Offers" on Left, "View All" on Right)
+          // 1. Header (Centered "Hot Offers" in cursive script style)
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16.w),
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () {
+                HapticFeedback.lightImpact();
+                AutoRouter.of(context).push(
+                  DailyTaskScreenRoute(
+                    userId: userId,
+                    email: email,
+                    country: country,
+                  ),
+                );
+              },
+              child: Center(
+                child: Text(
+                  'Hot Offers',
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.kaushanScript(
+                    color: const Color(0xFF26262B),
+                    fontSize: 32.sp,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: 0.5,
+                    height: 1.0,
+                  ),
+                ),
+              ),
+            ),
+          ),
+          SizedBox(height: 10.h),
+
+          // 2. Exactly Two Side-by-Side Cards (Left: Featured Offer, Right: Hot Offers Entrance)
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 16.w),
             child: Row(
               children: [
-                ShaderMask(
-                  shaderCallback: (bounds) => const LinearGradient(
-                    colors: [Color(0xFFE39FFF), Color(0xFFAB31DE)],
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                  ).createShader(bounds),
-                  child: Icon(
-                    Icons.local_fire_department_rounded,
-                    color: Colors.white,
-                    size: 24.sp,
+                // Left Card: Featured Daily Task Offer (Tap opens Task Details)
+                Expanded(
+                  child: _HotOffersModernCard(
+                    item: featuredOffer,
+                    isLoading: loadingId.value == featuredOffer.offerId,
+                    onTap: () async {
+                      HapticFeedback.lightImpact();
+                      await AutoRouter.of(context).push(
+                        DailyTaskDetailsScreenRoute(
+                          item: featuredOffer,
+                          cardColor: featuredOffer.color,
+                          userId: userId,
+                          email: email,
+                          country: country,
+                          heroTag: 'task_card_home_${featuredOffer.offerId}_0',
+                        ),
+                      );
+                    },
                   ),
                 ),
-                SizedBox(width: 8.w),
-                Text(
-                  SplashService.dailyTaskTitle.isNotEmpty ? SplashService.dailyTaskTitle : 'Daily Task',
-                  style: GoogleFonts.poppins(
-                    color: const Color(0xFF1E1B4B),
-                    fontSize: 16.5.sp,
-                    fontWeight: FontWeight.w600,
-                    letterSpacing: 0.2,
-                  ),
-                ),
-                const Spacer(),
-                GestureDetector(
-                  onTap: () {
-                    HapticFeedback.lightImpact();
-                    AutoRouter.of(context).push(
-                      DailyTaskScreenRoute(
-                        userId: userId,
-                        email: email,
-                        country: country,
-                      ),
-                    );
-                  },
-                  child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 5.5.h),
-                    decoration: BoxDecoration(
-                      gradient: const LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: [
-                          Color(0xFFE39FFF),
-                          Color(0xFFAB31DE),
-                        ],
-                      ),
-                      borderRadius: BorderRadius.circular(10.r),
-                      boxShadow: [
-                        BoxShadow(
-                          color: const Color(0xFFAB31DE).withValues(alpha: 0.30),
-                          blurRadius: 8,
-                          offset: const Offset(0, 2),
+                SizedBox(width: 12.w),
+                // Right Card: Hot Offers Main Entrance Card (Tap opens DailyTaskScreenRoute)
+                Expanded(
+                  child: _HotOffersEntranceCard(
+                    coins: offers.isNotEmpty
+                        ? offers.map((e) => e.coins).fold<int>(0, (max, c) => c > max ? c : max)
+                        : featuredOffer.coins,
+                    onTap: () {
+                      HapticFeedback.lightImpact();
+                      AutoRouter.of(context).push(
+                        DailyTaskScreenRoute(
+                          userId: userId,
+                          email: email,
+                          country: country,
                         ),
-                      ],
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          'View All',
-                          style: GoogleFonts.poppins(
-                            color: Colors.white,
-                            fontSize: 11.5.sp,
-                            fontWeight: FontWeight.w700,
-                            letterSpacing: 0.2,
-                          ),
-                        ),
-                        SizedBox(width: 4.w),
-                        Icon(
-                          Icons.arrow_forward_ios_rounded,
-                          color: Colors.white,
-                          size: 10.5.sp,
-                        ),
-                      ],
-                    ),
+                      );
+                    },
                   ),
                 ),
               ],
             ),
-          ),
-          SizedBox(height: 14.h),
-
-          // 2. 3D Wide Banner Carousel
-          NotificationListener<ScrollNotification>(
-            onNotification: (notification) {
-              if (notification is ScrollStartNotification) {
-                isPaused.value = true;
-              } else if (notification is ScrollEndNotification) {
-                Future.delayed(const Duration(milliseconds: 3000), () {
-                  isPaused.value = false;
-                });
-              }
-              return false;
-            },
-            child: SizedBox(
-              height: 122.h,
-              child: PageView.builder(
-                controller: pageController,
-                clipBehavior: Clip.none,
-                itemCount: 10000,
-                itemBuilder: (context, index) {
-                  final item = previewTasks[index % previewTasks.length];
-                  final heroTag = 'task_card_home_${item.offerId}_$index';
-
-                  final diff = index - pageValue.value;
-                  final distance = diff.abs();
-                  final double scale = (1.0 - (distance * 0.08)).clamp(0.92, 1.0);
-
-                  return Transform.scale(
-                    scale: scale,
-                    child: _HomeDailyTaskItemCard(
-                      item: item,
-                      isLoading: loadingId.value == item.offerId,
-                      onTap: () async {
-                        HapticFeedback.lightImpact();
-                        isPaused.value = true;
-                        await AutoRouter.of(context).push(
-                          DailyTaskDetailsScreenRoute(
-                            item: item,
-                            cardColor: item.color,
-                            userId: userId,
-                            email: email,
-                            country: country,
-                            heroTag: heroTag,
-                          ),
-                        );
-                        isPaused.value = false;
-                      },
-                    ),
-                  );
-                },
-              ),
-            ),
-          ),
-          SizedBox(height: 14.h),
-
-          // 3. Bottom Indicator Dots
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: List.generate(previewTasks.length, (index) {
-              final isSelected = index == activeIndex.value;
-              return Container(
-                margin: EdgeInsets.symmetric(horizontal: 3.w),
-                height: 6.h,
-                width: 6.w,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: isSelected
-                      ? const Color(0xFF7640FE)
-                      : const Color(0xFF262A34),
-                ),
-              );
-            }),
           ),
         ],
       ),
@@ -249,439 +127,399 @@ class HomeDailyTaskSection extends HookConsumerWidget {
   }
 }
 
-class _GlowLightingSpinner extends StatefulWidget {
-  final double size;
-  final List<Color> colors;
-
-  const _GlowLightingSpinner({
-    this.size = 15.0,
-    required this.colors,
-  });
-
-  @override
-  State<_GlowLightingSpinner> createState() => _GlowLightingSpinnerState();
-}
-
-class _GlowLightingSpinnerState extends State<_GlowLightingSpinner>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 1400),
-    )..repeat();
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
+class _HotOffersCoinBadge extends StatelessWidget {
+  const _HotOffersCoinBadge({required this.coins});
+  final int coins;
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: _controller,
-      builder: (context, child) {
-        return Transform.rotate(
-          angle: _controller.value * 2 * math.pi,
-          child: SizedBox(
-            width: widget.size.w,
-            height: widget.size.w,
-            child: CustomPaint(
-              painter: _GlowSpinnerPainter(colors: widget.colors),
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.h),
+      decoration: BoxDecoration(
+        color: const Color(0xFF26262E),
+        borderRadius: BorderRadius.circular(8.r),
+        border: Border.all(
+          color: const Color(0xFF383842),
+          width: 1,
+        ),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 12.w,
+            height: 12.w,
+            decoration: const BoxDecoration(
+              shape: BoxShape.circle,
+              gradient: LinearGradient(
+                colors: [Color(0xFFE5E7EB), Color(0xFF9CA3AF)],
+              ),
+            ),
+            padding: EdgeInsets.all(1.w),
+            child: Image.asset(
+              'assets/icons/coin.png',
+              fit: BoxFit.contain,
+              errorBuilder: (_, __, ___) => const Icon(
+                Icons.monetization_on,
+                color: Color(0xFFFBBF24),
+                size: 10,
+              ),
             ),
           ),
-        );
-      },
+          SizedBox(width: 3.5.w),
+          Text(
+            '$coins',
+            style: GoogleFonts.poppins(
+              color: Colors.white,
+              fontSize: 10.5.sp,
+              fontWeight: FontWeight.w800,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
 
-class _GlowSpinnerPainter extends CustomPainter {
-  final List<Color> colors;
-
-  _GlowSpinnerPainter({required this.colors});
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final center = Offset(size.width / 2, size.height / 2);
-    final radius = (size.width - 4.0) / 2;
-    const startAngle = 0.0;
-    const sweepAngle = 4.4;
-
-    final trackPaint = Paint()
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.8
-      ..color = colors.last.withValues(alpha: 0.12);
-    canvas.drawCircle(center, radius, trackPaint);
-
-    final rect = Rect.fromCircle(center: center, radius: radius);
-    final gradient = SweepGradient(
-      colors: [
-        colors.last.withValues(alpha: 0.0),
-        colors.length > 1 ? colors[1].withValues(alpha: 0.4) : colors.last.withValues(alpha: 0.4),
-        colors.length > 2 ? colors[2] : colors.last,
-        colors.last,
-      ],
-      stops: const [0.0, 0.35, 0.75, 1.0],
-    );
-
-    final arcPaint = Paint()
-      ..style = PaintingStyle.stroke
-      ..strokeCap = StrokeCap.butt
-      ..strokeWidth = 2.6
-      ..shader = gradient.createShader(rect);
-
-    canvas.drawArc(rect, startAngle, sweepAngle, false, arcPaint);
-
-    final headAngle = startAngle + sweepAngle;
-    final headPoint = Offset(
-      center.dx + radius * math.cos(headAngle),
-      center.dy + radius * math.sin(headAngle),
-    );
-
-    final outerGlowPaint = Paint()
-      ..color = colors.last.withValues(alpha: 0.9)
-      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 5.0);
-    canvas.drawCircle(headPoint, 4.2, outerGlowPaint);
-
-    final innerGlowPaint = Paint()
-      ..color = Colors.white
-      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 2.0);
-    canvas.drawCircle(headPoint, 2.6, innerGlowPaint);
-
-    final corePaint = Paint()
-      ..color = Colors.white
-      ..style = PaintingStyle.fill;
-    canvas.drawCircle(headPoint, 1.8, corePaint);
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
-}
-
-class _TicketPatternPainter extends CustomPainter {
-  const _TicketPatternPainter();
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = const Color(0xFF22C55E).withValues(alpha: 0.15)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.0;
-
-    // Origin exactly at the right boundary of the green side (touching the center split)
-    final origin = Offset(size.width, size.height * 0.05);
-
-    // Primary waves fanning out from the right divider edge all the way to the left side
-    for (int i = 0; i < 15; i++) {
-      final path = Path();
-      path.moveTo(origin.dx, origin.dy);
-
-      final controlX = size.width * (0.1 + i * 0.06);
-      final controlY = size.height * (0.95 - i * 0.05);
-      final endX = size.width * (0.0 - i * 0.03);
-      final endY = size.height * (0.2 + i * 0.06);
-
-      path.quadraticBezierTo(controlX, controlY, endX, endY);
-      canvas.drawPath(path, paint);
-    }
-
-    // Secondary waves flowing from left edge (0) and ending exactly on the right divider edge (size.width)
-    for (int i = 0; i < 8; i++) {
-      final path = Path();
-      path.moveTo(0, size.height * (0.3 + i * 0.08));
-
-      final controlX1 = size.width * 0.3;
-      final controlY1 = size.height * (0.1 - i * 0.03);
-      final controlX2 = size.width * 0.7;
-      final controlY2 = size.height * (0.95 - i * 0.04);
-      final endX = size.width; // Touches the center split exactly
-      final endY = size.height * (0.25 + i * 0.06);
-
-      path.cubicTo(controlX1, controlY1, controlX2, controlY2, endX, endY);
-      canvas.drawPath(path, paint);
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
-}
-
-class _HotSpecialOfferCard extends StatelessWidget {
-  const _HotSpecialOfferCard({
-    required this.item,
+class _HotOffersEntranceCard extends StatelessWidget {
+  const _HotOffersEntranceCard({
     required this.onTap,
-    this.isLoading = false,
-    this.heroTag,
+    this.coins = 156,
   });
 
-  final DailyTaskModel item;
   final VoidCallback onTap;
-  final bool isLoading;
-  final String? heroTag;
+  final int coins;
 
   @override
   Widget build(BuildContext context) {
-    final imageUrl = item.imagePath.isNotEmpty ? item.imagePath : item.bannerPath;
-
     return GestureDetector(
+      behavior: HitTestBehavior.opaque,
       onTap: onTap,
       child: Container(
-        height: 120.h,
-        width: double.infinity,
+        height: 152.h,
+        padding: EdgeInsets.fromLTRB(6.w, 6.h, 6.w, 6.h),
         decoration: BoxDecoration(
-          color: const Color(0xFF1E1B4B),
-          borderRadius: BorderRadius.circular(20.r),
-          border: Border.all(
-            color: const Color(0xFF9333EA).withValues(alpha: 0.35),
-            width: 1.2,
+          image: const DecorationImage(
+            image: AssetImage('assets/Icons1/Rectangle 13.png'),
+            fit: BoxFit.fill,
           ),
+          borderRadius: BorderRadius.circular(18.r),
           boxShadow: [
             BoxShadow(
-              color: const Color(0xFF9333EA).withValues(alpha: 0.15),
+              color: Colors.black.withValues(alpha: 0.18),
               blurRadius: 10,
               offset: const Offset(0, 4),
             ),
           ],
         ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(20.r),
-          child: Row(
-            children: [
-              // Left Section (Purple Gradient)
-              Expanded(
-                flex: 12,
-                child: Container(
-                  decoration: const BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [
-                        Color(0xFF7E10C8),
-                        Color(0xFF3B0764),
-                      ],
-                    ),
-                  ),
-                  child: Stack(
-                    children: [
-                      Positioned.fill(
-                        child: CustomPaint(
-                          painter: const _TicketPatternPainter(),
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            // Category Tag Row
-                            Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Icon(
-                                  Icons.bolt_rounded,
-                                  color: const Color(0xFFF472B6),
-                                  size: 13.sp,
-                                ),
-                                SizedBox(width: 3.w),
-                                Text(
-                                  item.offerCategory.isNotEmpty
-                                      ? item.offerCategory.toUpperCase()
-                                      : 'TASK',
-                                  style: GoogleFonts.outfit(
-                                    color: const Color(0xFFF472B6),
-                                    fontSize: 9.sp,
-                                    fontWeight: FontWeight.w800,
-                                    letterSpacing: 0.5,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            // Title
-                            Text(
-                              item.offerName,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: GoogleFonts.outfit(
-                                color: Colors.white,
-                                fontSize: 14.sp,
-                                fontWeight: FontWeight.w800,
-                                letterSpacing: 0.3,
-                              ),
-                            ),
-                            // Subtext
-                            Text(
-                              item.cleanSubtitle,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: GoogleFonts.outfit(
-                                color: Colors.white.withValues(alpha: 0.85),
-                                fontSize: 8.5.sp,
-                                height: 1.15,
-                              ),
-                            ),
-                            // Button
-                            Container(
-                              padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 6.h),
-                              decoration: BoxDecoration(
-                                gradient: const LinearGradient(
-                                  colors: [Color(0xFFF472B6), Color(0xFFDB2777)],
-                                ),
-                                borderRadius: BorderRadius.circular(8.r),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: const Color(0xFFDB2777).withValues(alpha: 0.35),
-                                    blurRadius: 6,
-                                  ),
-                                ],
-                              ),
-                              child: isLoading
-                                  ? const SizedBox(
-                                      width: 12,
-                                      height: 12,
-                                      child: CircularProgressIndicator(
-                                        strokeWidth: 1.5,
-                                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                                      ),
-                                    )
-                                  : Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Text(
-                                          'Start',
-                                          style: GoogleFonts.outfit(
-                                            color: Colors.white,
-                                            fontSize: 11.sp,
-                                            fontWeight: FontWeight.w800,
-                                          ),
-                                        ),
-                                        SizedBox(width: 4.w),
-                                        Image.asset(
-                                          'assets/icons/coin.png',
-                                          height: 14.sp,
-                                          width: 14.sp,
-                                        ),
-                                        SizedBox(width: 3.w),
-                                        Text(
-                                          item.coins.formatCoins(),
-                                          style: GoogleFonts.outfit(
-                                            color: Colors.white,
-                                            fontSize: 11.sp,
-                                            fontWeight: FontWeight.w800,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            // 1. Top Artwork/Thumbnail Box (Using Frame 3 (1).png)
+            Container(
+              height: 52.h,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10.r),
+                color: const Color(0xFF202028),
+                border: Border.all(
+                  color: Colors.white.withValues(alpha: 0.08),
+                  width: 1,
                 ),
               ),
-              // Right Section
-              Expanded(
-                flex: 8,
-                child: Container(
-                  color: const Color(0xFF1E1B4B),
-                  child: Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      Container(
-                        width: 55.w,
-                        height: 55.w,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: const Color(0xFF9333EA).withValues(alpha: 0.25),
-                        ),
-                      ),
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(12.r),
-                        child: InternetImage(
-                          url: imageUrl,
-                          fit: BoxFit.cover,
-                          width: 50.w,
-                          height: 50.w,
-                        ),
-                      ),
-                    ],
-                  ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(9.r),
+                child: Image.asset(
+                  'assets/Icons1/Frame 3 (1).png',
+                  fit: BoxFit.cover,
+                  width: double.infinity,
+                  height: double.infinity,
                 ),
               ),
-            ],
-          ),
+            ),
+
+            SizedBox(height: 3.h),
+
+            // 2. Title
+            Text(
+              'Hot Offers',
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.center,
+              style: GoogleFonts.poppins(
+                color: Colors.white,
+                fontSize: 11.sp,
+                fontWeight: FontWeight.w700,
+                height: 1.15,
+              ),
+            ),
+
+            SizedBox(height: 1.h),
+
+            // 3. Subtitle / Short description
+            SizedBox(
+              height: 14.h,
+              child: Text(
+                'Play coin master and build your village',
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.center,
+                style: GoogleFonts.poppins(
+                  color: const Color(0xFF9E9EA7),
+                  fontSize: 7.5.sp,
+                  fontWeight: FontWeight.w400,
+                  height: 1.1,
+                ),
+              ),
+            ),
+
+            SizedBox(height: 2.h),
+
+            // 4. Get Coins Upto Row (Dynamic Coin Badge)
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(
+                  'Get Coins Upto',
+                  style: GoogleFonts.poppins(
+                    color: Colors.white,
+                    fontSize: 9.5.sp,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                SizedBox(width: 4.w),
+                _HotOffersCoinBadge(coins: coins),
+              ],
+            ),
+
+            const Spacer(),
+
+            // 5. Bottom Silver Metallic Action Button (Pushed to bottom)
+            Container(
+              width: 22.h,
+              height: 22.h,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: const LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Colors.white,
+                    Color(0xFFE5E7EB),
+                    Color(0xFFB0B5C2),
+                  ],
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.22),
+                    blurRadius: 4,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: Center(
+                child: Icon(
+                  Icons.arrow_forward_rounded,
+                  color: const Color(0xFF16161A),
+                  size: 12.sp,
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
   }
 }
 
-class _ShimmeringHotOfferText extends StatefulWidget {
-  const _ShimmeringHotOfferText();
+class _HotOffersModernCard extends StatelessWidget {
+  const _HotOffersModernCard({
+    required this.item,
+    required this.onTap,
+    this.isLoading = false,
+  });
 
-  @override
-  State<_ShimmeringHotOfferText> createState() => _ShimmeringHotOfferTextState();
-}
-
-class _ShimmeringHotOfferTextState extends State<_ShimmeringHotOfferText>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 2400),
-    )..repeat();
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
+  final DailyTaskModel item;
+  final VoidCallback onTap;
+  final bool isLoading;
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: _controller,
-      builder: (context, child) {
-        final double value = _controller.value;
-        return ShaderMask(
-          blendMode: BlendMode.srcIn,
-          shaderCallback: (Rect bounds) {
-            return LinearGradient(
-              begin: Alignment(value * 3.6 - 1.8, 0),
-              end: Alignment(value * 3.6 - 0.6, 0),
-              colors: const [
-                Color(0xFF9333EA),
-                Color(0xFFC084FC),
-                Color(0xFFF472B6),
-                Color(0xFFC084FC),
-                Color(0xFF9333EA),
-              ],
-              stops: const [0.0, 0.25, 0.5, 0.75, 1.0],
-            ).createShader(bounds);
-          },
-          child: Text(
-            'Special Offers',
-            textAlign: TextAlign.center,
-            style: GoogleFonts.outfit(
-              fontSize: 22.sp,
-              fontWeight: FontWeight.w900,
-              letterSpacing: 0.5,
-            ),
+    final imageUrl = item.bannerPath.isNotEmpty ? item.bannerPath : item.imagePath;
+    final subtitle = item.subDescription.isNotEmpty
+        ? item.subDescription
+        : (item.offerDescription.isNotEmpty
+            ? item.offerDescription.first
+            : 'Play coin master and build your village');
+
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: onTap,
+      child: Container(
+        height: 152.h,
+        padding: EdgeInsets.fromLTRB(6.w, 6.h, 6.w, 6.h),
+        decoration: BoxDecoration(
+          image: const DecorationImage(
+            image: AssetImage('assets/Icons1/Rectangle 13.png'),
+            fit: BoxFit.fill,
           ),
-        );
-      },
+          borderRadius: BorderRadius.circular(18.r),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.18),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            // 1. Top Artwork/Thumbnail Box
+            Container(
+              height: 52.h,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10.r),
+                color: const Color(0xFF202028),
+                border: Border.all(
+                  color: Colors.white.withValues(alpha: 0.08),
+                  width: 1,
+                ),
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(9.r),
+                child: imageUrl.isNotEmpty
+                    ? InternetImage(
+                        url: imageUrl,
+                        fit: BoxFit.cover,
+                        width: double.infinity,
+                        height: double.infinity,
+                      )
+                    : Image.asset(
+                        'assets/Icons1/Frame 3 (1).png',
+                        fit: BoxFit.cover,
+                        width: double.infinity,
+                        height: double.infinity,
+                      ),
+              ),
+            ),
+
+            SizedBox(height: 3.h),
+
+            // 2. Title
+            Text(
+              item.offerName,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.center,
+              style: GoogleFonts.poppins(
+                color: Colors.white,
+                fontSize: 11.sp,
+                fontWeight: FontWeight.w700,
+                height: 1.15,
+              ),
+            ),
+
+            SizedBox(height: 1.h),
+
+            // 3. Subtitle / Short description
+            SizedBox(
+              height: 14.h,
+              child: Text(
+                subtitle,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.center,
+                style: GoogleFonts.poppins(
+                  color: const Color(0xFF9E9EA7),
+                  fontSize: 7.5.sp,
+                  fontWeight: FontWeight.w400,
+                  height: 1.1,
+                ),
+              ),
+            ),
+
+            SizedBox(height: 2.h),
+
+            // 4. Get Coins Upto Row (Dynamic Coin Badge)
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(
+                  'Get Coins Upto',
+                  style: GoogleFonts.poppins(
+                    color: Colors.white,
+                    fontSize: 9.5.sp,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                SizedBox(width: 4.w),
+                _HotOffersCoinBadge(coins: item.coins),
+              ],
+            ),
+
+            const Spacer(),
+
+            // 5. Bottom Silver Metallic Action Button (Claim) (Pushed to bottom)
+            Container(
+              height: 22.h,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Colors.white,
+                    Color(0xFFE5E7EB),
+                    Color(0xFFB0B5C2),
+                  ],
+                ),
+                borderRadius: BorderRadius.circular(11.r),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.22),
+                    blurRadius: 4,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: Center(
+                child: isLoading
+                    ? const SizedBox(
+                        width: 10,
+                        height: 10,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 1.5,
+                          valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF16161A)),
+                        ),
+                      )
+                    : Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            Icons.card_giftcard_rounded,
+                            color: const Color(0xFF16161A),
+                            size: 10.sp,
+                          ),
+                          SizedBox(width: 3.w),
+                          Text(
+                            'Claim',
+                            style: GoogleFonts.poppins(
+                              color: const Color(0xFF16161A),
+                              fontSize: 9.sp,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ],
+                      ),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
@@ -1515,525 +1353,3 @@ class _RotatingSunburstState extends State<RotatingSunburst> with SingleTickerPr
     );
   }
 }
-
-class ArcadeCardClipper extends CustomClipper<Path> {
-  const ArcadeCardClipper();
-
-  @override
-  Path getClip(Size size) {
-    final path = Path();
-    final double r = 16.0; // corner radius
-    final double arcR = 10.0; // bottom center arc height
-    final double arcW = 38.0; // bottom center arc width
-
-    // Start top-left
-    path.moveTo(0, r);
-    // Left corner rounds to y=10
-    path.quadraticBezierTo(0, 10, 10, 10);
-    // Smooth notch curving up to y=0
-    path.cubicTo(16, 10, 18, 0, 26, 0);
-    // Top tab line
-    path.lineTo(size.width - 26, 0);
-    // Smooth notch curving down to y=10
-    path.cubicTo(size.width - 18, 0, size.width - 16, 10, size.width - 10, 10);
-    // Right corner rounds down to y=r
-    path.quadraticBezierTo(size.width, 10, size.width, r);
-
-    // Right edge
-    path.lineTo(size.width, size.height - r);
-    path.quadraticBezierTo(size.width, size.height, size.width - r, size.height);
-
-    // Bottom edge with a flat-topped smooth arch cut-out in the middle
-    final double centerX = size.width / 2;
-    path.lineTo(centerX + arcW / 2, size.height);
-    
-    // Smooth cubic bezier arch cutout
-    path.cubicTo(
-      centerX + arcW / 3,
-      size.height - arcR,
-      centerX - arcW / 3,
-      size.height - arcR,
-      centerX - arcW / 2,
-      size.height,
-    );
-
-    path.lineTo(r, size.height);
-    path.quadraticBezierTo(0, size.height, 0, size.height - r);
-    path.close();
-
-    return path;
-  }
-
-  @override
-  bool shouldReclip(covariant CustomClipper<Path> oldClipper) => false;
-}
-
-class ArcadeCardBorderPainter extends CustomPainter {
-  const ArcadeCardBorderPainter({required this.borderColor});
-  final Color borderColor;
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final path = Path();
-    final double r = 16.0;
-    final double arcR = 10.0;
-    final double arcW = 38.0;
-
-    path.moveTo(0, r);
-    // Left corner rounds to y=10
-    path.quadraticBezierTo(0, 10, 10, 10);
-    // Smooth notch curving up to y=0
-    path.cubicTo(16, 10, 18, 0, 26, 0);
-    // Top tab line
-    path.lineTo(size.width - 26, 0);
-    // Smooth notch curving down to y=10
-    path.cubicTo(size.width - 18, 0, size.width - 16, 10, size.width - 10, 10);
-    // Right corner rounds down to y=r
-    path.quadraticBezierTo(size.width, 10, size.width, r);
-
-    // Right edge
-    path.lineTo(size.width, size.height - r);
-    path.quadraticBezierTo(size.width, size.height, size.width - r, size.height);
-
-    // Bottom edge with a flat-topped smooth arch cut-out in the middle
-    final double centerX = size.width / 2;
-    path.lineTo(centerX + arcW / 2, size.height);
-    path.cubicTo(
-      centerX + arcW / 3,
-      size.height - arcR,
-      centerX - arcW / 3,
-      size.height - arcR,
-      centerX - arcW / 2,
-      size.height,
-    );
-
-    path.lineTo(r, size.height);
-    path.quadraticBezierTo(0, size.height, 0, size.height - r);
-    path.close();
-
-    // Draw glowing border paint that fades from top to bottom
-    final rect = Rect.fromLTWH(0, 0, size.width, size.height);
-    final borderPaint = Paint()
-      ..shader = LinearGradient(
-        begin: Alignment.topCenter,
-        end: Alignment.bottomCenter,
-        colors: [
-          borderColor,
-          borderColor.withValues(alpha: 0.6),
-          borderColor.withValues(alpha: 0.0),
-        ],
-        stops: const [0.0, 0.35, 0.70],
-      ).createShader(rect)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.8;
-
-    canvas.drawPath(path, borderPaint);
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
-}
-
-class _TaperedCardPainter extends CustomPainter {
-  const _TaperedCardPainter({
-    this.taper = 14.0,
-    this.radius = 38.0,
-  });
-
-  final double taper;
-  final double radius;
-
-  Path getCardPath(Size size) {
-    final path = Path();
-    final w = size.width;
-    final h = size.height;
-    final r = radius;
-    final t = taper;
-
-    // Top-left start
-    path.moveTo(r, 0);
-    // Top edge with subtle convex arch
-    path.quadraticBezierTo(w / 2, -1.5, w - r, 0);
-    // Top-right rounded corner
-    path.quadraticBezierTo(w, 0, w, r);
-    // Right side gently tapering down to (w - t, h - r)
-    path.cubicTo(
-      w - (t * 0.15), h * 0.40,
-      w - (t * 0.75), h * 0.78,
-      w - t, h - r,
-    );
-    // Bottom-right rounded corner (deep curve)
-    path.quadraticBezierTo(w - t, h, w - t - r, h);
-    // Bottom edge with smooth convex bowl curve matching screenshot
-    path.quadraticBezierTo(w / 2, h + 6.0, t + r, h);
-    // Bottom-left rounded corner (deep curve)
-    path.quadraticBezierTo(t, h, t, h - r);
-    // Left side gently tapering up to (0, r)
-    path.cubicTo(
-      t * 0.75, h * 0.78,
-      t * 0.15, h * 0.40,
-      0, r,
-    );
-    // Top-left rounded corner
-    path.quadraticBezierTo(0, 0, r, 0);
-    path.close();
-    return path;
-  }
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final path = getCardPath(size);
-
-    // Draw shadow first
-    canvas.drawShadow(
-      path,
-      const Color(0xFF7640FE).withValues(alpha: 0.08),
-      6.0,
-      true,
-    );
-
-    // Draw solid white background
-    final paint = Paint()
-      ..style = PaintingStyle.fill
-      ..color = Colors.white;
-
-    canvas.drawPath(path, paint);
-
-    // Draw subtle purple border stroke
-    final borderPaint = Paint()
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.2
-      ..color = const Color(0xFF7640FE).withValues(alpha: 0.15);
-
-    canvas.drawPath(path, borderPaint);
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
-}
-
-class _HomeDailyTaskItemCard extends StatelessWidget {
-  const _HomeDailyTaskItemCard({
-    required this.item,
-    required this.onTap,
-    this.isLoading = false,
-  });
-
-  final DailyTaskModel item;
-  final VoidCallback onTap;
-  final bool isLoading;
-
-  @override
-  Widget build(BuildContext context) {
-    final imageUrl = item.imagePath.trim().isNotEmpty
-        ? item.imagePath.trim()
-        : (item.bannerPath.trim().isNotEmpty ? item.bannerPath.trim() : '');
-
-    return _PopScaleButton(
-      onTap: onTap,
-      scaleDown: 0.95,
-      child: Container(
-        height: 120.h,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(24.r),
-          border: Border.all(
-            color: Colors.white,
-            width: 2.5,
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.07),
-              blurRadius: 16,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(22.r),
-          child: Stack(
-            children: [
-              // 1. Solid Pure White Base
-              Positioned.fill(
-                child: Container(
-                  color: Colors.white,
-                ),
-              ),
-
-              // 2. Right-Side Background Art Layer
-              Positioned(
-                right: 0,
-                top: 0,
-                bottom: 0,
-                width: 140.w,
-                child: ClipRRect(
-                  borderRadius: BorderRadius.only(
-                    topRight: Radius.circular(22.r),
-                    bottomRight: Radius.circular(22.r),
-                  ),
-                  child: Image.asset(
-                    'assets/icons/daily task blur.png',
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ),
-
-              // 3. Glassmorphism Light Glass Backdrop Layer (Lighter Blur)
-              Positioned.fill(
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(22.r),
-                  child: BackdropFilter(
-                    filter: ImageFilter.blur(sigmaX: 4.5, sigmaY: 4.5),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                          colors: [
-                            Colors.white.withValues(alpha: 0.72),
-                            Colors.white.withValues(alpha: 0.45),
-                            Colors.white.withValues(alpha: 0.15),
-                          ],
-                          stops: const [0.0, 0.50, 1.0],
-                        ),
-                        border: Border.all(
-                          color: Colors.white.withValues(alpha: 0.90),
-                          width: 1.5,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-
-              // 4. Main Content Row (Logo + Text Info)
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
-                child: Row(
-                  children: [
-                    // Left Column: Crisp Square Logo Thumbnail with Soft Elevation
-                    Container(
-                      width: 72.w,
-                      height: 72.w,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(18.r),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.08),
-                            blurRadius: 8,
-                            offset: const Offset(0, 2),
-                          ),
-                        ],
-                      ),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(18.r),
-                        child: imageUrl.isNotEmpty
-                            ? InternetImage(
-                                url: imageUrl,
-                                fit: BoxFit.cover,
-                                width: 72.w,
-                                height: 72.w,
-                              )
-                            : Container(
-                                color: const Color(0xFFAB31DE),
-                                child: Icon(
-                                  Icons.sports_esports_rounded,
-                                  color: Colors.white,
-                                  size: 36.sp,
-                                ),
-                              ),
-                      ),
-                    ),
-
-                    SizedBox(width: 12.w),
-
-                    // Middle Column: Title, Subtitle & Category Tag (Below Subtitle)
-                    Expanded(
-                      child: Padding(
-                        padding: EdgeInsets.only(right: 60.w),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            // Title
-                            Text(
-                              item.offerName,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: GoogleFonts.poppins(
-                                color: const Color(0xFF0F172A),
-                                fontSize: 15.sp,
-                                fontWeight: FontWeight.w700,
-                                letterSpacing: -0.2,
-                              ),
-                            ),
-
-                            SizedBox(height: 2.h),
-
-                            // Subtitle
-                            Text(
-                              item.cleanSubtitle,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: GoogleFonts.poppins(
-                                color: const Color(0xFF64748B),
-                                fontSize: 10.5.sp,
-                                fontWeight: FontWeight.w400,
-                                height: 1.15,
-                              ),
-                            ),
-
-                            SizedBox(height: 6.h),
-
-                            // Category Badge Tag (Low Opacity Flat Color, No Gradient, No Outline)
-                            Container(
-                              padding: EdgeInsets.symmetric(horizontal: 7.w, vertical: 2.5.h),
-                              decoration: BoxDecoration(
-                                color: const Color(0xFFAB31DE).withValues(alpha: 0.10),
-                                borderRadius: BorderRadius.circular(6.r),
-                              ),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Icon(
-                                    Icons.local_fire_department_rounded,
-                                    color: const Color(0xFFAB31DE),
-                                    size: 9.5.sp,
-                                  ),
-                                  SizedBox(width: 3.w),
-                                  Text(
-                                    item.offerCategory.isNotEmpty
-                                        ? item.offerCategory.toUpperCase()
-                                        : 'HOT',
-                                    style: GoogleFonts.poppins(
-                                      color: const Color(0xFFAB31DE),
-                                      fontSize: 7.5.sp,
-                                      fontWeight: FontWeight.w800,
-                                      letterSpacing: 0.3,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
-              // 5. Coin Action Button (Shifted slightly left)
-              Positioned(
-                right: 30.w,
-                bottom: 12.h,
-                child: _PopScaleButton(
-                  onTap: onTap,
-                  child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 5.5.h),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFFAF5FF),
-                      borderRadius: BorderRadius.circular(11.r),
-                      border: Border.all(
-                        color: const Color(0xFFE39FFF).withValues(alpha: 0.70),
-                        width: 1.2,
-                      ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: const Color(0xFFAB31DE).withValues(alpha: 0.12),
-                          blurRadius: 6,
-                          offset: const Offset(0, 2),
-                        ),
-                      ],
-                    ),
-                    child: isLoading
-                        ? const SizedBox(
-                            width: 12,
-                            height: 12,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFAB31DE)),
-                            ),
-                          )
-                        : Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Image.asset(
-                                'assets/icons/coin.png',
-                                width: 14.w,
-                                height: 14.w,
-                              ),
-                              SizedBox(width: 4.w),
-                              Text(
-                                '+${item.coins}',
-                                style: GoogleFonts.poppins(
-                                  color: const Color(0xFFAB31DE),
-                                  fontSize: 12.sp,
-                                  fontWeight: FontWeight.w800,
-                                ),
-                              ),
-                              SizedBox(width: 4.w),
-                              Icon(
-                                Icons.arrow_downward_rounded,
-                                color: const Color(0xFFAB31DE),
-                                size: 12.sp,
-                              ),
-                            ],
-                          ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-
-
-class _PopScaleButton extends StatefulWidget {
-  const _PopScaleButton({
-    required this.onTap,
-    required this.child,
-    this.scaleDown = 0.92,
-  });
-
-  final VoidCallback onTap;
-  final Widget child;
-  final double scaleDown;
-
-  @override
-  State<_PopScaleButton> createState() => _PopScaleButtonState();
-}
-
-class _PopScaleButtonState extends State<_PopScaleButton> {
-  bool _isPressed = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      behavior: HitTestBehavior.opaque,
-      onTapDown: (_) {
-        setState(() => _isPressed = true);
-        HapticFeedback.lightImpact();
-      },
-      onTapUp: (_) {
-        setState(() => _isPressed = false);
-        widget.onTap();
-      },
-      onTapCancel: () {
-        setState(() => _isPressed = false);
-      },
-      child: AnimatedScale(
-        scale: _isPressed ? widget.scaleDown : 1.0,
-        duration: const Duration(milliseconds: 120),
-        curve: Curves.easeInOutBack,
-        child: widget.child,
-      ),
-    );
-  }
-}
-

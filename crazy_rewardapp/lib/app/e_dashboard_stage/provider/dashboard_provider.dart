@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/widgets.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:http/http.dart' as http;
 
@@ -53,6 +54,31 @@ class DashboardService {
     }
   }
 
+  static UserDataModel? _cachedUser;
+
+  static void setCachedUser(UserDataModel user) {
+    _cachedUser = user;
+    try {
+      final storage = GetStorage();
+      storage.write('cached_user_${user.userId}', user.toSnapshot());
+    } catch (_) {}
+  }
+
+  static UserDataModel? getCachedUser(String userId) {
+    if (_cachedUser != null && _cachedUser!.userId == userId) {
+      return _cachedUser;
+    }
+    try {
+      final storage = GetStorage();
+      final data = storage.read('cached_user_$userId');
+      if (data != null && data is Map) {
+        _cachedUser = UserDataModel.fromJson(Map<String, dynamic>.from(data));
+        return _cachedUser;
+      }
+    } catch (_) {}
+    return null;
+  }
+
   //! Helper to fetch user profile from MongoDB
   static Future<UserDataModel?> fetchUserProfile(String userId) async {
     try {
@@ -61,7 +87,7 @@ class DashboardService {
         firebaseUser = await FirebaseAuth.instance
             .authStateChanges()
             .firstWhere((u) => u != null)
-            .timeout(const Duration(seconds: 5), onTimeout: () => null);
+            .timeout(const Duration(seconds: 2), onTimeout: () => null);
       }
 
       if (firebaseUser != null) {
@@ -74,7 +100,7 @@ class DashboardService {
             'Authorization': 'Bearer $token',
             'user-id': userId,
           },
-        );
+        ).timeout(const Duration(seconds: 4));
 
         if (res.statusCode == 200) {
           Map<String, dynamic> data = jsonDecode(res.body);
@@ -91,7 +117,9 @@ class DashboardService {
           }
 
           if (data['success'] == true && data['user'] != null) {
-            return UserDataModel.fromJson(data['user']);
+            final userModel = UserDataModel.fromJson(data['user']);
+            setCachedUser(userModel);
+            return userModel;
           }
         } else {
            // debugPrint('userProfile HTTP error: ${res.statusCode} ${res.body}');
@@ -103,14 +131,42 @@ class DashboardService {
     return null;
   }
 
-  //! User Data Provider (MongoDB On-Demand FutureProvider)
-  static final userDataProvider = FutureProvider.autoDispose.family<UserDataModel, String>(
+  //! User Data Provider (Instant Cache + Background Refresh)
+  static final userDataProvider = FutureProvider.family<UserDataModel, String>(
     (ref, String userId) async {
-      final user = await fetchUserProfile(userId);
-      if (user == null) {
-        throw Exception('Failed to load user profile');
+      // 1. Instant Cache Hit
+      final cached = getCachedUser(userId);
+      if (cached != null) {
+        // Refresh asynchronously in background without blocking UI
+        unawaited(fetchUserProfile(userId));
+        return cached;
       }
-      return user;
+
+      // 2. Fallback to immediate fetch or Firebase user data
+      final user = await fetchUserProfile(userId);
+      if (user != null) {
+        return user;
+      }
+
+      final curUser = FirebaseAuth.instance.currentUser;
+      final fallbackUser = UserDataModel.fromJson({
+        'userId': userId.isNotEmpty ? userId : (curUser?.uid ?? ''),
+        'email': curUser?.email ?? '',
+        'displayName': curUser?.displayName ?? (curUser?.isAnonymous == true ? 'Guest User' : 'User'),
+        'photoUrl': curUser?.photoURL ?? '',
+        'mobileNo': curUser?.phoneNumber ?? '',
+        'coins': 0.0,
+        'bonusCoins': 0.0,
+        'gems': 0,
+        'referralCode': '',
+        'streak': 1,
+        'streakClaimed': false,
+        'isBlocked': false,
+        'account_deleted': false,
+        'isGuest': curUser?.isAnonymous ?? false,
+      });
+      setCachedUser(fallbackUser);
+      return fallbackUser;
     },
   );
 

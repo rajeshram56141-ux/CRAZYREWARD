@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../../../../../utils/helper/helper.dart';
 import '../../../../../../utils/routes/routes_import.gr.dart';
 import '../../../../../../widgets/common/internet_image.dart';
 import '../../daily_task/daily_task_model.dart';
@@ -86,14 +87,14 @@ class _WatchVideoFullVideoWidgetState extends State<WatchVideoFullVideoWidget> {
         child: Container(
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.circular(22.r),
+            borderRadius: BorderRadius.circular(18.r),
             border: Border.all(
-              color: const Color(0xFFF1F5F9),
+              color: const Color(0xFFE2E8F0),
               width: 1.2,
             ),
             boxShadow: [
               BoxShadow(
-                color: const Color(0xFFAB31DE).withValues(alpha: 0.08),
+                color: Colors.black.withValues(alpha: 0.03),
                 blurRadius: 10,
                 offset: const Offset(0, 3),
               ),
@@ -105,7 +106,7 @@ class _WatchVideoFullVideoWidgetState extends State<WatchVideoFullVideoWidget> {
             children: [
               // 1. Left Rounded Video Thumbnail Poster
               ClipRRect(
-                borderRadius: BorderRadius.circular(16.r),
+                borderRadius: BorderRadius.circular(14.r),
                 child: SizedBox(
                   width: 116.w,
                   height: 78.h,
@@ -172,7 +173,7 @@ class _WatchVideoFullVideoWidgetState extends State<WatchVideoFullVideoWidget> {
                           ),
                           child: Text(
                             _formatDuration(item.trackingTime),
-                            style: GoogleFonts.outfit(
+                            style: GoogleFonts.poppins(
                               color: Colors.white,
                               fontSize: 9.sp,
                               fontWeight: FontWeight.w700,
@@ -198,11 +199,10 @@ class _WatchVideoFullVideoWidgetState extends State<WatchVideoFullVideoWidget> {
                       item.offerName,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: GoogleFonts.outfit(
+                      style: GoogleFonts.poppins(
                         color: const Color(0xFF1E1B4B),
                         fontSize: 14.5.sp,
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: -0.2,
+                        fontWeight: FontWeight.w700,
                       ),
                     ),
 
@@ -217,30 +217,30 @@ class _WatchVideoFullVideoWidgetState extends State<WatchVideoFullVideoWidget> {
                               : '${item.offerName} • Watch video and complete task to earn reward coins'),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
-                      style: GoogleFonts.outfit(
+                      style: GoogleFonts.poppins(
                         color: const Color(0xFF64748B),
                         fontSize: 11.sp,
-                        fontWeight: FontWeight.w500,
-                        height: 1.2,
+                        fontWeight: FontWeight.w400,
+                        height: 1.25,
                       ),
                     ),
 
                     SizedBox(height: 8.h),
 
-                    // Bottom Row (Coins Pill & Play Button)
+                    // Bottom Row (Coins Badge & Silver Metallic Watch Button)
                     Row(
                       children: [
-                        // Coin Pill
+                        // Dark Coin Badge (Matching Home Screen)
                         Container(
                           padding: EdgeInsets.symmetric(
                             horizontal: 8.w,
                             vertical: 4.h,
                           ),
                           decoration: BoxDecoration(
-                            color: const Color(0xFFF0FDF4),
-                            borderRadius: BorderRadius.circular(12.r),
+                            color: const Color(0xFF26262E),
+                            borderRadius: BorderRadius.circular(8.r),
                             border: Border.all(
-                              color: const Color(0xFFBBF7D0),
+                              color: const Color(0xFF383842),
                               width: 1.0,
                             ),
                           ),
@@ -249,17 +249,17 @@ class _WatchVideoFullVideoWidgetState extends State<WatchVideoFullVideoWidget> {
                             children: [
                               Image.asset(
                                 'assets/icons/coin.png',
-                                width: 14.w,
-                                height: 14.w,
+                                width: 13.w,
+                                height: 13.w,
                                 fit: BoxFit.contain,
                               ),
                               SizedBox(width: 4.w),
                               Text(
-                                '+${item.coins}',
-                                style: GoogleFonts.outfit(
-                                  color: const Color(0xFF15803D),
-                                  fontSize: 11.5.sp,
-                                  fontWeight: FontWeight.w800,
+                                '+${item.coins.toInt().formatCoins()}',
+                                style: GoogleFonts.poppins(
+                                  color: Colors.white,
+                                  fontSize: 11.sp,
+                                  fontWeight: FontWeight.w700,
                                 ),
                               ),
                             ],
@@ -268,7 +268,7 @@ class _WatchVideoFullVideoWidgetState extends State<WatchVideoFullVideoWidget> {
 
                         const Spacer(),
 
-                        // Purple Gradient "Play" Pill Button
+                        // Metallic Silver "Watch" Button
                         Container(
                           padding: EdgeInsets.symmetric(
                             horizontal: 16.w,
@@ -277,15 +277,22 @@ class _WatchVideoFullVideoWidgetState extends State<WatchVideoFullVideoWidget> {
                           decoration: BoxDecoration(
                             gradient: const LinearGradient(
                               colors: [
-                                Color(0xFFE39FFF),
-                                Color(0xFFAB31DE),
+                                Colors.white,
+                                Color(0xFFE5E7EB),
+                                Color(0xFFB0B5C2),
                               ],
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
                             ),
-                            borderRadius: BorderRadius.circular(14.r),
+                            borderRadius: BorderRadius.circular(10.r),
+                            border: Border.all(
+                              color: const Color(0xFF9CA3AF),
+                              width: 1,
+                            ),
                             boxShadow: [
                               BoxShadow(
-                                color: const Color(0xFFAB31DE).withValues(alpha: 0.30),
-                                blurRadius: 6,
+                                color: Colors.black.withValues(alpha: 0.08),
+                                blurRadius: 4,
                                 offset: const Offset(0, 2),
                               ),
                             ],
@@ -295,15 +302,15 @@ class _WatchVideoFullVideoWidgetState extends State<WatchVideoFullVideoWidget> {
                             children: [
                               Icon(
                                 Icons.play_arrow_rounded,
-                                color: Colors.white,
+                                color: const Color(0xFF16161A),
                                 size: 16.sp,
                               ),
                               SizedBox(width: 3.w),
                               Text(
                                 'Watch',
-                                style: GoogleFonts.outfit(
-                                  color: Colors.white,
-                                  fontSize: 12.5.sp,
+                                style: GoogleFonts.poppins(
+                                  color: const Color(0xFF16161A),
+                                  fontSize: 12.sp,
                                   fontWeight: FontWeight.w800,
                                   letterSpacing: 0.2,
                                 ),

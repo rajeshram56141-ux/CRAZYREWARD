@@ -57,7 +57,7 @@ class FollowScreen extends HookConsumerWidget {
             children: [
               SizedBox(height: 8.h),
 
-              // Fixed Top Header: Back Button + Screen Title + Coins Pill
+              // Fixed Top Header: Back Button + Screen Title
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16.w),
                 child: Row(
@@ -71,15 +71,15 @@ class FollowScreen extends HookConsumerWidget {
                         width: 40.w,
                         height: 40.w,
                         decoration: BoxDecoration(
-                          color: const Color(0xFFFAF5FF),
-                          shape: BoxShape.circle,
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(14.r),
                           border: Border.all(
-                            color: const Color(0xFFE9D5FF),
+                            color: const Color(0xFFE2E8F0),
                             width: 1.2,
                           ),
                           boxShadow: [
                             BoxShadow(
-                              color: const Color(0xFFAB31DE).withValues(alpha: 0.06),
+                              color: Colors.black.withValues(alpha: 0.04),
                               blurRadius: 8,
                               offset: const Offset(0, 2),
                             ),
@@ -87,20 +87,20 @@ class FollowScreen extends HookConsumerWidget {
                         ),
                         alignment: Alignment.center,
                         child: Icon(
-                          Icons.arrow_back_ios_new_rounded,
-                          color: const Color(0xFF1E1B4B),
-                          size: 18.sp,
+                          Icons.arrow_back_rounded,
+                          color: const Color(0xFF26262B),
+                          size: 20.sp,
                         ),
                       ),
                     ),
-                    SizedBox(width: 12.w),
+                    SizedBox(width: 14.w),
                     Text(
                       'Follow Us',
-                      style: GoogleFonts.outfit(
-                        color: const Color(0xFF1E1B4B),
-                        fontSize: 20.sp,
+                      style: GoogleFonts.kaushanScript(
+                        color: const Color(0xFF26262B),
+                        fontSize: 24.sp,
                         fontWeight: FontWeight.w800,
-                        letterSpacing: -0.2,
+                        letterSpacing: 0.5,
                       ),
                     ),
                   ],
@@ -112,8 +112,8 @@ class FollowScreen extends HookConsumerWidget {
               // Scrollable Body Content
               Expanded(
                 child: RefreshIndicator(
-                  color: const Color(0xFFAB31DE),
-                  backgroundColor: const Color(0xFFFAF5FF),
+                  color: const Color(0xFF26262B),
+                  backgroundColor: Colors.white,
                   onRefresh: () async {
                     ref.invalidate(SplashService.appDataProvider);
                     if (userId.isNotEmpty) {
@@ -137,34 +137,27 @@ class FollowScreen extends HookConsumerWidget {
                         // Executive Community Hero Card
                         _buildCommunityHeroCard(followCoins),
 
-                        SizedBox(height: 22.h),
+                        SizedBox(height: 20.h),
 
                         // Section Title Row
                         Row(
                           children: [
                             Container(
-                              padding: EdgeInsets.all(6.w),
+                              width: 4.w,
+                              height: 18.h,
                               decoration: BoxDecoration(
-                                color: const Color(0xFFFAF5FF),
-                                borderRadius: BorderRadius.circular(10.r),
-                                border: Border.all(
-                                  color: const Color(0xFFE9D5FF),
-                                  width: 1,
-                                ),
-                              ),
-                              child: Icon(
-                                Icons.hub_rounded,
-                                color: const Color(0xFFAB31DE),
-                                size: 16.sp,
+                                color: const Color(0xFF26262B),
+                                borderRadius: BorderRadius.circular(2.r),
                               ),
                             ),
                             SizedBox(width: 8.w),
                             Text(
                               'Official Channels',
-                              style: GoogleFonts.outfit(
-                                color: const Color(0xFF1E1B4B),
-                                fontSize: 16.5.sp,
-                                fontWeight: FontWeight.w800,
+                              style: GoogleFonts.poppins(
+                                color: const Color(0xFF26262B),
+                                fontSize: 16.sp,
+                                fontWeight: FontWeight.w700,
+                                letterSpacing: 0.2,
                               ),
                             ),
                           ],
@@ -218,16 +211,16 @@ class FollowScreen extends HookConsumerWidget {
       width: double.infinity,
       padding: EdgeInsets.all(16.w),
       decoration: BoxDecoration(
-        color: const Color(0xFFFAF5FF),
+        color: Colors.white,
         borderRadius: BorderRadius.circular(20.r),
         border: Border.all(
-          color: const Color(0xFFE9D5FF),
+          color: const Color(0xFFE2E8F0),
           width: 1.2,
         ),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFFAB31DE).withValues(alpha: 0.06),
-            blurRadius: 12,
+            color: Colors.black.withValues(alpha: 0.04),
+            blurRadius: 10,
             offset: const Offset(0, 3),
           ),
         ],
@@ -235,18 +228,18 @@ class FollowScreen extends HookConsumerWidget {
       child: Row(
         children: [
           Container(
-            width: 52.w,
-            height: 52.w,
+            width: 50.w,
+            height: 50.w,
             decoration: BoxDecoration(
               gradient: const LinearGradient(
-                colors: [Color(0xFFE39FFF), Color(0xFFAB31DE)],
+                colors: [Color(0xFF2E2E36), Color(0xFF18181B)],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
               borderRadius: BorderRadius.circular(16.r),
               boxShadow: [
                 BoxShadow(
-                  color: const Color(0xFFAB31DE).withValues(alpha: 0.25),
+                  color: Colors.black.withValues(alpha: 0.15),
                   blurRadius: 8,
                   offset: const Offset(0, 3),
                 ),
@@ -255,7 +248,7 @@ class FollowScreen extends HookConsumerWidget {
             alignment: Alignment.center,
             child: Icon(
               Icons.stars_rounded,
-              color: Colors.white,
+              color: const Color(0xFFFFB800),
               size: 28.sp,
             ),
           ),
@@ -266,10 +259,10 @@ class FollowScreen extends HookConsumerWidget {
               children: [
                 Text(
                   'Join Official Community',
-                  style: GoogleFonts.outfit(
-                    color: const Color(0xFF1E1B4B),
-                    fontSize: 16.sp,
-                    fontWeight: FontWeight.w800,
+                  style: GoogleFonts.poppins(
+                    color: const Color(0xFF26262B),
+                    fontSize: 15.sp,
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
                 SizedBox(height: 3.h),
@@ -277,9 +270,9 @@ class FollowScreen extends HookConsumerWidget {
                   coins > 0
                       ? 'Follow official channels & get +$coins Coins for each channel!'
                       : 'Follow our official channels for regular updates and announcements.',
-                  style: GoogleFonts.outfit(
+                  style: GoogleFonts.poppins(
                     color: const Color(0xFF64748B),
-                    fontSize: 12.sp,
+                    fontSize: 11.5.sp,
                     height: 1.3,
                     fontWeight: FontWeight.w500,
                   ),
@@ -358,7 +351,7 @@ class _SocialPlatformCard extends HookConsumerWidget {
         case 'instagram':
           return const Color(0xFFFCE7F3);
         default:
-          return const Color(0xFFF3E8FF);
+          return const Color(0xFFF1F5F9);
       }
     }
 
@@ -373,7 +366,7 @@ class _SocialPlatformCard extends HookConsumerWidget {
         case 'instagram':
           return const Color(0xFFDB2777);
         default:
-          return const Color(0xFFAB31DE);
+          return const Color(0xFF26262B);
       }
     }
 
@@ -465,17 +458,17 @@ class _SocialPlatformCard extends HookConsumerWidget {
         child: Container(
           padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 14.h),
           decoration: BoxDecoration(
-            color: isFollowed ? Colors.white : const Color(0xFFFAF5FF),
+            color: Colors.white,
             borderRadius: BorderRadius.circular(18.r),
             border: Border.all(
-              color: isFollowed ? const Color(0xFFE2E8F0) : const Color(0xFFE9D5FF),
+              color: const Color(0xFFE2E8F0),
               width: 1.2,
             ),
             boxShadow: [
               BoxShadow(
-                color: const Color(0xFFAB31DE).withValues(alpha: 0.05),
-                blurRadius: 10,
-                offset: const Offset(0, 3),
+                color: Colors.black.withValues(alpha: 0.04),
+                blurRadius: 8,
+                offset: const Offset(0, 2),
               ),
             ],
           ),
@@ -483,8 +476,8 @@ class _SocialPlatformCard extends HookConsumerWidget {
             children: [
               // Platform Brand Logo Container
               Container(
-                width: 46.w,
-                height: 46.w,
+                width: 44.w,
+                height: 44.w,
                 decoration: BoxDecoration(
                   color: getPlatformBadgeBg(),
                   borderRadius: BorderRadius.circular(14.r),
@@ -521,9 +514,9 @@ class _SocialPlatformCard extends HookConsumerWidget {
                       title.tr(),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: GoogleFonts.outfit(
-                        color: const Color(0xFF1E1B4B),
-                        fontSize: 15.sp,
+                      style: GoogleFonts.poppins(
+                        color: const Color(0xFF26262B),
+                        fontSize: 14.5.sp,
                         fontWeight: FontWeight.w700,
                       ),
                     ),
@@ -532,7 +525,7 @@ class _SocialPlatformCard extends HookConsumerWidget {
                       getPlatformSubtitle(),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: GoogleFonts.outfit(
+                      style: GoogleFonts.poppins(
                         color: const Color(0xFF64748B),
                         fontSize: 11.5.sp,
                         fontWeight: FontWeight.w500,
@@ -546,7 +539,7 @@ class _SocialPlatformCard extends HookConsumerWidget {
                       Container(
                         padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 3.h),
                         decoration: BoxDecoration(
-                          color: const Color(0xFFFFFBEB),
+                          color: const Color(0xFFFEF3C7),
                           borderRadius: BorderRadius.circular(8.r),
                           border: Border.all(
                             color: const Color(0xFFFDE68A),
@@ -558,17 +551,17 @@ class _SocialPlatformCard extends HookConsumerWidget {
                           children: [
                             Image.asset(
                               'assets/icons/coin.png',
-                              width: 13.w,
-                              height: 13.w,
+                              width: 12.w,
+                              height: 12.w,
                               fit: BoxFit.contain,
                             ),
                             SizedBox(width: 4.w),
                             Text(
                               '+$rewardCoins Coins',
-                              style: GoogleFonts.outfit(
+                              style: GoogleFonts.poppins(
                                 color: const Color(0xFFD97706),
                                 fontSize: 11.sp,
-                                fontWeight: FontWeight.w800,
+                                fontWeight: FontWeight.w700,
                               ),
                             ),
                           ],
@@ -580,15 +573,15 @@ class _SocialPlatformCard extends HookConsumerWidget {
 
               SizedBox(width: 10.w),
 
-              // Action Button (Gradient Join/Subscribe or Soft Outline Open)
+              // Action Button (Silver-Metallic Join/Subscribe or Soft Outline Open)
               if (isVerifying.value)
                 Container(
                   padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 8.h),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFF3E8FF),
+                    color: const Color(0xFFF1F5F9),
                     borderRadius: BorderRadius.circular(20.r),
                     border: Border.all(
-                      color: const Color(0xFFE9D5FF),
+                      color: const Color(0xFFE2E8F0),
                       width: 1,
                     ),
                   ),
@@ -599,17 +592,17 @@ class _SocialPlatformCard extends HookConsumerWidget {
                         width: 12.w,
                         height: 12.w,
                         child: const CircularProgressIndicator(
-                          color: Color(0xFFAB31DE),
+                          color: Color(0xFF26262B),
                           strokeWidth: 2,
                         ),
                       ),
                       SizedBox(width: 6.w),
                       Text(
                         'Verifying...',
-                        style: GoogleFonts.outfit(
-                          color: const Color(0xFFAB31DE),
+                        style: GoogleFonts.poppins(
+                          color: const Color(0xFF26262B),
                           fontSize: 11.5.sp,
-                          fontWeight: FontWeight.w700,
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
                     ],
@@ -617,17 +610,23 @@ class _SocialPlatformCard extends HookConsumerWidget {
                 )
               else if (!isFollowed)
                 Container(
-                  padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+                  padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 7.h),
                   decoration: BoxDecoration(
                     gradient: const LinearGradient(
-                      colors: [Color(0xFFE39FFF), Color(0xFFAB31DE)],
+                      colors: [
+                        Colors.white,
+                        Color(0xFFE5E7EB),
+                        Color(0xFFB0B5C2),
+                      ],
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
                     ),
                     borderRadius: BorderRadius.circular(20.r),
                     boxShadow: [
                       BoxShadow(
-                        color: const Color(0xFFAB31DE).withValues(alpha: 0.3),
-                        blurRadius: 8,
-                        offset: const Offset(0, 3),
+                        color: Colors.black.withValues(alpha: 0.15),
+                        blurRadius: 6,
+                        offset: const Offset(0, 2),
                       ),
                     ],
                   ),
@@ -636,17 +635,16 @@ class _SocialPlatformCard extends HookConsumerWidget {
                     children: [
                       Text(
                         getButtonLabel(),
-                        style: GoogleFonts.outfit(
-                          color: Colors.white,
+                        style: GoogleFonts.poppins(
+                          color: const Color(0xFF16161A),
                           fontSize: 12.sp,
-                          fontWeight: FontWeight.w800,
-                          letterSpacing: 0.1,
+                          fontWeight: FontWeight.w700,
                         ),
                       ),
                       SizedBox(width: 4.w),
                       Icon(
                         Icons.arrow_outward_rounded,
-                        color: Colors.white,
+                        color: const Color(0xFF16161A),
                         size: 13.sp,
                       ),
                     ],
@@ -654,12 +652,12 @@ class _SocialPlatformCard extends HookConsumerWidget {
                 )
               else
                 Container(
-                  padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 8.h),
+                  padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 7.h),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFF3E8FF),
+                    color: const Color(0xFFF8FAFC),
                     borderRadius: BorderRadius.circular(20.r),
                     border: Border.all(
-                      color: const Color(0xFFE9D5FF),
+                      color: const Color(0xFFE2E8F0),
                       width: 1,
                     ),
                   ),
@@ -668,16 +666,16 @@ class _SocialPlatformCard extends HookConsumerWidget {
                     children: [
                       Text(
                         'Open',
-                        style: GoogleFonts.outfit(
-                          color: const Color(0xFFAB31DE),
+                        style: GoogleFonts.poppins(
+                          color: const Color(0xFF64748B),
                           fontSize: 12.sp,
-                          fontWeight: FontWeight.w800,
+                          fontWeight: FontWeight.w700,
                         ),
                       ),
                       SizedBox(width: 4.w),
                       Icon(
                         Icons.open_in_new_rounded,
-                        color: const Color(0xFFAB31DE),
+                        color: const Color(0xFF64748B),
                         size: 12.sp,
                       ),
                     ],

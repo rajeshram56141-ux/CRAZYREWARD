@@ -136,45 +136,46 @@ class WatchVideoDetailsScreen extends HookWidget {
                     // Top Navigation Header
                     Row(
                       children: [
-                        GestureDetector(
+                        InkWell(
                           onTap: () {
                             HapticFeedback.lightImpact();
                             AutoRouter.of(context).maybePop();
                           },
+                          borderRadius: BorderRadius.circular(14.r),
                           child: Container(
                             width: 40.w,
                             height: 40.w,
                             alignment: Alignment.center,
                             decoration: BoxDecoration(
                               color: Colors.white,
-                              borderRadius: BorderRadius.circular(15.r),
+                              borderRadius: BorderRadius.circular(14.r),
                               border: Border.all(
-                                color: const Color(0xFFF1F5F9),
+                                color: const Color(0xFFE2E8F0),
                                 width: 1.2,
                               ),
                               boxShadow: [
                                 BoxShadow(
-                                  color: const Color(0xFFAB31DE).withValues(alpha: 0.08),
-                                  blurRadius: 10,
-                                  offset: const Offset(0, 3),
+                                  color: Colors.black.withValues(alpha: 0.04),
+                                  blurRadius: 8,
+                                  offset: const Offset(0, 2),
                                 ),
                               ],
                             ),
                             child: Icon(
                               Icons.arrow_back_rounded,
-                              color: const Color(0xFFAB31DE),
-                              size: 22.sp,
+                              color: const Color(0xFF26262B),
+                              size: 20.sp,
                             ),
                           ),
                         ),
                         SizedBox(width: 12.w),
                         Text(
                           'Watch Video',
-                          style: GoogleFonts.outfit(
-                            color: const Color(0xFF1E1B4B),
-                            fontSize: 18.5.sp,
+                          style: GoogleFonts.kaushanScript(
+                            color: const Color(0xFF26262B),
+                            fontSize: 24.sp,
                             fontWeight: FontWeight.w800,
-                            letterSpacing: -0.2,
+                            letterSpacing: 0.5,
                           ),
                         ),
                       ],
@@ -182,13 +183,13 @@ class WatchVideoDetailsScreen extends HookWidget {
 
                     SizedBox(height: 18.h),
 
-                    // Video Banner / Poster (Matching Reference Image 1-to-1)
+                    // Video Banner / Poster
                     Container(
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(20.r),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.10),
+                            color: Colors.black.withValues(alpha: 0.08),
                             blurRadius: 12,
                             offset: const Offset(0, 4),
                           ),
@@ -242,19 +243,24 @@ class WatchVideoDetailsScreen extends HookWidget {
 
                     SizedBox(height: 16.h),
 
-                    // Category Tag Pill
+                    // Category Tag Dark Pill
                     Container(
-                      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 5.h),
+                      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
                       decoration: BoxDecoration(
-                        color: const Color(0xFFF5EEFF),
-                        borderRadius: BorderRadius.circular(10.r),
+                        color: const Color(0xFF26262E),
+                        borderRadius: BorderRadius.circular(8.r),
+                        border: Border.all(
+                          color: const Color(0xFF383842),
+                          width: 1,
+                        ),
                       ),
                       child: Text(
-                        categoryLabel,
-                        style: GoogleFonts.outfit(
-                          color: const Color(0xFFAB31DE),
-                          fontSize: 12.sp,
+                        categoryLabel.toUpperCase(),
+                        style: GoogleFonts.poppins(
+                          color: Colors.white,
+                          fontSize: 10.5.sp,
                           fontWeight: FontWeight.w700,
+                          letterSpacing: 0.5,
                         ),
                       ),
                     ),
@@ -264,11 +270,10 @@ class WatchVideoDetailsScreen extends HookWidget {
                     // Video Title
                     Text(
                       item.offerName,
-                      style: GoogleFonts.outfit(
-                        color: const Color(0xFF1E1B4B),
-                        fontSize: 20.sp,
+                      style: GoogleFonts.poppins(
+                        color: const Color(0xFF26262B),
+                        fontSize: 18.sp,
                         fontWeight: FontWeight.w800,
-                        letterSpacing: -0.2,
                         height: 1.25,
                       ),
                     ),
@@ -278,9 +283,9 @@ class WatchVideoDetailsScreen extends HookWidget {
                     // Subtitle / Description
                     Text(
                       subText,
-                      style: GoogleFonts.outfit(
+                      style: GoogleFonts.poppins(
                         color: const Color(0xFF64748B),
-                        fontSize: 12.5.sp,
+                        fontSize: 12.sp,
                         fontWeight: FontWeight.w500,
                         height: 1.35,
                       ),
@@ -291,21 +296,17 @@ class WatchVideoDetailsScreen extends HookWidget {
                     // 2-Column Info Card Box (Watch Time & Coin Earnings)
                     Container(
                       width: double.infinity,
-                      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
+                      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
                       decoration: BoxDecoration(
-                        gradient: const LinearGradient(
-                          colors: [Color(0xFFFAF5FF), Color(0xFFFFFFFF)],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                        ),
-                        borderRadius: BorderRadius.circular(20.r),
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(16.r),
                         border: Border.all(
-                          color: const Color(0xFFF1F5F9),
+                          color: const Color(0xFFE2E8F0),
                           width: 1.2,
                         ),
                         boxShadow: [
                           BoxShadow(
-                            color: const Color(0xFFAB31DE).withValues(alpha: 0.06),
+                            color: Colors.black.withValues(alpha: 0.04),
                             blurRadius: 10,
                             offset: const Offset(0, 3),
                           ),
@@ -318,17 +319,17 @@ class WatchVideoDetailsScreen extends HookWidget {
                             child: Row(
                               children: [
                                 Container(
-                                  width: 38.w,
-                                  height: 38.w,
+                                  width: 36.w,
+                                  height: 36.w,
                                   alignment: Alignment.center,
-                                  decoration: BoxDecoration(
-                                    color: const Color(0xFFF3E8FF),
+                                  decoration: const BoxDecoration(
+                                    color: Color(0xFFF1F5F9),
                                     shape: BoxShape.circle,
                                   ),
                                   child: Icon(
                                     Icons.access_time_filled_rounded,
-                                    color: const Color(0xFFAB31DE),
-                                    size: 20.sp,
+                                    color: const Color(0xFF26262B),
+                                    size: 18.sp,
                                   ),
                                 ),
                                 SizedBox(width: 10.w),
@@ -338,18 +339,17 @@ class WatchVideoDetailsScreen extends HookWidget {
                                     children: [
                                       Text(
                                         durationText,
-                                        style: GoogleFonts.outfit(
-                                          color: const Color(0xFF1E1B4B),
-                                          fontSize: 13.5.sp,
+                                        style: GoogleFonts.poppins(
+                                          color: const Color(0xFF26262B),
+                                          fontSize: 13.sp,
                                           fontWeight: FontWeight.w800,
                                         ),
                                       ),
-                                      SizedBox(height: 1.h),
                                       Text(
-                                        'Required watch time',
-                                        style: GoogleFonts.outfit(
+                                        'Watch Time',
+                                        style: GoogleFonts.poppins(
                                           color: const Color(0xFF94A3B8),
-                                          fontSize: 10.5.sp,
+                                          fontSize: 10.sp,
                                           fontWeight: FontWeight.w500,
                                         ),
                                       ),
@@ -363,7 +363,7 @@ class WatchVideoDetailsScreen extends HookWidget {
                           Container(
                             width: 1,
                             height: 32.h,
-                            color: const Color(0xFFF1F5F9),
+                            color: const Color(0xFFE2E8F0),
                           ),
                           SizedBox(width: 12.w),
 
@@ -372,8 +372,8 @@ class WatchVideoDetailsScreen extends HookWidget {
                             child: Row(
                               children: [
                                 Container(
-                                  width: 38.w,
-                                  height: 38.w,
+                                  width: 36.w,
+                                  height: 36.w,
                                   alignment: Alignment.center,
                                   decoration: const BoxDecoration(
                                     color: Color(0xFFFEF3C7),
@@ -381,20 +381,33 @@ class WatchVideoDetailsScreen extends HookWidget {
                                   ),
                                   child: Image.asset(
                                     'assets/icons/coin.png',
-                                    width: 22.w,
-                                    height: 22.w,
+                                    width: 20.w,
+                                    height: 20.w,
                                     fit: BoxFit.contain,
                                   ),
                                 ),
                                 SizedBox(width: 10.w),
                                 Expanded(
-                                  child: Text(
-                                    '${item.coins} Coins',
-                                    style: GoogleFonts.outfit(
-                                      color: const Color(0xFF1E1B4B),
-                                      fontSize: 14.sp,
-                                      fontWeight: FontWeight.w800,
-                                    ),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        '+${item.coins} Coins',
+                                        style: GoogleFonts.poppins(
+                                          color: const Color(0xFF26262B),
+                                          fontSize: 13.sp,
+                                          fontWeight: FontWeight.w800,
+                                        ),
+                                      ),
+                                      Text(
+                                        'Reward',
+                                        style: GoogleFonts.poppins(
+                                          color: const Color(0xFF94A3B8),
+                                          fontSize: 10.sp,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ],
@@ -411,15 +424,15 @@ class WatchVideoDetailsScreen extends HookWidget {
                       width: double.infinity,
                       padding: EdgeInsets.all(18.r),
                       decoration: BoxDecoration(
-                        color: const Color(0xFFFAF5FF),
-                        borderRadius: BorderRadius.circular(22.r),
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(20.r),
                         border: Border.all(
-                          color: const Color(0xFFF1F5F9),
+                          color: const Color(0xFFE2E8F0),
                           width: 1.2,
                         ),
                         boxShadow: [
                           BoxShadow(
-                            color: const Color(0xFFAB31DE).withValues(alpha: 0.05),
+                            color: Colors.black.withValues(alpha: 0.04),
                             blurRadius: 10,
                             offset: const Offset(0, 3),
                           ),
@@ -428,6 +441,29 @@ class WatchVideoDetailsScreen extends HookWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          Row(
+                            children: [
+                              Container(
+                                width: 4.w,
+                                height: 16.h,
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFF26262B),
+                                  borderRadius: BorderRadius.circular(2.r),
+                                ),
+                              ),
+                              SizedBox(width: 8.w),
+                              Text(
+                                'How To Complete',
+                                style: GoogleFonts.poppins(
+                                  color: const Color(0xFF26262B),
+                                  fontSize: 14.sp,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 16.h),
+
                           if (item.offerDescription.isNotEmpty) ...[
                             for (int i = 0; i < item.offerDescription.length; i++)
                               _buildAdminStep(
@@ -460,7 +496,7 @@ class WatchVideoDetailsScreen extends HookWidget {
                             SizedBox(height: 14.h),
                             Container(
                               height: 1,
-                              color: const Color(0xFFF1F5F9),
+                              color: const Color(0xFFE2E8F0),
                             ),
                             SizedBox(height: 12.h),
                             Row(
@@ -473,10 +509,10 @@ class WatchVideoDetailsScreen extends HookWidget {
                                 SizedBox(width: 6.w),
                                 Text(
                                   'Important Rules & Notes',
-                                  style: GoogleFonts.outfit(
+                                  style: GoogleFonts.poppins(
                                     color: const Color(0xFFEF4444),
-                                    fontSize: 13.sp,
-                                    fontWeight: FontWeight.w800,
+                                    fontSize: 12.5.sp,
+                                    fontWeight: FontWeight.w700,
                                   ),
                                 ),
                               ],
@@ -490,7 +526,7 @@ class WatchVideoDetailsScreen extends HookWidget {
                                   children: [
                                     Text(
                                       '• ',
-                                      style: GoogleFonts.outfit(
+                                      style: GoogleFonts.poppins(
                                         color: const Color(0xFF64748B),
                                         fontSize: 12.sp,
                                         fontWeight: FontWeight.w800,
@@ -499,7 +535,7 @@ class WatchVideoDetailsScreen extends HookWidget {
                                     Expanded(
                                       child: Text(
                                         disclaimer,
-                                        style: GoogleFonts.outfit(
+                                        style: GoogleFonts.poppins(
                                           color: const Color(0xFF64748B),
                                           fontSize: 11.5.sp,
                                           fontWeight: FontWeight.w500,
@@ -522,10 +558,10 @@ class WatchVideoDetailsScreen extends HookWidget {
                       width: double.infinity,
                       padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
                       decoration: BoxDecoration(
-                        color: const Color(0xFFFAF5FF),
+                        color: const Color(0xFFF8FAFC),
                         borderRadius: BorderRadius.circular(14.r),
                         border: Border.all(
-                          color: const Color(0xFFF3E8FF),
+                          color: const Color(0xFFE2E8F0),
                           width: 1.2,
                         ),
                       ),
@@ -533,17 +569,17 @@ class WatchVideoDetailsScreen extends HookWidget {
                         children: [
                           Icon(
                             Icons.auto_awesome_rounded,
-                            color: const Color(0xFFAB31DE),
+                            color: const Color(0xFF26262B),
                             size: 18.sp,
                           ),
                           SizedBox(width: 10.w),
                           Expanded(
                             child: Text(
                               'Make sure to watch the full video to earn your coins',
-                              style: GoogleFonts.outfit(
+                              style: GoogleFonts.poppins(
                                 color: const Color(0xFF64748B),
-                                fontSize: 12.sp,
-                                fontWeight: FontWeight.w600,
+                                fontSize: 11.5.sp,
+                                fontWeight: FontWeight.w500,
                               ),
                             ),
                           ),
@@ -600,22 +636,27 @@ class WatchVideoDetailsScreen extends HookWidget {
                     curve: Curves.easeInOut,
                     child: Container(
                       width: double.infinity,
-                      height: 52.h,
+                      height: 48.h,
                       decoration: BoxDecoration(
                         gradient: const LinearGradient(
                           colors: [
-                            Color(0xFFE39FFF),
-                            Color(0xFFAB31DE),
+                            Colors.white,
+                            Color(0xFFE5E7EB),
+                            Color(0xFFB0B5C2),
                           ],
                           begin: Alignment.topCenter,
                           end: Alignment.bottomCenter,
                         ),
-                        borderRadius: BorderRadius.circular(26.r),
+                        borderRadius: BorderRadius.circular(14.r),
+                        border: Border.all(
+                          color: const Color(0xFF9CA3AF),
+                          width: 1.0,
+                        ),
                         boxShadow: [
                           BoxShadow(
-                            color: const Color(0xFFAB31DE).withValues(alpha: 0.35),
-                            blurRadius: 12,
-                            offset: const Offset(0, 4),
+                            color: Colors.black.withValues(alpha: 0.10),
+                            blurRadius: 8,
+                            offset: const Offset(0, 3),
                           ),
                         ],
                       ),
@@ -624,17 +665,16 @@ class WatchVideoDetailsScreen extends HookWidget {
                         children: [
                           Icon(
                             Icons.play_arrow_rounded,
-                            color: Colors.white,
-                            size: 26.sp,
+                            color: const Color(0xFF16161A),
+                            size: 22.sp,
                           ),
                           SizedBox(width: 6.w),
                           Text(
                             'Watch Now',
-                            style: GoogleFonts.outfit(
-                              color: Colors.white,
-                              fontSize: 17.sp,
-                              fontWeight: FontWeight.w800,
-                              letterSpacing: 0.2,
+                            style: GoogleFonts.poppins(
+                              color: const Color(0xFF16161A),
+                              fontSize: 14.5.sp,
+                              fontWeight: FontWeight.w700,
                             ),
                           ),
                         ],
@@ -694,18 +734,18 @@ class WatchVideoDetailsScreen extends HookWidget {
           Column(
             children: [
               Container(
-                width: 28.w,
-                height: 28.w,
+                width: 26.w,
+                height: 26.w,
                 alignment: Alignment.center,
                 decoration: const BoxDecoration(
-                  color: Color(0xFFF3E8FF),
+                  color: Color(0xFF26262E),
                   shape: BoxShape.circle,
                 ),
                 child: Text(
                   stepNum,
-                  style: GoogleFonts.outfit(
-                    color: const Color(0xFFAB31DE),
-                    fontSize: 13.sp,
+                  style: GoogleFonts.poppins(
+                    color: Colors.white,
+                    fontSize: 11.5.sp,
                     fontWeight: FontWeight.w800,
                   ),
                 ),
@@ -715,7 +755,7 @@ class WatchVideoDetailsScreen extends HookWidget {
                   child: Container(
                     width: 1.5.w,
                     margin: EdgeInsets.symmetric(vertical: 4.h),
-                    color: const Color(0xFFE9D5FF),
+                    color: const Color(0xFFE2E8F0),
                   ),
                 ),
             ],
@@ -732,22 +772,24 @@ class WatchVideoDetailsScreen extends HookWidget {
                 children: [
                   Text(
                     title,
-                    style: GoogleFonts.outfit(
-                      color: const Color(0xFF1E1B4B),
-                      fontSize: 13.5.sp,
-                      fontWeight: FontWeight.w800,
+                    style: GoogleFonts.poppins(
+                      color: const Color(0xFF26262B),
+                      fontSize: 13.sp,
+                      fontWeight: FontWeight.w700,
                     ),
                   ),
-                  SizedBox(height: 2.h),
-                  Text(
-                    subtitle,
-                    style: GoogleFonts.outfit(
-                      color: const Color(0xFF64748B),
-                      fontSize: 11.5.sp,
-                      fontWeight: FontWeight.w500,
-                      height: 1.25,
+                  if (subtitle.isNotEmpty) ...[
+                    SizedBox(height: 2.h),
+                    Text(
+                      subtitle,
+                      style: GoogleFonts.poppins(
+                        color: const Color(0xFF64748B),
+                        fontSize: 11.sp,
+                        fontWeight: FontWeight.w500,
+                        height: 1.25,
+                      ),
                     ),
-                  ),
+                  ],
                 ],
               ),
             ),
@@ -1009,45 +1051,46 @@ class _VideoVerificationScreenState extends State<VideoVerificationScreen> {
                           children: [
                             Row(
                               children: [
-                                GestureDetector(
+                                InkWell(
                                   onTap: () {
                                     HapticFeedback.lightImpact();
                                     if (!_isChecking) widget.onBack();
                                   },
+                                  borderRadius: BorderRadius.circular(14.r),
                                   child: Container(
                                     width: 40.w,
                                     height: 40.w,
                                     alignment: Alignment.center,
                                     decoration: BoxDecoration(
                                       color: Colors.white,
-                                      borderRadius: BorderRadius.circular(15.r),
+                                      borderRadius: BorderRadius.circular(14.r),
                                       border: Border.all(
-                                        color: const Color(0xFFF1F5F9),
+                                        color: const Color(0xFFE2E8F0),
                                         width: 1.2,
                                       ),
                                       boxShadow: [
                                         BoxShadow(
-                                          color: const Color(0xFFAB31DE).withValues(alpha: 0.08),
-                                          blurRadius: 10,
-                                          offset: const Offset(0, 3),
+                                          color: Colors.black.withValues(alpha: 0.04),
+                                          blurRadius: 8,
+                                          offset: const Offset(0, 2),
                                         ),
                                       ],
                                     ),
                                     child: Icon(
                                       Icons.arrow_back_rounded,
-                                      color: const Color(0xFFAB31DE),
-                                      size: 22.sp,
+                                      color: const Color(0xFF26262B),
+                                      size: 20.sp,
                                     ),
                                   ),
                                 ),
                                 SizedBox(width: 12.w),
                                 Text(
                                   'Video Verification',
-                                  style: GoogleFonts.outfit(
-                                    color: const Color(0xFF1E1B4B),
-                                    fontSize: 18.5.sp,
+                                  style: GoogleFonts.kaushanScript(
+                                    color: const Color(0xFF26262B),
+                                    fontSize: 24.sp,
                                     fontWeight: FontWeight.w800,
-                                    letterSpacing: -0.2,
+                                    letterSpacing: 0.5,
                                   ),
                                 ),
                               ],
@@ -1064,14 +1107,18 @@ class _VideoVerificationScreenState extends State<VideoVerificationScreen> {
                                     Container(
                                       padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 3.h),
                                       decoration: BoxDecoration(
-                                        color: const Color(0xFFAB31DE),
+                                        color: const Color(0xFF26262E),
                                         borderRadius: BorderRadius.circular(6.r),
+                                        border: Border.all(
+                                          color: const Color(0xFF383842),
+                                          width: 1,
+                                        ),
                                       ),
                                       child: Text(
                                         'STEP 1',
-                                        style: GoogleFonts.outfit(
+                                        style: GoogleFonts.poppins(
                                           color: Colors.white,
-                                          fontSize: 11.sp,
+                                          fontSize: 10.sp,
                                           fontWeight: FontWeight.w800,
                                         ),
                                       ),
@@ -1079,18 +1126,18 @@ class _VideoVerificationScreenState extends State<VideoVerificationScreen> {
                                     SizedBox(width: 8.w),
                                     Text(
                                       'Upload Video Screenshot',
-                                      style: GoogleFonts.outfit(
-                                        color: const Color(0xFF1E1B4B),
+                                      style: GoogleFonts.poppins(
+                                        color: const Color(0xFF26262B),
                                         fontSize: 13.5.sp,
                                         fontWeight: FontWeight.w700,
                                       ),
                                     ),
                                   ],
                                 ),
-                                SizedBox(height: 3.h),
+                                SizedBox(height: 4.h),
                                 Text(
                                   'Take a screenshot while watching the video and upload it here',
-                                  style: GoogleFonts.outfit(
+                                  style: GoogleFonts.poppins(
                                     color: const Color(0xFF64748B),
                                     fontSize: 11.5.sp,
                                     fontWeight: FontWeight.w500,
@@ -1106,16 +1153,16 @@ class _VideoVerificationScreenState extends State<VideoVerificationScreen> {
                               child: Container(
                                 height: 160.h,
                                 decoration: BoxDecoration(
-                                  color: const Color(0xFFFAF5FF),
-                                  borderRadius: BorderRadius.circular(20.r),
+                                  color: const Color(0xFFF8FAFC),
+                                  borderRadius: BorderRadius.circular(16.r),
                                   border: Border.all(
-                                    color: const Color(0xFFE9D5FF),
+                                    color: const Color(0xFFE2E8F0),
                                     width: 1.5,
                                   ),
                                 ),
                                 child: _selectedImage != null
                                     ? ClipRRect(
-                                        borderRadius: BorderRadius.circular(18.r),
+                                        borderRadius: BorderRadius.circular(14.r),
                                         child: Image.file(
                                           _selectedImage!,
                                           fit: BoxFit.cover,
@@ -1127,15 +1174,15 @@ class _VideoVerificationScreenState extends State<VideoVerificationScreen> {
                                         children: [
                                           Icon(
                                             Icons.cloud_upload_rounded,
-                                            color: const Color(0xFFAB31DE),
+                                            color: const Color(0xFF26262B),
                                             size: 36.sp,
                                           ),
                                           SizedBox(height: 8.h),
                                           Text(
                                             'Tap to upload video screenshot',
-                                            style: GoogleFonts.outfit(
-                                              color: const Color(0xFF1E1B4B),
-                                              fontSize: 13.5.sp,
+                                            style: GoogleFonts.poppins(
+                                              color: const Color(0xFF26262B),
+                                              fontSize: 13.sp,
                                               fontWeight: FontWeight.w700,
                                             ),
                                           ),
@@ -1155,14 +1202,18 @@ class _VideoVerificationScreenState extends State<VideoVerificationScreen> {
                                     Container(
                                       padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 3.h),
                                       decoration: BoxDecoration(
-                                        color: const Color(0xFFAB31DE),
+                                        color: const Color(0xFF26262E),
                                         borderRadius: BorderRadius.circular(6.r),
+                                        border: Border.all(
+                                          color: const Color(0xFF383842),
+                                          width: 1,
+                                        ),
                                       ),
                                       child: Text(
                                         'STEP 2',
-                                        style: GoogleFonts.outfit(
+                                        style: GoogleFonts.poppins(
                                           color: Colors.white,
-                                          fontSize: 11.sp,
+                                          fontSize: 10.sp,
                                           fontWeight: FontWeight.w800,
                                         ),
                                       ),
@@ -1170,18 +1221,18 @@ class _VideoVerificationScreenState extends State<VideoVerificationScreen> {
                                     SizedBox(width: 8.w),
                                     Text(
                                       'Enter Video Link',
-                                      style: GoogleFonts.outfit(
-                                        color: const Color(0xFF1E1B4B),
+                                      style: GoogleFonts.poppins(
+                                        color: const Color(0xFF26262B),
                                         fontSize: 13.5.sp,
                                         fontWeight: FontWeight.w700,
                                       ),
                                     ),
                                   ],
                                 ),
-                                SizedBox(height: 3.h),
+                                SizedBox(height: 4.h),
                                 Text(
                                   'Paste the link or URL of the video you watched',
-                                  style: GoogleFonts.outfit(
+                                  style: GoogleFonts.poppins(
                                     color: const Color(0xFF64748B),
                                     fontSize: 11.5.sp,
                                     fontWeight: FontWeight.w500,
@@ -1193,7 +1244,7 @@ class _VideoVerificationScreenState extends State<VideoVerificationScreen> {
 
                             // URL Input
                             Container(
-                              height: 50.h,
+                              height: 48.h,
                               padding: EdgeInsets.symmetric(horizontal: 16.w),
                               decoration: BoxDecoration(
                                 color: Colors.white,
@@ -1205,17 +1256,17 @@ class _VideoVerificationScreenState extends State<VideoVerificationScreen> {
                               ),
                               child: TextField(
                                 controller: _controller,
-                                cursorColor: const Color(0xFFAB31DE),
-                                style: GoogleFonts.outfit(
-                                  color: const Color(0xFF1E1B4B),
-                                  fontSize: 14.sp,
+                                cursorColor: const Color(0xFF26262B),
+                                style: GoogleFonts.poppins(
+                                  color: const Color(0xFF26262B),
+                                  fontSize: 13.5.sp,
                                   fontWeight: FontWeight.w600,
                                 ),
                                 decoration: InputDecoration(
                                   hintText: 'Paste video link/URL',
-                                  hintStyle: GoogleFonts.outfit(
+                                  hintStyle: GoogleFonts.poppins(
                                     color: const Color(0xFF94A3B8),
-                                    fontSize: 13.5.sp,
+                                    fontSize: 13.sp,
                                   ),
                                   border: InputBorder.none,
                                 ),
@@ -1226,7 +1277,7 @@ class _VideoVerificationScreenState extends State<VideoVerificationScreen> {
                               SizedBox(height: 10.h),
                               Text(
                                 _errorMessage!,
-                                style: GoogleFonts.outfit(
+                                style: GoogleFonts.poppins(
                                   color: const Color(0xFFEF4444),
                                   fontSize: 12.sp,
                                   fontWeight: FontWeight.w600,
@@ -1241,17 +1292,27 @@ class _VideoVerificationScreenState extends State<VideoVerificationScreen> {
                               onTap: _isChecking ? null : _verifyLink,
                               child: Container(
                                 width: double.infinity,
-                                height: 50.h,
+                                height: 48.h,
                                 decoration: BoxDecoration(
                                   gradient: const LinearGradient(
-                                    colors: [Color(0xFFE39FFF), Color(0xFFAB31DE)],
+                                    colors: [
+                                      Colors.white,
+                                      Color(0xFFE5E7EB),
+                                      Color(0xFFB0B5C2),
+                                    ],
+                                    begin: Alignment.topCenter,
+                                    end: Alignment.bottomCenter,
                                   ),
-                                  borderRadius: BorderRadius.circular(25.r),
+                                  borderRadius: BorderRadius.circular(14.r),
+                                  border: Border.all(
+                                    color: const Color(0xFF9CA3AF),
+                                    width: 1.0,
+                                  ),
                                   boxShadow: [
                                     BoxShadow(
-                                      color: const Color(0xFFAB31DE).withValues(alpha: 0.35),
-                                      blurRadius: 10,
-                                      offset: const Offset(0, 4),
+                                      color: Colors.black.withValues(alpha: 0.10),
+                                      blurRadius: 8,
+                                      offset: const Offset(0, 3),
                                     ),
                                   ],
                                 ),
@@ -1262,15 +1323,15 @@ class _VideoVerificationScreenState extends State<VideoVerificationScreen> {
                                           height: 20,
                                           child: CircularProgressIndicator(
                                             strokeWidth: 2.5,
-                                            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                                            valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF16161A)),
                                           ),
                                         )
                                       : Text(
                                           'Verify & Claim',
-                                          style: GoogleFonts.outfit(
-                                            color: Colors.white,
-                                            fontSize: 16.sp,
-                                            fontWeight: FontWeight.w800,
+                                          style: GoogleFonts.poppins(
+                                            color: const Color(0xFF16161A),
+                                            fontSize: 14.5.sp,
+                                            fontWeight: FontWeight.w700,
                                           ),
                                         ),
                                 ),

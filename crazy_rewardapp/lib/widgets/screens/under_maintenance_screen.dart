@@ -32,26 +32,26 @@ class UnderMaintenanceScreen extends StatelessWidget {
             child: Center(
               child: SingleChildScrollView(
                 physics: const BouncingScrollPhysics(),
-                padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
+                padding: EdgeInsets.symmetric(horizontal: 22.w, vertical: 20.h),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    // 1. Top Executive System Badge
+                    // 1. Home Screen Signature Dark Obsidian Capsule Pill
                     Container(
-                      padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 6.h),
+                      padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 7.h),
                       decoration: BoxDecoration(
-                        color: const Color(0xFFFAF5FF),
+                        color: const Color(0xFF1E1B2E),
                         borderRadius: BorderRadius.circular(20.r),
                         border: Border.all(
-                          color: const Color(0xFFE9D5FF),
-                          width: 1.2,
+                          color: const Color(0xFF2E2E36),
+                          width: 1.0,
                         ),
                         boxShadow: [
                           BoxShadow(
-                            color: const Color(0xFFAB31DE).withValues(alpha: 0.08),
+                            color: Colors.black.withValues(alpha: 0.18),
                             blurRadius: 8,
-                            offset: const Offset(0, 2),
+                            offset: const Offset(0, 3),
                           ),
                         ],
                       ),
@@ -62,25 +62,25 @@ class UnderMaintenanceScreen extends StatelessWidget {
                             width: 8.w,
                             height: 8.w,
                             decoration: const BoxDecoration(
-                              color: Color(0xFFAB31DE),
+                              color: Color(0xFFF59E0B),
                               shape: BoxShape.circle,
                             ),
                           ),
                           SizedBox(width: 8.w),
                           Text(
                             'SYSTEM MAINTENANCE',
-                            style: GoogleFonts.outfit(
+                            style: GoogleFonts.poppins(
                               fontSize: 11.sp,
-                              fontWeight: FontWeight.w800,
-                              color: const Color(0xFFAB31DE),
-                              letterSpacing: 0.5,
+                              fontWeight: FontWeight.w700,
+                              color: Colors.white,
+                              letterSpacing: 0.6,
                             ),
                           ),
                         ],
                       ),
                     ),
 
-                    SizedBox(height: 24.h),
+                    SizedBox(height: 28.h),
 
                     // 2. Center Maintenance Hero Illustration
                     Container(
@@ -88,81 +88,92 @@ class UnderMaintenanceScreen extends StatelessWidget {
                         shape: BoxShape.circle,
                         boxShadow: [
                           BoxShadow(
-                            color: const Color(0xFFAB31DE).withValues(alpha: 0.12),
-                            blurRadius: 30,
-                            spreadRadius: 10,
+                            color: const Color(0xFFF59E0B).withValues(alpha: 0.08),
+                            blurRadius: 32,
+                            spreadRadius: 8,
                           ),
                         ],
                       ),
                       child: Image.asset(
                         'assets/icons/maintance.png',
-                        width: 140.w,
-                        height: 140.w,
+                        width: 150.w,
+                        height: 150.w,
                         fit: BoxFit.contain,
-                      ),
-                    ),
-
-                    SizedBox(height: 24.h),
-
-                    // 3. Headline & Subtitle
-                    Text(
-                      'We’ll Be Back Soon!',
-                      textAlign: TextAlign.center,
-                      style: GoogleFonts.outfit(
-                        color: const Color(0xFF1E1B4B),
-                        fontSize: 26.sp,
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: -0.3,
-                      ),
-                    ),
-
-                    SizedBox(height: 8.h),
-
-                    Text(
-                      'Our system is currently under scheduled maintenance to bring you a faster and smoother experience.\nPlease check back shortly.',
-                      textAlign: TextAlign.center,
-                      style: GoogleFonts.outfit(
-                        color: const Color(0xFF64748B),
-                        fontSize: 13.sp,
-                        fontWeight: FontWeight.w500,
-                        height: 1.4,
                       ),
                     ),
 
                     SizedBox(height: 28.h),
 
-                    // 4. Info Card 1: Estimated Completion Time
+                    // 3. Headline & Subtitle
+                    Text(
+                      'We’ll Be Back Soon!',
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.poppins(
+                        color: const Color(0xFF26262B),
+                        fontSize: 24.sp,
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: -0.3,
+                      ),
+                    ),
+
+                    SizedBox(height: 10.h),
+
+                    Text(
+                      'Our system is currently under scheduled maintenance to bring you a faster and smoother experience.\nPlease check back shortly.',
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.poppins(
+                        color: const Color(0xFF64748B),
+                        fontSize: 13.sp,
+                        fontWeight: FontWeight.w400,
+                        height: 1.5,
+                      ),
+                    ),
+
+                    SizedBox(height: 28.h),
+
+                    // 4. Home Screen Signature Dark Obsidian Info Card 1: Estimated Completion Time
                     Container(
                       padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
                       decoration: BoxDecoration(
-                        color: const Color(0xFFFAF5FF),
-                        borderRadius: BorderRadius.circular(18.r),
+                        gradient: const LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [
+                            Color(0xFF222226),
+                            Color(0xFF131316),
+                          ],
+                        ),
+                        borderRadius: BorderRadius.circular(20.r),
                         border: Border.all(
-                          color: const Color(0xFFE9D5FF),
-                          width: 1.2,
+                          color: const Color(0xFF2E2E36),
+                          width: 1.0,
                         ),
                         boxShadow: [
                           BoxShadow(
-                            color: const Color(0xFFAB31DE).withValues(alpha: 0.05),
+                            color: Colors.black.withValues(alpha: 0.12),
                             blurRadius: 10,
-                            offset: const Offset(0, 3),
+                            offset: const Offset(0, 4),
                           ),
                         ],
                       ),
                       child: Row(
                         children: [
                           Container(
-                            width: 40.w,
-                            height: 40.w,
-                            decoration: const BoxDecoration(
-                              color: Color(0xFFF3E8FF),
+                            width: 42.w,
+                            height: 42.w,
+                            decoration: BoxDecoration(
+                              color: const Color(0xFF1E1B2E),
                               shape: BoxShape.circle,
+                              border: Border.all(
+                                color: const Color(0xFF383842),
+                                width: 1,
+                              ),
                             ),
                             alignment: Alignment.center,
                             child: Icon(
                               Icons.timer_outlined,
-                              color: const Color(0xFFAB31DE),
-                              size: 20.sp,
+                              color: const Color(0xFFF59E0B),
+                              size: 22.sp,
                             ),
                           ),
                           SizedBox(width: 12.w),
@@ -171,21 +182,21 @@ class UnderMaintenanceScreen extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  'ESTIMATED TIME',
-                                  style: GoogleFonts.outfit(
-                                    color: const Color(0xFF64748B),
+                                  'ESTIMATED COMPLETION',
+                                  style: GoogleFonts.poppins(
+                                    color: const Color(0xFF9E9EA7),
                                     fontSize: 11.sp,
-                                    fontWeight: FontWeight.w700,
+                                    fontWeight: FontWeight.w600,
                                     letterSpacing: 0.4,
                                   ),
                                 ),
-                                SizedBox(height: 1.h),
+                                SizedBox(height: 2.h),
                                 Text(
                                   endTime.isNotEmpty ? endTime : '30–60 Minutes',
-                                  style: GoogleFonts.outfit(
-                                    color: const Color(0xFF1E1B4B),
+                                  style: GoogleFonts.poppins(
+                                    color: Colors.white,
                                     fontSize: 14.sp,
-                                    fontWeight: FontWeight.w800,
+                                    fontWeight: FontWeight.w700,
                                   ),
                                 ),
                               ],
@@ -197,38 +208,49 @@ class UnderMaintenanceScreen extends StatelessWidget {
 
                     SizedBox(height: 12.h),
 
-                    // 5. Info Card 2: Patience Notice
+                    // 5. Home Screen Signature Dark Obsidian Info Card 2: Patience Notice
                     Container(
                       padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
                       decoration: BoxDecoration(
-                        color: const Color(0xFFFAF5FF),
-                        borderRadius: BorderRadius.circular(18.r),
+                        gradient: const LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [
+                            Color(0xFF222226),
+                            Color(0xFF131316),
+                          ],
+                        ),
+                        borderRadius: BorderRadius.circular(20.r),
                         border: Border.all(
-                          color: const Color(0xFFE9D5FF),
-                          width: 1.2,
+                          color: const Color(0xFF2E2E36),
+                          width: 1.0,
                         ),
                         boxShadow: [
                           BoxShadow(
-                            color: const Color(0xFFAB31DE).withValues(alpha: 0.05),
+                            color: Colors.black.withValues(alpha: 0.12),
                             blurRadius: 10,
-                            offset: const Offset(0, 3),
+                            offset: const Offset(0, 4),
                           ),
                         ],
                       ),
                       child: Row(
                         children: [
                           Container(
-                            width: 40.w,
-                            height: 40.w,
-                            decoration: const BoxDecoration(
-                              color: Color(0xFFF3E8FF),
+                            width: 42.w,
+                            height: 42.w,
+                            decoration: BoxDecoration(
+                              color: const Color(0xFF1E1B2E),
                               shape: BoxShape.circle,
+                              border: Border.all(
+                                color: const Color(0xFF383842),
+                                width: 1,
+                              ),
                             ),
                             alignment: Alignment.center,
                             child: Icon(
                               Icons.verified_user_rounded,
-                              color: const Color(0xFFAB31DE),
-                              size: 20.sp,
+                              color: const Color(0xFF10B981),
+                              size: 22.sp,
                             ),
                           ),
                           SizedBox(width: 12.w),
@@ -238,19 +260,19 @@ class UnderMaintenanceScreen extends StatelessWidget {
                               children: [
                                 Text(
                                   'Thank you for your patience!',
-                                  style: GoogleFonts.outfit(
-                                    color: const Color(0xFF1E1B4B),
+                                  style: GoogleFonts.poppins(
+                                    color: Colors.white,
                                     fontSize: 13.5.sp,
-                                    fontWeight: FontWeight.w800,
+                                    fontWeight: FontWeight.w700,
                                   ),
                                 ),
                                 SizedBox(height: 2.h),
                                 Text(
                                   'We are working hard to serve you better.',
-                                  style: GoogleFonts.outfit(
-                                    color: const Color(0xFF64748B),
-                                    fontSize: 12.sp,
-                                    fontWeight: FontWeight.w500,
+                                  style: GoogleFonts.poppins(
+                                    color: const Color(0xFF9E9EA7),
+                                    fontSize: 11.5.sp,
+                                    fontWeight: FontWeight.w400,
                                   ),
                                 ),
                               ],
@@ -262,7 +284,7 @@ class UnderMaintenanceScreen extends StatelessWidget {
 
                     SizedBox(height: 28.h),
 
-                    // 6. Executive Action Button ("Try Later")
+                    // 6. Home Screen Signature Silver-Chrome Gradient Action Button
                     GestureDetector(
                       onTap: () {
                         HapticFeedback.lightImpact();
@@ -273,15 +295,19 @@ class UnderMaintenanceScreen extends StatelessWidget {
                         width: double.infinity,
                         decoration: BoxDecoration(
                           gradient: const LinearGradient(
-                            colors: [Color(0xFFE39FFF), Color(0xFFAB31DE)],
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
+                            colors: [
+                              Colors.white,
+                              Color(0xFFE5E7EB),
+                              Color(0xFFB0B5C2),
+                            ],
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
                           ),
                           borderRadius: BorderRadius.circular(18.r),
                           boxShadow: [
                             BoxShadow(
-                              color: const Color(0xFFAB31DE).withValues(alpha: 0.35),
-                              blurRadius: 12,
+                              color: Colors.black.withValues(alpha: 0.22),
+                              blurRadius: 10,
                               offset: const Offset(0, 4),
                             ),
                           ],
@@ -292,16 +318,16 @@ class UnderMaintenanceScreen extends StatelessWidget {
                             children: [
                               Icon(
                                 Icons.sync_rounded,
-                                color: Colors.white,
+                                color: const Color(0xFF16161A),
                                 size: 20.sp,
                               ),
                               SizedBox(width: 8.w),
                               Text(
                                 'Try Later',
-                                style: GoogleFonts.outfit(
-                                  color: Colors.white,
-                                  fontSize: 15.sp,
-                                  fontWeight: FontWeight.w800,
+                                style: GoogleFonts.poppins(
+                                  color: const Color(0xFF16161A),
+                                  fontSize: 14.5.sp,
+                                  fontWeight: FontWeight.w700,
                                   letterSpacing: 0.3,
                                 ),
                               ),

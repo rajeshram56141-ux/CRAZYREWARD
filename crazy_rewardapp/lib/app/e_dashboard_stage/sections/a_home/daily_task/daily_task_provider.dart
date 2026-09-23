@@ -19,7 +19,7 @@ final dailyTaskProvider = FutureProvider.family
         DailyTaskType offerType,
       })
     >((ref, params) async {
-      final offers = await DailyTaskService.fetchDailyTask(
+      final fetchOffersFuture = DailyTaskService.fetchDailyTask(
         appName: SplashService.appName.lows(),
         userId: params.userId,
         email: params.email,
@@ -27,37 +27,40 @@ final dailyTaskProvider = FutureProvider.family
         offerType: params.offerType,
       );
 
+      final fetchRewardFuture = Dio().get(
+        AppConst.getRewardHistory,
+        queryParameters: {
+          'appName': SplashService.appName.lows(),
+          'userId': params.userId,
+          'limit': 200,
+        },
+        options: Options(
+          headers: AppConst.apiHeader,
+          sendTimeout: const Duration(seconds: 5),
+          receiveTimeout: const Duration(seconds: 5),
+        ),
+      ).then<Response?>((val) => val).catchError((_) => null);
+
+      final results = await Future.wait([fetchOffersFuture, fetchRewardFuture]);
+      final offers = results[0] as List<DailyTaskModel>;
+      final rewardResponse = results[1] as Response?;
+
       if (offers.isEmpty) {
         return const [];
       }
 
       // Query reward history from MongoDB using Dio
       final List<Map<String, dynamic>> rewardHistoryList = [];
-      try {
-        final response = await Dio().get(
-          AppConst.getRewardHistory,
-          queryParameters: {
-            'appName': SplashService.appName.lows(),
-            'userId': params.userId,
-            'limit': 200,
-          },
-          options: Options(
-            headers: AppConst.apiHeader,
-            sendTimeout: const Duration(seconds: 15),
-            receiveTimeout: const Duration(seconds: 15),
-          ),
-        );
-
-        if (response.statusCode == 200 && response.data['success'] == true) {
-          final List rawList = response.data['data'] ?? [];
-          for (final item in rawList) {
-            if (item is Map) {
-              rewardHistoryList.add(Map<String, dynamic>.from(item));
-            }
+      if (rewardResponse != null &&
+          rewardResponse.statusCode == 200 &&
+          rewardResponse.data is Map &&
+          rewardResponse.data['success'] == true) {
+        final List rawList = rewardResponse.data['data'] ?? [];
+        for (final item in rawList) {
+          if (item is Map) {
+            rewardHistoryList.add(Map<String, dynamic>.from(item));
           }
         }
-      } catch (e) {
-         // debugPrint('🔥 Error fetching reward history for daily task: $e');
       }
 
       final Map<String, DateTime> lastCompletionMap = {};
@@ -361,8 +364,8 @@ class DailyTaskService {
             if (cleanUserId.isNotEmpty) 'x-user-id': cleanUserId,
           },
           method: 'POST',
-          sendTimeout: const Duration(seconds: 60),
-          receiveTimeout: const Duration(seconds: 60),
+          sendTimeout: const Duration(seconds: 8),
+          receiveTimeout: const Duration(seconds: 8),
         ),
       );
 

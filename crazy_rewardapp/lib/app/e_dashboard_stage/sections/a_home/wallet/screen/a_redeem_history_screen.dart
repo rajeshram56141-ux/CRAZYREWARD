@@ -50,7 +50,7 @@ class RedeemHistoryScreen extends HookConsumerWidget {
         backgroundColor: Colors.white,
         body: Stack(
           children: [
-            // 1. Solid White Background (Matching Home & Redeem Screen)
+            // 1. Solid Canvas Background
             Positioned.fill(
               child: Container(
                 color: Colors.white,
@@ -81,12 +81,12 @@ class RedeemHistoryScreen extends HookConsumerWidget {
                                 color: Colors.white,
                                 borderRadius: BorderRadius.circular(15.r),
                                 border: Border.all(
-                                  color: const Color(0xFFF1F5F9),
+                                  color: const Color(0xFFE2E8F0),
                                   width: 1.2,
                                 ),
                                 boxShadow: [
                                   BoxShadow(
-                                    color: const Color(0xFFAB31DE).withValues(alpha: 0.08),
+                                    color: const Color(0xFF0F172A).withValues(alpha: 0.04),
                                     blurRadius: 10,
                                     offset: const Offset(0, 3),
                                   ),
@@ -94,16 +94,16 @@ class RedeemHistoryScreen extends HookConsumerWidget {
                               ),
                               child: Icon(
                                 Icons.arrow_back_rounded,
-                                color: const Color(0xFFAB31DE),
-                                size: 22.sp,
+                                color: const Color(0xFF26262B),
+                                size: 20.sp,
                               ),
                             ),
                           ),
                           SizedBox(width: 14.w),
                           Text(
                             'History',
-                            style: GoogleFonts.outfit(
-                              color: const Color(0xFF1E1B4B),
+                            style: GoogleFonts.poppins(
+                              color: const Color(0xFF26262B),
                               fontSize: 18.5.sp,
                               fontWeight: FontWeight.w700,
                               letterSpacing: -0.2,
@@ -115,7 +115,7 @@ class RedeemHistoryScreen extends HookConsumerWidget {
 
                     SizedBox(height: 4.h),
 
-                    // 2. Horizontally Scrollable Filter Chips (Pure White Luxury Style)
+                    // 2. Horizontally Scrollable Filter Chips (Dark Obsidian & Silver Style)
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 16.w),
                       child: SingleChildScrollView(
@@ -162,21 +162,25 @@ class RedeemHistoryScreen extends HookConsumerWidget {
                                         Container(
                                           width: 64.w,
                                           height: 64.w,
-                                          decoration: const BoxDecoration(
-                                            color: Color(0xFFFAF5FF),
+                                          decoration: BoxDecoration(
+                                            color: const Color(0xFFF8FAFC),
                                             shape: BoxShape.circle,
+                                            border: Border.all(
+                                              color: const Color(0xFFE2E8F0),
+                                              width: 1.2,
+                                            ),
                                           ),
                                           child: Icon(
                                             Icons.receipt_long_outlined,
-                                            color: const Color(0xFFAB31DE),
-                                            size: 32.sp,
+                                            color: const Color(0xFF26262B),
+                                            size: 30.sp,
                                           ),
                                         ),
                                         SizedBox(height: 14.h),
                                         Text(
                                           'No transactions for ${_getFilterName(selectedStatus)}',
-                                          style: GoogleFonts.outfit(
-                                            color: const Color(0xFF1E1B4B),
+                                          style: GoogleFonts.poppins(
+                                            color: const Color(0xFF26262B),
                                             fontSize: 15.sp,
                                             fontWeight: FontWeight.w700,
                                           ),
@@ -184,7 +188,7 @@ class RedeemHistoryScreen extends HookConsumerWidget {
                                         SizedBox(height: 4.h),
                                         Text(
                                           'Try switching to another filter category above.',
-                                          style: GoogleFonts.outfit(
+                                          style: GoogleFonts.poppins(
                                             color: const Color(0xFF64748B),
                                             fontSize: 12.5.sp,
                                           ),
@@ -210,7 +214,7 @@ class RedeemHistoryScreen extends HookConsumerWidget {
                                 child: Text(
                                   'error-subtitle'.tr(),
                                   textAlign: TextAlign.center,
-                                  style: GoogleFonts.outfit(
+                                  style: GoogleFonts.poppins(
                                     color: const Color(0xFFEF4444),
                                     fontSize: 14.sp,
                                     fontWeight: FontWeight.w700,
@@ -222,7 +226,7 @@ class RedeemHistoryScreen extends HookConsumerWidget {
                               child: Padding(
                                 padding: EdgeInsets.symmetric(vertical: 50.h),
                                 child: const CircularProgressIndicator(
-                                  color: Color(0xFFAB31DE),
+                                  color: Color(0xFF26262B),
                                 ),
                               ),
                             ),
@@ -239,7 +243,7 @@ class RedeemHistoryScreen extends HookConsumerWidget {
     );
   }
 
-  // Modern Clean Luxury History Card Item (Matching Redeem & Home Screen 1-to-1)
+  // Modern Clean Luxury History Card Item
   Widget _buildHistoryCard(BuildContext context, PayoutHistoryModel payout) {
     final hasCode = payout.redeemCode.isNotEmpty &&
         payout.redeemCode.toLowerCase() != 'n/a';
@@ -267,17 +271,12 @@ class RedeemHistoryScreen extends HookConsumerWidget {
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(20.r),
-          border: Border.all(color: const Color(0xFFF1F5F9), width: 1.2),
+          border: Border.all(color: const Color(0xFFE2E8F0), width: 1.2),
           boxShadow: [
             BoxShadow(
               color: const Color(0xFF0F172A).withValues(alpha: 0.04),
               blurRadius: 14,
               offset: const Offset(0, 5),
-            ),
-            BoxShadow(
-              color: const Color(0xFFAB31DE).withValues(alpha: 0.03),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
             ),
           ],
         ),
@@ -294,10 +293,10 @@ class RedeemHistoryScreen extends HookConsumerWidget {
                   height: 46.w,
                   padding: EdgeInsets.all(8.w),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFFAF5FF),
+                    color: const Color(0xFFF8FAFC),
                     borderRadius: BorderRadius.circular(15.r),
                     border: Border.all(
-                      color: const Color(0xFFF3E8FF),
+                      color: const Color(0xFFE2E8F0),
                       width: 1.2,
                     ),
                   ),
@@ -308,7 +307,7 @@ class RedeemHistoryScreen extends HookConsumerWidget {
                         )
                       : Icon(
                           Icons.receipt_long_rounded,
-                          color: const Color(0xFFAB31DE),
+                          color: const Color(0xFF26262B),
                           size: 22.sp,
                         ),
                 ),
@@ -321,9 +320,9 @@ class RedeemHistoryScreen extends HookConsumerWidget {
                     children: [
                       Text(
                         payout.title,
-                        style: GoogleFonts.outfit(
-                          color: const Color(0xFF1E1B4B),
-                          fontSize: 15.sp,
+                        style: GoogleFonts.poppins(
+                          color: const Color(0xFF26262B),
+                          fontSize: 14.5.sp,
                           fontWeight: FontWeight.w700,
                         ),
                         maxLines: 1,
@@ -332,7 +331,7 @@ class RedeemHistoryScreen extends HookConsumerWidget {
                       SizedBox(height: 2.h),
                       Text(
                         dateStr,
-                        style: GoogleFonts.outfit(
+                        style: GoogleFonts.poppins(
                           color: const Color(0xFF94A3B8),
                           fontSize: 11.5.sp,
                           fontWeight: FontWeight.w400,
@@ -362,7 +361,7 @@ class RedeemHistoryScreen extends HookConsumerWidget {
                       SizedBox(width: 4.w),
                       Text(
                         statusLabel,
-                        style: GoogleFonts.outfit(
+                        style: GoogleFonts.poppins(
                           color: statusFg,
                           fontSize: 10.5.sp,
                           fontWeight: FontWeight.w700,
@@ -424,10 +423,10 @@ class RedeemHistoryScreen extends HookConsumerWidget {
                           child: Container(
                             padding: EdgeInsets.symmetric(horizontal: 9.w, vertical: 4.h),
                             decoration: BoxDecoration(
-                              color: const Color(0xFFFAF5FF),
+                              color: const Color(0xFF222226),
                               borderRadius: BorderRadius.circular(8.r),
                               border: Border.all(
-                                color: const Color(0xFFAB31DE).withValues(alpha: 0.25),
+                                color: const Color(0xFF2E2E36),
                                 width: 1,
                               ),
                             ),
@@ -436,16 +435,16 @@ class RedeemHistoryScreen extends HookConsumerWidget {
                               children: [
                                 Icon(
                                   Icons.confirmation_number_rounded,
-                                  color: const Color(0xFFAB31DE),
+                                  color: Colors.white,
                                   size: 12.sp,
                                 ),
                                 SizedBox(width: 4.w),
                                 Flexible(
                                   child: Text(
                                     payout.redeemCode,
-                                    style: GoogleFonts.outfit(
-                                      color: const Color(0xFFAB31DE),
-                                      fontSize: 12.sp,
+                                    style: GoogleFonts.poppins(
+                                      color: Colors.white,
+                                      fontSize: 11.5.sp,
                                       fontWeight: FontWeight.w700,
                                       letterSpacing: 0.2,
                                     ),
@@ -456,7 +455,7 @@ class RedeemHistoryScreen extends HookConsumerWidget {
                                 SizedBox(width: 4.w),
                                 Icon(
                                   Icons.copy_rounded,
-                                  color: const Color(0xFFAB31DE),
+                                  color: const Color(0xFFCBD5E1),
                                   size: 11.sp,
                                 ),
                               ],
@@ -467,7 +466,7 @@ class RedeemHistoryScreen extends HookConsumerWidget {
                           accountStr.isNotEmpty
                               ? accountStr
                               : '${payout.symbol}${payout.amount} Payout',
-                          style: GoogleFonts.outfit(
+                          style: GoogleFonts.poppins(
                             color: const Color(0xFF64748B),
                             fontSize: 12.5.sp,
                             fontWeight: FontWeight.w500,
@@ -485,8 +484,8 @@ class RedeemHistoryScreen extends HookConsumerWidget {
                   children: [
                     Text(
                       '${payout.symbol}${payout.amount}',
-                      style: GoogleFonts.outfit(
-                        color: const Color(0xFF1E1B4B),
+                      style: GoogleFonts.poppins(
+                        color: const Color(0xFF26262B),
                         fontSize: 14.sp,
                         fontWeight: FontWeight.w800,
                       ),
@@ -500,8 +499,8 @@ class RedeemHistoryScreen extends HookConsumerWidget {
                     SizedBox(width: 3.w),
                     Text(
                       formattedCoins,
-                      style: GoogleFonts.outfit(
-                        color: const Color(0xFFAB31DE),
+                      style: GoogleFonts.poppins(
+                        color: const Color(0xFF26262B),
                         fontSize: 13.sp,
                         fontWeight: FontWeight.w700,
                       ),
@@ -537,7 +536,7 @@ class RedeemHistoryScreen extends HookConsumerWidget {
                     Expanded(
                       child: Text(
                         'Reason: ${payout.failureReason}',
-                        style: GoogleFonts.outfit(
+                        style: GoogleFonts.poppins(
                           color: const Color(0xFFB91C1C),
                           fontSize: 11.5.sp,
                           fontWeight: FontWeight.w600,
@@ -556,7 +555,7 @@ class RedeemHistoryScreen extends HookConsumerWidget {
     );
   }
 
-  // Modern Luxury Category Filter Chip Widget
+  // Modern Luxury Category Filter Chip Widget (Dark Obsidian Active & Minimal Inactive)
   Widget _buildFilterChip(
     BuildContext context,
     WidgetRef ref,
@@ -587,7 +586,7 @@ class RedeemHistoryScreen extends HookConsumerWidget {
         break;
       case null:
         icon = Icons.grid_view_rounded;
-        accentColor = const Color(0xFFAB31DE);
+        accentColor = const Color(0xFF26262B);
         break;
     }
 
@@ -605,8 +604,8 @@ class RedeemHistoryScreen extends HookConsumerWidget {
           gradient: isSelected
               ? const LinearGradient(
                   colors: [
-                    Color(0xFFE39FFF),
-                    Color(0xFFAB31DE),
+                    Color(0xFF26262B),
+                    Color(0xFF16161A),
                   ],
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
@@ -615,13 +614,13 @@ class RedeemHistoryScreen extends HookConsumerWidget {
           color: isSelected ? null : Colors.white,
           borderRadius: BorderRadius.circular(14.r),
           border: Border.all(
-            color: isSelected ? Colors.transparent : const Color(0xFFE2E8F0),
+            color: isSelected ? const Color(0xFF2E2E36) : const Color(0xFFE2E8F0),
             width: 1.2,
           ),
           boxShadow: isSelected
               ? [
                   BoxShadow(
-                    color: const Color(0xFFAB31DE).withValues(alpha: 0.25),
+                    color: const Color(0xFF16161A).withValues(alpha: 0.2),
                     blurRadius: 8,
                     offset: const Offset(0, 3),
                   ),
@@ -640,9 +639,9 @@ class RedeemHistoryScreen extends HookConsumerWidget {
             SizedBox(width: 6.w),
             Text(
               label,
-              style: GoogleFonts.outfit(
+              style: GoogleFonts.poppins(
                 color: isSelected ? Colors.white : const Color(0xFF64748B),
-                fontSize: 12.5.sp,
+                fontSize: 12.sp,
                 fontWeight: isSelected ? FontWeight.w700 : FontWeight.w600,
               ),
             ),
@@ -662,34 +661,34 @@ class RedeemHistoryScreen extends HookConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Container(
-              width: 100.w,
-              height: 100.w,
+              width: 90.w,
+              height: 90.w,
               decoration: BoxDecoration(
-                color: const Color(0xFFFAF5FF),
+                color: const Color(0xFFF8FAFC),
                 shape: BoxShape.circle,
                 border: Border.all(
-                  color: const Color(0xFFF3E8FF),
+                  color: const Color(0xFFE2E8F0),
                   width: 2,
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: const Color(0xFFAB31DE).withValues(alpha: 0.12),
-                    blurRadius: 20,
+                    color: const Color(0xFF0F172A).withValues(alpha: 0.06),
+                    blurRadius: 18,
                   ),
                 ],
               ),
               child: Icon(
                 Icons.receipt_long_rounded,
-                color: const Color(0xFFAB31DE),
-                size: 46.sp,
+                color: const Color(0xFF26262B),
+                size: 42.sp,
               ),
             ),
             SizedBox(height: 20.h),
             Text(
               'No History Yet!',
-              style: GoogleFonts.outfit(
-                color: const Color(0xFF1E1B4B),
-                fontSize: 18.sp,
+              style: GoogleFonts.poppins(
+                color: const Color(0xFF26262B),
+                fontSize: 17.5.sp,
                 fontWeight: FontWeight.w700,
               ),
             ),
@@ -697,7 +696,7 @@ class RedeemHistoryScreen extends HookConsumerWidget {
             Text(
               'Your completed payouts and voucher redemptions will show up here.',
               textAlign: TextAlign.center,
-              style: GoogleFonts.outfit(
+              style: GoogleFonts.poppins(
                 color: const Color(0xFF64748B),
                 fontSize: 13.sp,
                 height: 1.45,

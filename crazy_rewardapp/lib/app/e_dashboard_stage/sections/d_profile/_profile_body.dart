@@ -10,7 +10,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:http/http.dart' as http;
 
-
 import '../../../../services/launch_url.dart';
 import '../../../../services/security_service.dart';
 import '../../../../utils/constant/constant.dart';
@@ -88,10 +87,10 @@ class ProfileBody extends HookConsumerWidget {
                   padding: EdgeInsets.symmetric(horizontal: 18.w),
                   child: Column(
                     children: [
-                      SizedBox(height: topPadding > 0 ? topPadding + 36.h : 48.h),
+                      SizedBox(height: topPadding > 0 ? topPadding + 28.h : 40.h),
 
                       // -------------------------------------------------------------
-                      // 1. TOP EXECUTIVE PROFILE CARD (MATCHING USER MOCKUP 1-TO-1)
+                      // 1. TOP EXECUTIVE PROFILE CARD (MATCHING LUXURY OBSIDIAN & SILVER THEME)
                       // -------------------------------------------------------------
                       SizedBox(
                         width: double.infinity,
@@ -118,7 +117,7 @@ class ProfileBody extends HookConsumerWidget {
                                     offset: const Offset(0, 8),
                                   ),
                                   BoxShadow(
-                                    color: const Color(0xFFAB31DE).withValues(alpha: 0.04),
+                                    color: Colors.black.withValues(alpha: 0.03),
                                     blurRadius: 16,
                                     offset: const Offset(0, 4),
                                   ),
@@ -140,8 +139,8 @@ class ProfileBody extends HookConsumerWidget {
                                               displayName,
                                               maxLines: 1,
                                               overflow: TextOverflow.ellipsis,
-                                              style: GoogleFonts.outfit(
-                                                color: const Color(0xFF1E1B4B),
+                                              style: GoogleFonts.poppins(
+                                                color: const Color(0xFF26262B),
                                                 fontSize: 20.sp,
                                                 fontWeight: FontWeight.w800,
                                                 letterSpacing: -0.3,
@@ -152,10 +151,10 @@ class ProfileBody extends HookConsumerWidget {
                                               displayEmail,
                                               maxLines: 1,
                                               overflow: TextOverflow.ellipsis,
-                                              style: GoogleFonts.outfit(
+                                              style: GoogleFonts.poppins(
                                                 color: const Color(0xFF64748B),
                                                 fontSize: 12.5.sp,
-                                                fontWeight: FontWeight.w500,
+                                                fontWeight: FontWeight.w400,
                                               ),
                                             ),
                                           ],
@@ -164,7 +163,7 @@ class ProfileBody extends HookConsumerWidget {
 
                                       SizedBox(width: 8.w),
 
-                                      // User ID Pill (Tap to Copy)
+                                      // User ID Pill (Dark Obsidian, Tap to Copy)
                                       GestureDetector(
                                         onTap: () {
                                           HapticFeedback.lightImpact();
@@ -174,28 +173,35 @@ class ProfileBody extends HookConsumerWidget {
                                         child: Container(
                                           padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
                                           decoration: BoxDecoration(
-                                            color: const Color(0xFFFAF5FF),
+                                            color: const Color(0xFF1E1B2E),
                                             borderRadius: BorderRadius.circular(12.r),
                                             border: Border.all(
-                                              color: const Color(0xFFAB31DE).withValues(alpha: 0.25),
+                                              color: const Color(0xFF2E2E36),
                                               width: 1,
                                             ),
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: Colors.black.withValues(alpha: 0.15),
+                                                blurRadius: 6,
+                                                offset: const Offset(0, 2),
+                                              ),
+                                            ],
                                           ),
                                           child: Row(
                                             mainAxisSize: MainAxisSize.min,
                                             children: [
                                               Text(
                                                 'ID: ',
-                                                style: GoogleFonts.outfit(
-                                                  color: const Color(0xFF64748B),
+                                                style: GoogleFonts.poppins(
+                                                  color: const Color(0xFF9E9EA7),
                                                   fontSize: 11.sp,
                                                   fontWeight: FontWeight.w500,
                                                 ),
                                               ),
                                               Text(
                                                 userId.length > 8 ? '${userId.substring(0, 8)}...' : userId,
-                                                style: GoogleFonts.outfit(
-                                                  color: const Color(0xFFAB31DE),
+                                                style: GoogleFonts.poppins(
+                                                  color: Colors.white,
                                                   fontSize: 11.sp,
                                                   fontWeight: FontWeight.w700,
                                                 ),
@@ -203,7 +209,7 @@ class ProfileBody extends HookConsumerWidget {
                                               SizedBox(width: 4.w),
                                               Icon(
                                                 Icons.copy_rounded,
-                                                color: const Color(0xFFAB31DE),
+                                                color: const Color(0xFF9E9EA7),
                                                 size: 11.sp,
                                               ),
                                             ],
@@ -219,10 +225,10 @@ class ProfileBody extends HookConsumerWidget {
                                   Container(
                                     padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 6.w),
                                     decoration: BoxDecoration(
-                                      color: const Color(0xFFFAF5FF),
+                                      color: const Color(0xFFF8FAFC),
                                       borderRadius: BorderRadius.circular(20.r),
                                       border: Border.all(
-                                        color: const Color(0xFFF3E8FF),
+                                        color: const Color(0xFFE2E8F0),
                                         width: 1.2,
                                       ),
                                     ),
@@ -254,10 +260,10 @@ class ProfileBody extends HookConsumerWidget {
                                                     Flexible(
                                                       child: Text(
                                                         coins.formatK(),
-                                                        style: GoogleFonts.outfit(
-                                                          color: const Color(0xFFAB31DE),
+                                                        style: GoogleFonts.poppins(
+                                                          color: const Color(0xFF26262B),
                                                           fontSize: 16.sp,
-                                                          fontWeight: FontWeight.w900,
+                                                          fontWeight: FontWeight.w800,
                                                           letterSpacing: -0.3,
                                                         ),
                                                         maxLines: 1,
@@ -270,7 +276,7 @@ class ProfileBody extends HookConsumerWidget {
                                                 Text(
                                                   'Total Coins',
                                                   textAlign: TextAlign.center,
-                                                  style: GoogleFonts.outfit(
+                                                  style: GoogleFonts.poppins(
                                                     color: const Color(0xFF64748B),
                                                     fontSize: 11.sp,
                                                     fontWeight: FontWeight.w500,
@@ -312,10 +318,10 @@ class ProfileBody extends HookConsumerWidget {
                                                     Flexible(
                                                       child: Text(
                                                         '$gems',
-                                                        style: GoogleFonts.outfit(
-                                                          color: const Color(0xFFAB31DE),
+                                                        style: GoogleFonts.poppins(
+                                                          color: const Color(0xFF38BDF8),
                                                           fontSize: 16.sp,
-                                                          fontWeight: FontWeight.w900,
+                                                          fontWeight: FontWeight.w800,
                                                           letterSpacing: -0.3,
                                                         ),
                                                         maxLines: 1,
@@ -328,7 +334,7 @@ class ProfileBody extends HookConsumerWidget {
                                                 Text(
                                                   'Total Gems',
                                                   textAlign: TextAlign.center,
-                                                  style: GoogleFonts.outfit(
+                                                  style: GoogleFonts.poppins(
                                                     color: const Color(0xFF64748B),
                                                     fontSize: 11.sp,
                                                     fontWeight: FontWeight.w500,
@@ -377,10 +383,10 @@ class ProfileBody extends HookConsumerWidget {
                                                     Flexible(
                                                       child: Text(
                                                         badge.title,
-                                                        style: GoogleFonts.outfit(
-                                                          color: const Color(0xFFAB31DE),
+                                                        style: GoogleFonts.poppins(
+                                                          color: const Color(0xFF26262B),
                                                           fontSize: 15.sp,
-                                                          fontWeight: FontWeight.w900,
+                                                          fontWeight: FontWeight.w800,
                                                           letterSpacing: -0.2,
                                                         ),
                                                         maxLines: 1,
@@ -393,7 +399,7 @@ class ProfileBody extends HookConsumerWidget {
                                                 Text(
                                                   'Badge Tier',
                                                   textAlign: TextAlign.center,
-                                                  style: GoogleFonts.outfit(
+                                                  style: GoogleFonts.poppins(
                                                     color: const Color(0xFF64748B),
                                                     fontSize: 11.sp,
                                                     fontWeight: FontWeight.w500,
@@ -411,23 +417,27 @@ class ProfileBody extends HookConsumerWidget {
 
                                   SizedBox(height: 14.h),
 
-                                  // Promo Code Banner (Matching Mockup 1-to-1)
+                                  // Promo Code Banner (Dark Obsidian with Silver-Chrome Action Pill)
                                   Container(
                                     width: double.infinity,
                                     padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 10.h),
                                     decoration: BoxDecoration(
                                       gradient: const LinearGradient(
+                                        begin: Alignment.topLeft,
+                                        end: Alignment.bottomRight,
                                         colors: [
-                                          Color(0xFFE39FFF),
-                                          Color(0xFFAB31DE),
+                                          Color(0xFF222226),
+                                          Color(0xFF131316),
                                         ],
-                                        begin: Alignment.centerLeft,
-                                        end: Alignment.centerRight,
                                       ),
                                       borderRadius: BorderRadius.circular(18.r),
+                                      border: Border.all(
+                                        color: const Color(0xFF2E2E36),
+                                        width: 1.0,
+                                      ),
                                       boxShadow: [
                                         BoxShadow(
-                                          color: const Color(0xFFAB31DE).withValues(alpha: 0.28),
+                                          color: Colors.black.withValues(alpha: 0.14),
                                           blurRadius: 10,
                                           offset: const Offset(0, 4),
                                         ),
@@ -441,8 +451,12 @@ class ProfileBody extends HookConsumerWidget {
                                           height: 34.w,
                                           alignment: Alignment.center,
                                           decoration: BoxDecoration(
-                                            color: Colors.white.withValues(alpha: 0.22),
+                                            color: const Color(0xFF1E1B2E),
                                             borderRadius: BorderRadius.circular(10.r),
+                                            border: Border.all(
+                                              color: const Color(0xFF383842),
+                                              width: 1,
+                                            ),
                                           ),
                                           child: Icon(
                                             Icons.confirmation_number_rounded,
@@ -460,10 +474,10 @@ class ProfileBody extends HookConsumerWidget {
                                             children: [
                                               Text(
                                                 'Have a Promo Code?',
-                                                style: GoogleFonts.outfit(
+                                                style: GoogleFonts.poppins(
                                                   color: Colors.white,
                                                   fontSize: 13.sp,
-                                                  fontWeight: FontWeight.w800,
+                                                  fontWeight: FontWeight.w700,
                                                 ),
                                                 maxLines: 1,
                                                 overflow: TextOverflow.ellipsis,
@@ -471,8 +485,8 @@ class ProfileBody extends HookConsumerWidget {
                                               SizedBox(height: 1.h),
                                               Text(
                                                 'Unlock exciting rewards',
-                                                style: GoogleFonts.outfit(
-                                                  color: Colors.white.withValues(alpha: 0.88),
+                                                style: GoogleFonts.poppins(
+                                                  color: const Color(0xFF9E9EA7),
                                                   fontSize: 10.5.sp,
                                                   fontWeight: FontWeight.w400,
                                                 ),
@@ -485,31 +499,39 @@ class ProfileBody extends HookConsumerWidget {
 
                                         SizedBox(width: 6.w),
 
-                                        // Right White Pill Button "Apply Code"
+                                        // Right Silver-Chrome Pill Button "Apply Code"
                                         GestureDetector(
                                           onTap: () {
                                             HapticFeedback.lightImpact();
                                             AutoRouter.of(context).push(const PromoCodeScreenRoute());
                                           },
                                           child: Container(
-                                            padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 7.h),
+                                            padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 7.h),
                                             decoration: BoxDecoration(
-                                              color: Colors.white,
-                                              borderRadius: BorderRadius.circular(12.r),
+                                              gradient: const LinearGradient(
+                                                colors: [
+                                                  Colors.white,
+                                                  Color(0xFFE5E7EB),
+                                                  Color(0xFFB0B5C2),
+                                                ],
+                                                begin: Alignment.topCenter,
+                                                end: Alignment.bottomCenter,
+                                              ),
+                                              borderRadius: BorderRadius.circular(14.r),
                                               boxShadow: [
                                                 BoxShadow(
-                                                  color: Colors.black.withValues(alpha: 0.10),
-                                                  blurRadius: 4,
+                                                  color: Colors.black.withValues(alpha: 0.20),
+                                                  blurRadius: 6,
                                                   offset: const Offset(0, 2),
                                                 ),
                                               ],
                                             ),
                                             child: Text(
                                               'Apply Code',
-                                              style: GoogleFonts.outfit(
-                                                color: const Color(0xFFAB31DE),
+                                              style: GoogleFonts.poppins(
+                                                color: const Color(0xFF16161A),
                                                 fontSize: 11.5.sp,
-                                                fontWeight: FontWeight.w800,
+                                                fontWeight: FontWeight.w700,
                                               ),
                                             ),
                                           ),
@@ -521,7 +543,7 @@ class ProfileBody extends HookConsumerWidget {
                               ),
                             ),
 
-                            // Top Centered Overlapping Avatar (Matching Mockup 1-to-1)
+                            // Top Centered Overlapping Avatar
                             Positioned(
                               top: 0,
                               child: SizedBox(
@@ -559,10 +581,10 @@ class ProfileBody extends HookConsumerWidget {
                                                 'assets/icons/DIAMONDPANDA_LOGO.png',
                                                 fit: BoxFit.cover,
                                                 errorBuilder: (_, __, ___) => Container(
-                                                  color: const Color(0xFFFAF5FF),
+                                                  color: const Color(0xFF1E1B2E),
                                                   child: Icon(
                                                     Icons.person_rounded,
-                                                    color: const Color(0xFFAB31DE),
+                                                    color: Colors.white,
                                                     size: 40.sp,
                                                   ),
                                                 ),
@@ -612,8 +634,6 @@ class ProfileBody extends HookConsumerWidget {
                       // -------------------------------------------------------------
                       // 2. SECTION 1: OPTIONS
                       // -------------------------------------------------------------
-
-
                       _buildModernMenuTile(
                         icon: Icons.card_giftcard_rounded,
                         title: 'Redeem',
@@ -646,8 +666,6 @@ class ProfileBody extends HookConsumerWidget {
                           const ChangeLanguageScreenRoute(),
                         ),
                       ),
-
-
 
                       SizedBox(height: 20.h),
 
@@ -719,6 +737,7 @@ class ProfileBody extends HookConsumerWidget {
                       _buildModernMenuTile(
                         icon: Icons.logout_rounded,
                         title: 'Logout',
+                        isDestructive: false,
                         onTap: () async {
                           final bool confirmed = await CustomStatusPopup.showConfirmLogout(context: context);
                           if (confirmed && context.mounted) {
@@ -729,6 +748,7 @@ class ProfileBody extends HookConsumerWidget {
                       _buildModernMenuTile(
                         icon: Icons.delete_outline_rounded,
                         title: 'Delete Account',
+                        isDestructive: true,
                         onTap: () async {
                           final bool confirmed = await CustomStatusPopup.showConfirmDeleteAccount(context: context);
                           if (confirmed) {
@@ -792,13 +812,13 @@ class ProfileBody extends HookConsumerWidget {
       alignment: Alignment.centerLeft,
       child: Row(
         children: [
-          Icon(icon, color: const Color(0xFFAB31DE), size: 16.sp),
+          Icon(icon, color: const Color(0xFF26262B), size: 16.sp),
           SizedBox(width: 6.w),
           Text(
             title,
-            style: GoogleFonts.outfit(
-              color: const Color(0xFF1E1B4B),
-              fontSize: 13.sp,
+            style: GoogleFonts.poppins(
+              color: const Color(0xFF26262B),
+              fontSize: 12.5.sp,
               fontWeight: FontWeight.w800,
               letterSpacing: 0.8,
             ),
@@ -809,12 +829,13 @@ class ProfileBody extends HookConsumerWidget {
   }
 
   // -------------------------------------------------------------
-  // MENU ITEM (LEFT SQUIRCLE ICON + RIGHT WHITE CAPSULE WITH CHEVRON)
+  // MENU ITEM (LEFT DARK OBSIDIAN SQUIRCLE + RIGHT WHITE CAPSULE)
   // -------------------------------------------------------------
   Widget _buildModernMenuTile({
     required IconData icon,
     required String title,
     required VoidCallback onTap,
+    bool isDestructive = false,
   }) {
     return Padding(
       padding: EdgeInsets.only(bottom: 10.h),
@@ -825,20 +846,20 @@ class ProfileBody extends HookConsumerWidget {
         },
         child: Row(
           children: [
-            // Left Soft Lavender Squircle Icon Container
+            // Left Dark Obsidian Squircle Icon Container
             Container(
               width: 44.w,
               height: 44.w,
               decoration: BoxDecoration(
-                color: const Color(0xFFFAF5FF),
+                color: isDestructive ? const Color(0xFFFEF2F2) : const Color(0xFF1E1B2E),
                 borderRadius: BorderRadius.circular(14.r),
                 border: Border.all(
-                  color: const Color(0xFFF3E8FF),
-                  width: 1.2,
+                  color: isDestructive ? const Color(0xFFFECDD3) : const Color(0xFF2E2E36),
+                  width: 1.0,
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: const Color(0xFFAB31DE).withValues(alpha: 0.05),
+                    color: Colors.black.withValues(alpha: isDestructive ? 0.04 : 0.12),
                     blurRadius: 6,
                     offset: const Offset(0, 2),
                   ),
@@ -847,7 +868,7 @@ class ProfileBody extends HookConsumerWidget {
               alignment: Alignment.center,
               child: Icon(
                 icon,
-                color: const Color(0xFFAB31DE),
+                color: isDestructive ? const Color(0xFFEF4444) : Colors.white,
                 size: 20.sp,
               ),
             ),
@@ -880,8 +901,8 @@ class ProfileBody extends HookConsumerWidget {
                     Expanded(
                       child: Text(
                         title,
-                        style: GoogleFonts.outfit(
-                          color: const Color(0xFF1E1B4B),
+                        style: GoogleFonts.poppins(
+                          color: isDestructive ? const Color(0xFFDC2626) : const Color(0xFF26262B),
                           fontSize: 13.5.sp,
                           fontWeight: FontWeight.w600,
                         ),
@@ -986,7 +1007,7 @@ class ProfileBadgeHelper {
 }
 
 // -------------------------------------------------------------
-// BADGE INFO POPUP DIALOG (PURE WHITE LUXURY THEME)
+// BADGE INFO POPUP DIALOG (LUXURY OBSIDIAN & SILVER THEME)
 // -------------------------------------------------------------
 void _showBadgeInfoDialog(BuildContext context, ProfileBadgeInfo currentBadge, int redeemCount) {
   showModalBottomSheet(
@@ -995,12 +1016,10 @@ void _showBadgeInfoDialog(BuildContext context, ProfileBadgeInfo currentBadge, i
     isScrollControlled: true,
     useSafeArea: true,
     builder: (ctx) {
-      const activePurple = Color(0xFFAB31DE);
-
       return Container(
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(24.r)),
+          borderRadius: BorderRadius.vertical(top: Radius.circular(28.r)),
           boxShadow: [
             BoxShadow(
               color: const Color(0xFF0F172A).withValues(alpha: 0.12),
@@ -1026,19 +1045,19 @@ void _showBadgeInfoDialog(BuildContext context, ProfileBadgeInfo currentBadge, i
                   ),
                 ),
               ),
-              SizedBox(height: 14.h),
+              SizedBox(height: 16.h),
 
               // Title
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.military_tech_rounded, color: activePurple, size: 24.sp),
+                  Icon(Icons.military_tech_rounded, color: const Color(0xFFF59E0B), size: 24.sp),
                   SizedBox(width: 6.w),
                   Text(
                     'REDEEM BADGE TIERS',
-                    style: GoogleFonts.outfit(
-                      color: const Color(0xFF1E1B4B),
-                      fontSize: 17.sp,
+                    style: GoogleFonts.poppins(
+                      color: const Color(0xFF26262B),
+                      fontSize: 16.sp,
                       fontWeight: FontWeight.w800,
                       letterSpacing: 0.5,
                     ),
@@ -1047,17 +1066,31 @@ void _showBadgeInfoDialog(BuildContext context, ProfileBadgeInfo currentBadge, i
               ),
               SizedBox(height: 16.h),
 
-              // Current Tier Showcase Card
+              // Current Tier Showcase Card (Dark Obsidian)
               Container(
                 width: double.infinity,
                 padding: EdgeInsets.all(14.w),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFFAF5FF),
-                  borderRadius: BorderRadius.circular(18.r),
-                  border: Border.all(
-                    color: activePurple.withValues(alpha: 0.35),
-                    width: 1.2,
+                  gradient: const LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      Color(0xFF222226),
+                      Color(0xFF131316),
+                    ],
                   ),
+                  borderRadius: BorderRadius.circular(20.r),
+                  border: Border.all(
+                    color: const Color(0xFF2E2E36),
+                    width: 1.0,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.14),
+                      blurRadius: 10,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
                 ),
                 child: Row(
                   children: [
@@ -1066,24 +1099,22 @@ void _showBadgeInfoDialog(BuildContext context, ProfileBadgeInfo currentBadge, i
                       height: 52.w,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: Colors.white,
-                        boxShadow: [
-                          BoxShadow(
-                            color: activePurple.withValues(alpha: 0.15),
-                            blurRadius: 8,
-                          ),
-                        ],
+                        color: const Color(0xFF1E1B2E),
+                        border: Border.all(
+                          color: const Color(0xFF383842),
+                          width: 1.2,
+                        ),
                       ),
                       alignment: Alignment.center,
                       child: Image.asset(
                         currentBadge.iconPath,
-                        width: 40.w,
-                        height: 40.w,
+                        width: 36.w,
+                        height: 36.w,
                         fit: BoxFit.contain,
                         errorBuilder: (_, __, ___) => Image.asset(
                           'assets/icons/bronze.png',
-                          width: 40.w,
-                          height: 40.w,
+                          width: 36.w,
+                          height: 36.w,
                           fit: BoxFit.contain,
                         ),
                       ),
@@ -1097,29 +1128,29 @@ void _showBadgeInfoDialog(BuildContext context, ProfileBadgeInfo currentBadge, i
                             children: [
                               Text(
                                 '${currentBadge.title} Badge',
-                                style: GoogleFonts.outfit(
-                                  color: activePurple,
-                                  fontSize: 15.5.sp,
-                                  fontWeight: FontWeight.w800,
+                                style: GoogleFonts.poppins(
+                                  color: Colors.white,
+                                  fontSize: 15.sp,
+                                  fontWeight: FontWeight.w700,
                                 ),
                               ),
                               SizedBox(width: 8.w),
                               Container(
                                 padding: EdgeInsets.symmetric(horizontal: 7.w, vertical: 2.h),
                                 decoration: BoxDecoration(
-                                  color: activePurple.withValues(alpha: 0.15),
+                                  color: const Color(0xFF10B981).withValues(alpha: 0.20),
                                   borderRadius: BorderRadius.circular(6.r),
                                   border: Border.all(
-                                    color: activePurple.withValues(alpha: 0.40),
+                                    color: const Color(0xFF10B981).withValues(alpha: 0.50),
                                     width: 1,
                                   ),
                                 ),
                                 child: Text(
                                   'ACTIVE',
-                                  style: GoogleFonts.outfit(
-                                    color: activePurple,
+                                  style: GoogleFonts.poppins(
+                                    color: const Color(0xFF10B981),
                                     fontSize: 9.sp,
-                                    fontWeight: FontWeight.w800,
+                                    fontWeight: FontWeight.w700,
                                   ),
                                 ),
                               ),
@@ -1128,18 +1159,18 @@ void _showBadgeInfoDialog(BuildContext context, ProfileBadgeInfo currentBadge, i
                           SizedBox(height: 3.h),
                           Text(
                             'Successful Redeems: $redeemCount',
-                            style: GoogleFonts.outfit(
-                              color: const Color(0xFF1E1B4B),
+                            style: GoogleFonts.poppins(
+                              color: const Color(0xFFE2E8F0),
                               fontSize: 12.sp,
-                              fontWeight: FontWeight.w600,
+                              fontWeight: FontWeight.w500,
                             ),
                           ),
                           if (currentBadge.title != 'Diamond') ...[
                             SizedBox(height: 2.h),
                             Text(
                               '${currentBadge.nextTarget - redeemCount > 0 ? currentBadge.nextTarget - redeemCount : 0} more successful redeems to unlock next tier',
-                              style: GoogleFonts.outfit(
-                                color: const Color(0xFF64748B),
+                              style: GoogleFonts.poppins(
+                                color: const Color(0xFF9E9EA7),
                                 fontSize: 10.5.sp,
                                 fontWeight: FontWeight.w400,
                               ),
@@ -1164,12 +1195,12 @@ void _showBadgeInfoDialog(BuildContext context, ProfileBadgeInfo currentBadge, i
                   padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 9.h),
                   decoration: BoxDecoration(
                     color: isCurrent
-                        ? const Color(0xFFFAF5FF)
+                        ? const Color(0xFFFFFBEB)
                         : const Color(0xFFF8FAFC),
                     borderRadius: BorderRadius.circular(14.r),
                     border: Border.all(
                       color: isCurrent
-                          ? activePurple.withValues(alpha: 0.40)
+                          ? const Color(0xFFFDE68A)
                           : const Color(0xFFE2E8F0),
                       width: 1,
                     ),
@@ -1195,19 +1226,19 @@ void _showBadgeInfoDialog(BuildContext context, ProfileBadgeInfo currentBadge, i
                           children: [
                             Text(
                               '${tier.title} Badge',
-                              style: GoogleFonts.outfit(
+                              style: GoogleFonts.poppins(
                                 color: isCurrent
-                                    ? activePurple
-                                    : (isUnlocked ? const Color(0xFF1E1B4B) : const Color(0xFF94A3B8)),
+                                    ? const Color(0xFFD97706)
+                                    : (isUnlocked ? const Color(0xFF26262B) : const Color(0xFF94A3B8)),
                                 fontSize: 13.sp,
                                 fontWeight: FontWeight.w700,
                               ),
                             ),
                             Text(
                               tier.description,
-                              style: GoogleFonts.outfit(
+                              style: GoogleFonts.poppins(
                                 color: isCurrent
-                                    ? const Color(0xFFAB31DE)
+                                    ? const Color(0xFFB45309)
                                     : (isUnlocked ? const Color(0xFF64748B) : const Color(0xFFCBD5E1)),
                                 fontSize: 10.5.sp,
                                 fontWeight: FontWeight.w400,
@@ -1217,7 +1248,7 @@ void _showBadgeInfoDialog(BuildContext context, ProfileBadgeInfo currentBadge, i
                         ),
                       ),
                       if (isCurrent)
-                        Icon(Icons.check_circle_rounded, color: activePurple, size: 19.sp)
+                        Icon(Icons.check_circle_rounded, color: const Color(0xFFD97706), size: 19.sp)
                       else if (isUnlocked)
                         Icon(Icons.lock_open_rounded, color: const Color(0xFF94A3B8), size: 16.sp)
                       else
@@ -1229,7 +1260,7 @@ void _showBadgeInfoDialog(BuildContext context, ProfileBadgeInfo currentBadge, i
 
               SizedBox(height: 16.h),
 
-              // Executive Purple Gradient "Got It" Button
+              // Silver-Chrome Gradient "Got It" Button
               GestureDetector(
                 onTap: () {
                   HapticFeedback.lightImpact();
@@ -1237,21 +1268,25 @@ void _showBadgeInfoDialog(BuildContext context, ProfileBadgeInfo currentBadge, i
                 },
                 child: Container(
                   width: double.infinity,
-                  height: 46.h,
+                  height: 48.h,
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
                     gradient: const LinearGradient(
                       colors: [
-                        Color(0xFFE39FFF),
-                        Color(0xFFAB31DE),
+                        Color(0xFF26262B),
+                        Color(0xFF18181B),
                       ],
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
                     ),
-                    borderRadius: BorderRadius.circular(14.r),
+                    borderRadius: BorderRadius.circular(16.r),
+                    border: Border.all(
+                      color: const Color(0xFF3F3F46),
+                      width: 1,
+                    ),
                     boxShadow: [
                       BoxShadow(
-                        color: const Color(0xFFAB31DE).withValues(alpha: 0.28),
+                        color: Colors.black.withValues(alpha: 0.20),
                         blurRadius: 8,
                         offset: const Offset(0, 3),
                       ),
@@ -1259,7 +1294,7 @@ void _showBadgeInfoDialog(BuildContext context, ProfileBadgeInfo currentBadge, i
                   ),
                   child: Text(
                     'Got It',
-                    style: GoogleFonts.outfit(
+                    style: GoogleFonts.poppins(
                       color: Colors.white,
                       fontSize: 14.5.sp,
                       fontWeight: FontWeight.w700,

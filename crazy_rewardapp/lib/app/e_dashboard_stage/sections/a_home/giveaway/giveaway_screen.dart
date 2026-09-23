@@ -1,4 +1,3 @@
-import 'dart:ui';
 import 'package:auto_route/auto_route.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -14,99 +13,6 @@ import '../../../../../widgets/common/custom_loading.dart';
 import '../../../../b_splash_stage/splash_service.dart';
 import 'model/giveaway_model.dart';
 import 'provider/giveaway_provider.dart';
-
-// Tapered 3D Button Custom Painter
-class _TaperedButtonPainter extends CustomPainter {
-  final double radius;
-  final bool isAmber;
-
-  const _TaperedButtonPainter({
-    this.radius = 12.0,
-    this.isAmber = false,
-  });
-
-  Path getButtonPath(Size size) {
-    final w = size.width;
-    final h = size.height;
-    final r = radius;
-
-    final path = Path();
-    path.moveTo(r, 0);
-    path.lineTo(w - r, 0);
-    path.quadraticBezierTo(w, 0, w - 2, r * 0.7);
-    path.lineTo(w - 5, h - r * 0.7);
-    path.quadraticBezierTo(w - 6, h, w - 6 - r, h);
-    path.lineTo(6 + r, h);
-    path.quadraticBezierTo(6, h, 5, h - r * 0.7);
-    path.lineTo(2, r * 0.7);
-    path.quadraticBezierTo(0, 0, r, 0);
-    path.close();
-    return path;
-  }
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final path = getButtonPath(size);
-
-    // Drop shadow
-    canvas.drawShadow(
-      path,
-      (isAmber ? const Color(0xFFB45309) : const Color(0xFF24007A)).withValues(alpha: 0.65),
-      6.0,
-      true,
-    );
-
-    // Fill glossy gradient
-    final rect = Rect.fromLTWH(0, 0, size.width, size.height);
-    final fillPaint = Paint()
-      ..style = PaintingStyle.fill
-      ..shader = (isAmber
-          ? const LinearGradient(
-              colors: [
-                Color(0xFFFEF3C7),
-                Color(0xFFFBBF24),
-                Color(0xFFD97706),
-                Color(0xFFB45309),
-              ],
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              stops: [0.0, 0.30, 0.75, 1.0],
-            )
-          : const LinearGradient(
-              colors: [
-                Color(0xFFEADBFF),
-                Color(0xFFA565FF),
-                Color(0xFF6B15F6),
-                Color(0xFF550BD0),
-              ],
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              stops: [0.0, 0.30, 0.75, 1.0],
-            )).createShader(rect);
-
-    canvas.drawPath(path, fillPaint);
-
-    // Top rim highlight stroke
-    final borderPaint = Paint()
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.0
-      ..shader = LinearGradient(
-        colors: [
-          Colors.white.withValues(alpha: 0.60),
-          Colors.white.withValues(alpha: 0.15),
-          Colors.transparent,
-        ],
-        begin: Alignment.topCenter,
-        end: Alignment.bottomCenter,
-        stops: const [0.0, 0.45, 0.9],
-      ).createShader(rect);
-
-    canvas.drawPath(path, borderPaint);
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
-}
 
 @RoutePage()
 class GiveawayScreen extends HookConsumerWidget {
@@ -130,34 +36,21 @@ class GiveawayScreen extends HookConsumerWidget {
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: const SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
-        statusBarIconBrightness: Brightness.light,
-        statusBarBrightness: Brightness.dark,
-        systemNavigationBarColor: Color(0xFF090314),
-        systemNavigationBarIconBrightness: Brightness.light,
+        statusBarIconBrightness: Brightness.dark,
+        statusBarBrightness: Brightness.light,
+        systemNavigationBarColor: Colors.white,
+        systemNavigationBarIconBrightness: Brightness.dark,
       ),
       child: Scaffold(
-        backgroundColor: Colors.black,
+        backgroundColor: Colors.white,
         body: Stack(
           children: [
-            // 1. Full Background Image (Matching Home Screen)
+            // Solid Executive White Background
             Positioned.fill(
-              child: Image.asset(
-                'assets/icons/bgg.png',
-                fit: BoxFit.cover,
-              ),
+              child: Container(color: Colors.white),
             ),
 
-            // 2. Deep Ambient Frosted Glass Blur Overlay
-            Positioned.fill(
-              child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
-                child: Container(
-                  color: Colors.black.withValues(alpha: 0.25),
-                ),
-              ),
-            ),
-
-            // 3. Main Content
+            // Main Content
             SafeArea(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -169,31 +62,51 @@ class GiveawayScreen extends HookConsumerWidget {
                     padding: EdgeInsets.symmetric(horizontal: 16.w),
                     child: Row(
                       children: [
-                        GestureDetector(
+                        InkWell(
                           onTap: () {
                             HapticFeedback.lightImpact();
                             AutoRouter.of(context).maybePop();
                           },
-                          child: Image.asset(
-                            'assets/icons/backk.png',
-                            width: 42.w,
-                            height: 42.w,
-                            fit: BoxFit.contain,
-                          ),
-                        ),
-                        SizedBox(width: 14.w),
-                        Expanded(
-                          child: Text(
-                            'Giveaways',
-                            style: GoogleFonts.poppins(
-                              fontSize: 18.sp,
-                              fontWeight: FontWeight.w700,
+                          borderRadius: BorderRadius.circular(14.r),
+                          child: Container(
+                            width: 40.w,
+                            height: 40.w,
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
                               color: Colors.white,
-                              letterSpacing: 0.2,
+                              borderRadius: BorderRadius.circular(14.r),
+                              border: Border.all(
+                                color: const Color(0xFFE2E8F0),
+                                width: 1.2,
+                              ),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withValues(alpha: 0.04),
+                                  blurRadius: 8,
+                                  offset: const Offset(0, 2),
+                                ),
+                              ],
+                            ),
+                            child: Icon(
+                              Icons.arrow_back_rounded,
+                              color: const Color(0xFF26262B),
+                              size: 20.sp,
                             ),
                           ),
                         ),
-                        // Right: "How To Use?" Button (Matching Play Games)
+                        SizedBox(width: 12.w),
+                        Expanded(
+                          child: Text(
+                            'Giveaways',
+                            style: GoogleFonts.kaushanScript(
+                              color: const Color(0xFF26262B),
+                              fontSize: 24.sp,
+                              fontWeight: FontWeight.w800,
+                              letterSpacing: 0.5,
+                            ),
+                          ),
+                        ),
+                        // Right: "How To?" Button
                         GestureDetector(
                           onTap: () {
                             HapticFeedback.lightImpact();
@@ -208,30 +121,37 @@ class GiveawayScreen extends HookConsumerWidget {
                           child: Container(
                             padding: EdgeInsets.symmetric(
                               horizontal: 12.w,
-                              vertical: 8.h,
+                              vertical: 7.h,
                             ),
                             decoration: BoxDecoration(
-                              color: const Color(0xFF181528),
-                              borderRadius: BorderRadius.circular(14.r),
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(12.r),
                               border: Border.all(
-                                color: const Color(0xFF8B5CF6).withValues(alpha: 0.35),
-                                width: 1,
+                                color: const Color(0xFFE2E8F0),
+                                width: 1.2,
                               ),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withValues(alpha: 0.03),
+                                  blurRadius: 6,
+                                  offset: const Offset(0, 2),
+                                ),
+                              ],
                             ),
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 Icon(
                                   Icons.help_outline_rounded,
-                                  color: const Color(0xFFDDD6FE),
-                                  size: 15.sp,
+                                  color: const Color(0xFF26262B),
+                                  size: 14.sp,
                                 ),
-                                SizedBox(width: 5.w),
+                                SizedBox(width: 4.w),
                                 Text(
                                   'How To?',
                                   style: GoogleFonts.poppins(
-                                    color: const Color(0xFFDDD6FE),
-                                    fontSize: 12.sp,
+                                    color: const Color(0xFF26262B),
+                                    fontSize: 11.5.sp,
                                     fontWeight: FontWeight.w600,
                                   ),
                                 ),
@@ -243,45 +163,57 @@ class GiveawayScreen extends HookConsumerWidget {
                     ),
                   ),
 
-                  SizedBox(height: 12.h),
+                  SizedBox(height: 14.h),
 
                   // Full-Width Category Filter Tabs Row
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 16.w),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: _FilterChip(
-                            label: 'Live Giveaway',
-                            isSelected: selectedIndex.value == 0,
-                            onTap: () {
-                              HapticFeedback.lightImpact();
-                              selectedIndex.value = 0;
-                              pageController.animateToPage(
-                                0,
-                                duration: const Duration(milliseconds: 250),
-                                curve: Curves.easeInOut,
-                              );
-                            },
-                          ),
+                    child: Container(
+                      height: 46.h,
+                      padding: EdgeInsets.all(4.w),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFF8FAFC),
+                        borderRadius: BorderRadius.circular(14.r),
+                        border: Border.all(
+                          color: const Color(0xFFE2E8F0),
+                          width: 1.2,
                         ),
-                        SizedBox(width: 10.w),
-                        Expanded(
-                          child: _FilterChip(
-                            label: 'Completed',
-                            isSelected: selectedIndex.value == 1,
-                            onTap: () {
-                              HapticFeedback.lightImpact();
-                              selectedIndex.value = 1;
-                              pageController.animateToPage(
-                                1,
-                                duration: const Duration(milliseconds: 250),
-                                curve: Curves.easeInOut,
-                              );
-                            },
+                      ),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: _FilterChip(
+                              label: 'Live Giveaway',
+                              isSelected: selectedIndex.value == 0,
+                              onTap: () {
+                                HapticFeedback.lightImpact();
+                                selectedIndex.value = 0;
+                                pageController.animateToPage(
+                                  0,
+                                  duration: const Duration(milliseconds: 250),
+                                  curve: Curves.easeInOut,
+                                );
+                              },
+                            ),
                           ),
-                        ),
-                      ],
+                          SizedBox(width: 6.w),
+                          Expanded(
+                            child: _FilterChip(
+                              label: 'Completed',
+                              isSelected: selectedIndex.value == 1,
+                              onTap: () {
+                                HapticFeedback.lightImpact();
+                                selectedIndex.value = 1;
+                                pageController.animateToPage(
+                                  1,
+                                  duration: const Duration(milliseconds: 250),
+                                  curve: Curves.easeInOut,
+                                );
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
 
@@ -299,7 +231,7 @@ class GiveawayScreen extends HookConsumerWidget {
                           children: [
                             Icon(
                               Icons.cloud_off_rounded,
-                              color: const Color(0xFFA78BFA),
+                              color: const Color(0xFF94A3B8),
                               size: 42.sp,
                             ),
                             SizedBox(height: 10.h),
@@ -365,8 +297,8 @@ class GiveawayScreen extends HookConsumerWidget {
     required bool isDeclaredTab,
   }) {
     return RefreshIndicator(
-      color: const Color(0xFFA78BFA),
-      backgroundColor: const Color(0xFF1E1B2C),
+      color: const Color(0xFF26262B),
+      backgroundColor: Colors.white,
       onRefresh: () async {
         HapticFeedback.lightImpact();
         ref.invalidate(GiveawayProviders.giveawaysProvider);
@@ -391,11 +323,11 @@ class GiveawayScreen extends HookConsumerWidget {
                           vertical: 28.h,
                         ),
                         decoration: BoxDecoration(
-                          color: Colors.white.withValues(alpha: 0.05),
+                          color: const Color(0xFFF8FAFC),
                           borderRadius: BorderRadius.circular(20.r),
                           border: Border.all(
-                            color: Colors.white.withValues(alpha: 0.08),
-                            width: 1,
+                            color: const Color(0xFFE2E8F0),
+                            width: 1.2,
                           ),
                         ),
                         child: Column(
@@ -405,7 +337,7 @@ class GiveawayScreen extends HookConsumerWidget {
                               isDeclaredTab
                                   ? Icons.emoji_events_outlined
                                   : Icons.card_giftcard_outlined,
-                              color: const Color(0xFFA78BFA),
+                              color: const Color(0xFF26262B),
                               size: 38.sp,
                             ),
                             SizedBox(height: 12.h),
@@ -413,7 +345,7 @@ class GiveawayScreen extends HookConsumerWidget {
                               emptyMsg,
                               textAlign: TextAlign.center,
                               style: GoogleFonts.poppins(
-                                color: Colors.white,
+                                color: const Color(0xFF26262B),
                                 fontSize: 14.sp,
                                 fontWeight: FontWeight.w700,
                               ),
@@ -425,7 +357,7 @@ class GiveawayScreen extends HookConsumerWidget {
                                   : 'Check back soon for new giveaways and grand reward events!',
                               textAlign: TextAlign.center,
                               style: GoogleFonts.poppins(
-                                color: const Color(0xFF94A3B8),
+                                color: const Color(0xFF64748B),
                                 fontSize: 11.5.sp,
                                 height: 1.3,
                               ),
@@ -513,13 +445,17 @@ class _GiveawayCard extends HookConsumerWidget {
         curve: Curves.easeInOut,
         child: Container(
           decoration: BoxDecoration(
-            color: const Color(0xFF180E2E), // Exact solid dark container (no outline)
-            borderRadius: BorderRadius.circular(20.r),
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(18.r),
+            border: Border.all(
+              color: const Color(0xFFE2E8F0),
+              width: 1.2,
+            ),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: 0.35),
-                blurRadius: 14,
-                offset: const Offset(0, 4),
+                color: Colors.black.withValues(alpha: 0.04),
+                blurRadius: 10,
+                offset: const Offset(0, 3),
               ),
             ],
           ),
@@ -536,15 +472,11 @@ class _GiveawayCard extends HookConsumerWidget {
                       giveaway.bannerUrl,
                       fit: BoxFit.cover,
                       errorBuilder: (_, __, ___) => Container(
-                        decoration: const BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [Color(0xFF2E1952), Color(0xFF140B28)],
-                          ),
-                        ),
+                        color: const Color(0xFFF1F5F9),
                         alignment: Alignment.center,
                         child: Icon(
                           Icons.card_giftcard_rounded,
-                          color: const Color(0xFFA78BFA),
+                          color: const Color(0xFF26262B),
                           size: 28.sp,
                         ),
                       ),
@@ -558,21 +490,10 @@ class _GiveawayCard extends HookConsumerWidget {
                     child: Container(
                       padding: EdgeInsets.symmetric(horizontal: 7.w, vertical: 3.h),
                       decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: isDeclared
-                              ? [const Color(0xFFF59E0B), const Color(0xFFD97706)]
-                              : (isLive
-                                  ? [const Color(0xFFE11D48), const Color(0xFFBE123C)]
-                                  : [const Color(0xFF7C3AED), const Color(0xFF6D28D9)]),
-                        ),
-                        borderRadius: BorderRadius.circular(8.r),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.3),
-                            blurRadius: 4,
-                            offset: const Offset(0, 2),
-                          ),
-                        ],
+                        color: isDeclared
+                            ? const Color(0xFFD97706)
+                            : (isLive ? const Color(0xFFDC2626) : const Color(0xFF26262E)),
+                        borderRadius: BorderRadius.circular(6.r),
                       ),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
@@ -594,7 +515,7 @@ class _GiveawayCard extends HookConsumerWidget {
                                 : (isLive ? 'LIVE' : 'UPCOMING'),
                             style: GoogleFonts.poppins(
                               color: Colors.white,
-                              fontSize: 9.5.sp,
+                              fontSize: 9.sp,
                               fontWeight: FontWeight.w800,
                               letterSpacing: 0.3,
                             ),
@@ -613,7 +534,7 @@ class _GiveawayCard extends HookConsumerWidget {
                         padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 3.h),
                         decoration: BoxDecoration(
                           color: const Color(0xFF16A34A),
-                          borderRadius: BorderRadius.circular(8.r),
+                          borderRadius: BorderRadius.circular(6.r),
                         ),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
@@ -628,7 +549,7 @@ class _GiveawayCard extends HookConsumerWidget {
                               'JOINED',
                               style: GoogleFonts.poppins(
                                 color: Colors.white,
-                                fontSize: 9.sp,
+                                fontSize: 8.5.sp,
                                 fontWeight: FontWeight.w800,
                               ),
                             ),
@@ -651,7 +572,7 @@ class _GiveawayCard extends HookConsumerWidget {
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: GoogleFonts.poppins(
-                        color: Colors.white,
+                        color: const Color(0xFF26262B),
                         fontSize: 12.5.sp,
                         fontWeight: FontWeight.w700,
                       ),
@@ -684,7 +605,7 @@ class _GiveawayCard extends HookConsumerWidget {
                         Text(
                           '${giveaway.joinedCount} / ${giveaway.totalSlots}',
                           style: GoogleFonts.poppins(
-                            color: const Color(0xFFC4B5FD),
+                            color: const Color(0xFF26262B),
                             fontSize: 10.5.sp,
                             fontWeight: FontWeight.w700,
                           ),
@@ -700,18 +621,14 @@ class _GiveawayCard extends HookConsumerWidget {
                       child: Container(
                         height: 4.h,
                         width: double.infinity,
-                        color: Colors.white.withValues(alpha: 0.08),
+                        color: const Color(0xFFF1F5F9),
                         child: FractionallySizedBox(
                           alignment: Alignment.centerLeft,
                           widthFactor: progress,
                           child: Container(
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                colors: isDeclared
-                                    ? [const Color(0xFFF59E0B), const Color(0xFFFBBF24)]
-                                    : [const Color(0xFF8B5CF6), const Color(0xFFC084FC)],
-                              ),
-                            ),
+                            color: isDeclared
+                                ? const Color(0xFFD97706)
+                                : const Color(0xFF26262B),
                           ),
                         ),
                       ),
@@ -719,27 +636,42 @@ class _GiveawayCard extends HookConsumerWidget {
 
                     SizedBox(height: 10.h),
 
-                    // 3D Tapered Action Button
-                    SizedBox(
+                    // Silver Metallic Action Button
+                    Container(
                       width: double.infinity,
                       height: 32.h,
-                      child: CustomPaint(
-                        painter: _TaperedButtonPainter(
-                          radius: 10,
-                          isAmber: isDeclared,
+                      decoration: BoxDecoration(
+                        gradient: const LinearGradient(
+                          colors: [
+                            Colors.white,
+                            Color(0xFFE5E7EB),
+                            Color(0xFFB0B5C2),
+                          ],
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
                         ),
-                        child: Center(
-                          child: Text(
-                            isDeclared
-                                ? 'View Winners'
-                                : (joined ? 'View Status' : 'Enter Giveaway'),
-                            style: GoogleFonts.poppins(
-                              color: isDeclared ? const Color(0xFF78350F) : Colors.white,
-                              fontSize: 11.sp,
-                              fontWeight: FontWeight.w800,
-                              letterSpacing: 0.2,
-                            ),
+                        borderRadius: BorderRadius.circular(8.r),
+                        border: Border.all(
+                          color: const Color(0xFF9CA3AF),
+                          width: 1.0,
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.06),
+                            blurRadius: 4,
+                            offset: const Offset(0, 2),
                           ),
+                        ],
+                      ),
+                      alignment: Alignment.center,
+                      child: Text(
+                        isDeclared
+                            ? 'View Winners'
+                            : (joined ? 'View Status' : 'Enter Giveaway'),
+                        style: GoogleFonts.poppins(
+                          color: const Color(0xFF16161A),
+                          fontSize: 11.sp,
+                          fontWeight: FontWeight.w700,
                         ),
                       ),
                     ),
@@ -755,7 +687,7 @@ class _GiveawayCard extends HookConsumerWidget {
 }
 
 // ---------------------------------------------------------------------------
-// FILTER CHIP (MATCHING DAILY TASK SCREEN)
+// FILTER CHIP
 // ---------------------------------------------------------------------------
 class _FilterChip extends StatelessWidget {
   final String label;
@@ -775,36 +707,17 @@ class _FilterChip extends StatelessWidget {
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 180),
         curve: Curves.easeInOut,
-        height: 42.h,
+        height: 38.h,
         alignment: Alignment.center,
         decoration: BoxDecoration(
-          gradient: isSelected
-              ? const LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    Color(0xFFEADBFF), // Top Milk-Lavender Gloss
-                    Color(0xFFA565FF), // Mid Rich Violet
-                    Color(0xFF6B15F6), // Vibrant Electric Violet
-                    Color(0xFF550BD0), // Deep Bottom Violet Base
-                  ],
-                  stops: [0.0, 0.30, 0.75, 1.0],
-                )
-              : null,
-          color: isSelected ? null : const Color(0xFF1E1B2C),
-          borderRadius: BorderRadius.circular(14.r),
-          border: Border.all(
-            color: isSelected
-                ? Colors.transparent
-                : Colors.white.withValues(alpha: 0.08),
-            width: 1,
-          ),
+          color: isSelected ? const Color(0xFF26262E) : Colors.transparent,
+          borderRadius: BorderRadius.circular(12.r),
           boxShadow: isSelected
               ? [
                   BoxShadow(
-                    color: const Color(0xFF6B15F6).withValues(alpha: 0.35),
-                    blurRadius: 10,
-                    offset: const Offset(0, 3),
+                    color: Colors.black.withValues(alpha: 0.12),
+                    blurRadius: 6,
+                    offset: const Offset(0, 2),
                   ),
                 ]
               : null,
@@ -813,13 +726,12 @@ class _FilterChip extends StatelessWidget {
           label,
           textAlign: TextAlign.center,
           style: GoogleFonts.poppins(
-            color: isSelected ? Colors.white : const Color(0xFF94A3B8),
-            fontSize: 13.5.sp,
-            fontWeight: isSelected ? FontWeight.w700 : FontWeight.w600,
+            color: isSelected ? Colors.white : const Color(0xFF64748B),
+            fontSize: 13.sp,
+            fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
           ),
         ),
       ),
     );
   }
 }
-

@@ -77,7 +77,7 @@ class DailyTaskScreen extends HookConsumerWidget {
         backgroundColor: Colors.white,
         body: Stack(
           children: [
-            // 1. Solid Clean White Background (Matching Home, Redeem & Offerwall Screen)
+            // 1. Clean White Background (Matching Home Screen)
             Positioned.fill(
               child: Container(
                 color: Colors.white,
@@ -87,7 +87,7 @@ class DailyTaskScreen extends HookConsumerWidget {
             // 2. Main Scrollable Feed
             Positioned.fill(
               child: RefreshIndicator(
-                color: const Color(0xFFAB31DE),
+                color: const Color(0xFF26262B),
                 backgroundColor: Colors.white,
                 edgeOffset: topPadding + 60.h,
                 onRefresh: () async {
@@ -106,183 +106,243 @@ class DailyTaskScreen extends HookConsumerWidget {
                         constraints: BoxConstraints(
                           minHeight: constraints.maxHeight,
                         ),
-                        child: Container(
-                          color: Colors.transparent,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              // Executive Top Header Bar
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // Top Bar (Back Button, "Hot Offers" Kaushan Header, History Button)
+                            Padding(
+                              padding: EdgeInsets.fromLTRB(
+                                16.w,
+                                topPadding + 8.h,
+                                16.w,
+                                10.h,
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  // Left: Back Arrow
+                                  GestureDetector(
+                                    onTap: () {
+                                      HapticFeedback.lightImpact();
+                                      AutoRouter.of(context).maybePop();
+                                    },
+                                    child: Container(
+                                      width: 40.w,
+                                      height: 40.w,
+                                      alignment: Alignment.center,
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(14.r),
+                                        border: Border.all(
+                                          color: const Color(0xFFE2E8F0),
+                                          width: 1.2,
+                                        ),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Colors.black.withValues(alpha: 0.04),
+                                            blurRadius: 8,
+                                            offset: const Offset(0, 2),
+                                          ),
+                                        ],
+                                      ),
+                                      child: Icon(
+                                        Icons.arrow_back_rounded,
+                                        color: const Color(0xFF26262B),
+                                        size: 20.sp,
+                                      ),
+                                    ),
+                                  ),
+
+                                  // Center Title: "Hot Offers" (Exact Home Screen Style)
+                                  Text(
+                                    'Hot Offers',
+                                    style: GoogleFonts.kaushanScript(
+                                      color: const Color(0xFF26262B),
+                                      fontSize: 28.sp,
+                                      fontWeight: FontWeight.w800,
+                                      letterSpacing: 0.5,
+                                    ),
+                                  ),
+
+                                  // Right: History Button
+                                  GestureDetector(
+                                    onTap: () {
+                                      HapticFeedback.lightImpact();
+                                      AutoRouter.of(context).push(
+                                        DailyTaskHistoryScreenRoute(
+                                          userId: userId,
+                                          email: email,
+                                          country: country,
+                                        ),
+                                      );
+                                    },
+                                    child: Container(
+                                      height: 40.w,
+                                      padding: EdgeInsets.symmetric(horizontal: 12.w),
+                                      decoration: BoxDecoration(
+                                        color: const Color(0xFF26262B),
+                                        borderRadius: BorderRadius.circular(14.r),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Colors.black.withValues(alpha: 0.15),
+                                            blurRadius: 8,
+                                            offset: const Offset(0, 2),
+                                          ),
+                                        ],
+                                      ),
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Icon(
+                                            Icons.history_rounded,
+                                            color: Colors.white,
+                                            size: 16.sp,
+                                          ),
+                                          SizedBox(width: 5.w),
+                                          Text(
+                                            'History',
+                                            style: GoogleFonts.poppins(
+                                              color: Colors.white,
+                                              fontSize: 12.sp,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+
+                            // Top Hot Offers Featured Hero Card (Matching Home Screen Rectangle 13 style)
+                            Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 16.w),
+                              child: _buildHomeStyleHeroCard(context, asyncOffers.value),
+                            ),
+                            SizedBox(height: 14.h),
+
+                            // Category Filter Chips
+                            if (categoriesState.value.isNotEmpty)
                               Padding(
-                                padding: EdgeInsets.fromLTRB(
-                                  16.w,
-                                  topPadding + 8.h,
-                                  16.w,
-                                  14.h,
-                                ),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    // Left: Executive Back Arrow + Title
-                                    Row(
-                                      children: [
-                                        GestureDetector(
+                                padding: EdgeInsets.only(bottom: 14.h),
+                                child: SingleChildScrollView(
+                                  scrollDirection: Axis.horizontal,
+                                  padding: EdgeInsets.symmetric(horizontal: 16.w),
+                                  physics: const BouncingScrollPhysics(),
+                                  child: Row(
+                                    children: [
+                                      _HomeStyleFilterChip(
+                                        label: 'All Tasks',
+                                        isSelected: selectedFilter.value == null ||
+                                            selectedFilter.value == '__all__',
+                                        onTap: () {
+                                          HapticFeedback.lightImpact();
+                                          selectedFilter.value = null;
+                                        },
+                                      ),
+                                      for (final category in categoriesState.value) ...[
+                                        SizedBox(width: 8.w),
+                                        _HomeStyleFilterChip(
+                                          label: category,
+                                          isSelected: selectedFilter.value == category,
                                           onTap: () {
                                             HapticFeedback.lightImpact();
-                                            AutoRouter.of(context).maybePop();
+                                            selectedFilter.value = category;
                                           },
-                                          child: Container(
-                                            width: 40.w,
-                                            height: 40.w,
-                                            alignment: Alignment.center,
-                                            decoration: BoxDecoration(
-                                              color: Colors.white,
-                                              borderRadius: BorderRadius.circular(15.r),
-                                              border: Border.all(
-                                                color: const Color(0xFFF1F5F9),
-                                                width: 1.2,
-                                              ),
-                                              boxShadow: [
-                                                BoxShadow(
-                                                  color: const Color(0xFFAB31DE).withValues(alpha: 0.08),
-                                                  blurRadius: 10,
-                                                  offset: const Offset(0, 3),
-                                                ),
-                                              ],
-                                            ),
-                                            child: Icon(
-                                              Icons.arrow_back_rounded,
-                                              color: const Color(0xFFAB31DE),
-                                              size: 22.sp,
-                                            ),
-                                          ),
-                                        ),
-                                        SizedBox(width: 12.w),
-
-                                        // Main Title: "Daily Task"
-                                        Text(
-                                          'Daily Task',
-                                          style: GoogleFonts.outfit(
-                                            color: const Color(0xFF1E1B4B),
-                                            fontSize: 18.5.sp,
-                                            fontWeight: FontWeight.w800,
-                                            letterSpacing: -0.2,
-                                          ),
                                         ),
                                       ],
-                                    ),
+                                    ],
+                                  ),
+                                ),
+                              ),
 
-                                    // Right: Executive Task History Icon Button
-                                    GestureDetector(
-                                      onTap: () {
-                                        HapticFeedback.lightImpact();
-                                        AutoRouter.of(context).push(
-                                          DailyTaskHistoryScreenRoute(
-                                            userId: userId,
-                                            email: email,
-                                            country: country,
-                                          ),
-                                        );
-                                      },
-                                      child: Container(
-                                        width: 40.w,
-                                        height: 40.w,
+                            // Section Heading with Home Screen Vertical Bar
+                            Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 16.w),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Container(
+                                        width: 4.w,
+                                        height: 18.h,
                                         decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          borderRadius: BorderRadius.circular(15.r),
-                                          border: Border.all(
-                                            color: const Color(0xFFF1F5F9),
-                                            width: 1.2,
-                                          ),
-                                          boxShadow: [
-                                            BoxShadow(
-                                              color: const Color(0xFFAB31DE).withValues(alpha: 0.08),
-                                              blurRadius: 10,
-                                              offset: const Offset(0, 3),
-                                            ),
-                                          ],
+                                          color: const Color(0xFF26262B),
+                                          borderRadius: BorderRadius.circular(2.r),
                                         ),
-                                        child: Center(
-                                          child: Icon(
-                                            Icons.history_rounded,
-                                            color: const Color(0xFFAB31DE),
-                                            size: 20.sp,
-                                          ),
+                                      ),
+                                      SizedBox(width: 8.w),
+                                      Text(
+                                        'All Tasks',
+                                        style: GoogleFonts.poppins(
+                                          color: const Color(0xFF1E1B4B),
+                                          fontSize: 16.sp,
+                                          fontWeight: FontWeight.w600,
+                                          letterSpacing: 0.2,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  if (asyncOffers.value != null)
+                                    Container(
+                                      padding: EdgeInsets.symmetric(horizontal: 9.w, vertical: 3.5.h),
+                                      decoration: BoxDecoration(
+                                        color: const Color(0xFFF1F5F9),
+                                        borderRadius: BorderRadius.circular(10.r),
+                                        border: Border.all(
+                                          color: const Color(0xFFE2E8F0),
+                                          width: 1,
+                                        ),
+                                      ),
+                                      child: Text(
+                                        '${asyncOffers.value!.length} Offers',
+                                        style: GoogleFonts.poppins(
+                                          color: const Color(0xFF475569),
+                                          fontSize: 11.sp,
+                                          fontWeight: FontWeight.w600,
                                         ),
                                       ),
                                     ),
-                                  ],
-                                ),
+                                ],
                               ),
+                            ),
+                            SizedBox(height: 12.h),
 
-                              // Executive Category Filter Chips Row (All, Popular, Sports, Education, etc.)
-                              if (categoriesState.value.isNotEmpty)
-                                Padding(
-                                  padding: EdgeInsets.only(bottom: 16.h),
-                                  child: SingleChildScrollView(
-                                    scrollDirection: Axis.horizontal,
-                                    padding: EdgeInsets.symmetric(horizontal: 16.w),
-                                    physics: const BouncingScrollPhysics(),
-                                    child: Row(
-                                      children: [
-                                        _FilterChip(
-                                          label: 'All',
-                                          isSelected: selectedFilter.value == null ||
-                                              selectedFilter.value == '__all__',
-                                          onTap: () {
-                                            HapticFeedback.lightImpact();
-                                            selectedFilter.value = null;
-                                          },
-                                        ),
-                                        for (final category in categoriesState.value) ...[
-                                          SizedBox(width: 8.w),
-                                          _FilterChip(
-                                            label: category,
-                                            isSelected: selectedFilter.value == category,
-                                            onTap: () {
-                                              HapticFeedback.lightImpact();
-                                              selectedFilter.value = category;
-                                            },
-                                          ),
-                                        ],
-                                      ],
-                                    ),
-                                  ),
-                                ),
-
-                              // Task Cards Section
-                              Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 16.w),
-                                child: () {
-                                  final asyncOffers = ref.watch(provider);
-                                  if (asyncOffers.value != null) {
-                                    return _buildTaskListSection(
-                                      context,
-                                      asyncOffers.value!,
-                                      selectedFilter.value,
-                                      loadingId,
-                                    );
-                                  }
-                                  return asyncOffers.when(
-                                    data: (offers) => _buildTaskListSection(
-                                      context,
-                                      offers,
-                                      selectedFilter.value,
-                                      loadingId,
-                                    ),
-                                    error: (_, __) => SizedBox(
-                                      height: 300.h,
-                                      child: const NoDailyTask(),
-                                    ),
-                                    loading: () => const _DailyTaskListShimmer(),
+                            // Task Cards Section
+                            Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 16.w),
+                              child: () {
+                                final asyncOffers = ref.watch(provider);
+                                if (asyncOffers.value != null) {
+                                  return _buildTaskListSection(
+                                    context,
+                                    asyncOffers.value!,
+                                    selectedFilter.value,
+                                    loadingId,
                                   );
-                                }(),
-                              ),
+                                }
+                                return asyncOffers.when(
+                                  data: (offers) => _buildTaskListSection(
+                                    context,
+                                    offers,
+                                    selectedFilter.value,
+                                    loadingId,
+                                  ),
+                                  error: (_, __) => SizedBox(
+                                    height: 300.h,
+                                    child: const NoDailyTask(),
+                                  ),
+                                  loading: () => const _DailyTaskListShimmer(),
+                                );
+                              }(),
+                            ),
 
-                              SizedBox(
-                                height: MediaQuery.of(context).padding.bottom + 30.h,
-                              ),
-                            ],
-                          ),
+                            SizedBox(
+                              height: MediaQuery.of(context).padding.bottom + 30.h,
+                            ),
+                          ],
                         ),
                       ),
                     );
@@ -292,6 +352,128 @@ class DailyTaskScreen extends HookConsumerWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildHomeStyleHeroCard(BuildContext context, List<DailyTaskModel>? offers) {
+    final totalCoins = (offers != null && offers.isNotEmpty)
+        ? offers.fold<int>(0, (sum, o) => sum + o.coins)
+        : 0;
+
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.fromLTRB(16.w, 14.h, 14.w, 14.h),
+      decoration: BoxDecoration(
+        image: const DecorationImage(
+          image: AssetImage('assets/Icons1/Rectangle 13.png'),
+          fit: BoxFit.fill,
+        ),
+        borderRadius: BorderRadius.circular(20.r),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.18),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Top Tag
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 3.h),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF26262E),
+                    borderRadius: BorderRadius.circular(8.r),
+                    border: Border.all(
+                      color: const Color(0xFF383842),
+                      width: 1,
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.local_fire_department_rounded,
+                        color: const Color(0xFFF97316),
+                        size: 12.sp,
+                      ),
+                      SizedBox(width: 4.w),
+                      Text(
+                        'Featured Tasks',
+                        style: GoogleFonts.poppins(
+                          color: Colors.white,
+                          fontSize: 9.5.sp,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(height: 8.h),
+
+                // Headline
+                Text(
+                  'Daily Refresh Offers',
+                  style: GoogleFonts.poppins(
+                    color: Colors.white,
+                    fontSize: 16.sp,
+                    fontWeight: FontWeight.w700,
+                    height: 1.15,
+                  ),
+                ),
+                SizedBox(height: 3.h),
+
+                // Subtitle
+                Text(
+                  'Complete tasks and build your rewards',
+                  style: GoogleFonts.poppins(
+                    color: const Color(0xFF9E9EA7),
+                    fontSize: 10.sp,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+                SizedBox(height: 8.h),
+
+                // Get Coins Upto Row
+                Row(
+                  children: [
+                    Text(
+                      'Get Coins Upto',
+                      style: GoogleFonts.poppins(
+                        color: Colors.white,
+                        fontSize: 9.sp,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    SizedBox(width: 5.w),
+                    _HeroCoinBadge(coins: totalCoins > 0 ? totalCoins : 500),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          SizedBox(width: 8.w),
+
+          // 3D Graphic (super_offer_3d or Frame 3)
+          Image.asset(
+            'assets/Icons1/super_offer_3d.png',
+            width: 76.w,
+            height: 76.w,
+            fit: BoxFit.contain,
+            errorBuilder: (_, __, ___) => Image.asset(
+              'assets/Icons1/Frame 3 (1).png',
+              width: 70.w,
+              height: 70.w,
+              fit: BoxFit.contain,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -321,7 +503,7 @@ class DailyTaskScreen extends HookConsumerWidget {
         child: Center(
           child: Text(
             'No tasks found for this category',
-            style: GoogleFonts.outfit(
+            style: GoogleFonts.poppins(
               color: const Color(0xFF64748B),
               fontSize: 13.5.sp,
               fontWeight: FontWeight.w500,
@@ -339,7 +521,7 @@ class DailyTaskScreen extends HookConsumerWidget {
       itemBuilder: (context, index) {
         final item = categoryFiltered[index];
         final heroTag = 'task_card_list_${item.offerId}_$index';
-        return _DailyTaskCardWidget(
+        return _HomeStyleDailyTaskCard(
           item: item,
           heroTag: heroTag,
           isLoading: loadingId.value == item.offerId,
@@ -374,14 +556,71 @@ class DailyTaskScreen extends HookConsumerWidget {
 }
 
 // ---------------------------------------------------------------------------
-// EXECUTIVE CATEGORY FILTER CHIP
+// HERO COIN BADGE (Exact Home Screen Style)
 // ---------------------------------------------------------------------------
-class _FilterChip extends StatelessWidget {
+class _HeroCoinBadge extends StatelessWidget {
+  const _HeroCoinBadge({required this.coins});
+  final int coins;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.h),
+      decoration: BoxDecoration(
+        color: const Color(0xFF26262E),
+        borderRadius: BorderRadius.circular(8.r),
+        border: Border.all(
+          color: const Color(0xFF383842),
+          width: 1,
+        ),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 11.w,
+            height: 11.w,
+            decoration: const BoxDecoration(
+              shape: BoxShape.circle,
+              gradient: LinearGradient(
+                colors: [Color(0xFFE5E7EB), Color(0xFF9CA3AF)],
+              ),
+            ),
+            padding: EdgeInsets.all(1.w),
+            child: Image.asset(
+              'assets/icons/coin.png',
+              fit: BoxFit.contain,
+              errorBuilder: (_, __, ___) => const Icon(
+                Icons.monetization_on,
+                color: Color(0xFFFBBF24),
+                size: 9,
+              ),
+            ),
+          ),
+          SizedBox(width: 4.w),
+          Text(
+            coins.formatCoins(),
+            style: GoogleFonts.poppins(
+              color: Colors.white,
+              fontSize: 9.5.sp,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
+// HOME STYLE CATEGORY FILTER CHIP
+// ---------------------------------------------------------------------------
+class _HomeStyleFilterChip extends StatelessWidget {
   final String label;
   final bool isSelected;
   final VoidCallback onTap;
 
-  const _FilterChip({
+  const _HomeStyleFilterChip({
     required this.label,
     required this.isSelected,
     required this.onTap,
@@ -397,39 +636,35 @@ class _FilterChip extends StatelessWidget {
         height: 36.h,
         padding: EdgeInsets.symmetric(horizontal: 16.w),
         decoration: BoxDecoration(
-          gradient: isSelected
-              ? const LinearGradient(
-                  colors: [
-                    Color(0xFFE39FFF),
-                    Color(0xFFAB31DE),
-                  ],
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                )
-              : null,
-          color: isSelected ? null : const Color(0xFFFAF5FF),
+          color: isSelected ? const Color(0xFF26262B) : Colors.white,
           borderRadius: BorderRadius.circular(14.r),
           border: Border.all(
-            color: isSelected ? Colors.transparent : const Color(0xFFE39FFF).withValues(alpha: 0.5),
-            width: 1,
+            color: isSelected ? const Color(0xFF26262B) : const Color(0xFFE2E8F0),
+            width: 1.2,
           ),
           boxShadow: isSelected
               ? [
                   BoxShadow(
-                    color: const Color(0xFFAB31DE).withValues(alpha: 0.25),
-                    blurRadius: 8,
-                    offset: const Offset(0, 3),
+                    color: Colors.black.withValues(alpha: 0.15),
+                    blurRadius: 6,
+                    offset: const Offset(0, 2),
                   ),
                 ]
-              : null,
+              : [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.03),
+                    blurRadius: 4,
+                    offset: const Offset(0, 1),
+                  ),
+                ],
         ),
         alignment: Alignment.center,
         child: Text(
           label,
-          style: GoogleFonts.outfit(
-            color: isSelected ? Colors.white : const Color(0xFF1E1B4B),
+          style: GoogleFonts.poppins(
+            color: isSelected ? Colors.white : const Color(0xFF26262B),
             fontSize: 12.5.sp,
-            fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
+            fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
           ),
         ),
       ),
@@ -438,15 +673,15 @@ class _FilterChip extends StatelessWidget {
 }
 
 // ---------------------------------------------------------------------------
-// EXECUTIVE WHITE DAILY TASK CARD (Exact 1-to-1 Screenshot Mockup Layout)
+// HOME STYLE DAILY TASK CARD WIDGET
 // ---------------------------------------------------------------------------
-class _DailyTaskCardWidget extends StatefulWidget {
+class _HomeStyleDailyTaskCard extends StatefulWidget {
   final DailyTaskModel item;
   final String heroTag;
   final bool isLoading;
   final VoidCallback onTap;
 
-  const _DailyTaskCardWidget({
+  const _HomeStyleDailyTaskCard({
     required this.item,
     required this.heroTag,
     required this.isLoading,
@@ -454,29 +689,29 @@ class _DailyTaskCardWidget extends StatefulWidget {
   });
 
   @override
-  State<_DailyTaskCardWidget> createState() => _DailyTaskCardWidgetState();
+  State<_HomeStyleDailyTaskCard> createState() => _HomeStyleDailyTaskCardState();
 }
 
-class _DailyTaskCardWidgetState extends State<_DailyTaskCardWidget> {
+class _HomeStyleDailyTaskCardState extends State<_HomeStyleDailyTaskCard> {
   bool _isPressed = false;
 
   Widget _buildCategoryTag(String category, bool dailyReset) {
     final cleanCat = category.toLowerCase().trim();
-    String tagText = 'Most Popular';
+    String tagText = 'Popular';
     Color bgColor = const Color(0xFFFFF7ED);
     Color borderColor = const Color(0xFFFED7AA);
     Color textColor = const Color(0xFFEA580C);
 
     if (dailyReset) {
       tagText = 'Daily Refresh';
-      bgColor = const Color(0xFFFAF5FF);
-      borderColor = const Color(0xFFE39FFF).withValues(alpha: 0.6);
-      textColor = const Color(0xFFAB31DE);
+      bgColor = const Color(0xFFF1F5F9);
+      borderColor = const Color(0xFFCBD5E1);
+      textColor = const Color(0xFF334155);
     } else if (cleanCat.contains('game') || cleanCat.contains('ludo') || cleanCat.contains('play')) {
       tagText = 'Games';
       bgColor = const Color(0xFFFEF9C3);
       borderColor = const Color(0xFFFDE047);
-      textColor = const Color(0xFFCA8A04);
+      textColor = const Color(0xFFB45309);
     } else if (cleanCat.contains('finance') || cleanCat.contains('bank') || cleanCat.contains('upi') || cleanCat.contains('pay')) {
       tagText = 'Finance';
       bgColor = const Color(0xFFEFF6FF);
@@ -489,9 +724,9 @@ class _DailyTaskCardWidgetState extends State<_DailyTaskCardWidget> {
       textColor = const Color(0xFFDB2777);
     } else if (category.isNotEmpty) {
       tagText = category.trim();
-      bgColor = const Color(0xFFFAF5FF);
-      borderColor = const Color(0xFFE39FFF).withValues(alpha: 0.5);
-      textColor = const Color(0xFFAB31DE);
+      bgColor = const Color(0xFFF8FAFC);
+      borderColor = const Color(0xFFE2E8F0);
+      textColor = const Color(0xFF475569);
     }
 
     return Container(
@@ -503,9 +738,9 @@ class _DailyTaskCardWidgetState extends State<_DailyTaskCardWidget> {
       ),
       child: Text(
         tagText,
-        style: GoogleFonts.outfit(
+        style: GoogleFonts.poppins(
           color: textColor,
-          fontSize: 9.5.sp,
+          fontSize: 9.sp,
           fontWeight: FontWeight.w700,
         ),
       ),
@@ -532,28 +767,23 @@ class _DailyTaskCardWidgetState extends State<_DailyTaskCardWidget> {
       },
       onTapCancel: () => setState(() => _isPressed = false),
       child: AnimatedScale(
-        scale: _isPressed ? 0.96 : 1.0,
+        scale: _isPressed ? 0.97 : 1.0,
         duration: const Duration(milliseconds: 120),
         curve: Curves.easeOutCubic,
         child: Container(
           margin: EdgeInsets.only(bottom: 12.h),
-          padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 10.h),
+          padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 11.h),
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.circular(20.r),
+            borderRadius: BorderRadius.circular(18.r),
             border: Border.all(
               color: const Color(0xFFF1F5F9),
               width: 1.2,
             ),
             boxShadow: [
               BoxShadow(
-                color: const Color(0xFF0F172A).withValues(alpha: 0.04),
-                blurRadius: 14,
-                offset: const Offset(0, 4),
-              ),
-              BoxShadow(
-                color: const Color(0xFFAB31DE).withValues(alpha: 0.04),
-                blurRadius: 8,
+                color: const Color(0xFF0F172A).withValues(alpha: 0.05),
+                blurRadius: 12,
                 offset: const Offset(0, 3),
               ),
             ],
@@ -561,33 +791,33 @@ class _DailyTaskCardWidgetState extends State<_DailyTaskCardWidget> {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              // 1. App / Game Logo Box
+              // 1. App Thumbnail Box
               Container(
-                width: 54.w,
-                height: 54.w,
+                width: 52.w,
+                height: 52.w,
                 decoration: BoxDecoration(
-                  color: const Color(0xFFFAF5FF),
-                  borderRadius: BorderRadius.circular(16.r),
+                  color: const Color(0xFFF8FAFC),
+                  borderRadius: BorderRadius.circular(14.r),
                   border: Border.all(
-                    color: const Color(0xFFF3E8FF),
+                    color: const Color(0xFFE2E8F0),
                     width: 1,
                   ),
                 ),
                 child: ClipRRect(
-                  borderRadius: BorderRadius.circular(16.r),
+                  borderRadius: BorderRadius.circular(13.r),
                   child: InternetImage(
                     url: item.imagePath.isNotEmpty
                         ? item.imagePath
                         : item.bannerPath,
-                    width: 54.w,
-                    height: 54.w,
+                    width: 52.w,
+                    height: 52.w,
                     fit: BoxFit.cover,
                   ),
                 ),
               ),
               SizedBox(width: 12.w),
 
-              // 2. Middle Column: Title, Subtitle & Tag Pill
+              // 2. Middle Info
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -597,11 +827,11 @@ class _DailyTaskCardWidgetState extends State<_DailyTaskCardWidget> {
                       item.offerName,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: GoogleFonts.outfit(
+                      style: GoogleFonts.poppins(
                         color: const Color(0xFF1E1B4B),
-                        fontSize: 15.sp,
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: -0.2,
+                        fontSize: 14.sp,
+                        fontWeight: FontWeight.w700,
+                        letterSpacing: -0.1,
                       ),
                     ),
                     SizedBox(height: 2.h),
@@ -609,13 +839,13 @@ class _DailyTaskCardWidgetState extends State<_DailyTaskCardWidget> {
                       subtitle,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: GoogleFonts.outfit(
+                      style: GoogleFonts.poppins(
                         color: const Color(0xFF64748B),
-                        fontSize: 11.5.sp,
+                        fontSize: 11.sp,
                         fontWeight: FontWeight.w400,
                       ),
                     ),
-                    SizedBox(height: 4.h),
+                    SizedBox(height: 5.h),
                     Wrap(
                       spacing: 6.w,
                       runSpacing: 3.h,
@@ -633,9 +863,9 @@ class _DailyTaskCardWidgetState extends State<_DailyTaskCardWidget> {
                               SizedBox(width: 2.w),
                               Text(
                                 item.rating.trim(),
-                                style: GoogleFonts.outfit(
+                                style: GoogleFonts.poppins(
                                   color: const Color(0xFF475569),
-                                  fontSize: 10.sp,
+                                  fontSize: 9.5.sp,
                                   fontWeight: FontWeight.w700,
                                 ),
                               ),
@@ -647,15 +877,15 @@ class _DailyTaskCardWidgetState extends State<_DailyTaskCardWidget> {
                             children: [
                               Icon(
                                 Icons.file_download_outlined,
-                                color: const Color(0xFF9333EA),
+                                color: const Color(0xFF26262B),
                                 size: 12.sp,
                               ),
                               SizedBox(width: 2.w),
                               Text(
                                 item.downloads.trim(),
-                                style: GoogleFonts.outfit(
+                                style: GoogleFonts.poppins(
                                   color: const Color(0xFF475569),
-                                  fontSize: 10.sp,
+                                  fontSize: 9.5.sp,
                                   fontWeight: FontWeight.w600,
                                 ),
                               ),
@@ -669,7 +899,7 @@ class _DailyTaskCardWidgetState extends State<_DailyTaskCardWidget> {
               ),
               SizedBox(width: 8.w),
 
-              // 3. Right Area: Soft Lavender Coin Badge + Small Arrow Button
+              // 3. Right: Coin Badge + Silver Action Button
               widget.isLoading
                   ? SizedBox(
                       width: 36.w,
@@ -681,15 +911,14 @@ class _DailyTaskCardWidgetState extends State<_DailyTaskCardWidget> {
                   : Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        // Soft Lavender Coin Pill Badge (Matching Screenshot)
+                        // Home Screen Metallic Coin Badge
                         Container(
-                          height: 30.h,
-                          padding: EdgeInsets.symmetric(horizontal: 10.w),
+                          padding: EdgeInsets.symmetric(horizontal: 7.w, vertical: 4.h),
                           decoration: BoxDecoration(
-                            color: const Color(0xFFFAF5FF),
-                            borderRadius: BorderRadius.circular(15.r),
+                            color: const Color(0xFF26262E),
+                            borderRadius: BorderRadius.circular(10.r),
                             border: Border.all(
-                              color: const Color(0xFFF3E8FF),
+                              color: const Color(0xFF383842),
                               width: 1,
                             ),
                           ),
@@ -698,17 +927,17 @@ class _DailyTaskCardWidgetState extends State<_DailyTaskCardWidget> {
                             children: [
                               Image.asset(
                                 'assets/icons/coin.png',
-                                width: 16.sp,
-                                height: 16.sp,
+                                width: 14.sp,
+                                height: 14.sp,
                                 fit: BoxFit.contain,
                               ),
-                              SizedBox(width: 5.w),
+                              SizedBox(width: 4.w),
                               Text(
                                 displayCoins.formatCoins(),
-                                style: GoogleFonts.outfit(
-                                  color: const Color(0xFFAB31DE),
-                                  fontSize: 13.sp,
-                                  fontWeight: FontWeight.w800,
+                                style: GoogleFonts.poppins(
+                                  color: Colors.white,
+                                  fontSize: 11.5.sp,
+                                  fontWeight: FontWeight.w700,
                                 ),
                               ),
                             ],
@@ -717,22 +946,33 @@ class _DailyTaskCardWidgetState extends State<_DailyTaskCardWidget> {
 
                         SizedBox(width: 8.w),
 
-                        // Light Purple Circle Arrow Button (Matching Screenshot)
+                        // Silver Metallic Circular Arrow Button
                         Container(
-                          width: 26.w,
-                          height: 26.w,
+                          width: 28.w,
+                          height: 28.w,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            color: const Color(0xFFFAF5FF),
-                            border: Border.all(
-                              color: const Color(0xFFF3E8FF),
-                              width: 1,
+                            gradient: const LinearGradient(
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                              colors: [
+                                Colors.white,
+                                Color(0xFFE5E7EB),
+                                Color(0xFFB0B5C2),
+                              ],
                             ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withValues(alpha: 0.16),
+                                blurRadius: 4,
+                                offset: const Offset(0, 2),
+                              ),
+                            ],
                           ),
                           child: Icon(
                             Icons.arrow_forward_rounded,
-                            color: const Color(0xFFAB31DE),
-                            size: 13.sp,
+                            color: const Color(0xFF16161A),
+                            size: 13.5.sp,
                           ),
                         ),
                       ],
@@ -746,7 +986,7 @@ class _DailyTaskCardWidgetState extends State<_DailyTaskCardWidget> {
 }
 
 // ---------------------------------------------------------------------------
-// SHIMMER SKELETON FOR DAILY TASK LIST
+// SHIMMER SKELETON
 // ---------------------------------------------------------------------------
 class _DailyTaskListShimmer extends StatelessWidget {
   const _DailyTaskListShimmer();
@@ -762,10 +1002,10 @@ class _DailyTaskListShimmer extends StatelessWidget {
         return ShimmerTag(
           child: Container(
             margin: EdgeInsets.only(bottom: 12.h),
-            height: 76.h,
+            height: 78.h,
             decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.circular(20.r),
+              borderRadius: BorderRadius.circular(18.r),
               border: Border.all(
                 color: const Color(0xFFF1F5F9),
                 width: 1.2,

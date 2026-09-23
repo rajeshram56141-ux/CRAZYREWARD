@@ -1,6 +1,4 @@
-import 'dart:ui';
 import 'package:auto_route/auto_route.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -9,119 +7,11 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../../services/cloud_functions.dart';
-import '../../../../../services/launch_url.dart';
 import '../../../../../widgets/common/custom_loading.dart';
 import '../../../../../widgets/common/custom_status_popup.dart';
-import '../../../../b_splash_stage/splash_service.dart';
-import '../../../provider/dashboard_provider.dart';
 import '../../b_invite/widgets/leaderboard_timer.dart';
 import 'model/giveaway_model.dart';
 import 'provider/giveaway_provider.dart';
-
-// Tapered 3D Button Custom Painter
-class _TaperedButtonPainter extends CustomPainter {
-  final double radius;
-  final bool isAmber;
-  final bool isGreen;
-
-  const _TaperedButtonPainter({
-    this.radius = 14.0,
-    this.isAmber = false,
-    this.isGreen = false,
-  });
-
-  Path getButtonPath(Size size) {
-    final w = size.width;
-    final h = size.height;
-    final r = radius;
-
-    final path = Path();
-    path.moveTo(r, 0);
-    path.lineTo(w - r, 0);
-    path.quadraticBezierTo(w, 0, w - 2, r * 0.7);
-    path.lineTo(w - 6, h - r * 0.7);
-    path.quadraticBezierTo(w - 7, h, w - 7 - r, h);
-    path.lineTo(7 + r, h);
-    path.quadraticBezierTo(7, h, 6, h - r * 0.7);
-    path.lineTo(2, r * 0.7);
-    path.quadraticBezierTo(0, 0, r, 0);
-    path.close();
-    return path;
-  }
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final path = getButtonPath(size);
-
-    // Drop shadow
-    final shadowColor = isAmber
-        ? const Color(0xFFB45309)
-        : (isGreen ? const Color(0xFF065F46) : const Color(0xFF24007A));
-    canvas.drawShadow(path, shadowColor.withValues(alpha: 0.65), 8.0, true);
-
-    // Fill glossy gradient
-    final rect = Rect.fromLTWH(0, 0, size.width, size.height);
-    final fillPaint = Paint()
-      ..style = PaintingStyle.fill
-      ..shader = (isAmber
-          ? const LinearGradient(
-              colors: [
-                Color(0xFFFEF3C7),
-                Color(0xFFFBBF24),
-                Color(0xFFD97706),
-                Color(0xFFB45309),
-              ],
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              stops: [0.0, 0.30, 0.75, 1.0],
-            )
-          : (isGreen
-              ? const LinearGradient(
-                  colors: [
-                    Color(0xFFD1FAE5),
-                    Color(0xFF34D399),
-                    Color(0xFF059669),
-                    Color(0xFF065F46),
-                  ],
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  stops: [0.0, 0.30, 0.75, 1.0],
-                )
-              : const LinearGradient(
-                  colors: [
-                    Color(0xFFEADBFF),
-                    Color(0xFFA565FF),
-                    Color(0xFF6B15F6),
-                    Color(0xFF550BD0),
-                  ],
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  stops: [0.0, 0.30, 0.75, 1.0],
-                ))).createShader(rect);
-
-    canvas.drawPath(path, fillPaint);
-
-    // Top rim highlight stroke
-    final borderPaint = Paint()
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.2
-      ..shader = LinearGradient(
-        colors: [
-          Colors.white.withValues(alpha: 0.65),
-          Colors.white.withValues(alpha: 0.2),
-          Colors.transparent,
-        ],
-        begin: Alignment.topCenter,
-        end: Alignment.bottomCenter,
-        stops: const [0.0, 0.45, 0.9],
-      ).createShader(rect);
-
-    canvas.drawPath(path, borderPaint);
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
-}
 
 @RoutePage()
 class GiveawayDetailScreen extends HookConsumerWidget {
@@ -169,7 +59,7 @@ class GiveawayDetailScreen extends HookConsumerWidget {
 
     if (serverTime == null) {
       return const Scaffold(
-        backgroundColor: Color(0xFF0B0416),
+        backgroundColor: Colors.white,
         body: Center(child: GlowLightingSpinner(size: 28)),
       );
     }
@@ -185,66 +75,73 @@ class GiveawayDetailScreen extends HookConsumerWidget {
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: const SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
-        statusBarIconBrightness: Brightness.light,
-        statusBarBrightness: Brightness.dark,
-        systemNavigationBarColor: Color(0xFF090314),
-        systemNavigationBarIconBrightness: Brightness.light,
+        statusBarIconBrightness: Brightness.dark,
+        statusBarBrightness: Brightness.light,
+        systemNavigationBarColor: Colors.white,
+        systemNavigationBarIconBrightness: Brightness.dark,
       ),
       child: Scaffold(
-        backgroundColor: Colors.black,
+        backgroundColor: Colors.white,
         body: Stack(
           children: [
-            // 1. Full Background Image (Matching Home Screen)
+            // Solid Executive White Background
             Positioned.fill(
-              child: Image.asset(
-                'assets/icons/bgg.png',
-                fit: BoxFit.cover,
-              ),
+              child: Container(color: Colors.white),
             ),
 
-            // 2. Deep Ambient Frosted Glass Blur Overlay
-            Positioned.fill(
-              child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
-                child: Container(
-                  color: Colors.black.withValues(alpha: 0.25),
-                ),
-              ),
-            ),
-
-            // 3. Foreground Content Area
+            // Foreground Content Area
             SafeArea(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   SizedBox(height: 8.h),
 
-                  // Top Header Bar: Back Button + "Giveaway Details" + How To Use
+                  // Top Header Bar: Back Button + "Giveaway Details"
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 16.w),
                     child: Row(
                       children: [
-                        GestureDetector(
+                        InkWell(
                           onTap: () {
                             HapticFeedback.lightImpact();
                             AutoRouter.of(context).maybePop();
                           },
-                          child: Image.asset(
-                            'assets/icons/backk.png',
-                            width: 42.w,
-                            height: 42.w,
-                            fit: BoxFit.contain,
+                          borderRadius: BorderRadius.circular(14.r),
+                          child: Container(
+                            width: 40.w,
+                            height: 40.w,
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(14.r),
+                              border: Border.all(
+                                color: const Color(0xFFE2E8F0),
+                                width: 1.2,
+                              ),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withValues(alpha: 0.04),
+                                  blurRadius: 8,
+                                  offset: const Offset(0, 2),
+                                ),
+                              ],
+                            ),
+                            child: Icon(
+                              Icons.arrow_back_rounded,
+                              color: const Color(0xFF26262B),
+                              size: 20.sp,
+                            ),
                           ),
                         ),
-                        SizedBox(width: 14.w),
+                        SizedBox(width: 12.w),
                         Expanded(
                           child: Text(
                             'Giveaway Details',
-                            style: GoogleFonts.poppins(
-                              fontSize: 18.sp,
-                              fontWeight: FontWeight.w700,
-                              color: Colors.white,
-                              letterSpacing: 0.2,
+                            style: GoogleFonts.kaushanScript(
+                              color: const Color(0xFF26262B),
+                              fontSize: 24.sp,
+                              fontWeight: FontWeight.w800,
+                              letterSpacing: 0.5,
                             ),
                           ),
                         ),
@@ -267,13 +164,17 @@ class GiveawayDetailScreen extends HookConsumerWidget {
                             width: double.infinity,
                             padding: EdgeInsets.all(14.w),
                             decoration: BoxDecoration(
-                              color: const Color(0xFF180E2E), // Exact solid dark container (no outline)
-                              borderRadius: BorderRadius.circular(22.r),
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(20.r),
+                              border: Border.all(
+                                color: const Color(0xFFE2E8F0),
+                                width: 1.2,
+                              ),
                               boxShadow: [
                                 BoxShadow(
-                                  color: Colors.black.withValues(alpha: 0.35),
-                                  blurRadius: 16,
-                                  offset: const Offset(0, 4),
+                                  color: Colors.black.withValues(alpha: 0.04),
+                                  blurRadius: 12,
+                                  offset: const Offset(0, 3),
                                 ),
                               ],
                             ),
@@ -291,11 +192,11 @@ class GiveawayDetailScreen extends HookConsumerWidget {
                                           currentGiveaway.bannerUrl,
                                           fit: BoxFit.cover,
                                           errorBuilder: (_, __, ___) => Container(
-                                            color: const Color(0xFF2E1952),
+                                            color: const Color(0xFFF1F5F9),
                                             alignment: Alignment.center,
                                             child: Icon(
                                               Icons.card_giftcard_rounded,
-                                              color: const Color(0xFFA78BFA),
+                                              color: const Color(0xFF26262B),
                                               size: 36.sp,
                                             ),
                                           ),
@@ -307,20 +208,10 @@ class GiveawayDetailScreen extends HookConsumerWidget {
                                         child: Container(
                                           padding: EdgeInsets.symmetric(horizontal: 9.w, vertical: 4.h),
                                           decoration: BoxDecoration(
-                                            gradient: LinearGradient(
-                                              colors: isDeclared
-                                                  ? [const Color(0xFFF59E0B), const Color(0xFFD97706)]
-                                                  : (isLive
-                                                      ? [const Color(0xFFE11D48), const Color(0xFFBE123C)]
-                                                      : [const Color(0xFF7C3AED), const Color(0xFF6D28D9)]),
-                                            ),
-                                            borderRadius: BorderRadius.circular(8.r),
-                                            boxShadow: [
-                                              BoxShadow(
-                                                color: Colors.black.withValues(alpha: 0.3),
-                                                blurRadius: 6,
-                                              ),
-                                            ],
+                                            color: isDeclared
+                                                ? const Color(0xFFD97706)
+                                                : (isLive ? const Color(0xFFDC2626) : const Color(0xFF26262E)),
+                                            borderRadius: BorderRadius.circular(6.r),
                                           ),
                                           child: Text(
                                             isDeclared
@@ -328,7 +219,7 @@ class GiveawayDetailScreen extends HookConsumerWidget {
                                                 : (isLive ? 'LIVE NOW' : 'UPCOMING'),
                                             style: GoogleFonts.poppins(
                                               color: Colors.white,
-                                              fontSize: 10.sp,
+                                              fontSize: 9.5.sp,
                                               fontWeight: FontWeight.w800,
                                               letterSpacing: 0.3,
                                             ),
@@ -366,7 +257,7 @@ class GiveawayDetailScreen extends HookConsumerWidget {
                                     Text(
                                       '${currentGiveaway.joinedCount} / ${currentGiveaway.totalSlots}',
                                       style: GoogleFonts.poppins(
-                                        color: const Color(0xFFC4B5FD),
+                                        color: const Color(0xFF26262B),
                                         fontSize: 12.sp,
                                         fontWeight: FontWeight.w700,
                                       ),
@@ -376,24 +267,20 @@ class GiveawayDetailScreen extends HookConsumerWidget {
 
                                 SizedBox(height: 6.h),
 
-                                // Sleek Gradient Linear Progress Bar
+                                // Linear Progress Bar
                                 ClipRRect(
                                   borderRadius: BorderRadius.circular(6.r),
                                   child: Container(
                                     height: 6.h,
                                     width: double.infinity,
-                                    color: Colors.white.withValues(alpha: 0.08),
+                                    color: const Color(0xFFF1F5F9),
                                     child: FractionallySizedBox(
                                       alignment: Alignment.centerLeft,
                                       widthFactor: progress,
                                       child: Container(
-                                        decoration: BoxDecoration(
-                                          gradient: LinearGradient(
-                                            colors: isDeclared
-                                                ? [const Color(0xFFF59E0B), const Color(0xFFFBBF24)]
-                                                : [const Color(0xFF8B5CF6), const Color(0xFFC084FC)],
-                                          ),
-                                        ),
+                                        color: isDeclared
+                                            ? const Color(0xFFD97706)
+                                            : const Color(0xFF26262B),
                                       ),
                                     ),
                                   ),
@@ -401,7 +288,7 @@ class GiveawayDetailScreen extends HookConsumerWidget {
 
                                 SizedBox(height: 18.h),
 
-                                // 3D Action Participate / Claim Button
+                                // Action Participate / Claim Button (Silver Metallic Gradient Button)
                                 () {
                                   final bool canClaimCoins = isDeclared &&
                                       currentWinner != null &&
@@ -497,73 +384,86 @@ class GiveawayDetailScreen extends HookConsumerWidget {
                                     child: AnimatedScale(
                                       scale: isButtonPressed.value ? 0.96 : 1.0,
                                       duration: const Duration(milliseconds: 100),
-                                      child: SizedBox(
+                                      child: Container(
                                         width: double.infinity,
                                         height: 48.h,
-                                        child: CustomPaint(
-                                          painter: _TaperedButtonPainter(
-                                            radius: 14,
-                                            isAmber: isDeclared && !canClaimCoins && !isRewardClaimed && !isRewardDelivered,
-                                            isGreen: (joined && !isDeclared) || canClaimCoins || isRewardClaimed || isRewardDelivered,
+                                        decoration: BoxDecoration(
+                                          gradient: const LinearGradient(
+                                            colors: [
+                                              Colors.white,
+                                              Color(0xFFE5E7EB),
+                                              Color(0xFFB0B5C2),
+                                            ],
+                                            begin: Alignment.topCenter,
+                                            end: Alignment.bottomCenter,
                                           ),
-                                          child: (isJoining.value || isClaiming.value)
-                                              ? const Center(
-                                                  child: SizedBox(
-                                                    width: 22,
-                                                    height: 22,
-                                                    child: CircularProgressIndicator(
-                                                      strokeWidth: 2.2,
-                                                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                                          borderRadius: BorderRadius.circular(14.r),
+                                          border: Border.all(
+                                            color: const Color(0xFF9CA3AF),
+                                            width: 1.0,
+                                          ),
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color: Colors.black.withValues(alpha: 0.10),
+                                              blurRadius: 8,
+                                              offset: const Offset(0, 3),
+                                            ),
+                                          ],
+                                        ),
+                                        alignment: Alignment.center,
+                                        child: (isJoining.value || isClaiming.value)
+                                            ? const Center(
+                                                child: SizedBox(
+                                                  width: 22,
+                                                  height: 22,
+                                                  child: CircularProgressIndicator(
+                                                    strokeWidth: 2.2,
+                                                    valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF16161A)),
+                                                  ),
+                                                ),
+                                              )
+                                            : Row(
+                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                children: [
+                                                  Icon(
+                                                    canClaimCoins
+                                                        ? Icons.stars_rounded
+                                                        : (isRewardClaimed || isRewardDelivered
+                                                            ? Icons.check_circle_rounded
+                                                            : (isRewardRequested
+                                                                ? Icons.hourglass_top_rounded
+                                                                : (isRewardShipped
+                                                                    ? Icons.local_shipping_rounded
+                                                                    : (isDeclared
+                                                                        ? Icons.emoji_events_rounded
+                                                                        : (joined ? Icons.check_circle_rounded : Icons.card_giftcard_rounded))))),
+                                                    color: const Color(0xFF16161A),
+                                                    size: 18.sp,
+                                                  ),
+                                                  SizedBox(width: 8.w),
+                                                  Text(
+                                                    canClaimCoins
+                                                        ? 'Claim ${currentWinner.reward.coins} Coins'
+                                                        : (isRewardClaimed
+                                                            ? 'Reward Claimed'
+                                                            : (isRewardRequested
+                                                                ? 'Reward Requested'
+                                                                : (isRewardShipped
+                                                                    ? 'Reward Shipped'
+                                                                    : (isRewardDelivered
+                                                                        ? 'Reward Delivered'
+                                                                        : (isDeclared
+                                                                            ? 'Results Declared'
+                                                                            : (joined ? 'Already Joined' : (isLive ? 'Join Giveaway' : 'Starts Soon'))))))),
+                                                    style: GoogleFonts.poppins(
+                                                      color: const Color(0xFF16161A),
+                                                      fontSize: 14.5.sp,
+                                                      fontWeight: FontWeight.w800,
+                                                      letterSpacing: 0.3,
                                                     ),
                                                   ),
-                                                )
-                                              : Row(
-                                                  mainAxisAlignment: MainAxisAlignment.center,
-                                                  children: [
-                                                    Icon(
-                                                      canClaimCoins
-                                                          ? Icons.stars_rounded
-                                                          : (isRewardClaimed || isRewardDelivered
-                                                              ? Icons.check_circle_rounded
-                                                              : (isRewardRequested
-                                                                  ? Icons.hourglass_top_rounded
-                                                                  : (isRewardShipped
-                                                                      ? Icons.local_shipping_rounded
-                                                                      : (isDeclared
-                                                                          ? Icons.emoji_events_rounded
-                                                                          : (joined ? Icons.check_circle_rounded : Icons.card_giftcard_rounded))))),
-                                                      color: (isDeclared && !canClaimCoins && !isRewardClaimed && !isRewardDelivered)
-                                                          ? const Color(0xFF78350F)
-                                                          : Colors.white,
-                                                      size: 18.sp,
-                                                    ),
-                                                    SizedBox(width: 8.w),
-                                                    Text(
-                                                      canClaimCoins
-                                                          ? 'Claim ${currentWinner.reward.coins} Coins'
-                                                          : (isRewardClaimed
-                                                              ? 'Reward Claimed'
-                                                              : (isRewardRequested
-                                                                  ? 'Reward Requested'
-                                                                  : (isRewardShipped
-                                                                      ? 'Reward Shipped'
-                                                                      : (isRewardDelivered
-                                                                          ? 'Reward Delivered'
-                                                                          : (isDeclared
-                                                                              ? 'Results Declared'
-                                                                              : (joined ? 'Already Joined' : (isLive ? 'Join Giveaway' : 'Starts Soon'))))))),
-                                                      style: GoogleFonts.poppins(
-                                                        color: (isDeclared && !canClaimCoins && !isRewardClaimed && !isRewardDelivered)
-                                                            ? const Color(0xFF78350F)
-                                                            : Colors.white,
-                                                        fontSize: 15.sp,
-                                                        fontWeight: FontWeight.w800,
-                                                        letterSpacing: 0.3,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                        ),
+                                                ],
+                                              ),
                                       ),
                                     ),
                                   );
@@ -579,13 +479,17 @@ class GiveawayDetailScreen extends HookConsumerWidget {
                             width: double.infinity,
                             padding: EdgeInsets.all(16.w),
                             decoration: BoxDecoration(
-                              color: const Color(0xFF180E2E), // Exact solid dark container (no outline)
+                              color: Colors.white,
                               borderRadius: BorderRadius.circular(20.r),
+                              border: Border.all(
+                                color: const Color(0xFFE2E8F0),
+                                width: 1.2,
+                              ),
                               boxShadow: [
                                 BoxShadow(
-                                  color: Colors.black.withValues(alpha: 0.35),
-                                  blurRadius: 14,
-                                  offset: const Offset(0, 4),
+                                  color: Colors.black.withValues(alpha: 0.04),
+                                  blurRadius: 10,
+                                  offset: const Offset(0, 3),
                                 ),
                               ],
                             ),
@@ -595,18 +499,18 @@ class GiveawayDetailScreen extends HookConsumerWidget {
                                 Text(
                                   currentGiveaway.title,
                                   style: GoogleFonts.poppins(
-                                    color: Colors.white,
+                                    color: const Color(0xFF26262B),
                                     fontSize: 16.sp,
                                     fontWeight: FontWeight.w700,
                                   ),
                                 ),
-                                SizedBox(height: 8.h),
+                                SizedBox(height: 6.h),
                                 if (currentGiveaway.description.isNotEmpty) ...[
                                   Text(
                                     currentGiveaway.description,
                                     style: GoogleFonts.poppins(
-                                      color: const Color(0xFFCBD5E1),
-                                      fontSize: 11.5.sp,
+                                      color: const Color(0xFF64748B),
+                                      fontSize: 12.sp,
                                       height: 1.4,
                                     ),
                                   ),
@@ -618,21 +522,25 @@ class GiveawayDetailScreen extends HookConsumerWidget {
                                   Container(
                                     padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
                                     decoration: BoxDecoration(
-                                      color: Colors.white.withValues(alpha: 0.06),
+                                      color: const Color(0xFFF8FAFC),
                                       borderRadius: BorderRadius.circular(12.r),
+                                      border: Border.all(
+                                        color: const Color(0xFFE2E8F0),
+                                        width: 1,
+                                      ),
                                     ),
                                     child: Row(
                                       children: [
                                         Icon(
                                           Icons.timer_outlined,
-                                          color: const Color(0xFFA78BFA),
+                                          color: const Color(0xFF26262B),
                                           size: 16.sp,
                                         ),
                                         SizedBox(width: 8.w),
                                         Text(
                                           isLive ? 'Ends in: ' : 'Starts in: ',
                                           style: GoogleFonts.poppins(
-                                            color: const Color(0xFF94A3B8),
+                                            color: const Color(0xFF64748B),
                                             fontSize: 12.sp,
                                             fontWeight: FontWeight.w500,
                                           ),
@@ -659,13 +567,26 @@ class GiveawayDetailScreen extends HookConsumerWidget {
 
                           if (isDeclared) ...[
                             SizedBox(height: 20.h),
-                            Text(
-                              'Winners',
-                              style: GoogleFonts.poppins(
-                                color: Colors.white,
-                                fontSize: 16.sp,
-                                fontWeight: FontWeight.w700,
-                              ),
+                            Row(
+                              children: [
+                                Container(
+                                  width: 4.w,
+                                  height: 16.h,
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xFF26262B),
+                                    borderRadius: BorderRadius.circular(2.r),
+                                  ),
+                                ),
+                                SizedBox(width: 8.w),
+                                Text(
+                                  'Winners',
+                                  style: GoogleFonts.poppins(
+                                    color: const Color(0xFF26262B),
+                                    fontSize: 15.sp,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                              ],
                             ),
                             SizedBox(height: 12.h),
                             _buildWinnersSection(ref, currentGiveaway.id),
@@ -716,13 +637,26 @@ class GiveawayDetailScreen extends HookConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          'Prizepool',
-          style: GoogleFonts.poppins(
-            color: Colors.white,
-            fontSize: 16.sp,
-            fontWeight: FontWeight.w700,
-          ),
+        Row(
+          children: [
+            Container(
+              width: 4.w,
+              height: 16.h,
+              decoration: BoxDecoration(
+                color: const Color(0xFF26262B),
+                borderRadius: BorderRadius.circular(2.r),
+              ),
+            ),
+            SizedBox(width: 8.w),
+            Text(
+              'Prizepool',
+              style: GoogleFonts.poppins(
+                color: const Color(0xFF26262B),
+                fontSize: 15.sp,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ],
         ),
         SizedBox(height: 12.h),
         GridView.builder(
@@ -742,16 +676,19 @@ class GiveawayDetailScreen extends HookConsumerWidget {
             final name = item['name'] as String? ?? '';
             final rewardStr = item['reward'] as String;
             final imageUrl = item['image'] as String? ?? '';
-            final isTop = rank == 1;
 
             return Container(
               padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 8.h),
               decoration: BoxDecoration(
-                color: const Color(0xFF180E2E), // Solid dark container
+                color: Colors.white,
                 borderRadius: BorderRadius.circular(14.r),
+                border: Border.all(
+                  color: const Color(0xFFE2E8F0),
+                  width: 1.2,
+                ),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.25),
+                    color: Colors.black.withValues(alpha: 0.03),
                     blurRadius: 6,
                     offset: const Offset(0, 2),
                   ),
@@ -759,20 +696,20 @@ class GiveawayDetailScreen extends HookConsumerWidget {
               ),
               child: Row(
                 children: [
-                  // Rank Number / Badge
+                  // Rank Number / Dark Badge
                   Container(
-                    width: 22.w,
-                    height: 22.w,
+                    width: 24.w,
+                    height: 24.w,
                     decoration: BoxDecoration(
-                      color: isTop ? const Color(0xFFF59E0B) : const Color(0xFF7C3AED),
+                      color: const Color(0xFF26262E),
                       borderRadius: BorderRadius.circular(6.r),
                     ),
                     alignment: Alignment.center,
                     child: Text(
-                      '$rank',
+                      '#$rank',
                       style: GoogleFonts.poppins(
                         color: Colors.white,
-                        fontSize: 11.5.sp,
+                        fontSize: 10.sp,
                         fontWeight: FontWeight.w800,
                       ),
                     ),
@@ -801,7 +738,7 @@ class GiveawayDetailScreen extends HookConsumerWidget {
                       width: 26.w,
                       height: 26.w,
                       decoration: BoxDecoration(
-                        color: const Color(0xFF2E1952),
+                        color: const Color(0xFFF1F5F9),
                         borderRadius: BorderRadius.circular(6.r),
                       ),
                       alignment: Alignment.center,
@@ -827,7 +764,7 @@ class GiveawayDetailScreen extends HookConsumerWidget {
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: GoogleFonts.poppins(
-                              color: Colors.white,
+                              color: const Color(0xFF26262B),
                               fontSize: 11.5.sp,
                               fontWeight: FontWeight.w700,
                             ),
@@ -837,9 +774,9 @@ class GiveawayDetailScreen extends HookConsumerWidget {
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: GoogleFonts.poppins(
-                              color: const Color(0xFFC4B5FD),
+                              color: const Color(0xFF64748B),
                               fontSize: 10.sp,
-                              fontWeight: FontWeight.w600,
+                              fontWeight: FontWeight.w500,
                             ),
                           ),
                         ] else ...[
@@ -848,7 +785,7 @@ class GiveawayDetailScreen extends HookConsumerWidget {
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: GoogleFonts.poppins(
-                              color: Colors.white,
+                              color: const Color(0xFF26262B),
                               fontSize: 11.5.sp,
                               fontWeight: FontWeight.w700,
                             ),
@@ -884,12 +821,16 @@ class GiveawayDetailScreen extends HookConsumerWidget {
             width: double.infinity,
             padding: EdgeInsets.all(14.w),
             decoration: BoxDecoration(
-              color: const Color(0xFF180E2E),
+              color: const Color(0xFFF8FAFC),
               borderRadius: BorderRadius.circular(16.r),
+              border: Border.all(
+                color: const Color(0xFFE2E8F0),
+                width: 1,
+              ),
             ),
             child: Text(
               'No winners declared yet.',
-              style: GoogleFonts.poppins(color: const Color(0xFF94A3B8), fontSize: 12.sp),
+              style: GoogleFonts.poppins(color: const Color(0xFF64748B), fontSize: 12.sp),
             ),
           );
         }
@@ -911,34 +852,33 @@ class GiveawayDetailScreen extends HookConsumerWidget {
 
             switch (w.status) {
               case GiveawayWinnerStatus.claimed:
-                statusBg = const Color(0xFF065F46).withValues(alpha: 0.35);
-                statusText = const Color(0xFF34D399);
+                statusBg = const Color(0xFFF0FDF4);
+                statusText = const Color(0xFF16A34A);
                 statusLabel = 'Claimed';
                 break;
               case GiveawayWinnerStatus.pending:
-                statusBg = const Color(0xFFB45309).withValues(alpha: 0.35);
-                statusText = const Color(0xFFFBBF24);
+                statusBg = const Color(0xFFFEF3C7);
+                statusText = const Color(0xFFD97706);
                 statusLabel = isSelf ? 'Tap Claim' : 'Pending';
                 break;
               case GiveawayWinnerStatus.shipped:
-                statusBg = const Color(0xFF0E7490).withValues(alpha: 0.35);
-                statusText = const Color(0xFF38BDF8);
+                statusBg = const Color(0xFFF0F9FF);
+                statusText = const Color(0xFF0284C7);
                 statusLabel = 'Shipped';
                 break;
               case GiveawayWinnerStatus.delivered:
-                statusBg = const Color(0xFF065F46).withValues(alpha: 0.35);
-                statusText = const Color(0xFF34D399);
+                statusBg = const Color(0xFFF0FDF4);
+                statusText = const Color(0xFF16A34A);
                 statusLabel = 'Delivered';
                 break;
               case GiveawayWinnerStatus.cancelled:
-                statusBg = const Color(0xFF991B1B).withValues(alpha: 0.35);
-                statusText = const Color(0xFFF87171);
+                statusBg = const Color(0xFFFEF2F2);
+                statusText = const Color(0xFFDC2626);
                 statusLabel = 'Cancelled';
                 break;
               case GiveawayWinnerStatus.requested:
-              default:
-                statusBg = const Color(0xFF3730A3).withValues(alpha: 0.35);
-                statusText = const Color(0xFFA5B4FC);
+                statusBg = const Color(0xFFF1F5F9);
+                statusText = const Color(0xFF475569);
                 statusLabel = 'Requested';
                 break;
             }
@@ -946,23 +886,28 @@ class GiveawayDetailScreen extends HookConsumerWidget {
             return Container(
               padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 10.h),
               decoration: BoxDecoration(
-                color: isSelf
-                    ? const Color(0xFF281845)
-                    : const Color(0xFF180E2E),
+                color: Colors.white,
                 borderRadius: BorderRadius.circular(16.r),
-                border: isSelf
-                    ? Border.all(
-                        color: const Color(0xFF8B5CF6).withValues(alpha: 0.5),
-                        width: 1,
-                      )
-                    : null,
+                border: Border.all(
+                  color: isSelf
+                      ? const Color(0xFF26262B)
+                      : const Color(0xFFE2E8F0),
+                  width: isSelf ? 1.4 : 1.2,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.03),
+                    blurRadius: 6,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
               ),
               child: Row(
                 children: [
                   Text(
                     '#$rank',
                     style: GoogleFonts.poppins(
-                      color: const Color(0xFFFBBF24),
+                      color: const Color(0xFF26262B),
                       fontSize: 13.sp,
                       fontWeight: FontWeight.w800,
                     ),
@@ -971,15 +916,15 @@ class GiveawayDetailScreen extends HookConsumerWidget {
                   Container(
                     width: 28.w,
                     height: 28.w,
-                    decoration: BoxDecoration(
-                      color: isSelf ? const Color(0xFF9333EA) : const Color(0xFF7C3AED),
+                    decoration: const BoxDecoration(
+                      color: Color(0xFF26262E),
                       shape: BoxShape.circle,
                     ),
                     alignment: Alignment.center,
                     child: Icon(
                       Icons.emoji_events_rounded,
                       color: Colors.white,
-                      size: 16.sp,
+                      size: 15.sp,
                     ),
                   ),
                   SizedBox(width: 8.w),
@@ -998,7 +943,7 @@ class GiveawayDetailScreen extends HookConsumerWidget {
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: GoogleFonts.poppins(
-                            color: isSelf ? const Color(0xFFDDD6FE) : Colors.white,
+                            color: const Color(0xFF26262B),
                             fontSize: 12.sp,
                             fontWeight: FontWeight.w600,
                           ),
@@ -1006,9 +951,9 @@ class GiveawayDetailScreen extends HookConsumerWidget {
                         Text(
                           w.reward.displayReward,
                           style: GoogleFonts.poppins(
-                            color: const Color(0xFFC4B5FD),
+                            color: const Color(0xFF64748B),
                             fontSize: 11.sp,
-                            fontWeight: FontWeight.w600,
+                            fontWeight: FontWeight.w500,
                           ),
                         ),
                       ],

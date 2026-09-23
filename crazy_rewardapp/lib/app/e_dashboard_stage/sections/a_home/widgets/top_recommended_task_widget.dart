@@ -13,6 +13,8 @@ import '../offerwall/provider/offerwall_manager.dart';
 import '../offerwall/provider/offerwall_provider.dart';
 import 'package:lottie/lottie.dart';
 import '../../../../../widgets/common/custom_status_popup.dart';
+import 'surveys_section.dart';
+import 'daily_checkin_sheet.dart';
 
 class TopRecommendedTaskWidget extends StatelessWidget {
   const TopRecommendedTaskWidget({
@@ -20,6 +22,9 @@ class TopRecommendedTaskWidget extends StatelessWidget {
     required this.userId,
     required this.email,
     required this.country,
+    this.streak = 0,
+    this.streakClaimed = false,
+    this.coins = 0,
     this.dailyChallengeWidget,
     this.quickShortcutGridWidget,
   });
@@ -27,102 +32,275 @@ class TopRecommendedTaskWidget extends StatelessWidget {
   final String userId;
   final String email;
   final String country;
+  final int streak;
+  final bool streakClaimed;
+  final double coins;
   final Widget? dailyChallengeWidget;
   final Widget? quickShortcutGridWidget;
 
   @override
   Widget build(BuildContext context) {
+    final bool hideDiamondCatch = SplashService.isScreenHidden('diamondCatch');
     final bool hidePlayGames = SplashService.isScreenHidden('playGames');
     final bool hideSuperOffer = SplashService.isScreenHidden('superOffer');
     final bool hideBattleArena = SplashService.isScreenHidden('battleArena');
     final bool hideWatchAndEarn = SplashService.isScreenHidden('watchAndEarn');
+    final bool hideOfferwall = SplashService.isScreenHidden('offerwall');
 
-    if (hidePlayGames && hideSuperOffer && hideBattleArena && hideWatchAndEarn) {
+    if (hideDiamondCatch && hidePlayGames && hideSuperOffer && hideBattleArena && hideWatchAndEarn && hideOfferwall) {
       return const SizedBox.shrink();
     }
 
     return Column(
       children: [
-        // 1. Top Slanted Pair: Crazyreward (Left) & Super Offer (Right - Super Mission)
-        if (!hidePlayGames && !hideSuperOffer)
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16.w),
-            child: _LeftToRightShimmerSheen(
-              child: Row(
-                children: [
-                  Expanded(
-                    child: _buildCrazyrewardCard(context),
-                  ),
-                  SizedBox(width: 12.w),
-                  Expanded(
-                    child: _buildMegaOfferCard(context),
-                  ),
-                ],
-              ),
-            ),
-          )
-        else if (!hidePlayGames)
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16.w),
-            child: _buildCrazyrewardCard(context),
-          )
-        else if (!hideSuperOffer)
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16.w),
-            child: _buildMegaOfferCard(context),
-          ),
-
-        // 2. Daily Challenge & Quick Shortcut Grid (Positioned JUST below Super Mission)
-        if (dailyChallengeWidget != null) ...[
-          SizedBox(height: 14.h),
-          dailyChallengeWidget!,
-        ],
-        if (quickShortcutGridWidget != null) ...[
-          SizedBox(height: 8.h),
-          quickShortcutGridWidget!,
-        ],
-
-        // 3. Battle Arena Card
-        if (!hideBattleArena) ...[
-          SizedBox(height: 12.h),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16.w),
-            child: _buildBattleArenaCard(context),
-          ),
-        ],
-
-        // 3. Admin PlayTime Banner Card (Positioned directly below Battle Arena)
-        if (SplashService.playtimeConfig['enabled'] == true) ...[
-          SizedBox(height: 16.h),
-          _PlayTimeBannerWidget(userId: userId, email: email),
-        ],
-
-        // 4. New Slanted Pair below PlayTime: Play Games (Left) & Watch Video (Right)
-        if (!hidePlayGames || !hideWatchAndEarn) ...[
-          SizedBox(height: 44.h),
+        // ================= 1. REGULAR OFFERS (2x2 GRID) =================
+        if (!hidePlayGames || !hideDiamondCatch || !hideSuperOffer || !hideBattleArena || !hideOfferwall) ...[
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 16.w),
             child: Row(
               children: [
-                if (!hidePlayGames)
-                  Expanded(
-                    child: _buildPlayGamesSlantedCard(context),
+                Container(
+                  width: 4.w,
+                  height: 18.h,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF1E1B4B),
+                    borderRadius: BorderRadius.circular(2.r),
                   ),
-                if (!hidePlayGames && !hideWatchAndEarn)
-                  SizedBox(width: 12.w),
-                if (!hideWatchAndEarn)
-                  Expanded(
-                    child: _buildWatchVideoSlantedCard(context),
+                ),
+                SizedBox(width: 8.w),
+                Text(
+                  'Regular Offers',
+                  style: GoogleFonts.kaushanScript(
+                    color: const Color(0xFF26262B),
+                    fontSize: 22.sp,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: 0.5,
                   ),
+                ),
               ],
             ),
           ),
+          SizedBox(height: 12.h),
+
+          // Regular Offers 2x2 Grid
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16.w),
+            child: Column(
+              children: [
+                // Top Row: Play Games & Super Offers
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: _buildRegularPlayGamesCard(context),
+                    ),
+                    SizedBox(width: 12.w),
+                    Expanded(
+                      child: _buildRegularSuperOffersCard(context),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 12.h),
+                // Bottom Row: Battle Quiz & Offerwalls
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: _buildRegularBattleQuizCard(context),
+                    ),
+                    SizedBox(width: 12.w),
+                    Expanded(
+                      child: _buildRegularOfferwallsCard(context),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          SizedBox(height: 20.h),
         ],
+
+        // ================= 2. DAILY CHALLENGE & SURVEYS =================
+        if (dailyChallengeWidget != null) ...[
+          dailyChallengeWidget!,
+          SizedBox(height: 18.h),
+          SurveysSection(
+            userId: userId,
+            email: email,
+            country: country,
+          ),
+          SizedBox(height: 20.h),
+        ],
+
+        // ================= 3. ALL OFFERS (2x2 GRID) =================
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 16.w),
+          child: Row(
+            children: [
+              Container(
+                width: 4.w,
+                height: 18.h,
+                decoration: BoxDecoration(
+                  color: const Color(0xFF1E1B4B),
+                  borderRadius: BorderRadius.circular(2.r),
+                ),
+              ),
+              SizedBox(width: 8.w),
+              Text(
+                'All Offers',
+                style: GoogleFonts.kaushanScript(
+                  color: const Color(0xFF26262B),
+                  fontSize: 22.sp,
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: 0.5,
+                ),
+              ),
+            ],
+          ),
+        ),
+        SizedBox(height: 12.h),
+
+        // All Offers 2x2 Grid
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 16.w),
+          child: Column(
+            children: [
+              // Top Row: Watch & Earn (Left) & Play & Earn (Right)
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: _buildWatchAndEarnCard(context),
+                  ),
+                  SizedBox(width: 12.w),
+                  Expanded(
+                    child: _buildPlayAndEarnCard(context),
+                  ),
+                ],
+              ),
+              SizedBox(height: 12.h),
+              // Bottom Row: Daily Check-In (Left) & Read & Earn (Right)
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: _buildDailyCheckInCard(context),
+                  ),
+                  SizedBox(width: 12.w),
+                  Expanded(
+                    child: _buildReadAndEarnCard(context),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+        SizedBox(height: 24.h),
+
+        // 4. PlayTime Banner Card (Positioned directly below All Offers)
+        _PlayTimeBannerWidget(userId: userId, email: email),
+        SizedBox(height: 24.h),
       ],
     );
   }
 
-  Widget _buildMegaOfferCard(BuildContext context) {
+  // ================= 1. REGULAR OFFERS (2x2 GRID CARDS) =================
+
+  /// Card 1 (Top-Left): Play Games (Connected to Play Games / Diamond Catch)
+  Widget _buildRegularPlayGamesCard(BuildContext context) {
+    return _PopScaleButton(
+      scaleDown: 0.95,
+      onTap: () {
+        HapticFeedback.lightImpact();
+        if (!SplashService.isScreenEnabled('diamondCatch')) {
+          _showUpcomingPopup(
+            context,
+            title: 'Diamond Catch Coming Soon!',
+            message: 'Diamond Catch feature is currently under active development and will be available very soon.',
+          );
+          return;
+        }
+        final config = SplashService.superOfferConfig;
+        AutoRouter.of(context).push(
+          DiamondCatchScreenRoute(
+            userId: userId,
+            installGems: (config['installGems'] as num?)?.toInt() ?? 2,
+            gameGems: (config['gameGems'] as num?)?.toInt() ?? 1,
+            dailyGemsForInstall: (config['dailyGemsForInstall'] as num?)?.toInt() ?? 10,
+            gemsRequired: (config['gemsRequired'] as num?)?.toInt() ?? 0,
+          ),
+        );
+      },
+      child: Container(
+        height: 142.h,
+        width: double.infinity,
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/Icons1/Group 78 (1).png'),
+            fit: BoxFit.fill,
+          ),
+        ),
+        child: Stack(
+          children: [
+            // Top Details (Title & Subtitle) - Centered
+            Align(
+              alignment: Alignment.topCenter,
+              child: Padding(
+                padding: EdgeInsets.only(top: 14.h, left: 6.w, right: 6.w),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Play Games',
+                      textAlign: TextAlign.center,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: GoogleFonts.poppins(
+                        color: Colors.white,
+                        fontSize: 14.5.sp,
+                        fontWeight: FontWeight.w700,
+                        height: 1.15,
+                      ),
+                    ),
+                    SizedBox(height: 3.h),
+                    Text(
+                      '& Win Coins',
+                      textAlign: TextAlign.center,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: GoogleFonts.poppins(
+                        color: const Color(0xFFD1D5DB),
+                        fontSize: 10.sp,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            // Bottom 3D Controller Image (Properly scaled & nestled in circular glow)
+            Positioned(
+              bottom: 8.h,
+              left: 0,
+              right: 0,
+              child: Center(
+                child: Image.asset(
+                  'assets/Icons1/pngtree-controller-3d-illustration-png-image_11477416 1 (1).png',
+                  width: 72.w,
+                  height: 54.h,
+                  fit: BoxFit.contain,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// Card 2 (Top-Right): Super Offers (Connected to Super Offer)
+  Widget _buildRegularSuperOffersCard(BuildContext context) {
     return _PopScaleButton(
       scaleDown: 0.95,
       onTap: () {
@@ -140,240 +318,368 @@ class TopRecommendedTaskWidget extends StatelessWidget {
         );
       },
       child: Container(
-        height: 148.h,
+        height: 142.h,
         width: double.infinity,
-        clipBehavior: Clip.antiAlias,
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              const Color(0xFFEC4899).withValues(alpha: 0.22),
-              const Color(0xFFF472B6).withValues(alpha: 0.08),
-              Colors.white.withValues(alpha: 0.0),
-            ],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/Icons1/Group 78 (1).png'),
+            fit: BoxFit.fill,
           ),
-          borderRadius: BorderRadius.circular(22.r),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.06),
-              blurRadius: 16,
-              offset: const Offset(0, 4),
-            ),
-          ],
         ),
         child: Stack(
-          clipBehavior: Clip.antiAlias,
           children: [
-            // Bottom Gradient Fade Overlay
-            Positioned(
-              left: 0,
-              right: 0,
-              bottom: 0,
-              height: 55.h,
-              child: IgnorePointer(
-                child: Container(
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [
-                        Colors.white.withValues(alpha: 0.0),
-                        Colors.white.withValues(alpha: 0.45),
-                        Colors.white.withValues(alpha: 0.85),
-                      ],
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
+            Align(
+              alignment: Alignment.topCenter,
+              child: Padding(
+                padding: EdgeInsets.only(top: 14.h, left: 6.w, right: 6.w),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Super Offers',
+                      textAlign: TextAlign.center,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: GoogleFonts.poppins(
+                        color: Colors.white,
+                        fontSize: 14.5.sp,
+                        fontWeight: FontWeight.w700,
+                        height: 1.15,
+                      ),
                     ),
-                  ),
+                    SizedBox(height: 3.h),
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          'Get upto 500',
+                          textAlign: TextAlign.center,
+                          style: GoogleFonts.poppins(
+                            color: const Color(0xFFD1D5DB),
+                            fontSize: 10.sp,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                        SizedBox(width: 4.w),
+                        Image.asset(
+                          'assets/icons/coin.png',
+                          width: 11.w,
+                          height: 11.w,
+                          fit: BoxFit.contain,
+                          errorBuilder: (_, __, ___) => const Icon(
+                            Icons.monetization_on,
+                            color: Color(0xFFFBBF24),
+                            size: 11,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
               ),
             ),
+            // Bottom 3D Super Offer Treasure Box Icon
+            Positioned(
+              bottom: 2.h,
+              left: 0,
+              right: 0,
+              child: Center(
+                child: Image.asset(
+                  'assets/Icons1/super_offer_3d.png',
+                  width: 92.w,
+                  height: 72.h,
+                  fit: BoxFit.contain,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 
-            // Top Details (Title & Subtitle)
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 14.h),
+  /// Card 3 (Bottom-Left): Battle Quiz (Connected to Battle Arena)
+  Widget _buildRegularBattleQuizCard(BuildContext context) {
+    return _PopScaleButton(
+      scaleDown: 0.95,
+      onTap: () {
+        HapticFeedback.lightImpact();
+        if (!SplashService.isScreenEnabled('battleArena')) {
+          _showUpcomingPopup(
+            context,
+            title: 'Battle Arena Coming Soon!',
+            message: 'Battle Arena feature is currently under active development and will be available very soon.',
+          );
+          return;
+        }
+        AutoRouter.of(context).push(
+          BattleArenaSplashScreenRoute(userId: userId, email: email),
+        );
+      },
+      child: Container(
+        height: 142.h,
+        width: double.infinity,
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/Icons1/Group 78 (1).png'),
+            fit: BoxFit.fill,
+          ),
+        ),
+        child: Stack(
+          children: [
+            Align(
+              alignment: Alignment.topCenter,
+              child: Padding(
+                padding: EdgeInsets.only(top: 14.h, left: 6.w, right: 6.w),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Battle Quiz',
+                      textAlign: TextAlign.center,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: GoogleFonts.poppins(
+                        color: Colors.white,
+                        fontSize: 14.5.sp,
+                        fontWeight: FontWeight.w700,
+                        height: 1.15,
+                      ),
+                    ),
+                    SizedBox(height: 3.h),
+                    Text(
+                      'Complete & Win',
+                      textAlign: TextAlign.center,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: GoogleFonts.poppins(
+                        color: const Color(0xFFD1D5DB),
+                        fontSize: 10.sp,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            // Bottom 3D Battle Icon Image
+            Positioned(
+              bottom: 8.h,
+              left: 0,
+              right: 0,
+              child: Center(
+                child: Image.asset(
+                  'assets/Icons1/battle-3d-icon-png-download-11623292 3.png',
+                  width: 72.w,
+                  height: 54.h,
+                  fit: BoxFit.contain,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// Card 4 (Bottom-Right): Offerwalls (Connected to Offerwalls)
+  Widget _buildRegularOfferwallsCard(BuildContext context) {
+    return _PopScaleButton(
+      scaleDown: 0.95,
+      onTap: () {
+        HapticFeedback.lightImpact();
+        if (!SplashService.isScreenEnabled('offerwall')) {
+          _showUpcomingPopup(
+            context,
+            title: 'Offerwalls Coming Soon!',
+            message: 'Offerwalls feature is currently under active development and will be available very soon.',
+          );
+          return;
+        }
+        final taskOffers = OfferwallManager.getOffersByCategory(category: OfferwallCategory.task);
+        AutoRouter.of(context).push(
+          OfferwallScreenRoute(
+            userId: userId,
+            offerwallList: taskOffers,
+            title: 'task-partner',
+            email: email,
+          ),
+        );
+      },
+      child: Container(
+        height: 142.h,
+        width: double.infinity,
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/Icons1/Group 78 (1).png'),
+            fit: BoxFit.fill,
+          ),
+        ),
+        child: Stack(
+          children: [
+            Align(
+              alignment: Alignment.topCenter,
+              child: Padding(
+                padding: EdgeInsets.only(top: 14.h, left: 6.w, right: 6.w),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Offerwalls',
+                      textAlign: TextAlign.center,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: GoogleFonts.poppins(
+                        color: Colors.white,
+                        fontSize: 14.5.sp,
+                        fontWeight: FontWeight.w700,
+                        height: 1.15,
+                      ),
+                    ),
+                    SizedBox(height: 3.h),
+                    Text(
+                      'Complete Tasks',
+                      textAlign: TextAlign.center,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: GoogleFonts.poppins(
+                        color: const Color(0xFFD1D5DB),
+                        fontSize: 10.sp,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            // Bottom 3D Shield/Task Icon Image
+            Positioned(
+              bottom: 8.h,
+              left: 0,
+              right: 0,
+              child: Center(
+                child: Image.asset(
+                  'assets/Icons1/pngtree-d-blue-shield-with-check-mark-in-orange-circle-icon-security-png-image_16822296 1.png',
+                  width: 72.w,
+                  height: 54.h,
+                  fit: BoxFit.contain,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // ================= 2. ALL OFFERS (2x2 GRID CARDS) =================
+
+  /// Card 1 (Top-Left): Watch & Earn (Connected to Watch Video)
+  Widget _buildWatchAndEarnCard(BuildContext context) {
+    return _PopScaleButton(
+      scaleDown: 0.95,
+      onTap: () {
+        HapticFeedback.lightImpact();
+        if (!SplashService.isScreenEnabled('watchAndEarn')) {
+          _showUpcomingPopup(
+            context,
+            title: 'Watch & Earn Coming Soon!',
+            message: 'Watch & Earn feature is currently under active development and will be available very soon.',
+          );
+          return;
+        }
+        AutoRouter.of(context).push(
+          WatchVideoScreenRoute(
+            email: email,
+            userId: userId,
+            country: country,
+          ),
+        );
+      },
+      child: Container(
+        height: 132.h,
+        width: double.infinity,
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/Icons1/Frame 24 (3).png'),
+            fit: BoxFit.fill,
+          ),
+        ),
+        child: Stack(
+          children: [
+            // Top-Left Coin Pill & Subtitle
+            Positioned(
+              top: 10.h,
+              left: 11.w,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text(
-                    'Super Offer',
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: GoogleFonts.poppins(
-                      color: const Color(0xFF1E1B4B),
-                      fontSize: 14.sp,
-                      fontWeight: FontWeight.w600,
-                      letterSpacing: 0.2,
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.5.h),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withValues(alpha: 0.16),
+                      borderRadius: BorderRadius.circular(12.r),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Image.asset(
+                          'assets/icons/coin.png',
+                          width: 12.w,
+                          height: 12.w,
+                          fit: BoxFit.contain,
+                          errorBuilder: (_, __, ___) => const Icon(
+                            Icons.monetization_on,
+                            color: Color(0xFFFBBF24),
+                            size: 12,
+                          ),
+                        ),
+                        SizedBox(width: 3.w),
+                        Text(
+                          '156',
+                          style: GoogleFonts.poppins(
+                            color: Colors.white,
+                            fontSize: 10.5.sp,
+                            fontWeight: FontWeight.w700,
+                            height: 1.1,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                  SizedBox(height: 2.h),
-                  Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Image.asset(
-                        'assets/icons/coin.png',
-                        width: 13.w,
-                        height: 13.w,
-                        fit: BoxFit.contain,
-                        errorBuilder: (_, __, ___) => Icon(
-                          Icons.monetization_on_rounded,
-                          color: const Color(0xFFF59E0B),
-                          size: 13.sp,
-                        ),
-                      ),
-                      SizedBox(width: 3.w),
-                      Text(
-                        'Upto 100K+',
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: GoogleFonts.poppins(
-                          color: const Color(0xFF64748B),
-                          fontSize: 9.5.sp,
-                          fontWeight: FontWeight.w500,
-                          height: 1.15,
-                        ),
-                      ),
-                    ],
+                  SizedBox(height: 3.h),
+                  Text(
+                    'Get Coins Upto',
+                    style: GoogleFonts.poppins(
+                      color: Colors.white.withValues(alpha: 0.85),
+                      fontSize: 9.5.sp,
+                      fontWeight: FontWeight.w400,
+                      height: 1.1,
+                    ),
                   ),
                 ],
               ),
             ),
 
-            // Glassmorphism aura behind icon
+            // Bottom Pill Label
             Positioned(
-              left: -20.w,
-              bottom: -18.h,
-              child: ClipOval(
-                child: BackdropFilter(
-                  filter: ImageFilter.blur(sigmaX: 14, sigmaY: 14),
-                  child: Container(
-                    width: 140.w,
-                    height: 140.w,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      gradient: RadialGradient(
-                        colors: [
-                          Colors.white.withValues(alpha: 0.38),
-                          Colors.white.withValues(alpha: 0.06),
-                        ],
-                      ),
-                      border: Border.all(
-                        color: Colors.white.withValues(alpha: 0.5),
-                        width: 1.5,
-                      ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.white.withValues(alpha: 0.25),
-                          blurRadius: 20,
-                          spreadRadius: 4,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ),
-
-            // Left-Bottom Icon inside Card
-            Positioned(
-              left: -40.w,
-              bottom: -36.h,
-              child: SizedBox(
-                width: 190.w,
-                height: 190.w,
-                child: Hero(
-                  tag: 'mega_offer_banner',
-                  child: ShaderMask(
-                    shaderCallback: (Rect bounds) {
-                      return const LinearGradient(
-                        colors: [
-                          Colors.black,
-                          Colors.black,
-                          Colors.transparent,
-                        ],
-                        stops: [0.0, 0.55, 0.95],
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                      ).createShader(bounds);
-                    },
-                    blendMode: BlendMode.dstIn,
-                    child: Image.asset(
-                      'assets/icons/super coin.png',
-                      fit: BoxFit.contain,
-                      errorBuilder: (_, __, ___) => Icon(
-                        Icons.star_rounded,
-                        color: const Color(0xFFF472B6),
-                        size: 42.w,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-
-            // Right-Bottom Start Button (flush to right edge, white patti fading to left)
-            Positioned(
+              left: 0,
               right: 0,
-              bottom: 12.h,
-              child: _PopScaleButton(
-                onTap: () {
-                  HapticFeedback.lightImpact();
-                  if (!SplashService.isScreenEnabled('superOffer')) {
-                    _showUpcomingPopup(
-                      context,
-                      title: 'Super Offer Coming Soon!',
-                      message: 'Super Offer feature is currently under active development and will be available very soon.',
-                    );
-                    return;
-                  }
-                  AutoRouter.of(context).push(
-                    SuperOfferScreenRoute(userId: userId),
-                  );
-                },
-                child: Container(
-                  width: 112.w,
-                  padding: EdgeInsets.only(right: 14.w, left: 20.w, top: 7.h, bottom: 7.h),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(16.r),
-                      bottomLeft: Radius.circular(16.r),
-                    ),
-                    gradient: LinearGradient(
-                      begin: Alignment.centerRight,
-                      end: Alignment.centerLeft,
-                      colors: [
-                        Colors.white,
-                        Colors.white.withValues(alpha: 0.55),
-                        Colors.transparent,
-                      ],
-                      stops: const [0.0, 0.45, 1.0],
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.white.withValues(alpha: 0.35),
-                        blurRadius: 8,
-                        offset: const Offset(-2, 2),
-                      ),
-                    ],
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Text(
-                        'Start',
-                        style: GoogleFonts.poppins(
-                          color: const Color(0xFF89009E),
-                          fontSize: 11.5.sp,
-                          fontWeight: FontWeight.w700,
-                          letterSpacing: 0.3,
-                        ),
-                      ),
-                      SizedBox(width: 4.w),
-                      Icon(
-                        Icons.arrow_forward_rounded,
-                        color: const Color(0xFFAB31DE),
-                        size: 13.sp,
-                      ),
-                    ],
+              bottom: 10.h,
+              child: Center(
+                child: Text(
+                  'Watch & Earn',
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.poppins(
+                    color: Colors.white,
+                    fontSize: 13.sp,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: 0.3,
                   ),
                 ),
               ),
@@ -384,7 +690,8 @@ class TopRecommendedTaskWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildCrazyrewardCard(BuildContext context) {
+  /// Card 2 (Top-Right): Play & Earn (Connected to PlayGamesScreenRoute)
+  Widget _buildPlayAndEarnCard(BuildContext context) {
     return _PopScaleButton(
       scaleDown: 0.95,
       onTap: () {
@@ -397,253 +704,377 @@ class TopRecommendedTaskWidget extends StatelessWidget {
           );
           return;
         }
-        final config = SplashService.superOfferConfig;
         AutoRouter.of(context).push(
-          DiamondCatchScreenRoute(
+          PlayGamesScreenRoute(
             userId: userId,
-            installGems: (config['installGems'] as num?)?.toInt() ?? 2,
-            gameGems: (config['gameGems'] as num?)?.toInt() ?? 1,
-            dailyGemsForInstall: (config['dailyGemsForInstall'] as num?)?.toInt() ?? 10,
-            gemsRequired: (config['gemsRequired'] as num?)?.toInt() ?? 0,
           ),
         );
       },
       child: Container(
-        height: 148.h,
+        height: 132.h,
         width: double.infinity,
         clipBehavior: Clip.antiAlias,
         decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              const Color(0xFF0EA5E9).withValues(alpha: 0.22),
-              const Color(0xFF38BDF8).withValues(alpha: 0.08),
-              Colors.white.withValues(alpha: 0.0),
-            ],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
+          borderRadius: BorderRadius.circular(16.r),
+          image: const DecorationImage(
+            image: AssetImage('assets/Icons1/Frame 10.png'),
+            fit: BoxFit.fill,
           ),
-          borderRadius: BorderRadius.circular(22.r),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.06),
-              blurRadius: 16,
-              offset: const Offset(0, 4),
-            ),
-          ],
         ),
         child: Stack(
-          clipBehavior: Clip.antiAlias,
           children: [
-            // Bottom Gradient Fade Overlay
+            // 1. Background Glossy Controller Depth (196.w * 178.h behind controller)
             Positioned(
-              left: 0,
-              right: 0,
-              bottom: 0,
-              height: 55.h,
-              child: IgnorePointer(
-                child: Container(
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [
-                        Colors.white.withValues(alpha: 0.0),
-                        Colors.white.withValues(alpha: 0.45),
-                        Colors.white.withValues(alpha: 0.85),
-                      ],
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
+              right: -52.w,
+              bottom: -58.h,
+              child: Opacity(
+                opacity: 0.45,
+                child: Image.asset(
+                  'assets/Icons1/play_earn_controller_purple_blur.png',
+                  width: 196.w,
+                  height: 178.h,
+                  fit: BoxFit.contain,
+                ),
+              ),
+            ),
+
+            // 2. Purple & Cyan Ambient Glow Aura (Behind Controller in Right Corner)
+            Positioned(
+              right: 0.w,
+              bottom: -8.h,
+              child: Container(
+                width: 82.w,
+                height: 82.w,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                      color: const Color(0xFFC084FC).withValues(alpha: 0.65),
+                      blurRadius: 30,
+                      spreadRadius: 6,
+                    ),
+                    BoxShadow(
+                      color: const Color(0xFF818CF8).withValues(alpha: 0.45),
+                      blurRadius: 34,
+                      spreadRadius: 4,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+
+            // 3. Main 3D Game Controller (140.w * 126.h - Half Hidden on Right Bottom Corner)
+            Positioned(
+              right: -20.w,
+              bottom: -28.h,
+              child: Image.asset(
+                'assets/Icons1/play_earn_controller_purple.png',
+                width: 140.w,
+                height: 126.h,
+                fit: BoxFit.contain,
+              ),
+            ),
+
+            // 4. Frosted Glass Bottom Pill Layer (Tucks controller behind pill & text)
+            Positioned(
+              left: 9.w,
+              right: 9.w,
+              bottom: 6.h,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(14.r),
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                  child: Container(
+                    height: 28.h,
+                    decoration: BoxDecoration(
+                      color: Colors.white.withValues(alpha: 0.18),
+                      borderRadius: BorderRadius.circular(14.r),
+                      border: Border.all(
+                        color: Colors.white.withValues(alpha: 0.28),
+                        width: 0.8.w,
+                      ),
+                    ),
+                    alignment: Alignment.center,
+                    child: Text(
+                      'Play & Earn',
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.poppins(
+                        color: Colors.white,
+                        fontSize: 13.sp,
+                        fontWeight: FontWeight.w700,
+                        letterSpacing: 0.3,
+                        shadows: [
+                          Shadow(
+                            color: Colors.black.withValues(alpha: 0.4),
+                            blurRadius: 4,
+                            offset: const Offset(0, 1),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
               ),
             ),
 
-            // Top Details (Title & Subtitle)
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 14.h),
+            // 5. Top-Left Coin Pill & Subtitle (Always in front)
+            Positioned(
+              top: 10.h,
+              left: 11.w,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text(
-                    'Diamond Catch',
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: GoogleFonts.poppins(
-                      color: const Color(0xFF1E1B4B),
-                      fontSize: 14.sp,
-                      fontWeight: FontWeight.w600,
-                      letterSpacing: 0.2,
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.5.h),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withValues(alpha: 0.16),
+                      borderRadius: BorderRadius.circular(12.r),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Image.asset(
+                          'assets/icons/coin.png',
+                          width: 12.w,
+                          height: 12.w,
+                          fit: BoxFit.contain,
+                          errorBuilder: (_, __, ___) => const Icon(
+                            Icons.monetization_on,
+                            color: Color(0xFFFBBF24),
+                            size: 12,
+                          ),
+                        ),
+                        SizedBox(width: 3.w),
+                        Text(
+                          '156',
+                          style: GoogleFonts.poppins(
+                            color: Colors.white,
+                            fontSize: 10.5.sp,
+                            fontWeight: FontWeight.w700,
+                            height: 1.1,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                  SizedBox(height: 2.h),
-                  Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Image.asset(
-                        'assets/icons/gems.png',
-                        width: 13.w,
-                        height: 13.w,
-                        fit: BoxFit.contain,
-                        errorBuilder: (_, __, ___) => Icon(
-                          Icons.diamond_rounded,
-                          color: const Color(0xFF38BDF8),
-                          size: 13.sp,
+                  SizedBox(height: 3.h),
+                  Text(
+                    'Get Coins Upto',
+                    style: GoogleFonts.poppins(
+                      color: Colors.white.withValues(alpha: 0.85),
+                      fontSize: 9.5.sp,
+                      fontWeight: FontWeight.w400,
+                      height: 1.1,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// Card 3 (Bottom-Left): Daily Check-In (Connected to DailyCheckInPopup)
+  Widget _buildDailyCheckInCard(BuildContext context) {
+    return _PopScaleButton(
+      scaleDown: 0.95,
+      onTap: () {
+        HapticFeedback.lightImpact();
+        if (!SplashService.isScreenEnabled('dailyStreak') && !SplashService.isScreenEnabled('streak')) {
+          _showUpcomingPopup(
+            context,
+            title: 'Daily Streak Coming Soon!',
+            message: 'Daily Streak feature is currently under active development and will be available very soon.',
+          );
+          return;
+        }
+        DailyCheckInPopup.show(
+          context: context,
+          streak: streak,
+          streakClaimed: streakClaimed,
+          userId: userId,
+          coins: coins.toInt(),
+        );
+      },
+      child: Container(
+        height: 132.h,
+        width: double.infinity,
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/Icons1/Frame 24 (4).png'),
+            fit: BoxFit.fill,
+          ),
+        ),
+        child: Stack(
+          children: [
+            // Top-Left Coin Pill & Subtitle
+            Positioned(
+              top: 10.h,
+              left: 11.w,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.5.h),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withValues(alpha: 0.16),
+                      borderRadius: BorderRadius.circular(12.r),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Image.asset(
+                          'assets/icons/coin.png',
+                          width: 12.w,
+                          height: 12.w,
+                          fit: BoxFit.contain,
+                          errorBuilder: (_, __, ___) => const Icon(
+                            Icons.monetization_on,
+                            color: Color(0xFFFBBF24),
+                            size: 12,
+                          ),
                         ),
-                      ),
-                      SizedBox(width: 3.w),
-                      Text(
-                        'Upto 100K+',
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: GoogleFonts.poppins(
-                          color: const Color(0xFF64748B),
-                          fontSize: 9.5.sp,
-                          fontWeight: FontWeight.w500,
-                          height: 1.15,
+                        SizedBox(width: 3.w),
+                        Text(
+                          '156',
+                          style: GoogleFonts.poppins(
+                            color: Colors.white,
+                            fontSize: 10.5.sp,
+                            fontWeight: FontWeight.w700,
+                            height: 1.1,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: 3.h),
+                  Text(
+                    'Get Coins Upto',
+                    style: GoogleFonts.poppins(
+                      color: Colors.white.withValues(alpha: 0.85),
+                      fontSize: 9.5.sp,
+                      fontWeight: FontWeight.w400,
+                      height: 1.1,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// Card 4 (Bottom-Right): Read & Earn (Connected to ReadTskScreenRoute)
+  Widget _buildReadAndEarnCard(BuildContext context) {
+    return _PopScaleButton(
+      scaleDown: 0.95,
+      onTap: () {
+        HapticFeedback.lightImpact();
+        if (!SplashService.isScreenEnabled('readTask')) {
+          _showUpcomingPopup(
+            context,
+            title: 'Read & Earn Coming Soon!',
+            message: 'Read & Earn feature is currently under active development and will be available very soon.',
+          );
+          return;
+        }
+        AutoRouter.of(context).push(
+          ReadTskScreenRoute(
+            userId: userId,
+          ),
+        );
+      },
+      child: Container(
+        height: 132.h,
+        width: double.infinity,
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/Icons1/Frame 25.png'),
+            fit: BoxFit.fill,
+          ),
+        ),
+        child: Stack(
+          children: [
+            // Top-Left Coin Pill & Subtitle
+            Positioned(
+              top: 10.h,
+              left: 11.w,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.5.h),
+                    decoration: BoxDecoration(
+                      color: Colors.black.withValues(alpha: 0.20),
+                      borderRadius: BorderRadius.circular(12.r),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Image.asset(
+                          'assets/icons/coin.png',
+                          width: 12.w,
+                          height: 12.w,
+                          fit: BoxFit.contain,
+                          errorBuilder: (_, __, ___) => const Icon(
+                            Icons.monetization_on,
+                            color: Color(0xFFFBBF24),
+                            size: 12,
+                          ),
+                        ),
+                        SizedBox(width: 3.w),
+                        Text(
+                          '156',
+                          style: GoogleFonts.poppins(
+                            color: Colors.white,
+                            fontSize: 10.5.sp,
+                            fontWeight: FontWeight.w700,
+                            height: 1.1,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: 3.h),
+                  Text(
+                    'Get Coins Upto',
+                    style: GoogleFonts.poppins(
+                      color: Colors.white.withValues(alpha: 0.85),
+                      fontSize: 9.5.sp,
+                      fontWeight: FontWeight.w400,
+                      height: 1.1,
+                    ),
                   ),
                 ],
               ),
             ),
 
-            // Glassmorphism aura behind icon
+            // Bottom Pill Label
             Positioned(
-              left: -15.w,
-              bottom: -12.h,
-              child: ClipOval(
-                child: BackdropFilter(
-                  filter: ImageFilter.blur(sigmaX: 14, sigmaY: 14),
-                  child: Container(
-                    width: 130.w,
-                    height: 130.w,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      gradient: RadialGradient(
-                        colors: [
-                          Colors.white.withValues(alpha: 0.38),
-                          Colors.white.withValues(alpha: 0.06),
-                        ],
-                      ),
-                      border: Border.all(
-                        color: Colors.white.withValues(alpha: 0.5),
-                        width: 1.5,
-                      ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.white.withValues(alpha: 0.25),
-                          blurRadius: 20,
-                          spreadRadius: 4,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ),
-
-            // Left-Bottom Icon inside Card
-            Positioned(
-              left: -18.w,
-              bottom: -16.h,
-              child: SizedBox(
-                width: 140.w,
-                height: 140.w,
-                child: Hero(
-                  tag: 'crazyreward_banner',
-                  child: ShaderMask(
-                    shaderCallback: (Rect bounds) {
-                      return const LinearGradient(
-                        colors: [
-                          Colors.black,
-                          Colors.black,
-                          Colors.transparent,
-                        ],
-                        stops: [0.0, 0.55, 0.95],
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                      ).createShader(bounds);
-                    },
-                    blendMode: BlendMode.dstIn,
-                    child: Image.asset(
-                      'assets/icons/panda1.png',
-                      fit: BoxFit.contain,
-                      errorBuilder: (_, __, ___) => Icon(
-                        Icons.extension_rounded,
-                        color: const Color(0xFF38BDF8),
-                        size: 42.w,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-
-            // Right-Bottom Play Button (flush to right edge, white patti extra faded to left)
-            Positioned(
+              left: 0,
               right: 0,
-              bottom: 12.h,
-              child: _PopScaleButton(
-                onTap: () {
-                  HapticFeedback.lightImpact();
-                  if (!SplashService.isScreenEnabled('playGames')) {
-                    _showUpcomingPopup(
-                      context,
-                      title: 'Play Games Coming Soon!',
-                      message: 'Play Games feature is currently under active development and will be available very soon.',
-                    );
-                    return;
-                  }
-                  final config = SplashService.superOfferConfig;
-                  AutoRouter.of(context).push(
-                    DiamondCatchScreenRoute(
-                      userId: userId,
-                      installGems: (config['installGems'] as num?)?.toInt() ?? 2,
-                      gameGems: (config['gameGems'] as num?)?.toInt() ?? 1,
-                      dailyGemsForInstall: (config['dailyGemsForInstall'] as num?)?.toInt() ?? 10,
-                      gemsRequired: (config['gemsRequired'] as num?)?.toInt() ?? 0,
-                    ),
-                  );
-                },
-                child: Container(
-                  width: 118.w,
-                  padding: EdgeInsets.only(right: 14.w, left: 24.w, top: 7.h, bottom: 7.h),
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.centerRight,
-                      end: Alignment.centerLeft,
-                      colors: [
-                        Colors.white,
-                        Colors.white.withValues(alpha: 0.35),
-                        Colors.transparent,
-                      ],
-                      stops: const [0.0, 0.35, 1.0],
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.white.withValues(alpha: 0.35),
-                        blurRadius: 8,
-                        offset: const Offset(-2, 2),
-                      ),
-                    ],
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Text(
-                        'Play',
-                        style: GoogleFonts.poppins(
-                          color: const Color(0xFF0284C7),
-                          fontSize: 11.5.sp,
-                          fontWeight: FontWeight.w700,
-                          letterSpacing: 0.3,
-                        ),
-                      ),
-                      SizedBox(width: 4.w),
-                      Icon(
-                        Icons.arrow_forward_rounded,
-                        color: const Color(0xFF0284C7),
-                        size: 13.sp,
+              bottom: 10.h,
+              child: Center(
+                child: Text(
+                  'Read & Earn',
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.poppins(
+                    color: Colors.white,
+                    fontSize: 13.sp,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: 0.3,
+                    shadows: [
+                      Shadow(
+                        color: Colors.black.withValues(alpha: 0.45),
+                        offset: const Offset(0, 1),
+                        blurRadius: 3,
                       ),
                     ],
                   ),
@@ -1701,13 +2132,16 @@ class _PlayTimeBannerWidget extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final config = SplashService.playtimeConfig;
-    final bool isEnabled = config['enabled'] == true;
-    final String targetName = (config['offerwallName'] ?? config['taskName'] ?? config['provider'] ?? 'playtimeAds').toString().trim();
-
-    if (!isEnabled) {
+    if (SplashService.isScreenHidden('playTime') || SplashService.isScreenHidden('playtime')) {
       return const SizedBox.shrink();
     }
+    final config = SplashService.playtimeConfig;
+    final String targetName = (config['offerwallName'] ??
+            config['taskName'] ??
+            config['provider'] ??
+            'playtimeAds')
+        .toString()
+        .trim();
 
     final OfferwallProvider? targetProvider = useMemoized(() {
       if (targetName.isEmpty) return null;
@@ -1717,8 +2151,16 @@ class _PlayTimeBannerWidget extends HookWidget {
         ...OfferwallManager.getOffersByCategory(category: OfferwallCategory.survey),
       ];
       for (final provider in allOffers) {
-        final cleanP = provider.name.toLowerCase().replaceAll(' ', '').replaceAll('-', '').replaceAll('_', '');
-        final cleanT = targetName.toLowerCase().replaceAll(' ', '').replaceAll('-', '').replaceAll('_', '');
+        final cleanP = provider.name
+            .toLowerCase()
+            .replaceAll(' ', '')
+            .replaceAll('-', '')
+            .replaceAll('_', '');
+        final cleanT = targetName
+            .toLowerCase()
+            .replaceAll(' ', '')
+            .replaceAll('-', '')
+            .replaceAll('_', '');
         if (cleanP == cleanT) {
           return provider;
         }
@@ -1744,6 +2186,11 @@ class _PlayTimeBannerWidget extends HookWidget {
         onTap: () async {
           HapticFeedback.lightImpact();
           if (targetProvider != null) {
+            if (config.isNotEmpty) {
+              final modelConfig = OffersDataModel.fromMap(config);
+              targetProvider.attachConfig(modelConfig);
+              targetProvider.enabled = modelConfig.enabled;
+            }
             await targetProvider.init(userId: userId);
             if (!context.mounted) return;
             await targetProvider.show(
@@ -1752,247 +2199,203 @@ class _PlayTimeBannerWidget extends HookWidget {
               email: email,
             );
           } else {
-            AutoRouter.of(context).push(
-              SuperOfferScreenRoute(userId: userId),
+            final playtimeProvider =
+                OfferwallManager.getProviderByName('Playtime Ads') ??
+                    PlaytimeAdsTaskProvider();
+            if (config.isNotEmpty) {
+              final modelConfig = OffersDataModel.fromMap(config);
+              playtimeProvider.attachConfig(modelConfig);
+            }
+            await playtimeProvider.init(userId: userId);
+            if (!context.mounted) return;
+            await playtimeProvider.show(
+              context: context,
+              userId: userId,
+              email: email,
             );
           }
         },
         child: Container(
-          height: 130.h,
           width: double.infinity,
+          height: 96.h,
           clipBehavior: Clip.antiAlias,
           decoration: BoxDecoration(
-            gradient: LinearGradient(
+            gradient: const LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
               colors: [
-                const Color(0xFF10B981).withValues(alpha: 0.22),
-                const Color(0xFF6EE7B7).withValues(alpha: 0.08),
-                Colors.white.withValues(alpha: 0.0),
+                Color(0xFF222226),
+                Color(0xFF131316),
               ],
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
             ),
             borderRadius: BorderRadius.circular(22.r),
+            border: Border.all(
+              color: const Color(0xFF2E2E36),
+              width: 1.0,
+            ),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: 0.06),
-                blurRadius: 16,
+                color: Colors.black.withValues(alpha: 0.18),
+                blurRadius: 10,
                 offset: const Offset(0, 4),
               ),
             ],
           ),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(22.r),
-            child: Stack(
-              clipBehavior: Clip.antiAlias,
-              children: [
-                // Bottom Gradient Fade Overlay on Card
-                Positioned(
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                  height: 52.h,
-                  child: IgnorePointer(
-                    child: Container(
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [
-                            Colors.white.withValues(alpha: 0.0),
-                            Colors.white.withValues(alpha: 0.45),
-                            Colors.white.withValues(alpha: 0.85),
-                          ],
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                        ),
-                      ),
-                    ),
+          child: Stack(
+            children: [
+              // 1. Soft white translucent circular backdrop on left
+              Positioned(
+                left: -15.w,
+                top: -12.h,
+                bottom: -12.h,
+                width: 120.w,
+                child: Container(
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.white.withValues(alpha: 0.05),
                   ),
                 ),
+              ),
 
-                // Glassmorphism aura behind PlayTime icon
-                Positioned(
-                  left: 0.w,
-                  bottom: -20.h,
-                  child: ClipOval(
-                    child: BackdropFilter(
-                      filter: ImageFilter.blur(sigmaX: 14, sigmaY: 14),
-                      child: Container(
-                        width: 165.w,
-                        height: 165.w,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          gradient: RadialGradient(
-                            colors: [
-                              Colors.white.withValues(alpha: 0.38),
-                              Colors.white.withValues(alpha: 0.06),
-                            ],
-                          ),
-                          border: Border.all(
-                            color: Colors.white.withValues(alpha: 0.5),
-                            width: 1.5,
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.white.withValues(alpha: 0.25),
-                              blurRadius: 20,
-                              spreadRadius: 4,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-
-                // Tilted & Enlarged PlayTime Icon shifted rightward (with Bottom Fade)
-                Positioned(
-                  left: -10.w,
-                  bottom: -32.h,
-                  child: Transform.rotate(
-                    angle: 0.22,
-                    child: SizedBox(
-                      width: 185.w,
-                      height: 185.w,
-                      child: Hero(
-                        tag: 'playtime_banner_graphic',
-                        child: ShaderMask(
-                          shaderCallback: (Rect bounds) {
-                            return const LinearGradient(
-                              colors: [
-                                Colors.black,
-                                Colors.black,
-                                Colors.transparent,
-                              ],
-                              stops: [0.0, 0.55, 0.95],
-                              begin: Alignment.topCenter,
-                              end: Alignment.bottomCenter,
-                            ).createShader(bounds);
-                          },
-                          blendMode: BlendMode.dstIn,
-                          child: Image.asset(
+              // 2. Foreground Content: Left Icon + Center Text & Tag + Right Action Button
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
+                child: Row(
+                  children: [
+                    // 3D PlayTime Game Icon
+                    SizedBox(
+                      width: 84.w,
+                      height: 76.h,
+                      child: Center(
+                        child: Image.asset(
+                          'assets/icons/gamesplaytime.png',
+                          fit: BoxFit.contain,
+                          errorBuilder: (_, __, ___) => Image.asset(
                             'assets/icons/playtimegame.png',
                             fit: BoxFit.contain,
-                            errorBuilder: (_, __, ___) => Image.asset(
-                              'assets/icons/playtimegame.png',
-                              fit: BoxFit.contain,
-                              errorBuilder: (_, __, ___) => Icon(
-                                Icons.sports_esports_rounded,
-                                color: const Color(0xFF10B981),
-                                size: 54.w,
-                              ),
-                            ),
                           ),
                         ),
                       ),
                     ),
-                  ),
-                ),
+                    SizedBox(width: 10.w),
 
-                // Right Section: Title & Subtitle details (Positioned next to icon)
-                Positioned(
-                  left: 148.w,
-                  top: 18.h,
-                  right: 12.w,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text(
-                        title,
-                        maxLines: 1,
-                        textAlign: TextAlign.center,
-                        overflow: TextOverflow.ellipsis,
-                        style: GoogleFonts.poppins(
-                          color: const Color(0xFF1E1B4B),
-                          fontSize: 16.sp,
-                          fontWeight: FontWeight.w800,
-                          letterSpacing: 0.2,
-                          height: 1.1,
-                        ),
+                    // Title & Subtitle Column
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Row(
+                            children: [
+                              Flexible(
+                                child: Text(
+                                  title,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: GoogleFonts.poppins(
+                                    color: Colors.white,
+                                    fontSize: 16.5.sp,
+                                    fontWeight: FontWeight.w700,
+                                    letterSpacing: -0.2,
+                                    height: 1.15,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(width: 6.w),
+                              // Coin / Minute Tag matching Dark Theme
+                              Container(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 5.w,
+                                  vertical: 1.5.h,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFF2E2E38),
+                                  borderRadius: BorderRadius.circular(6.r),
+                                  border: Border.all(
+                                    color: const Color(0xFF3E3E4C),
+                                    width: 0.8,
+                                  ),
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Image.asset(
+                                      'assets/icons/coin.png',
+                                      width: 9.w,
+                                      height: 9.w,
+                                      fit: BoxFit.contain,
+                                      errorBuilder: (_, __, ___) => const Icon(
+                                        Icons.monetization_on,
+                                        color: Color(0xFFFBBF24),
+                                        size: 9,
+                                      ),
+                                    ),
+                                    SizedBox(width: 2.5.w),
+                                    Text(
+                                      'Per Min',
+                                      style: GoogleFonts.poppins(
+                                        color: const Color(0xFFFBBF24),
+                                        fontSize: 7.8.sp,
+                                        fontWeight: FontWeight.w700,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 3.h),
+                          Text(
+                            'Play games & earn coins per minute',
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: GoogleFonts.poppins(
+                              color: const Color(0xFF9E9EA7),
+                              fontSize: 10.sp,
+                              fontWeight: FontWeight.w400,
+                              height: 1.25,
+                            ),
+                          ),
+                        ],
                       ),
-                      SizedBox(height: 3.h),
-                      Text(
-                        'Play games & get coins per min',
-                        maxLines: 2,
-                        textAlign: TextAlign.center,
-                        overflow: TextOverflow.ellipsis,
-                        style: GoogleFonts.poppins(
-                          color: const Color(0xFF64748B),
-                          fontSize: 9.sp,
-                          fontWeight: FontWeight.w400,
-                          height: 1.2,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+                    ),
+                    SizedBox(width: 8.w),
 
-                // Play Now Button - Flush to Right edge
-                Positioned(
-                  right: 0,
-                  bottom: 12.h,
-                  child: _PopScaleButton(
-                    onTap: () async {
-                      HapticFeedback.lightImpact();
-                      if (targetProvider != null) {
-                        await targetProvider.init(userId: userId);
-                        if (!context.mounted) return;
-                        await targetProvider.show(
-                          context: context,
-                          userId: userId,
-                          email: email,
-                        );
-                      } else {
-                        AutoRouter.of(context).push(
-                          SuperOfferScreenRoute(userId: userId),
-                        );
-                      }
-                    },
-                    child: Container(
-                      width: 124.w,
-                      padding: EdgeInsets.only(right: 14.w, left: 20.w, top: 7.h, bottom: 7.h),
+                    // Right Silver Metallic Action Circle Button
+                    Container(
+                      width: 28.h,
+                      height: 28.h,
                       decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.centerRight,
-                          end: Alignment.centerLeft,
+                        shape: BoxShape.circle,
+                        gradient: const LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
                           colors: [
                             Colors.white,
-                            Colors.white.withValues(alpha: 0.35),
-                            Colors.transparent,
+                            Color(0xFFE5E7EB),
+                            Color(0xFFB0B5C2),
                           ],
-                          stops: const [0.0, 0.35, 1.0],
                         ),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.white.withValues(alpha: 0.35),
-                            blurRadius: 8,
-                            offset: const Offset(-2, 2),
+                            color: Colors.black.withValues(alpha: 0.25),
+                            blurRadius: 5,
+                            offset: const Offset(0, 2),
                           ),
                         ],
                       ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Text(
-                            'Play Now',
-                            style: GoogleFonts.poppins(
-                              color: const Color(0xFF059669),
-                              fontSize: 11.5.sp,
-                              fontWeight: FontWeight.w700,
-                              letterSpacing: 0.3,
-                            ),
-                          ),
-                          SizedBox(width: 4.w),
-                          Icon(
-                            Icons.arrow_forward_rounded,
-                            color: const Color(0xFF10B981),
-                            size: 13.sp,
-                          ),
-                        ],
+                      child: Center(
+                        child: Icon(
+                          Icons.arrow_forward_rounded,
+                          color: const Color(0xFF16161A),
+                          size: 14.sp,
+                        ),
                       ),
                     ),
-                  ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),

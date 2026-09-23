@@ -38,9 +38,9 @@ class SuperOfferScreen extends HookConsumerWidget {
       context: context,
       builder: (context) => Dialog(
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(24.r),
-          side: BorderSide(
-            color: const Color(0xFFAB31DE).withValues(alpha: 0.3),
+          borderRadius: BorderRadius.circular(20.r),
+          side: const BorderSide(
+            color: Color(0xFFE2E8F0),
             width: 1.2,
           ),
         ),
@@ -53,18 +53,27 @@ class SuperOfferScreen extends HookConsumerWidget {
             children: [
               Row(
                 children: [
-                  Icon(
-                    Icons.task_alt_rounded,
-                    color: const Color(0xFFAB31DE),
-                    size: 24.sp,
+                  Container(
+                    width: 36.w,
+                    height: 36.w,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF26262B),
+                      borderRadius: BorderRadius.circular(10.r),
+                    ),
+                    alignment: Alignment.center,
+                    child: Icon(
+                      Icons.task_alt_rounded,
+                      color: Colors.white,
+                      size: 20.sp,
+                    ),
                   ),
-                  SizedBox(width: 8.w),
+                  SizedBox(width: 10.w),
                   Text(
                     'Offers Completed',
-                    style: GoogleFonts.outfit(
+                    style: GoogleFonts.poppins(
                       color: const Color(0xFF1E1B4B),
-                      fontSize: 18.sp,
-                      fontWeight: FontWeight.w800,
+                      fontSize: 17.sp,
+                      fontWeight: FontWeight.w700,
                     ),
                   ),
                 ],
@@ -72,9 +81,9 @@ class SuperOfferScreen extends HookConsumerWidget {
               SizedBox(height: 12.h),
               Text(
                 'This shows the total number of Super Offers and Daily Tasks you have successfully completed.',
-                style: GoogleFonts.outfit(
+                style: GoogleFonts.poppins(
                   color: const Color(0xFF64748B),
-                  fontSize: 13.sp,
+                  fontSize: 12.5.sp,
                   fontWeight: FontWeight.w400,
                   height: 1.4,
                 ),
@@ -87,22 +96,22 @@ class SuperOfferScreen extends HookConsumerWidget {
                   height: 44.h,
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
-                    gradient: const LinearGradient(
-                      colors: [
-                        Color(0xFFE39FFF),
-                        Color(0xFFAB31DE),
-                      ],
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                    ),
-                    borderRadius: BorderRadius.circular(14.r),
+                    color: const Color(0xFF26262B),
+                    borderRadius: BorderRadius.circular(12.r),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.15),
+                        blurRadius: 8,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
                   ),
                   child: Text(
                     'GOT IT',
-                    style: GoogleFonts.outfit(
+                    style: GoogleFonts.poppins(
                       color: Colors.white,
-                      fontSize: 14.5.sp,
-                      fontWeight: FontWeight.w800,
+                      fontSize: 13.5.sp,
+                      fontWeight: FontWeight.w700,
                     ),
                   ),
                 ),
@@ -113,8 +122,6 @@ class SuperOfferScreen extends HookConsumerWidget {
       ),
     );
   }
-
-
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -197,6 +204,8 @@ class SuperOfferScreen extends HookConsumerWidget {
                   child: LayoutBuilder(
                     builder: (context, constraints) {
                       return RefreshIndicator(
+                        color: const Color(0xFF26262B),
+                        backgroundColor: Colors.white,
                         onRefresh: () async {
                           ref.invalidate(DashboardService.userDataProvider(effectiveUid));
                           ref.invalidate(superOfferVerifierProvider(effectiveUid));
@@ -227,51 +236,56 @@ class SuperOfferScreen extends HookConsumerWidget {
                                   ),
                                   child: Column(
                                     children: [
-                                      // Top Header Bar (Back button + Gems counter)
-                                      Stack(
-                                        alignment: Alignment.center,
+                                      // Top Header Bar (Back button, "Super Offer" Kaushan Header, Gems counter)
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                         children: [
                                           // Left Back Button
-                                          Align(
-                                            alignment: Alignment.centerLeft,
-                                            child: GestureDetector(
-                                              onTap: () {
-                                                HapticFeedback.lightImpact();
-                                                AutoRouter.of(context).maybePop();
-                                              },
-                                              child: Container(
-                                                width: 40.w,
-                                                height: 40.w,
-                                                alignment: Alignment.center,
-                                                decoration: BoxDecoration(
-                                                  color: Colors.white,
-                                                  borderRadius: BorderRadius.circular(15.r),
-                                                  border: Border.all(
-                                                    color: const Color(0xFFF1F5F9),
-                                                    width: 1.2,
+                                          GestureDetector(
+                                            onTap: () {
+                                              HapticFeedback.lightImpact();
+                                              AutoRouter.of(context).maybePop();
+                                            },
+                                            child: Container(
+                                              width: 40.w,
+                                              height: 40.w,
+                                              alignment: Alignment.center,
+                                              decoration: BoxDecoration(
+                                                color: Colors.white,
+                                                borderRadius: BorderRadius.circular(14.r),
+                                                border: Border.all(
+                                                  color: const Color(0xFFE2E8F0),
+                                                  width: 1.2,
+                                                ),
+                                                boxShadow: [
+                                                  BoxShadow(
+                                                    color: Colors.black.withValues(alpha: 0.04),
+                                                    blurRadius: 8,
+                                                    offset: const Offset(0, 2),
                                                   ),
-                                                  boxShadow: [
-                                                    BoxShadow(
-                                                      color: const Color(0xFFAB31DE).withValues(alpha: 0.08),
-                                                      blurRadius: 10,
-                                                      offset: const Offset(0, 3),
-                                                    ),
-                                                  ],
-                                                ),
-                                                child: Icon(
-                                                  Icons.arrow_back_rounded,
-                                                  color: const Color(0xFFAB31DE),
-                                                  size: 22.sp,
-                                                ),
+                                                ],
+                                              ),
+                                              child: Icon(
+                                                Icons.arrow_back_rounded,
+                                                color: const Color(0xFF26262B),
+                                                size: 20.sp,
                                               ),
                                             ),
                                           ),
 
-                                          // Right Gems Pill
-                                          Align(
-                                            alignment: Alignment.centerRight,
-                                            child: _AvailableGemsBadge(gems: liveGems),
+                                          // Center Title: "Super Offer" (Exact Home Screen Style)
+                                          Text(
+                                            'Super Offer',
+                                            style: GoogleFonts.kaushanScript(
+                                              color: const Color(0xFF26262B),
+                                              fontSize: 28.sp,
+                                              fontWeight: FontWeight.w800,
+                                              letterSpacing: 0.5,
+                                            ),
                                           ),
+
+                                          // Right Gems Pill
+                                          _AvailableGemsBadge(gems: liveGems),
                                         ],
                                       ),
 
@@ -283,7 +297,7 @@ class SuperOfferScreen extends HookConsumerWidget {
                                         margin: EdgeInsets.only(bottom: 12),
                                       ),
 
-                                      // Super Mission Header
+                                      // Super Mission Hero Card
                                       _buildSuperMissionHeader(),
 
                                       SizedBox(height: 14.h),
@@ -449,7 +463,7 @@ class SuperOfferScreen extends HookConsumerWidget {
     );
   }
 
-  // Pure White Luxury Floating Stats Cards
+  // Home Style Luxury Floating Stats Cards
   Widget _buildStatsCard(BuildContext context, SuperOfferModel offerData, WidgetRef ref) {
     final userAsync = ref.watch(DashboardService.userDataProvider(userId));
     final liveStreak = userAsync.maybeWhen(
@@ -474,16 +488,16 @@ class SuperOfferScreen extends HookConsumerWidget {
               padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 12.h),
               decoration: BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.circular(18.r),
+                borderRadius: BorderRadius.circular(16.r),
                 border: Border.all(
-                  color: const Color(0xFFF1F5F9),
+                  color: const Color(0xFFE2E8F0),
                   width: 1.2,
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: const Color(0xFF0F172A).withValues(alpha: 0.04),
-                    blurRadius: 14,
-                    offset: const Offset(0, 5),
+                    color: Colors.black.withValues(alpha: 0.04),
+                    blurRadius: 10,
+                    offset: const Offset(0, 3),
                   ),
                 ],
               ),
@@ -493,20 +507,16 @@ class SuperOfferScreen extends HookConsumerWidget {
                     width: 38.w,
                     height: 38.w,
                     decoration: BoxDecoration(
-                      color: const Color(0xFFFAF5FF),
+                      color: const Color(0xFF26262B),
                       borderRadius: BorderRadius.circular(12.r),
-                      border: Border.all(
-                        color: const Color(0xFFF3E8FF),
-                        width: 1,
-                      ),
                     ),
-                    padding: EdgeInsets.all(7.r),
+                    padding: EdgeInsets.all(8.r),
                     child: Image.asset(
                       'assets/icons/donee.png',
                       fit: BoxFit.contain,
                       errorBuilder: (_, __, ___) => const Icon(
                         Icons.task_alt_rounded,
-                        color: Color(0xFFAB31DE),
+                        color: Colors.white,
                         size: 20,
                       ),
                     ),
@@ -519,10 +529,10 @@ class SuperOfferScreen extends HookConsumerWidget {
                       children: [
                         Text(
                           offerData.completedSuperOffers.toString(),
-                          style: GoogleFonts.outfit(
+                          style: GoogleFonts.poppins(
                             color: const Color(0xFF1E1B4B),
-                            fontSize: 18.sp,
-                            fontWeight: FontWeight.w800,
+                            fontSize: 17.sp,
+                            fontWeight: FontWeight.w700,
                             height: 1.1,
                           ),
                         ),
@@ -534,17 +544,17 @@ class SuperOfferScreen extends HookConsumerWidget {
                                 _translate('completed', 'Completed'),
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
-                                style: GoogleFonts.outfit(
+                                style: GoogleFonts.poppins(
                                   color: const Color(0xFF64748B),
-                                  fontSize: 11.sp,
-                                  fontWeight: FontWeight.w600,
+                                  fontSize: 10.5.sp,
+                                  fontWeight: FontWeight.w500,
                                 ),
                               ),
                             ),
                             SizedBox(width: 3.w),
                             Icon(
                               Icons.info_outline_rounded,
-                              color: const Color(0xFFAB31DE).withValues(alpha: 0.7),
+                              color: const Color(0xFF64748B),
                               size: 11.sp,
                             ),
                           ],
@@ -576,24 +586,24 @@ class SuperOfferScreen extends HookConsumerWidget {
               padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 12.h),
               decoration: BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.circular(18.r),
+                borderRadius: BorderRadius.circular(16.r),
                 border: Border.all(
-                  color: const Color(0xFFF1F5F9),
+                  color: const Color(0xFFE2E8F0),
                   width: 1.2,
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: const Color(0xFF0F172A).withValues(alpha: 0.04),
-                    blurRadius: 14,
-                    offset: const Offset(0, 5),
+                    color: Colors.black.withValues(alpha: 0.04),
+                    blurRadius: 10,
+                    offset: const Offset(0, 3),
                   ),
                 ],
               ),
               child: Row(
                 children: [
                   Container(
-                    width: 36.w,
-                    height: 36.w,
+                    width: 38.w,
+                    height: 38.w,
                     decoration: BoxDecoration(
                       color: const Color(0xFFFFF7ED),
                       borderRadius: BorderRadius.circular(12.r),
@@ -606,9 +616,10 @@ class SuperOfferScreen extends HookConsumerWidget {
                     child: Image.asset(
                       'assets/icons/fire (2).png',
                       fit: BoxFit.contain,
-                      errorBuilder: (_, __, ___) => Image.asset(
-                        'assets/icons/ninja streak.png',
-                        fit: BoxFit.contain,
+                      errorBuilder: (_, __, ___) => const Icon(
+                        Icons.local_fire_department_rounded,
+                        color: Color(0xFFFF5722),
+                        size: 20,
                       ),
                     ),
                   ),
@@ -622,10 +633,10 @@ class SuperOfferScreen extends HookConsumerWidget {
                           '$liveStreak ${liveStreak == 1 ? "Day" : "Days"}',
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: GoogleFonts.outfit(
+                          style: GoogleFonts.poppins(
                             color: const Color(0xFF1E1B4B),
-                            fontSize: 16.sp,
-                            fontWeight: FontWeight.w800,
+                            fontSize: 15.sp,
+                            fontWeight: FontWeight.w700,
                             height: 1.1,
                           ),
                         ),
@@ -634,10 +645,10 @@ class SuperOfferScreen extends HookConsumerWidget {
                           _translate('streak', 'Streak'),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: GoogleFonts.outfit(
+                          style: GoogleFonts.poppins(
                             color: const Color(0xFF64748B),
-                            fontSize: 11.sp,
-                            fontWeight: FontWeight.w600,
+                            fontSize: 10.5.sp,
+                            fontWeight: FontWeight.w500,
                           ),
                         ),
                       ],
@@ -647,17 +658,13 @@ class SuperOfferScreen extends HookConsumerWidget {
                     width: 22.w,
                     height: 22.w,
                     decoration: BoxDecoration(
-                      color: const Color(0xFFFFF7ED),
+                      color: const Color(0xFFF1F5F9),
                       shape: BoxShape.circle,
-                      border: Border.all(
-                        color: const Color(0xFFFFEDD5),
-                        width: 1,
-                      ),
                     ),
                     child: Center(
                       child: Icon(
                         Icons.arrow_forward_ios_rounded,
-                        color: const Color(0xFFF97316),
+                        color: const Color(0xFF26262B),
                         size: 9.sp,
                       ),
                     ),
@@ -704,45 +711,35 @@ class SuperOfferScreen extends HookConsumerWidget {
         padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(20.r),
+          borderRadius: BorderRadius.circular(18.r),
           border: Border.all(
-            color: count > 0 ? const Color(0xFFE39FFF).withValues(alpha: 0.7) : const Color(0xFFF1F5F9),
+            color: count > 0 ? const Color(0xFF26262B) : const Color(0xFFE2E8F0),
             width: 1.2,
           ),
           boxShadow: [
             BoxShadow(
-              color: const Color(0xFF0F172A).withValues(alpha: 0.04),
-              blurRadius: 14,
-              offset: const Offset(0, 4),
+              color: Colors.black.withValues(alpha: 0.05),
+              blurRadius: 10,
+              offset: const Offset(0, 3),
             ),
-            if (count > 0)
-              BoxShadow(
-                color: const Color(0xFFAB31DE).withValues(alpha: 0.08),
-                blurRadius: 12,
-                offset: const Offset(0, 3),
-              ),
           ],
         ),
         child: Row(
           children: [
             Container(
-              width: 44.w,
-              height: 44.w,
+              width: 42.w,
+              height: 42.w,
               decoration: BoxDecoration(
-                color: count > 0 ? const Color(0xFFFAF5FF) : const Color(0xFFF8FAFC),
-                borderRadius: BorderRadius.circular(14.r),
-                border: Border.all(
-                  color: count > 0 ? const Color(0xFFE39FFF).withValues(alpha: 0.6) : const Color(0xFFE2E8F0),
-                  width: 1.2,
-                ),
+                color: const Color(0xFF26262B),
+                borderRadius: BorderRadius.circular(12.r),
               ),
               child: Icon(
                 Icons.pending_actions_rounded,
-                color: count > 0 ? const Color(0xFFAB31DE) : const Color(0xFF94A3B8),
-                size: 22.sp,
+                color: Colors.white,
+                size: 20.sp,
               ),
             ),
-            SizedBox(width: 14.w),
+            SizedBox(width: 12.w),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -751,10 +748,10 @@ class SuperOfferScreen extends HookConsumerWidget {
                     children: [
                       Text(
                         'Pending Offers',
-                        style: GoogleFonts.outfit(
+                        style: GoogleFonts.poppins(
                           color: const Color(0xFF1E1B4B),
-                          fontSize: 15.sp,
-                          fontWeight: FontWeight.w800,
+                          fontSize: 14.5.sp,
+                          fontWeight: FontWeight.w700,
                         ),
                       ),
                       SizedBox(width: 8.w),
@@ -766,10 +763,10 @@ class SuperOfferScreen extends HookConsumerWidget {
                         ),
                         child: Text(
                           count > 0 ? '$count Pending' : '0 Offers',
-                          style: GoogleFonts.outfit(
+                          style: GoogleFonts.poppins(
                             color: count > 0 ? const Color(0xFF15803D) : const Color(0xFF64748B),
-                            fontSize: 10.5.sp,
-                            fontWeight: FontWeight.w800,
+                            fontSize: 10.sp,
+                            fontWeight: FontWeight.w700,
                           ),
                         ),
                       ),
@@ -780,9 +777,9 @@ class SuperOfferScreen extends HookConsumerWidget {
                     count > 0
                         ? 'Tap to continue your offer steps and earn rewards'
                         : 'No pending offers. Complete offers to see them here',
-                    style: GoogleFonts.outfit(
+                    style: GoogleFonts.poppins(
                       color: const Color(0xFF64748B),
-                      fontSize: 11.5.sp,
+                      fontSize: 11.sp,
                       fontWeight: FontWeight.w400,
                     ),
                     maxLines: 1,
@@ -794,7 +791,7 @@ class SuperOfferScreen extends HookConsumerWidget {
             Icon(
               Icons.chevron_right_rounded,
               color: const Color(0xFF94A3B8),
-              size: 24.sp,
+              size: 22.sp,
             ),
           ],
         ),
@@ -803,50 +800,92 @@ class SuperOfferScreen extends HookConsumerWidget {
   }
 
   Widget _buildSuperMissionHeader() {
-    return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.center,
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.fromLTRB(16.w, 14.h, 14.w, 14.h),
+      decoration: BoxDecoration(
+        image: const DecorationImage(
+          image: AssetImage('assets/Icons1/Rectangle 13.png'),
+          fit: BoxFit.fill,
+        ),
+        borderRadius: BorderRadius.circular(20.r),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.18),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Row(
         children: [
-          // 3D Flame Icon
-          SizedBox(
-            height: 54.h,
-            width: 80.w,
-            child: Image.asset(
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 3.h),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF26262E),
+                    borderRadius: BorderRadius.circular(8.r),
+                    border: Border.all(
+                      color: const Color(0xFF383842),
+                      width: 1,
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.bolt_rounded,
+                        color: const Color(0xFFFBBF24),
+                        size: 12.sp,
+                      ),
+                      SizedBox(width: 4.w),
+                      Text(
+                        'SUPER MISSION',
+                        style: GoogleFonts.poppins(
+                          color: Colors.white,
+                          fontSize: 9.5.sp,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(height: 8.h),
+                Text(
+                  'Unlock High Rewards',
+                  style: GoogleFonts.poppins(
+                    color: Colors.white,
+                    fontSize: 16.sp,
+                    fontWeight: FontWeight.w700,
+                    height: 1.15,
+                  ),
+                ),
+                SizedBox(height: 3.h),
+                Text(
+                  'Complete offers to earn big coins instantly',
+                  style: GoogleFonts.poppins(
+                    color: const Color(0xFF9E9EA7),
+                    fontSize: 10.sp,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          SizedBox(width: 8.w),
+          Image.asset(
+            'assets/Icons1/super_offer_3d.png',
+            width: 72.w,
+            height: 72.w,
+            fit: BoxFit.contain,
+            errorBuilder: (_, __, ___) => Image.asset(
               'assets/icons/suprerofferdhn.png',
+              width: 68.w,
+              height: 68.w,
               fit: BoxFit.contain,
-              errorBuilder: (_, __, ___) => Icon(
-                Icons.local_fire_department_rounded,
-                color: const Color(0xFFAB31DE),
-                size: 48.sp,
-              ),
-            ),
-          ),
-          SizedBox(height: 4.h),
-          Text(
-            'Super Offer',
-            maxLines: 1,
-            style: GoogleFonts.outfit(
-              color: const Color(0xFF1E1B4B),
-              fontSize: 18.5.sp,
-              fontWeight: FontWeight.w800,
-              letterSpacing: -0.2,
-            ),
-          ),
-          SizedBox(height: 3.h),
-          Container(
-            width: 80.w,
-            height: 2.5.h,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(2.r),
-              gradient: const LinearGradient(
-                colors: [
-                  Color(0xFFE39FFF),
-                  Color(0xFFAB31DE),
-                ],
-                begin: Alignment.centerLeft,
-                end: Alignment.centerRight,
-              ),
             ),
           ),
         ],
@@ -860,41 +899,49 @@ class SuperOfferScreen extends HookConsumerWidget {
       padding: EdgeInsets.symmetric(vertical: 24.h, horizontal: 16.w),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(20.r),
+        borderRadius: BorderRadius.circular(18.r),
         border: Border.all(
-          color: const Color(0xFFF1F5F9),
+          color: const Color(0xFFE2E8F0),
           width: 1.2,
         ),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF0F172A).withValues(alpha: 0.04),
-            blurRadius: 14,
-            offset: const Offset(0, 5),
+            color: Colors.black.withValues(alpha: 0.04),
+            blurRadius: 10,
+            offset: const Offset(0, 3),
           ),
         ],
       ),
       child: Column(
         children: [
-          Icon(
-            Icons.assignment_late_outlined,
-            size: 42.sp,
-            color: const Color(0xFFAB31DE),
+          Container(
+            width: 48.w,
+            height: 48.w,
+            decoration: BoxDecoration(
+              color: const Color(0xFFF1F5F9),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
+              Icons.assignment_late_outlined,
+              size: 26.sp,
+              color: const Color(0xFF26262B),
+            ),
           ),
           SizedBox(height: 10.h),
           Text(
             _translate('no-tasks-available', 'No Task Available'),
-            style: GoogleFonts.outfit(
+            style: GoogleFonts.poppins(
               color: const Color(0xFF1E1B4B),
-              fontSize: 16.sp,
-              fontWeight: FontWeight.w800,
+              fontSize: 15.sp,
+              fontWeight: FontWeight.w700,
             ),
           ),
           SizedBox(height: 4.h),
           Text(
             _translate('check-back-later', 'Please check back later for new offers.'),
-            style: GoogleFonts.outfit(
+            style: GoogleFonts.poppins(
               color: const Color(0xFF64748B),
-              fontSize: 12.sp,
+              fontSize: 11.5.sp,
               fontWeight: FontWeight.w400,
             ),
           ),
@@ -908,19 +955,22 @@ class SuperOfferScreen extends HookConsumerWidget {
       alignment: Alignment.centerLeft,
       child: Row(
         children: [
-          Icon(
-            Icons.sports_esports_rounded,
-            color: const Color(0xFF10B981),
-            size: 22.sp,
+          Container(
+            width: 4.w,
+            height: 18.h,
+            decoration: BoxDecoration(
+              color: const Color(0xFF26262B),
+              borderRadius: BorderRadius.circular(2.r),
+            ),
           ),
           SizedBox(width: 8.w),
           Text(
             'Play Games',
-            style: GoogleFonts.outfit(
+            style: GoogleFonts.poppins(
               color: const Color(0xFF1E1B4B),
-              fontSize: 17.sp,
-              fontWeight: FontWeight.w800,
-              letterSpacing: -0.2,
+              fontSize: 16.sp,
+              fontWeight: FontWeight.w600,
+              letterSpacing: 0.2,
             ),
           ),
         ],
@@ -942,14 +992,14 @@ class SuperOfferScreen extends HookConsumerWidget {
         color: Colors.white,
         borderRadius: BorderRadius.circular(18.r),
         border: Border.all(
-          color: const Color(0xFFF1F5F9),
+          color: const Color(0xFFE2E8F0),
           width: 1.2,
         ),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF0F172A).withValues(alpha: 0.04),
-            blurRadius: 14,
-            offset: const Offset(0, 5),
+            color: Colors.black.withValues(alpha: 0.04),
+            blurRadius: 10,
+            offset: const Offset(0, 3),
           ),
         ],
       ),
@@ -957,15 +1007,15 @@ class SuperOfferScreen extends HookConsumerWidget {
         padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 14.h),
         child: Row(
           children: [
-            // Left 3D Game Icon Container
+            // Left Game Icon Container
             Container(
               width: 48.w,
               height: 48.w,
               decoration: BoxDecoration(
-                color: const Color(0xFFECFDF5),
+                color: const Color(0xFFF8FAFC),
                 borderRadius: BorderRadius.circular(14.r),
                 border: Border.all(
-                  color: const Color(0xFFA7F3D0),
+                  color: const Color(0xFFE2E8F0),
                   width: 1,
                 ),
               ),
@@ -975,7 +1025,7 @@ class SuperOfferScreen extends HookConsumerWidget {
                 fit: BoxFit.contain,
                 errorBuilder: (_, __, ___) => const Icon(
                   Icons.sports_esports_rounded,
-                  color: Color(0xFF059669),
+                  color: Color(0xFF26262B),
                   size: 26,
                 ),
               ),
@@ -992,20 +1042,20 @@ class SuperOfferScreen extends HookConsumerWidget {
                     title,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: GoogleFonts.outfit(
+                    style: GoogleFonts.poppins(
                       color: const Color(0xFF1E1B4B),
-                      fontSize: 16.sp,
-                      fontWeight: FontWeight.w800,
+                      fontSize: 15.sp,
+                      fontWeight: FontWeight.w700,
                     ),
                   ),
                   SizedBox(height: 4.h),
                   Container(
                     padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 3.h),
                     decoration: BoxDecoration(
-                      color: const Color(0xFFECFDF5),
-                      borderRadius: BorderRadius.circular(10.r),
+                      color: const Color(0xFF26262E),
+                      borderRadius: BorderRadius.circular(8.r),
                       border: Border.all(
-                        color: const Color(0xFF10B981).withValues(alpha: 0.3),
+                        color: const Color(0xFF383842),
                         width: 1,
                       ),
                     ),
@@ -1014,17 +1064,17 @@ class SuperOfferScreen extends HookConsumerWidget {
                       children: [
                         Image.asset(
                           'assets/icons/gems.png',
-                          width: 13.w,
-                          height: 13.w,
+                          width: 12.w,
+                          height: 12.w,
                           fit: BoxFit.contain,
                         ),
                         SizedBox(width: 4.w),
                         Text(
                           subtitle,
-                          style: GoogleFonts.outfit(
-                            color: const Color(0xFF047857),
-                            fontSize: 11.5.sp,
-                            fontWeight: FontWeight.w800,
+                          style: GoogleFonts.poppins(
+                            color: Colors.white,
+                            fontSize: 10.5.sp,
+                            fontWeight: FontWeight.w700,
                           ),
                         ),
                       ],
@@ -1036,7 +1086,7 @@ class SuperOfferScreen extends HookConsumerWidget {
 
             SizedBox(width: 8.w),
 
-            // Right Executive Purple Gradient Play Button
+            // Right Silver Metallic Play Button
             GestureDetector(
               onTap: () {
                 HapticFeedback.lightImpact();
@@ -1047,29 +1097,41 @@ class SuperOfferScreen extends HookConsumerWidget {
                 decoration: BoxDecoration(
                   gradient: const LinearGradient(
                     colors: [
-                      Color(0xFF10B981),
-                      Color(0xFF047857),
+                      Colors.white,
+                      Color(0xFFE5E7EB),
+                      Color(0xFFB0B5C2),
                     ],
-                    begin: Alignment.centerLeft,
-                    end: Alignment.centerRight,
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
                   ),
                   borderRadius: BorderRadius.circular(12.r),
+                  border: Border.all(
+                    color: const Color(0xFF9CA3AF),
+                    width: 1,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.10),
+                      blurRadius: 6,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Icon(
                       Icons.play_arrow_rounded,
-                      color: Colors.white,
+                      color: const Color(0xFF16161A),
                       size: 16.sp,
                     ),
                     SizedBox(width: 2.w),
                     Text(
                       buttonText,
-                      style: GoogleFonts.outfit(
-                        color: Colors.white,
-                        fontSize: 12.5.sp,
-                        fontWeight: FontWeight.w800,
+                      style: GoogleFonts.poppins(
+                        color: const Color(0xFF16161A),
+                        fontSize: 12.sp,
+                        fontWeight: FontWeight.w700,
                       ),
                     ),
                   ],
@@ -1083,7 +1145,7 @@ class SuperOfferScreen extends HookConsumerWidget {
   }
 }
 
-// Pure White Shimmer for Super Offer
+// Clean Shimmer for Super Offer
 class SuperOfferShimmer extends StatelessWidget {
   const SuperOfferShimmer({super.key});
 
@@ -1095,9 +1157,9 @@ class SuperOfferShimmer extends StatelessWidget {
       padding: EdgeInsets.symmetric(horizontal: 14.w),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(20.r),
+        borderRadius: BorderRadius.circular(18.r),
         border: Border.all(
-          color: const Color(0xFFF1F5F9),
+          color: const Color(0xFFE2E8F0),
           width: 1.2,
         ),
       ),
@@ -1162,7 +1224,7 @@ extension BoxDecoExt on BorderRadius {
   BoxDecoration toBoxDecoration() => BoxDecoration(color: const Color(0xFFF1F5F9), borderRadius: this);
 }
 
-// AVAILABLE GEMS BADGE (PURE WHITE LUXURY DESIGN)
+// AVAILABLE GEMS BADGE (HOME STYLE COIN BADGE DESIGN)
 class _AvailableGemsBadge extends StatelessWidget {
   final int gems;
 
@@ -1171,19 +1233,19 @@ class _AvailableGemsBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
+      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16.r),
+        color: const Color(0xFF26262E),
+        borderRadius: BorderRadius.circular(12.r),
         border: Border.all(
-          color: const Color(0xFFF1F5F9),
-          width: 1.2,
+          color: const Color(0xFF383842),
+          width: 1,
         ),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF0F172A).withValues(alpha: 0.04),
-            blurRadius: 10,
-            offset: const Offset(0, 3),
+            color: Colors.black.withValues(alpha: 0.12),
+            blurRadius: 6,
+            offset: const Offset(0, 2),
           ),
         ],
       ),
@@ -1192,17 +1254,17 @@ class _AvailableGemsBadge extends StatelessWidget {
         children: [
           Image.asset(
             'assets/icons/gems.png',
-            width: 20.w,
-            height: 20.w,
+            width: 16.w,
+            height: 16.w,
             fit: BoxFit.contain,
           ),
-          SizedBox(width: 6.w),
+          SizedBox(width: 5.w),
           Text(
             gems.toString(),
-            style: GoogleFonts.outfit(
-              color: const Color(0xFF1E1B4B),
-              fontSize: 15.sp,
-              fontWeight: FontWeight.w800,
+            style: GoogleFonts.poppins(
+              color: Colors.white,
+              fontSize: 13.sp,
+              fontWeight: FontWeight.w700,
             ),
           ),
         ],
@@ -1210,3 +1272,4 @@ class _AvailableGemsBadge extends StatelessWidget {
     );
   }
 }
+

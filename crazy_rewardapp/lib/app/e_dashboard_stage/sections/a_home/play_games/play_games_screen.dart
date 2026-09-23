@@ -214,34 +214,34 @@ class PlayGamesScreen extends HookConsumerWidget {
                                                 alignment: Alignment.center,
                                                 decoration: BoxDecoration(
                                                   color: Colors.white,
-                                                  borderRadius: BorderRadius.circular(15.r),
+                                                  borderRadius: BorderRadius.circular(14.r),
                                                   border: Border.all(
-                                                    color: const Color(0xFFF1F5F9),
+                                                    color: const Color(0xFFE2E8F0),
                                                     width: 1.2,
                                                   ),
                                                   boxShadow: [
                                                     BoxShadow(
-                                                      color: const Color(0xFFAB31DE).withValues(alpha: 0.08),
-                                                      blurRadius: 10,
-                                                      offset: const Offset(0, 3),
+                                                      color: Colors.black.withValues(alpha: 0.04),
+                                                      blurRadius: 8,
+                                                      offset: const Offset(0, 2),
                                                     ),
                                                   ],
                                                 ),
                                                 child: Icon(
                                                   Icons.arrow_back_rounded,
-                                                  color: const Color(0xFFAB31DE),
-                                                  size: 22.sp,
+                                                  color: const Color(0xFF26262B),
+                                                  size: 20.sp,
                                                 ),
                                               ),
                                             ),
                                             SizedBox(width: 12.w),
                                             Text(
                                               'Play Games',
-                                              style: GoogleFonts.outfit(
-                                                color: const Color(0xFF1E1B4B),
-                                                fontSize: 18.5.sp,
+                                              style: GoogleFonts.kaushanScript(
+                                                color: const Color(0xFF26262B),
+                                                fontSize: 28.sp,
                                                 fontWeight: FontWeight.w800,
-                                                letterSpacing: -0.2,
+                                                letterSpacing: 0.5,
                                               ),
                                             ),
                                           ],
@@ -265,15 +265,15 @@ class PlayGamesScreen extends HookConsumerWidget {
                                               vertical: 8.h,
                                             ),
                                             decoration: BoxDecoration(
-                                              color: const Color(0xFFFAF5FF),
-                                              borderRadius: BorderRadius.circular(14.r),
+                                              color: Colors.white,
+                                              borderRadius: BorderRadius.circular(12.r),
                                               border: Border.all(
-                                                color: const Color(0xFFF3E8FF),
+                                                color: const Color(0xFFE2E8F0),
                                                 width: 1.2,
                                               ),
                                               boxShadow: [
                                                 BoxShadow(
-                                                  color: const Color(0xFFAB31DE).withValues(alpha: 0.05),
+                                                  color: Colors.black.withValues(alpha: 0.03),
                                                   blurRadius: 6,
                                                   offset: const Offset(0, 2),
                                                 ),
@@ -284,16 +284,16 @@ class PlayGamesScreen extends HookConsumerWidget {
                                               children: [
                                                 Icon(
                                                   Icons.help_outline_rounded,
-                                                  color: const Color(0xFFAB31DE),
+                                                  color: const Color(0xFF26262B),
                                                   size: 15.sp,
                                                 ),
                                                 SizedBox(width: 5.w),
                                                 Text(
                                                   'How To?',
-                                                  style: GoogleFonts.outfit(
-                                                    color: const Color(0xFFAB31DE),
+                                                  style: GoogleFonts.poppins(
+                                                    color: const Color(0xFF26262B),
                                                     fontSize: 12.sp,
-                                                    fontWeight: FontWeight.w800,
+                                                    fontWeight: FontWeight.w700,
                                                   ),
                                                 ),
                                               ],
@@ -346,7 +346,7 @@ class PlayGamesScreen extends HookConsumerWidget {
                                       ),
                                     ),
 
-                                  // Game Cards List Matching Uploaded Screenshot 1-to-1
+                                  // Game Cards List Matching Home Screen Cards 1-to-1
                                   Padding(
                                     padding: EdgeInsets.symmetric(horizontal: 16.w),
                                     child: offers.isEmpty
@@ -417,7 +417,7 @@ class PlayGamesScreen extends HookConsumerWidget {
 }
 
 // ---------------------------------------------------------------------------
-// SUB-CATEGORY FILTER CHIP
+// SUB-CATEGORY FILTER CHIP (MATCHING HOME SCREEN DESIGN SYSTEM)
 // ---------------------------------------------------------------------------
 class _FilterChip extends StatelessWidget {
   final String label;
@@ -440,27 +440,19 @@ class _FilterChip extends StatelessWidget {
         height: 36.h,
         padding: EdgeInsets.symmetric(horizontal: 16.w),
         decoration: BoxDecoration(
-          gradient: isSelected
-              ? const LinearGradient(
-                  colors: [
-                    Color(0xFFE39FFF),
-                    Color(0xFFAB31DE),
-                  ],
-                )
-              : null,
-          color: isSelected ? null : Colors.white,
+          color: isSelected ? const Color(0xFF26262B) : Colors.white,
           borderRadius: BorderRadius.circular(12.r),
           border: Border.all(
             color: isSelected
-                ? Colors.transparent
-                : const Color(0xFFF1F5F9),
+                ? const Color(0xFF26262B)
+                : const Color(0xFFE2E8F0),
             width: 1.2,
           ),
           boxShadow: isSelected
               ? [
                   BoxShadow(
-                    color: const Color(0xFFAB31DE).withValues(alpha: 0.3),
-                    blurRadius: 8,
+                    color: Colors.black.withValues(alpha: 0.12),
+                    blurRadius: 6,
                     offset: const Offset(0, 2),
                   ),
                 ]
@@ -475,10 +467,10 @@ class _FilterChip extends StatelessWidget {
         alignment: Alignment.center,
         child: Text(
           label,
-          style: GoogleFonts.outfit(
+          style: GoogleFonts.poppins(
             color: isSelected ? Colors.white : const Color(0xFF64748B),
-            fontSize: 13.sp,
-            fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
+            fontSize: 12.5.sp,
+            fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
           ),
         ),
       ),
@@ -487,7 +479,7 @@ class _FilterChip extends StatelessWidget {
 }
 
 // ---------------------------------------------------------------------------
-// EXECUTIVE GAME CARD (MATCHING USER'S UPLOADED SCREENSHOT 1-TO-1)
+// EXECUTIVE GAME CARD (MATCHING HOME SCREEN STYLE & METALLIC BUTTONS)
 // ---------------------------------------------------------------------------
 class _ExecutiveGameCard extends StatefulWidget {
   final PlayGamesModel game;
@@ -536,9 +528,9 @@ class _ExecutiveGameCardState extends State<_ExecutiveGameCard> {
         child: Container(
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.circular(22.r),
+            borderRadius: BorderRadius.circular(18.r),
             border: Border.all(
-              color: const Color(0xFFF1F5F9),
+              color: const Color(0xFFE2E8F0),
               width: 1.2,
             ),
             boxShadow: [
@@ -552,25 +544,29 @@ class _ExecutiveGameCardState extends State<_ExecutiveGameCard> {
           padding: EdgeInsets.fromLTRB(14.w, 14.h, 14.w, 14.h),
           child: Column(
             children: [
-              // Top Row: Icon + Game Title + Easy Tag
+              // Top Row: Icon + Game Title + Coins Tag
               Row(
                 children: [
                   // Game Icon
                   Container(
-                    width: 58.w,
-                    height: 58.w,
+                    width: 52.w,
+                    height: 52.w,
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(16.r),
+                      borderRadius: BorderRadius.circular(14.r),
+                      border: Border.all(
+                        color: const Color(0xFFE2E8F0),
+                        width: 1,
+                      ),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.06),
+                          color: Colors.black.withValues(alpha: 0.04),
                           blurRadius: 6,
                           offset: const Offset(0, 2),
                         ),
                       ],
                     ),
                     child: ClipRRect(
-                      borderRadius: BorderRadius.circular(16.r),
+                      borderRadius: BorderRadius.circular(13.r),
                       child: InternetImage(
                         url: game.imagePath,
                         fit: BoxFit.cover,
@@ -582,67 +578,102 @@ class _ExecutiveGameCardState extends State<_ExecutiveGameCard> {
 
                   // Game Title
                   Expanded(
-                    child: Text(
-                      game.offerName,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: GoogleFonts.outfit(
-                        color: const Color(0xFF1E1B4B),
-                        fontSize: 16.5.sp,
-                        fontWeight: FontWeight.w700,
-                        letterSpacing: -0.2,
-                      ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          game.offerName,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: GoogleFonts.poppins(
+                            color: const Color(0xFF1E1B4B),
+                            fontSize: 15.sp,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                        if (game.category.isNotEmpty) ...[
+                          SizedBox(height: 2.h),
+                          Text(
+                            game.category,
+                            style: GoogleFonts.poppins(
+                              color: const Color(0xFF64748B),
+                              fontSize: 11.5.sp,
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                        ],
+                      ],
                     ),
                   ),
 
                   SizedBox(width: 8.w),
 
-                  // Difficulty Tag (Easy)
+                  // Dark Coin Badge (Matching Home Screen)
                   Container(
                     padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
                     decoration: BoxDecoration(
-                      color: const Color(0xFFE6F4EA),
-                      borderRadius: BorderRadius.circular(10.r),
-                    ),
-                    child: Text(
-                      game.category.isNotEmpty ? game.category : 'Easy',
-                      style: GoogleFonts.outfit(
-                        color: const Color(0xFF1E8E3E),
-                        fontSize: 11.sp,
-                        fontWeight: FontWeight.w700,
+                      color: const Color(0xFF26262E),
+                      borderRadius: BorderRadius.circular(8.r),
+                      border: Border.all(
+                        color: const Color(0xFF383842),
+                        width: 1,
                       ),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Image.asset(
+                          'assets/icons/coin.png',
+                          width: 14.sp,
+                          height: 14.sp,
+                          fit: BoxFit.contain,
+                        ),
+                        SizedBox(width: 4.w),
+                        Text(
+                          '+${game.coins}',
+                          style: GoogleFonts.poppins(
+                            color: Colors.white,
+                            fontSize: 11.5.sp,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ],
               ),
 
-              SizedBox(height: 14.h),
+              SizedBox(height: 12.h),
 
-              // Bottom Row: Stopwatch Pill + Coin Pill + Play Button
+              // Bottom Row: Stopwatch Pill + Play Button
               Row(
                 children: [
                   // ⏱️ Stopwatch Pill
                   Container(
-                    padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
+                    padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
                     decoration: BoxDecoration(
-                      color: const Color(0xFFE8F5E9),
-                      borderRadius: BorderRadius.circular(12.r),
+                      color: const Color(0xFFF8FAFC),
+                      borderRadius: BorderRadius.circular(10.r),
+                      border: Border.all(
+                        color: const Color(0xFFE2E8F0),
+                        width: 1,
+                      ),
                     ),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Icon(
                           Icons.timer_outlined,
-                          color: const Color(0xFF2E7D32),
+                          color: const Color(0xFF64748B),
                           size: 14.sp,
                         ),
                         SizedBox(width: 4.w),
                         Text(
                           durationText,
-                          style: GoogleFonts.outfit(
-                            color: const Color(0xFF2E7D32),
+                          style: GoogleFonts.poppins(
+                            color: const Color(0xFF64748B),
                             fontSize: 11.5.sp,
-                            fontWeight: FontWeight.w700,
+                            fontWeight: FontWeight.w600,
                           ),
                         ),
                       ],
@@ -651,16 +682,28 @@ class _ExecutiveGameCardState extends State<_ExecutiveGameCard> {
 
                   const Spacer(),
 
-                  // ▶️ Play Button
+                  // ▶️ Metallic Silver Play Button
                   Container(
-                    padding: EdgeInsets.symmetric(horizontal: 18.w, vertical: 8.h),
+                    padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 7.h),
                     decoration: BoxDecoration(
-                      color: const Color(0xFF48C78E),
-                      borderRadius: BorderRadius.circular(12.r),
+                      gradient: const LinearGradient(
+                        colors: [
+                          Colors.white,
+                          Color(0xFFE5E7EB),
+                          Color(0xFFB0B5C2),
+                        ],
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                      ),
+                      borderRadius: BorderRadius.circular(10.r),
+                      border: Border.all(
+                        color: const Color(0xFF9CA3AF),
+                        width: 1,
+                      ),
                       boxShadow: [
                         BoxShadow(
-                          color: const Color(0xFF48C78E).withValues(alpha: 0.3),
-                          blurRadius: 6,
+                          color: Colors.black.withValues(alpha: 0.08),
+                          blurRadius: 4,
                           offset: const Offset(0, 2),
                         ),
                       ],
@@ -670,16 +713,17 @@ class _ExecutiveGameCardState extends State<_ExecutiveGameCard> {
                       children: [
                         Icon(
                           Icons.play_arrow_rounded,
-                          color: Colors.white,
-                          size: 18.sp,
+                          color: const Color(0xFF16161A),
+                          size: 16.sp,
                         ),
                         SizedBox(width: 4.w),
                         Text(
                           'Play',
-                          style: GoogleFonts.outfit(
-                            color: Colors.white,
-                            fontSize: 13.5.sp,
+                          style: GoogleFonts.poppins(
+                            color: const Color(0xFF16161A),
+                            fontSize: 12.5.sp,
                             fontWeight: FontWeight.w800,
+                            letterSpacing: 0.3,
                           ),
                         ),
                       ],
@@ -740,12 +784,12 @@ class _PlayGamesGridShimmer extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  _buildSkeletonBox(width: 40.w, height: 40.w, borderRadius: 15.r),
+                  _buildSkeletonBox(width: 40.w, height: 40.w, borderRadius: 14.r),
                   SizedBox(width: 12.w),
-                  _buildSkeletonBox(width: 120.w, height: 22.h, borderRadius: 6.r),
+                  _buildSkeletonBox(width: 120.w, height: 24.h, borderRadius: 6.r),
                 ],
               ),
-              _buildSkeletonBox(width: 80.w, height: 36.h, borderRadius: 14.r),
+              _buildSkeletonBox(width: 80.w, height: 36.h, borderRadius: 12.r),
             ],
           ),
 
@@ -775,9 +819,9 @@ class _PlayGamesGridShimmer extends StatelessWidget {
               return Container(
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.circular(22.r),
+                  borderRadius: BorderRadius.circular(18.r),
                   border: Border.all(
-                    color: const Color(0xFFF1F5F9),
+                    color: const Color(0xFFE2E8F0),
                     width: 1.2,
                   ),
                 ),
@@ -786,21 +830,19 @@ class _PlayGamesGridShimmer extends StatelessWidget {
                   children: [
                     Row(
                       children: [
-                        _buildSkeletonBox(width: 58.w, height: 58.w, borderRadius: 16.r),
+                        _buildSkeletonBox(width: 52.w, height: 52.w, borderRadius: 14.r),
                         SizedBox(width: 12.w),
                         _buildSkeletonBox(width: 140.w, height: 18.h, borderRadius: 6.r),
                         const Spacer(),
-                        _buildSkeletonBox(width: 45.w, height: 22.h, borderRadius: 10.r),
+                        _buildSkeletonBox(width: 55.w, height: 24.h, borderRadius: 8.r),
                       ],
                     ),
-                    SizedBox(height: 14.h),
+                    SizedBox(height: 12.h),
                     Row(
                       children: [
-                        _buildSkeletonBox(width: 80.w, height: 28.h, borderRadius: 12.r),
-                        SizedBox(width: 8.w),
-                        _buildSkeletonBox(width: 55.w, height: 28.h, borderRadius: 12.r),
+                        _buildSkeletonBox(width: 80.w, height: 26.h, borderRadius: 10.r),
                         const Spacer(),
-                        _buildSkeletonBox(width: 75.w, height: 32.h, borderRadius: 12.r),
+                        _buildSkeletonBox(width: 75.w, height: 30.h, borderRadius: 10.r),
                       ],
                     ),
                   ],

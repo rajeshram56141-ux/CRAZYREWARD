@@ -163,45 +163,46 @@ class PromoCodeScreen extends HookConsumerWidget {
                     // Top App Bar
                     Row(
                       children: [
-                        GestureDetector(
+                        InkWell(
                           onTap: () {
                             HapticFeedback.lightImpact();
                             AutoRouter.of(context).maybePop();
                           },
+                          borderRadius: BorderRadius.circular(14.r),
                           child: Container(
                             width: 40.w,
                             height: 40.w,
                             alignment: Alignment.center,
                             decoration: BoxDecoration(
                               color: Colors.white,
-                              borderRadius: BorderRadius.circular(15.r),
+                              borderRadius: BorderRadius.circular(14.r),
                               border: Border.all(
-                                color: const Color(0xFFF1F5F9),
+                                color: const Color(0xFFE2E8F0),
                                 width: 1.2,
                               ),
                               boxShadow: [
                                 BoxShadow(
-                                  color: const Color(0xFFAB31DE).withValues(alpha: 0.08),
-                                  blurRadius: 10,
-                                  offset: const Offset(0, 3),
+                                  color: Colors.black.withValues(alpha: 0.04),
+                                  blurRadius: 8,
+                                  offset: const Offset(0, 2),
                                 ),
                               ],
                             ),
                             child: Icon(
                               Icons.arrow_back_rounded,
-                              color: const Color(0xFFAB31DE),
-                              size: 22.sp,
+                              color: const Color(0xFF26262B),
+                              size: 20.sp,
                             ),
                           ),
                         ),
                         SizedBox(width: 12.w),
                         Text(
                           'Promo Code',
-                          style: GoogleFonts.outfit(
-                            color: const Color(0xFF1E1B4B),
-                            fontSize: 18.5.sp,
+                          style: GoogleFonts.kaushanScript(
+                            color: const Color(0xFF26262B),
+                            fontSize: 24.sp,
                             fontWeight: FontWeight.w800,
-                            letterSpacing: -0.2,
+                            letterSpacing: 0.5,
                           ),
                         ),
                       ],
@@ -215,26 +216,22 @@ class PromoCodeScreen extends HookConsumerWidget {
                       margin: EdgeInsets.only(bottom: 14),
                     ),
 
-                    // Executive Promo Code Card (Matching Home Screen System)
+                    // Executive Promo Code Card
                     Container(
                       width: double.infinity,
                       padding: EdgeInsets.all(20.r),
                       decoration: BoxDecoration(
-                        gradient: const LinearGradient(
-                          colors: [Color(0xFFFAF5FF), Color(0xFFFFFFFF)],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                        ),
-                        borderRadius: BorderRadius.circular(22.r),
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(20.r),
                         border: Border.all(
-                          color: const Color(0xFFF1F5F9),
+                          color: const Color(0xFFE2E8F0),
                           width: 1.2,
                         ),
                         boxShadow: [
                           BoxShadow(
-                            color: const Color(0xFFAB31DE).withValues(alpha: 0.08),
-                            blurRadius: 14,
-                            offset: const Offset(0, 4),
+                            color: Colors.black.withValues(alpha: 0.04),
+                            blurRadius: 12,
+                            offset: const Offset(0, 3),
                           ),
                         ],
                       ),
@@ -244,28 +241,21 @@ class PromoCodeScreen extends HookConsumerWidget {
                           Row(
                             children: [
                               Container(
-                                width: 46.w,
-                                height: 46.w,
+                                width: 44.w,
+                                height: 44.w,
                                 alignment: Alignment.center,
                                 decoration: BoxDecoration(
-                                  color: const Color(0xFFFAF5FF),
-                                  borderRadius: BorderRadius.circular(16.r),
+                                  color: const Color(0xFFF1F5F9),
+                                  borderRadius: BorderRadius.circular(14.r),
                                   border: Border.all(
-                                    color: const Color(0xFFF3E8FF),
-                                    width: 1.5,
+                                    color: const Color(0xFFE2E8F0),
+                                    width: 1.0,
                                   ),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: const Color(0xFFAB31DE).withValues(alpha: 0.10),
-                                      blurRadius: 8,
-                                      offset: const Offset(0, 3),
-                                    ),
-                                  ],
                                 ),
                                 child: Icon(
                                   Icons.confirmation_num_rounded,
-                                  color: const Color(0xFFAB31DE),
-                                  size: 24.sp,
+                                  color: const Color(0xFF26262B),
+                                  size: 22.sp,
                                 ),
                               ),
                               SizedBox(width: 14.w),
@@ -275,19 +265,18 @@ class PromoCodeScreen extends HookConsumerWidget {
                                   children: [
                                     Text(
                                       'Redeem Special Code',
-                                      style: GoogleFonts.outfit(
-                                        color: const Color(0xFF1E1B4B),
-                                        fontSize: 17.5.sp,
+                                      style: GoogleFonts.poppins(
+                                        color: const Color(0xFF26262B),
+                                        fontSize: 16.sp,
                                         fontWeight: FontWeight.w800,
-                                        letterSpacing: -0.2,
                                       ),
                                     ),
                                     SizedBox(height: 2.h),
                                     Text(
                                       'Enter code & claim instant reward coins',
-                                      style: GoogleFonts.outfit(
+                                      style: GoogleFonts.poppins(
                                         color: const Color(0xFF64748B),
-                                        fontSize: 12.sp,
+                                        fontSize: 11.5.sp,
                                         fontWeight: FontWeight.w500,
                                       ),
                                     ),
@@ -301,33 +290,26 @@ class PromoCodeScreen extends HookConsumerWidget {
 
                           // Code Input Box with Integrated Paste Button
                           Container(
-                            height: 52.h,
+                            height: 48.h,
                             decoration: BoxDecoration(
                               color: Colors.white,
-                              borderRadius: BorderRadius.circular(16.r),
+                              borderRadius: BorderRadius.circular(14.r),
                               border: Border.all(
                                 color: const Color(0xFFE2E8F0),
                                 width: 1.2,
                               ),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: const Color(0xFFAB31DE).withValues(alpha: 0.05),
-                                  blurRadius: 8,
-                                  offset: const Offset(0, 3),
-                                ),
-                              ],
                             ),
                             child: Row(
                               children: [
-                                SizedBox(width: 16.w),
+                                SizedBox(width: 14.w),
                                 Expanded(
                                   child: TextFormField(
                                     controller: promoCodeCon,
                                     textCapitalization: TextCapitalization.characters,
-                                    cursorColor: const Color(0xFFAB31DE),
-                                    style: GoogleFonts.outfit(
-                                      color: const Color(0xFF1E1B4B),
-                                      fontSize: 15.sp,
+                                    cursorColor: const Color(0xFF26262B),
+                                    style: GoogleFonts.poppins(
+                                      color: const Color(0xFF26262B),
+                                      fontSize: 14.sp,
                                       fontWeight: FontWeight.w700,
                                       letterSpacing: 0.5,
                                     ),
@@ -338,9 +320,9 @@ class PromoCodeScreen extends HookConsumerWidget {
                                     },
                                     decoration: InputDecoration(
                                       hintText: 'Enter your code',
-                                      hintStyle: GoogleFonts.outfit(
+                                      hintStyle: GoogleFonts.poppins(
                                         color: const Color(0xFF94A3B8),
-                                        fontSize: 14.sp,
+                                        fontSize: 13.sp,
                                         fontWeight: FontWeight.w500,
                                       ),
                                       border: InputBorder.none,
@@ -373,12 +355,12 @@ class PromoCodeScreen extends HookConsumerWidget {
                                   },
                                   child: Container(
                                     width: 48.w,
-                                    height: 52.h,
+                                    height: 48.h,
                                     decoration: BoxDecoration(
                                       color: const Color(0xFFF8FAFC),
                                       borderRadius: BorderRadius.only(
-                                        topRight: Radius.circular(16.r),
-                                        bottomRight: Radius.circular(16.r),
+                                        topRight: Radius.circular(14.r),
+                                        bottomRight: Radius.circular(14.r),
                                       ),
                                       border: const Border(
                                         left: BorderSide(
@@ -390,8 +372,8 @@ class PromoCodeScreen extends HookConsumerWidget {
                                     alignment: Alignment.center,
                                     child: Icon(
                                       Icons.content_paste_rounded,
-                                      color: const Color(0xFFAB31DE),
-                                      size: 20.sp,
+                                      color: const Color(0xFF26262B),
+                                      size: 18.sp,
                                     ),
                                   ),
                                 ),
@@ -403,7 +385,7 @@ class PromoCodeScreen extends HookConsumerWidget {
                             SizedBox(height: 8.h),
                             Text(
                               errorMessage.value!,
-                              style: GoogleFonts.outfit(
+                              style: GoogleFonts.poppins(
                                 color: const Color(0xFFEF4444),
                                 fontSize: 12.sp,
                                 fontWeight: FontWeight.w600,
@@ -413,27 +395,32 @@ class PromoCodeScreen extends HookConsumerWidget {
 
                           SizedBox(height: 16.h),
 
-                          // Apply Code Button (Full Width Purple Gradient Button)
+                          // Apply Code Button (Silver Metallic Gradient Button)
                           GestureDetector(
                             onTap: submitPromoCode,
                             child: Container(
                               width: double.infinity,
-                              height: 50.h,
+                              height: 48.h,
                               decoration: BoxDecoration(
                                 gradient: const LinearGradient(
                                   colors: [
-                                    Color(0xFFE39FFF),
-                                    Color(0xFFAB31DE),
+                                    Colors.white,
+                                    Color(0xFFE5E7EB),
+                                    Color(0xFFB0B5C2),
                                   ],
                                   begin: Alignment.topCenter,
                                   end: Alignment.bottomCenter,
                                 ),
-                                borderRadius: BorderRadius.circular(25.r),
+                                borderRadius: BorderRadius.circular(14.r),
+                                border: Border.all(
+                                  color: const Color(0xFF9CA3AF),
+                                  width: 1.0,
+                                ),
                                 boxShadow: [
                                   BoxShadow(
-                                    color: const Color(0xFFAB31DE).withValues(alpha: 0.35),
-                                    blurRadius: 10,
-                                    offset: const Offset(0, 4),
+                                    color: Colors.black.withValues(alpha: 0.08),
+                                    blurRadius: 8,
+                                    offset: const Offset(0, 3),
                                   ),
                                 ],
                               ),
@@ -444,7 +431,7 @@ class PromoCodeScreen extends HookConsumerWidget {
                                         height: 20,
                                         child: CircularProgressIndicator(
                                           strokeWidth: 2.5,
-                                          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                                          valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF16161A)),
                                         ),
                                       )
                                     : Row(
@@ -452,17 +439,16 @@ class PromoCodeScreen extends HookConsumerWidget {
                                         children: [
                                           Icon(
                                             Icons.check_circle_rounded,
-                                            color: Colors.white,
+                                            color: const Color(0xFF16161A),
                                             size: 18.sp,
                                           ),
                                           SizedBox(width: 8.w),
                                           Text(
                                             'Apply Code',
-                                            style: GoogleFonts.outfit(
-                                              color: Colors.white,
-                                              fontSize: 16.sp,
+                                            style: GoogleFonts.poppins(
+                                              color: const Color(0xFF16161A),
+                                              fontSize: 15.sp,
                                               fontWeight: FontWeight.w800,
-                                              letterSpacing: 0.2,
                                             ),
                                           ),
                                         ],
@@ -477,14 +463,26 @@ class PromoCodeScreen extends HookConsumerWidget {
                     SizedBox(height: 24.h),
 
                     // Section Heading: Recent Redemption
-                    Text(
-                      'Recent Redemptions',
-                      style: GoogleFonts.outfit(
-                        color: const Color(0xFF1E1B4B),
-                        fontSize: 15.5.sp,
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: -0.2,
-                      ),
+                    Row(
+                      children: [
+                        Container(
+                          width: 4.w,
+                          height: 16.h,
+                          decoration: BoxDecoration(
+                            color: const Color(0xFF26262B),
+                            borderRadius: BorderRadius.circular(2.r),
+                          ),
+                        ),
+                        SizedBox(width: 8.w),
+                        Text(
+                          'Recent Redemptions',
+                          style: GoogleFonts.poppins(
+                            color: const Color(0xFF26262B),
+                            fontSize: 15.sp,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ],
                     ),
 
                     SizedBox(height: 12.h),
@@ -496,7 +494,7 @@ class PromoCodeScreen extends HookConsumerWidget {
                         child: const Center(
                           child: CircularProgressIndicator(
                             strokeWidth: 2.5,
-                            valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFAB31DE)),
+                            valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF26262B)),
                           ),
                         ),
                       ),
@@ -508,7 +506,7 @@ class PromoCodeScreen extends HookConsumerWidget {
                           color: const Color(0xFFF8FAFC),
                           borderRadius: BorderRadius.circular(16.r),
                           border: Border.all(
-                            color: const Color(0xFFF1F5F9),
+                            color: const Color(0xFFE2E8F0),
                             width: 1.2,
                           ),
                         ),
@@ -516,7 +514,7 @@ class PromoCodeScreen extends HookConsumerWidget {
                         child: Text(
                           'No redemptions yet. Be the first to redeem a special code!',
                           textAlign: TextAlign.center,
-                          style: GoogleFonts.outfit(
+                          style: GoogleFonts.poppins(
                             color: const Color(0xFF64748B),
                             fontSize: 12.5.sp,
                             fontWeight: FontWeight.w500,
@@ -554,12 +552,12 @@ class PromoCodeScreen extends HookConsumerWidget {
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(16.r),
                               border: Border.all(
-                                color: const Color(0xFFF1F5F9),
+                                color: const Color(0xFFE2E8F0),
                                 width: 1.2,
                               ),
                               boxShadow: [
                                 BoxShadow(
-                                  color: const Color(0xFFAB31DE).withValues(alpha: 0.05),
+                                  color: Colors.black.withValues(alpha: 0.03),
                                   blurRadius: 8,
                                   offset: const Offset(0, 2),
                                 ),
@@ -569,26 +567,26 @@ class PromoCodeScreen extends HookConsumerWidget {
                               children: [
                                 // Voucher / Gift Badge Icon
                                 Container(
-                                  width: 40.w,
-                                  height: 40.w,
+                                  width: 38.w,
+                                  height: 38.w,
                                   alignment: Alignment.center,
                                   decoration: BoxDecoration(
-                                    color: const Color(0xFFFAF5FF),
-                                    borderRadius: BorderRadius.circular(12.r),
+                                    color: const Color(0xFFF1F5F9),
+                                    borderRadius: BorderRadius.circular(10.r),
                                     border: Border.all(
-                                      color: const Color(0xFFF3E8FF),
+                                      color: const Color(0xFFE2E8F0),
                                       width: 1.0,
                                     ),
                                   ),
                                   child: Image.asset(
                                     'assets/icons/suprerofferdhn.png',
-                                    width: 24.w,
-                                    height: 24.w,
+                                    width: 22.w,
+                                    height: 22.w,
                                     fit: BoxFit.contain,
                                     errorBuilder: (_, __, ___) => Icon(
                                       Icons.card_giftcard_rounded,
-                                      color: const Color(0xFFAB31DE),
-                                      size: 22.sp,
+                                      color: const Color(0xFF26262B),
+                                      size: 20.sp,
                                     ),
                                   ),
                                 ),
@@ -599,16 +597,16 @@ class PromoCodeScreen extends HookConsumerWidget {
                                     children: [
                                       Text(
                                         codeText,
-                                        style: GoogleFonts.outfit(
-                                          color: const Color(0xFF1E1B4B),
-                                          fontSize: 14.sp,
-                                          fontWeight: FontWeight.w800,
+                                        style: GoogleFonts.poppins(
+                                          color: const Color(0xFF26262B),
+                                          fontSize: 13.5.sp,
+                                          fontWeight: FontWeight.w700,
                                         ),
                                       ),
                                       SizedBox(height: 2.h),
                                       Text(
                                         dateFormatted,
-                                        style: GoogleFonts.outfit(
+                                        style: GoogleFonts.poppins(
                                           color: const Color(0xFF64748B),
                                           fontSize: 11.sp,
                                           fontWeight: FontWeight.w500,
@@ -617,14 +615,14 @@ class PromoCodeScreen extends HookConsumerWidget {
                                     ],
                                   ),
                                 ),
-                                // Reward Coin Chip
+                                // Reward Coin Chip (Dark Pill)
                                 Container(
-                                  padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
+                                  padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 3.h),
                                   decoration: BoxDecoration(
-                                    color: const Color(0xFFF0FDF4),
-                                    borderRadius: BorderRadius.circular(12.r),
+                                    color: const Color(0xFF26262E),
+                                    borderRadius: BorderRadius.circular(8.r),
                                     border: Border.all(
-                                      color: const Color(0xFFBBF7D0),
+                                      color: const Color(0xFF383842),
                                       width: 1.0,
                                     ),
                                   ),
@@ -633,17 +631,17 @@ class PromoCodeScreen extends HookConsumerWidget {
                                     children: [
                                       Image.asset(
                                         'assets/icons/coin.png',
-                                        width: 14.w,
-                                        height: 14.w,
+                                        width: 13.w,
+                                        height: 13.w,
                                         fit: BoxFit.contain,
                                       ),
                                       SizedBox(width: 4.w),
                                       Text(
                                         coinsVal.startsWith('+') ? coinsVal : '+$coinsVal',
-                                        style: GoogleFonts.outfit(
-                                          color: const Color(0xFF15803D),
-                                          fontSize: 12.sp,
-                                          fontWeight: FontWeight.w800,
+                                        style: GoogleFonts.poppins(
+                                          color: Colors.white,
+                                          fontSize: 11.5.sp,
+                                          fontWeight: FontWeight.w700,
                                         ),
                                       ),
                                     ],
@@ -676,19 +674,15 @@ class PromoCodeScreen extends HookConsumerWidget {
                   color: Colors.transparent,
                   child: Container(
                     decoration: BoxDecoration(
-                      gradient: const LinearGradient(
-                        colors: [Color(0xFFFAF5FF), Color(0xFFF3E8FF)],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                      ),
-                      borderRadius: BorderRadius.circular(22.r),
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20.r),
                       border: Border.all(
-                        color: const Color(0xFFE9D5FF),
+                        color: const Color(0xFFE2E8F0),
                         width: 1.2,
                       ),
                       boxShadow: [
                         BoxShadow(
-                          color: const Color(0xFFAB31DE).withValues(alpha: 0.12),
+                          color: Colors.black.withValues(alpha: 0.08),
                           blurRadius: 14,
                           offset: const Offset(0, 4),
                         ),
@@ -697,30 +691,23 @@ class PromoCodeScreen extends HookConsumerWidget {
                     padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
                     child: Row(
                       children: [
-                        // Telegram 3D Icon Box
+                        // Telegram Icon Box
                         Container(
-                          width: 42.w,
-                          height: 42.w,
+                          width: 40.w,
+                          height: 40.w,
                           alignment: Alignment.center,
                           decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(14.r),
+                            color: const Color(0xFFF8FAFC),
+                            borderRadius: BorderRadius.circular(12.r),
                             border: Border.all(
-                              color: const Color(0xFFF1F5F9),
-                              width: 1.2,
+                              color: const Color(0xFFE2E8F0),
+                              width: 1.0,
                             ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: const Color(0xFFAB31DE).withValues(alpha: 0.10),
-                                blurRadius: 8,
-                                offset: const Offset(0, 2),
-                              ),
-                            ],
                           ),
                           child: Image.asset(
                             'assets/icons/telegram.png',
-                            width: 26.w,
-                            height: 26.w,
+                            width: 24.w,
+                            height: 24.w,
                             fit: BoxFit.contain,
                           ),
                         ),
@@ -733,16 +720,15 @@ class PromoCodeScreen extends HookConsumerWidget {
                             children: [
                               Text(
                                 'Join Telegram Channel',
-                                style: GoogleFonts.outfit(
-                                  color: const Color(0xFF1E1B4B),
-                                  fontSize: 13.5.sp,
-                                  fontWeight: FontWeight.w800,
+                                style: GoogleFonts.poppins(
+                                  color: const Color(0xFF26262B),
+                                  fontSize: 13.sp,
+                                  fontWeight: FontWeight.w700,
                                 ),
                               ),
-                              SizedBox(height: 2.h),
                               Text(
                                 'Get daily promo codes & updates',
-                                style: GoogleFonts.outfit(
+                                style: GoogleFonts.poppins(
                                   color: const Color(0xFF64748B),
                                   fontSize: 11.sp,
                                   fontWeight: FontWeight.w500,
@@ -754,7 +740,7 @@ class PromoCodeScreen extends HookConsumerWidget {
 
                         SizedBox(width: 8.w),
 
-                        // Join Button
+                        // Join Button (Silver Metallic)
                         GestureDetector(
                           onTap: () {
                             HapticFeedback.lightImpact();
@@ -770,23 +756,33 @@ class PromoCodeScreen extends HookConsumerWidget {
                             padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 8.h),
                             decoration: BoxDecoration(
                               gradient: const LinearGradient(
-                                colors: [Color(0xFFE39FFF), Color(0xFFAB31DE)],
+                                colors: [
+                                  Colors.white,
+                                  Color(0xFFE5E7EB),
+                                  Color(0xFFB0B5C2),
+                                ],
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
                               ),
-                              borderRadius: BorderRadius.circular(14.r),
+                              borderRadius: BorderRadius.circular(10.r),
+                              border: Border.all(
+                                color: const Color(0xFF9CA3AF),
+                                width: 1.0,
+                              ),
                               boxShadow: [
                                 BoxShadow(
-                                  color: const Color(0xFFAB31DE).withValues(alpha: 0.3),
-                                  blurRadius: 6,
+                                  color: Colors.black.withValues(alpha: 0.08),
+                                  blurRadius: 4,
                                   offset: const Offset(0, 2),
                                 ),
                               ],
                             ),
                             child: Text(
                               'Join Now',
-                              style: GoogleFonts.outfit(
-                                color: Colors.white,
-                                fontSize: 12.5.sp,
-                                fontWeight: FontWeight.w800,
+                              style: GoogleFonts.poppins(
+                                color: const Color(0xFF16161A),
+                                fontSize: 12.sp,
+                                fontWeight: FontWeight.w700,
                               ),
                             ),
                           ),

@@ -1,4 +1,3 @@
-import 'dart:ui';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -29,32 +28,96 @@ class MoreAppsScreen extends HookConsumerWidget {
         statusBarColor: Colors.transparent,
         statusBarIconBrightness: Brightness.light,
         statusBarBrightness: Brightness.dark,
-        systemNavigationBarColor: Colors.black,
+        systemNavigationBarColor: Color(0xFF070312),
         systemNavigationBarIconBrightness: Brightness.light,
       ),
       child: Scaffold(
-        backgroundColor: Colors.black,
+        backgroundColor: const Color(0xFF090414),
         body: Stack(
           children: [
-            // 1. Full Background Image (Matching Home Screen)
+            // 1. Deep Cyberpunk Gaming Obsidian Multi-Stop Gradient Base
             Positioned.fill(
-              child: Image.asset(
-                'assets/icons/bgg.png',
-                fit: BoxFit.cover,
-              ),
-            ),
-
-            // 2. Deep Ambient Frosted Glass Blur Overlay
-            Positioned.fill(
-              child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
-                child: Container(
-                  color: Colors.black.withValues(alpha: 0.25),
+              child: Container(
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      Color(0xFF090414), // Deep Cyber Void
+                      Color(0xFF140827), // Midnight Purple
+                      Color(0xFF1E0B3B), // Royal Gaming Violet
+                      Color(0xFF0D031A), // Dark Cyber Base
+                    ],
+                    stops: [0.0, 0.35, 0.70, 1.0],
+                  ),
                 ),
               ),
             ),
 
-            // 3. Main Content
+            // 2. Top-Right Electric Neon Violet / Indigo Laser Glow
+            Positioned(
+              top: -80.h,
+              right: -60.w,
+              child: Container(
+                width: 320.w,
+                height: 320.w,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: RadialGradient(
+                    colors: [
+                      const Color(0xFF8B5CF6).withValues(alpha: 0.40),
+                      const Color(0xFF6366F1).withValues(alpha: 0.18),
+                      Colors.transparent,
+                    ],
+                    stops: const [0.0, 0.55, 1.0],
+                  ),
+                ),
+              ),
+            ),
+
+            // 3. Center-Left Hot Cyber Pink / Neon Magenta Pulsing Glow
+            Positioned(
+              top: 220.h,
+              left: -90.w,
+              child: Container(
+                width: 290.w,
+                height: 290.w,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: RadialGradient(
+                    colors: [
+                      const Color(0xFFFF007A).withValues(alpha: 0.26),
+                      const Color(0xFF7928CA).withValues(alpha: 0.12),
+                      Colors.transparent,
+                    ],
+                    stops: const [0.0, 0.55, 1.0],
+                  ),
+                ),
+              ),
+            ),
+
+            // 4. Bottom-Right Cyber Cyan / Electric Sky Glow
+            Positioned(
+              bottom: -60.h,
+              right: -50.w,
+              child: Container(
+                width: 270.w,
+                height: 270.w,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: RadialGradient(
+                    colors: [
+                      const Color(0xFF00F0FF).withValues(alpha: 0.22),
+                      const Color(0xFF0070F3).withValues(alpha: 0.10),
+                      Colors.transparent,
+                    ],
+                    stops: const [0.0, 0.55, 1.0],
+                  ),
+                ),
+              ),
+            ),
+
+            // 5. Main Content
             SafeArea(
               bottom: false,
               child: Column(
@@ -62,7 +125,7 @@ class MoreAppsScreen extends HookConsumerWidget {
                 children: [
                   SizedBox(height: 8.h),
 
-                  // Header: Back Button + Title
+                  // Header: Gaming Back Button + Kaushan Title (Simple & Clean)
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 16.w),
                     child: Row(
@@ -72,21 +135,56 @@ class MoreAppsScreen extends HookConsumerWidget {
                             HapticFeedback.lightImpact();
                             AutoRouter.of(context).maybePop();
                           },
-                          child: Image.asset(
-                            'assets/icons/backk.png',
-                            width: 42.w,
-                            height: 42.w,
-                            fit: BoxFit.contain,
+                          child: Container(
+                            width: 40.w,
+                            height: 40.w,
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              color: Colors.white.withValues(alpha: 0.08),
+                              borderRadius: BorderRadius.circular(14.r),
+                              border: Border.all(
+                                color: const Color(0xFF00F0FF).withValues(alpha: 0.35),
+                                width: 1.2,
+                              ),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: const Color(0xFF00F0FF).withValues(alpha: 0.20),
+                                  blurRadius: 10,
+                                  offset: const Offset(0, 2),
+                                ),
+                              ],
+                            ),
+                            child: Icon(
+                              Icons.arrow_back_ios_new_rounded,
+                              color: Colors.white,
+                              size: 18.sp,
+                            ),
                           ),
                         ),
                         SizedBox(width: 14.w),
+                        Container(
+                          width: 4.w,
+                          height: 20.h,
+                          decoration: BoxDecoration(
+                            color: const Color(0xFF00F0FF),
+                            borderRadius: BorderRadius.circular(2.r),
+                            boxShadow: [
+                              BoxShadow(
+                                color: const Color(0xFF00F0FF).withValues(alpha: 0.7),
+                                blurRadius: 6,
+                                offset: const Offset(0, 0),
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(width: 8.w),
                         Text(
                           'More Apps',
-                          style: GoogleFonts.poppins(
+                          style: GoogleFonts.kaushanScript(
                             color: Colors.white,
-                            fontSize: 18.sp,
-                            fontWeight: FontWeight.w700,
-                            letterSpacing: 0.1,
+                            fontSize: 24.sp,
+                            fontWeight: FontWeight.w800,
+                            letterSpacing: 0.5,
                           ),
                         ),
                       ],
@@ -98,8 +196,8 @@ class MoreAppsScreen extends HookConsumerWidget {
                   // Main List
                   Expanded(
                     child: RefreshIndicator(
-                      color: const Color(0xFFC084FC),
-                      backgroundColor: const Color(0xFF180E2E),
+                      color: const Color(0xFF00F0FF),
+                      backgroundColor: const Color(0xFF140827),
                       onRefresh: () async {
                         ref.invalidate(SplashService.appDataProvider);
                         ref.invalidate(moreAppsStreamProvider);
@@ -123,45 +221,64 @@ class MoreAppsScreen extends HookConsumerWidget {
                                 padding: EdgeInsets.symmetric(horizontal: 32.w),
                                 child: Container(
                                   width: double.infinity,
-                                  padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 28.h),
+                                  padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 32.h),
                                   decoration: BoxDecoration(
-                                    color: Colors.white.withValues(alpha: 0.07),
-                                    borderRadius: BorderRadius.circular(20.r),
+                                    color: Colors.white.withValues(alpha: 0.05),
+                                    borderRadius: BorderRadius.circular(24.r),
                                     border: Border.all(
-                                      color: Colors.white.withValues(alpha: 0.1),
-                                      width: 1,
+                                      color: const Color(0xFF00F0FF).withValues(alpha: 0.25),
+                                      width: 1.2,
                                     ),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withValues(alpha: 0.40),
+                                        blurRadius: 16,
+                                        offset: const Offset(0, 4),
+                                      ),
+                                    ],
                                   ),
                                   child: Column(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
                                       Container(
-                                        width: 54.w,
-                                        height: 54.w,
+                                        width: 60.w,
+                                        height: 60.w,
                                         decoration: BoxDecoration(
-                                          color: const Color(0xFF6B15F6).withValues(alpha: 0.25),
+                                          gradient: const LinearGradient(
+                                            colors: [
+                                              Color(0xFF00F0FF),
+                                              Color(0xFF7000FF),
+                                            ],
+                                          ),
                                           shape: BoxShape.circle,
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color: const Color(0xFF00F0FF).withValues(alpha: 0.4),
+                                              blurRadius: 12,
+                                              offset: const Offset(0, 4),
+                                            ),
+                                          ],
                                         ),
                                         alignment: Alignment.center,
                                         child: Icon(
-                                          Icons.apps_rounded,
-                                          color: const Color(0xFFC084FC),
-                                          size: 26.sp,
+                                          Icons.sports_esports_rounded,
+                                          color: Colors.white,
+                                          size: 28.sp,
                                         ),
                                       ),
-                                      SizedBox(height: 14.h),
+                                      SizedBox(height: 16.h),
                                       Text(
-                                        'No Apps Available',
+                                        'No Games Available',
                                         textAlign: TextAlign.center,
                                         style: GoogleFonts.poppins(
                                           color: Colors.white,
-                                          fontSize: 15.sp,
+                                          fontSize: 15.5.sp,
                                           fontWeight: FontWeight.w600,
                                         ),
                                       ),
                                       SizedBox(height: 6.h),
                                       Text(
-                                        'Check back soon for new recommended apps and games!',
+                                        'Check back soon for new gaming apps & bonus offers!',
                                         textAlign: TextAlign.center,
                                         style: GoogleFonts.poppins(
                                           color: const Color(0xFF94A3B8),
@@ -190,7 +307,7 @@ class MoreAppsScreen extends HookConsumerWidget {
                             separatorBuilder: (_, __) => SizedBox(height: 12.h),
                             itemBuilder: (context, index) {
                               final app = apps[index];
-                              return _MoreAppCard(
+                              return _MoreAppScreenCard(
                                 app: app,
                                 userId: userId,
                               );
@@ -211,10 +328,10 @@ class MoreAppsScreen extends HookConsumerWidget {
 }
 
 // -------------------------------------------------------------
-// PREMIUM FROSTED GRADIENT CARD
+// CYBERPUNK GAMING GLOW OBSIDIAN PILL CARD
 // -------------------------------------------------------------
-class _MoreAppCard extends StatefulWidget {
-  const _MoreAppCard({
+class _MoreAppScreenCard extends StatefulWidget {
+  const _MoreAppScreenCard({
     required this.app,
     required this.userId,
   });
@@ -223,10 +340,10 @@ class _MoreAppCard extends StatefulWidget {
   final String userId;
 
   @override
-  State<_MoreAppCard> createState() => _MoreAppCardState();
+  State<_MoreAppScreenCard> createState() => _MoreAppScreenCardState();
 }
 
-class _MoreAppCardState extends State<_MoreAppCard> {
+class _MoreAppScreenCardState extends State<_MoreAppScreenCard> {
   bool _isPressed = false;
 
   void _handleTap() {
@@ -250,71 +367,81 @@ class _MoreAppCardState extends State<_MoreAppCard> {
       onTapCancel: () => setState(() => _isPressed = false),
       child: AnimatedScale(
         scale: _isPressed ? 0.98 : 1.0,
-        duration: const Duration(milliseconds: 100),
-        curve: Curves.easeInOut,
+        duration: const Duration(milliseconds: 120),
+        curve: Curves.easeInOutBack,
         child: Container(
-          height: 70.h,
+          height: 66.h,
           width: double.infinity,
-          padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 10.h),
+          padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 8.h),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(18.r),
-            color: Colors.white.withValues(alpha: 0.07),
+            gradient: const LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                Color(0xFF1B0E33),
+                Color(0xFF140A28),
+                Color(0xFF0F061F),
+              ],
+            ),
+            borderRadius: BorderRadius.circular(36.r),
             border: Border.all(
-              color: Colors.white.withValues(alpha: 0.1),
-              width: 1,
+              color: const Color(0xFF8B5CF6).withValues(alpha: 0.35),
+              width: 1.2,
             ),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: 0.22),
-                blurRadius: 8,
+                color: Colors.black.withValues(alpha: 0.35),
+                blurRadius: 10,
                 offset: const Offset(0, 3),
               ),
+              BoxShadow(
+                color: const Color(0xFF8B5CF6).withValues(alpha: 0.10),
+                blurRadius: 8,
+                offset: const Offset(0, -1),
+              ),
             ],
-            gradient: const LinearGradient(
-              colors: [
-                Color(0x148B5CF6),
-                Color(0x2E6D28D9),
-                Color(0x66581C87),
-                Color(0xB34C1D95),
-              ],
-              begin: Alignment.centerLeft,
-              end: Alignment.centerRight,
-              stops: [0.0, 0.35, 0.70, 1.0],
-            ),
           ),
           child: Row(
             children: [
-              // Left: Rounded App Logo
+              // Left: Circular Logo with Cyber Neon Ring
               Container(
                 width: 46.w,
                 height: 46.w,
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(14.r),
+                  shape: BoxShape.circle,
+                  color: const Color(0xFF261642),
                   border: Border.all(
-                    color: Colors.white.withValues(alpha: 0.15),
-                    width: 1.2,
+                    color: const Color(0xFF00F0FF),
+                    width: 1.8,
                   ),
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(13.r),
-                  child: Image.network(
-                    widget.app.appLogo,
-                    fit: BoxFit.cover,
-                    errorBuilder: (_, __, ___) => Container(
-                      color: const Color(0xFF382366),
-                      child: Icon(
-                        Icons.sports_esports_rounded,
-                        color: const Color(0xFFC084FC),
-                        size: 24.sp,
-                      ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: const Color(0xFF00F0FF).withValues(alpha: 0.40),
+                      blurRadius: 6,
+                      offset: const Offset(0, 1),
                     ),
-                  ),
+                  ],
+                ),
+                child: ClipOval(
+                  child: widget.app.appLogo.isNotEmpty
+                      ? (widget.app.appLogo.startsWith('http')
+                          ? Image.network(
+                              widget.app.appLogo,
+                              fit: BoxFit.cover,
+                              errorBuilder: (_, __, ___) => _buildFallbackLogo(),
+                            )
+                          : Image.asset(
+                              widget.app.appLogo,
+                              fit: BoxFit.cover,
+                              errorBuilder: (_, __, ___) => _buildFallbackLogo(),
+                            ))
+                      : _buildFallbackLogo(),
                 ),
               ),
 
               SizedBox(width: 12.w),
 
-              // Center: App Title & Subtitle
+              // Middle: Title & Subtitle (Home Screen Typography)
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -324,7 +451,7 @@ class _MoreAppCardState extends State<_MoreAppCard> {
                       children: [
                         Flexible(
                           child: Text(
-                            widget.app.appName,
+                            widget.app.appName.isNotEmpty ? widget.app.appName : 'Recommended Game',
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: GoogleFonts.poppins(
@@ -340,20 +467,20 @@ class _MoreAppCardState extends State<_MoreAppCard> {
                           Container(
                             padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 1.5.h),
                             decoration: BoxDecoration(
-                              color: const Color(0xFF7C3AED).withValues(alpha: 0.35),
-                              borderRadius: BorderRadius.circular(4.r),
-                              border: Border.all(
-                                color: const Color(0xFFC084FC).withValues(alpha: 0.7),
-                                width: 0.8,
+                              gradient: const LinearGradient(
+                                colors: [
+                                  Color(0xFFFF007A),
+                                  Color(0xFF7928CA),
+                                ],
                               ),
+                              borderRadius: BorderRadius.circular(4.r),
                             ),
                             child: Text(
                               'AD',
                               style: GoogleFonts.poppins(
-                                color: const Color(0xFFE9D5FF),
-                                fontSize: 8.sp,
+                                color: Colors.white,
+                                fontSize: 7.5.sp,
                                 fontWeight: FontWeight.w700,
-                                letterSpacing: 0.5,
                               ),
                             ),
                           ),
@@ -362,11 +489,13 @@ class _MoreAppCardState extends State<_MoreAppCard> {
                     ),
                     SizedBox(height: 2.h),
                     Text(
-                      widget.app.subtitle,
+                      widget.app.subtitle.isNotEmpty
+                          ? widget.app.subtitle
+                          : 'Play and earn rewards instantly',
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: GoogleFonts.poppins(
-                        color: Colors.white.withValues(alpha: 0.70),
+                        color: const Color(0xFF94A3B8),
                         fontSize: 9.5.sp,
                         fontWeight: FontWeight.w400,
                       ),
@@ -375,45 +504,104 @@ class _MoreAppCardState extends State<_MoreAppCard> {
                 ),
               ),
 
-              SizedBox(width: 10.w),
+              SizedBox(width: 8.w),
 
-              // Right: Visit Button (White Pill with Purple Text & Arrow)
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 6.5.h),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(100.r),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.25),
-                      blurRadius: 6,
-                      offset: const Offset(0, 2),
+              // Right: Action Button (Cyber Gold Gradient for Coins / Cyan for Visit)
+              if (widget.app.coins > 0)
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 13.w, vertical: 6.h),
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      colors: [
+                        Color(0xFFFFD700),
+                        Color(0xFFFF8C00),
+                      ],
                     ),
-                  ],
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      widget.app.coins > 0 ? '+${widget.app.coins}' : 'Visit',
-                      style: GoogleFonts.poppins(
-                        color: const Color(0xFF6B15F6),
-                        fontSize: 11.5.sp,
-                        fontWeight: FontWeight.w700,
-                        letterSpacing: 0.2,
+                    borderRadius: BorderRadius.circular(100.r),
+                    boxShadow: [
+                      BoxShadow(
+                        color: const Color(0xFFFF8C00).withValues(alpha: 0.40),
+                        blurRadius: 8,
+                        offset: const Offset(0, 2),
                       ),
+                    ],
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        '+${widget.app.coins}',
+                        style: GoogleFonts.poppins(
+                          color: const Color(0xFF1E1000),
+                          fontSize: 11.5.sp,
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: 0.2,
+                        ),
+                      ),
+                      SizedBox(width: 3.w),
+                      Icon(
+                        Icons.stars_rounded,
+                        color: const Color(0xFF1E1000),
+                        size: 13.sp,
+                      ),
+                    ],
+                  ),
+                )
+              else
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 13.w, vertical: 6.h),
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      colors: [
+                        Color(0xFF00F0FF),
+                        Color(0xFF8B5CF6),
+                      ],
                     ),
-                    SizedBox(width: 3.w),
-                    Icon(
-                      widget.app.coins > 0 ? Icons.stars_rounded : Icons.arrow_outward_rounded,
-                      color: const Color(0xFF6B15F6),
-                      size: 13.sp,
-                    ),
-                  ],
+                    borderRadius: BorderRadius.circular(100.r),
+                    boxShadow: [
+                      BoxShadow(
+                        color: const Color(0xFF00F0FF).withValues(alpha: 0.35),
+                        blurRadius: 8,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        'Play',
+                        style: GoogleFonts.poppins(
+                          color: Colors.white,
+                          fontSize: 11.5.sp,
+                          fontWeight: FontWeight.w700,
+                          letterSpacing: 0.2,
+                        ),
+                      ),
+                      SizedBox(width: 3.w),
+                      Icon(
+                        Icons.arrow_outward_rounded,
+                        color: Colors.white,
+                        size: 13.sp,
+                      ),
+                    ],
+                  ),
                 ),
-              ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildFallbackLogo() {
+    return Container(
+      color: const Color(0xFF261642),
+      child: Center(
+        child: Icon(
+          Icons.sports_esports_rounded,
+          color: const Color(0xFF00F0FF),
+          size: 22.sp,
         ),
       ),
     );
@@ -432,18 +620,18 @@ class _MoreAppsShimmer extends StatelessWidget {
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 4.h),
-      itemCount: 5,
+      itemCount: 6,
       separatorBuilder: (_, __) => SizedBox(height: 12.h),
       itemBuilder: (context, index) {
         return ShimmerTag(
-          baseColor: Colors.white.withValues(alpha: 0.06),
-          highlightColor: Colors.white.withValues(alpha: 0.14),
+          baseColor: const Color(0xFF1B0E33),
+          highlightColor: const Color(0xFF2C1B58),
           child: Container(
-            height: 70.h,
+            height: 66.h,
             width: double.infinity,
             decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.circular(18.r),
+              borderRadius: BorderRadius.circular(36.r),
             ),
           ),
         );

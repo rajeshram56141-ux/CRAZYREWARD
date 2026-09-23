@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -30,8 +31,8 @@ class NotificationScreen extends HookConsumerWidget {
         .where((t) => t.isNotEmpty)
         .toSet();
 
-    const allPossibleCategories = [
-      {'key': 'all', 'label': 'All', 'icon': Icons.notifications_rounded},
+    final allPossibleCategories = [
+      {'key': 'all', 'label': 'all'.tr() == 'all' ? 'All' : 'all'.tr(), 'icon': Icons.notifications_rounded},
       {'key': 'payment', 'label': 'Redeem', 'icon': Icons.account_balance_wallet_rounded},
       {'key': 'personal', 'label': 'Personal', 'icon': Icons.mail_rounded},
       {'key': 'support', 'label': 'Support', 'icon': Icons.headset_mic_rounded},
@@ -122,17 +123,17 @@ class NotificationScreen extends HookConsumerWidget {
                 SizedBox(height: 16.h),
                 Text(
                   'Delete Notification?',
-                  style: GoogleFonts.outfit(
-                    fontSize: 18.sp,
-                    fontWeight: FontWeight.w800,
-                    color: const Color(0xFF1E1B4B),
+                  style: GoogleFonts.poppins(
+                    fontSize: 17.sp,
+                    fontWeight: FontWeight.w700,
+                    color: const Color(0xFF26262B),
                   ),
                 ),
                 SizedBox(height: 8.h),
                 Text(
                   'Are you sure you want to delete this notification?',
                   textAlign: TextAlign.center,
-                  style: GoogleFonts.outfit(
+                  style: GoogleFonts.poppins(
                     fontSize: 13.sp,
                     color: const Color(0xFF64748B),
                     height: 1.4,
@@ -152,9 +153,9 @@ class NotificationScreen extends HookConsumerWidget {
                         ),
                         onPressed: () => Navigator.of(ctx).pop(false),
                         child: Text(
-                          'Cancel',
-                          style: GoogleFonts.outfit(
-                            fontSize: 14.sp,
+                          'cancel'.tr() == 'cancel' ? 'Cancel' : 'cancel'.tr(),
+                          style: GoogleFonts.poppins(
+                            fontSize: 13.5.sp,
                             fontWeight: FontWeight.w600,
                             color: const Color(0xFF64748B),
                           ),
@@ -177,9 +178,9 @@ class NotificationScreen extends HookConsumerWidget {
                           Navigator.of(ctx).pop(true);
                         },
                         child: Text(
-                          'Delete',
-                          style: GoogleFonts.outfit(
-                            fontSize: 14.sp,
+                          'delete'.tr() == 'delete' ? 'Delete' : 'delete'.tr(),
+                          style: GoogleFonts.poppins(
+                            fontSize: 13.5.sp,
                             fontWeight: FontWeight.w700,
                             color: Colors.white,
                           ),
@@ -224,17 +225,17 @@ class NotificationScreen extends HookConsumerWidget {
                 SizedBox(height: 16.h),
                 Text(
                   'Clear Notifications?',
-                  style: GoogleFonts.outfit(
-                    fontSize: 18.sp,
-                    fontWeight: FontWeight.w800,
-                    color: const Color(0xFF1E1B4B),
+                  style: GoogleFonts.poppins(
+                    fontSize: 17.sp,
+                    fontWeight: FontWeight.w700,
+                    color: const Color(0xFF26262B),
                   ),
                 ),
                 SizedBox(height: 8.h),
                 Text(
                   'Are you sure you want to clear all your notifications? This action cannot be undone.',
                   textAlign: TextAlign.center,
-                  style: GoogleFonts.outfit(
+                  style: GoogleFonts.poppins(
                     fontSize: 13.sp,
                     color: const Color(0xFF64748B),
                     height: 1.4,
@@ -254,9 +255,9 @@ class NotificationScreen extends HookConsumerWidget {
                         ),
                         onPressed: () => Navigator.of(ctx).pop(),
                         child: Text(
-                          'Cancel',
-                          style: GoogleFonts.outfit(
-                            fontSize: 14.sp,
+                          'cancel'.tr() == 'cancel' ? 'Cancel' : 'cancel'.tr(),
+                          style: GoogleFonts.poppins(
+                            fontSize: 13.5.sp,
                             fontWeight: FontWeight.w600,
                             color: const Color(0xFF64748B),
                           ),
@@ -288,9 +289,9 @@ class NotificationScreen extends HookConsumerWidget {
                           );
                         },
                         child: Text(
-                          'Clear All',
-                          style: GoogleFonts.outfit(
-                            fontSize: 14.sp,
+                          'clear-all'.tr() == 'clear-all' ? 'Clear All' : 'clear-all'.tr(),
+                          style: GoogleFonts.poppins(
+                            fontSize: 13.5.sp,
                             fontWeight: FontWeight.w700,
                             color: Colors.white,
                           ),
@@ -306,6 +307,13 @@ class NotificationScreen extends HookConsumerWidget {
       );
     }
 
+    // Dynamic Title based on locale / fallback
+    final screenTitle = 'notification-section'.tr() == 'notification-section'
+        ? 'Notifications'
+        : ('notification-section'.tr().contains(' ') && 'notification-section'.tr().toLowerCase().contains('section')
+            ? 'notification-section'.tr().replaceAll(RegExp(r'\s+section', caseSensitive: false), '').trim()
+            : 'notification-section'.tr());
+
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: const SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
@@ -319,7 +327,7 @@ class NotificationScreen extends HookConsumerWidget {
         body: SafeArea(
           child: Column(
             children: [
-              // 1. Executive Navigation Bar (Matching ContactSupportScreen 1-to-1)
+              // 1. Executive Navigation Bar (Luxury Dark Obsidian styling)
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
                 child: Row(
@@ -342,7 +350,7 @@ class NotificationScreen extends HookConsumerWidget {
                           ),
                           boxShadow: [
                             BoxShadow(
-                              color: const Color(0xFFAB31DE).withValues(alpha: 0.08),
+                              color: Colors.black.withValues(alpha: 0.04),
                               blurRadius: 10,
                               offset: const Offset(0, 3),
                             ),
@@ -350,19 +358,20 @@ class NotificationScreen extends HookConsumerWidget {
                         ),
                         child: Icon(
                           Icons.arrow_back_rounded,
-                          color: const Color(0xFFAB31DE),
+                          color: const Color(0xFF26262B),
                           size: 22.sp,
                         ),
                       ),
                     ),
                     Expanded(
                       child: Text(
-                        'Notifications',
+                        screenTitle,
                         textAlign: TextAlign.center,
-                        style: GoogleFonts.outfit(
-                          color: const Color(0xFF1E1B4B),
-                          fontSize: 18.sp,
+                        style: GoogleFonts.kaushanScript(
+                          color: const Color(0xFF26262B),
+                          fontSize: 26.sp,
                           fontWeight: FontWeight.w800,
+                          letterSpacing: 0.5,
                         ),
                       ),
                     ),
@@ -383,7 +392,7 @@ class NotificationScreen extends HookConsumerWidget {
                             ),
                             boxShadow: [
                               BoxShadow(
-                                color: const Color(0xFFAB31DE).withValues(alpha: 0.08),
+                                color: const Color(0xFFEF4444).withValues(alpha: 0.08),
                                 blurRadius: 10,
                                 offset: const Offset(0, 3),
                               ),
@@ -419,7 +428,7 @@ class NotificationScreen extends HookConsumerWidget {
                 SizedBox(height: 6.h),
               ],
 
-              // 3. Notification List or Empty State (Matching ContactSupportScreen)
+              // 3. Notification List or Empty State
               Expanded(
                 child: RefreshIndicator(
                   onRefresh: () async {
@@ -429,7 +438,7 @@ class NotificationScreen extends HookConsumerWidget {
                       ref.read(notificationsProvider.notifier).state = local;
                     } catch (_) {}
                   },
-                  color: const Color(0xFFAB31DE),
+                  color: const Color(0xFF26262B),
                   backgroundColor: Colors.white,
                   child: filteredNotifications.isEmpty
                       ? _buildEmptyState(context, effectiveCategory)
@@ -480,8 +489,8 @@ class NotificationScreen extends HookConsumerWidget {
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
                                     Text(
-                                      'Delete',
-                                      style: GoogleFonts.outfit(
+                                      'delete'.tr() == 'delete' ? 'Delete' : 'delete'.tr(),
+                                      style: GoogleFonts.poppins(
                                         fontSize: 13.sp,
                                         fontWeight: FontWeight.w700,
                                         color: Colors.white,
@@ -561,7 +570,7 @@ class NotificationScreen extends HookConsumerWidget {
                 decoration: BoxDecoration(
                   gradient: isSelected
                       ? const LinearGradient(
-                          colors: [Color(0xFFE39FFF), Color(0xFFAB31DE)],
+                          colors: [Color(0xFF26262B), Color(0xFF18181B)],
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
                         )
@@ -577,7 +586,7 @@ class NotificationScreen extends HookConsumerWidget {
                   boxShadow: isSelected
                       ? [
                           BoxShadow(
-                            color: const Color(0xFFAB31DE).withValues(alpha: 0.30),
+                            color: const Color(0xFF26262B).withValues(alpha: 0.25),
                             blurRadius: 8,
                             offset: const Offset(0, 3),
                           ),
@@ -601,9 +610,9 @@ class NotificationScreen extends HookConsumerWidget {
                     SizedBox(width: 6.w),
                     Text(
                       cat['label']! as String,
-                      style: GoogleFonts.outfit(
-                        fontSize: 12.5.sp,
-                        fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
+                      style: GoogleFonts.poppins(
+                        fontSize: 12.sp,
+                        fontWeight: isSelected ? FontWeight.w700 : FontWeight.w600,
                         color: isSelected ? Colors.white : const Color(0xFF64748B),
                       ),
                     ),
@@ -613,13 +622,13 @@ class NotificationScreen extends HookConsumerWidget {
                         padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 1.h),
                         decoration: BoxDecoration(
                           color: isSelected
-                              ? Colors.white.withValues(alpha: 0.25)
+                              ? Colors.white.withValues(alpha: 0.20)
                               : const Color(0xFFF1F5F9),
                           borderRadius: BorderRadius.circular(8.r),
                         ),
                         child: Text(
                           '$count',
-                          style: GoogleFonts.outfit(
+                          style: GoogleFonts.poppins(
                             fontSize: 10.sp,
                             fontWeight: FontWeight.w700,
                             color: isSelected ? Colors.white : const Color(0xFF475569),
@@ -638,8 +647,12 @@ class NotificationScreen extends HookConsumerWidget {
   }
 
   Widget _buildEmptyState(BuildContext context, String currentCategory) {
-    String title = 'No Notifications Yet';
-    String description = 'Your updates for redeems, support replies, service requests, and personal messages will appear here.';
+    String title = 'no-notifications'.tr() == 'no-notifications'
+        ? 'No Notifications Yet'
+        : 'no-notifications'.tr();
+    String description = 'no-notifications-message'.tr() == 'no-notifications-message'
+        ? 'Your updates for redeems, support replies, service requests, and personal messages will appear here.'
+        : 'no-notifications-message'.tr();
 
     if (currentCategory == 'payment') {
       title = 'No Redeem Updates';
@@ -667,26 +680,33 @@ class NotificationScreen extends HookConsumerWidget {
                 width: 68.w,
                 height: 68.w,
                 decoration: BoxDecoration(
-                  color: const Color(0xFFFAF5FF),
+                  color: const Color(0xFFF8FAFC),
                   shape: BoxShape.circle,
                   border: Border.all(
-                    color: const Color(0xFFE9D5FF),
+                    color: const Color(0xFFE2E8F0),
                     width: 1.2,
                   ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.03),
+                      blurRadius: 10,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
                 ),
                 child: Icon(
                   Icons.notifications_none_rounded,
                   size: 30.sp,
-                  color: const Color(0xFFAB31DE),
+                  color: const Color(0xFF26262B),
                 ),
               ),
               SizedBox(height: 14.h),
               Text(
                 title,
-                style: GoogleFonts.outfit(
+                style: GoogleFonts.poppins(
                   fontSize: 16.sp,
-                  fontWeight: FontWeight.w800,
-                  color: const Color(0xFF1E1B4B),
+                  fontWeight: FontWeight.w700,
+                  color: const Color(0xFF26262B),
                 ),
               ),
               SizedBox(height: 5.h),
@@ -695,10 +715,11 @@ class NotificationScreen extends HookConsumerWidget {
                 child: Text(
                   description,
                   textAlign: TextAlign.center,
-                  style: GoogleFonts.outfit(
+                  style: GoogleFonts.poppins(
                     fontSize: 12.sp,
                     color: const Color(0xFF64748B),
-                    fontWeight: FontWeight.w500,
+                    fontWeight: FontWeight.w400,
+                    height: 1.4,
                   ),
                 ),
               ),
@@ -756,16 +777,16 @@ class _NotificationCard extends StatelessWidget {
           label: 'Support',
           iconEmoji: '🎧',
           iconData: Icons.support_agent_rounded,
-          primaryColor: Color(0xFF0284C7),
-          bgColor: Color(0xFFE0F2FE),
+          primaryColor: Color(0xFF2563EB),
+          bgColor: Color(0xFFEFF6FF),
         );
       case 'service':
         return const _CategoryMeta(
           label: 'Service',
           iconEmoji: '💼',
           iconData: Icons.assignment_rounded,
-          primaryColor: Color(0xFFD97706),
-          bgColor: Color(0xFFFEF3C7),
+          primaryColor: Color(0xFF6366F1),
+          bgColor: Color(0xFFEEF2FF),
         );
       case 'personal':
       default:
@@ -773,8 +794,8 @@ class _NotificationCard extends StatelessWidget {
           label: 'Personal',
           iconEmoji: '✉️',
           iconData: Icons.mark_email_unread_rounded,
-          primaryColor: Color(0xFFAB31DE),
-          bgColor: Color(0xFFFAF5FF),
+          primaryColor: Color(0xFF26262B),
+          bgColor: Color(0xFFF1F5F9),
         );
     }
   }
@@ -913,10 +934,10 @@ class _NotificationCard extends StatelessWidget {
                     Expanded(
                       child: Text(
                         displayTitle,
-                        style: GoogleFonts.outfit(
-                          fontSize: 14.5.sp,
-                          fontWeight: FontWeight.w800,
-                          color: isFailedRedeem ? const Color(0xFF991B1B) : const Color(0xFF1E1B4B),
+                        style: GoogleFonts.poppins(
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w700,
+                          color: isFailedRedeem ? const Color(0xFF991B1B) : const Color(0xFF26262B),
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -935,9 +956,9 @@ class _NotificationCard extends StatelessWidget {
                 ),
                 child: Text(
                   meta.label.toUpperCase(),
-                  style: GoogleFonts.outfit(
+                  style: GoogleFonts.poppins(
                     fontSize: 9.5.sp,
-                    fontWeight: FontWeight.w800,
+                    fontWeight: FontWeight.w700,
                     color: meta.primaryColor,
                     letterSpacing: 0.3,
                   ),
@@ -950,11 +971,11 @@ class _NotificationCard extends StatelessWidget {
           // Message Body Text
           Text(
             displayBody,
-            style: GoogleFonts.outfit(
-              fontSize: 12.5.sp,
+            style: GoogleFonts.poppins(
+              fontSize: 12.sp,
               color: const Color(0xFF475569),
-              height: 1.35,
-              fontWeight: FontWeight.w500,
+              height: 1.4,
+              fontWeight: FontWeight.w400,
             ),
           ),
 
@@ -984,7 +1005,7 @@ class _NotificationCard extends StatelessWidget {
                   Expanded(
                     child: Text(
                       'Reason: $failureReason',
-                      style: GoogleFonts.outfit(
+                      style: GoogleFonts.poppins(
                         fontSize: 11.5.sp,
                         fontWeight: FontWeight.w600,
                         color: const Color(0xFF991B1B),
@@ -1011,7 +1032,7 @@ class _NotificationCard extends StatelessWidget {
               SizedBox(width: 4.w),
               Text(
                 relativeTime,
-                style: GoogleFonts.outfit(
+                style: GoogleFonts.poppins(
                   fontSize: 11.sp,
                   color: const Color(0xFF94A3B8),
                   fontWeight: FontWeight.w500,

@@ -267,34 +267,34 @@ class WatchVideoScreen extends HookConsumerWidget {
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
                     color: Colors.white,
-                    borderRadius: BorderRadius.circular(15.r),
+                    borderRadius: BorderRadius.circular(14.r),
                     border: Border.all(
-                      color: const Color(0xFFF1F5F9),
+                      color: const Color(0xFFE2E8F0),
                       width: 1.2,
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: const Color(0xFFAB31DE).withValues(alpha: 0.08),
-                        blurRadius: 10,
-                        offset: const Offset(0, 3),
+                        color: Colors.black.withValues(alpha: 0.04),
+                        blurRadius: 8,
+                        offset: const Offset(0, 2),
                       ),
                     ],
                   ),
                   child: Icon(
                     Icons.arrow_back_rounded,
-                    color: const Color(0xFFAB31DE),
-                    size: 22.sp,
+                    color: const Color(0xFF26262B),
+                    size: 20.sp,
                   ),
                 ),
               ),
               SizedBox(width: 12.w),
               Text(
                 'Watch Video',
-                style: GoogleFonts.outfit(
-                  color: const Color(0xFF1E1B4B),
-                  fontSize: 18.5.sp,
+                style: GoogleFonts.kaushanScript(
+                  color: const Color(0xFF26262B),
+                  fontSize: 28.sp,
                   fontWeight: FontWeight.w800,
-                  letterSpacing: -0.2,
+                  letterSpacing: 0.5,
                 ),
               ),
             ],
@@ -315,18 +315,18 @@ class WatchVideoScreen extends HookConsumerWidget {
             child: Container(
               padding: EdgeInsets.symmetric(
                 horizontal: 12.w,
-                vertical: 8.h,
+                vertical: 7.h,
               ),
               decoration: BoxDecoration(
-                color: const Color(0xFFFAF5FF),
-                borderRadius: BorderRadius.circular(14.r),
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12.r),
                 border: Border.all(
-                  color: const Color(0xFFF3E8FF),
+                  color: const Color(0xFFE2E8F0),
                   width: 1.2,
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: const Color(0xFFAB31DE).withValues(alpha: 0.05),
+                    color: Colors.black.withValues(alpha: 0.03),
                     blurRadius: 6,
                     offset: const Offset(0, 2),
                   ),
@@ -337,16 +337,16 @@ class WatchVideoScreen extends HookConsumerWidget {
                 children: [
                   Icon(
                     Icons.help_outline_rounded,
-                    color: const Color(0xFFAB31DE),
+                    color: const Color(0xFF26262B),
                     size: 15.sp,
                   ),
                   SizedBox(width: 5.w),
                   Text(
                     'How To?',
-                    style: GoogleFonts.outfit(
-                      color: const Color(0xFFAB31DE),
+                    style: GoogleFonts.poppins(
+                      color: const Color(0xFF26262B),
                       fontSize: 12.sp,
-                      fontWeight: FontWeight.w800,
+                      fontWeight: FontWeight.w700,
                     ),
                   ),
                 ],
@@ -360,7 +360,7 @@ class WatchVideoScreen extends HookConsumerWidget {
 }
 
 // ---------------------------------------------------------------------------
-// SUB-CATEGORY FILTER CHIP (EXECUTIVE WHITE DESIGN SYSTEM)
+// SUB-CATEGORY FILTER CHIP (MATCHING HOME SCREEN DESIGN SYSTEM)
 // ---------------------------------------------------------------------------
 class _FilterChip extends StatelessWidget {
   final String label;
@@ -383,27 +383,19 @@ class _FilterChip extends StatelessWidget {
         height: 36.h,
         padding: EdgeInsets.symmetric(horizontal: 16.w),
         decoration: BoxDecoration(
-          gradient: isSelected
-              ? const LinearGradient(
-                  colors: [
-                    Color(0xFFE39FFF),
-                    Color(0xFFAB31DE),
-                  ],
-                )
-              : null,
-          color: isSelected ? null : Colors.white,
+          color: isSelected ? const Color(0xFF26262B) : Colors.white,
           borderRadius: BorderRadius.circular(12.r),
           border: Border.all(
             color: isSelected
-                ? Colors.transparent
-                : const Color(0xFFF1F5F9),
+                ? const Color(0xFF26262B)
+                : const Color(0xFFE2E8F0),
             width: 1.2,
           ),
           boxShadow: isSelected
               ? [
                   BoxShadow(
-                    color: const Color(0xFFAB31DE).withValues(alpha: 0.3),
-                    blurRadius: 8,
+                    color: Colors.black.withValues(alpha: 0.12),
+                    blurRadius: 6,
                     offset: const Offset(0, 2),
                   ),
                 ]
@@ -418,10 +410,10 @@ class _FilterChip extends StatelessWidget {
         alignment: Alignment.center,
         child: Text(
           label,
-          style: GoogleFonts.outfit(
+          style: GoogleFonts.poppins(
             color: isSelected ? Colors.white : const Color(0xFF64748B),
-            fontSize: 13.sp,
-            fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
+            fontSize: 12.5.sp,
+            fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
           ),
         ),
       ),

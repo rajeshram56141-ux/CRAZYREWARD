@@ -82,21 +82,16 @@ class InviteBody extends HookConsumerWidget {
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 180),
             curve: Curves.easeInOut,
-            height: 40.h,
+            height: 38.h,
             decoration: BoxDecoration(
-              gradient: isSelected
-                  ? const LinearGradient(
-                      colors: [Color(0xFFE39FFF), Color(0xFFAB31DE)],
-                    )
-                  : null,
-              color: isSelected ? null : Colors.transparent,
-              borderRadius: BorderRadius.circular(14.r),
+              color: isSelected ? const Color(0xFF26262E) : Colors.transparent,
+              borderRadius: BorderRadius.circular(12.r),
               boxShadow: isSelected
                   ? [
                       BoxShadow(
-                        color: const Color(0xFFAB31DE).withValues(alpha: 0.3),
-                        blurRadius: 8,
-                        offset: const Offset(0, 3),
+                        color: Colors.black.withValues(alpha: 0.12),
+                        blurRadius: 6,
+                        offset: const Offset(0, 2),
                       ),
                     ]
                   : null,
@@ -108,15 +103,15 @@ class InviteBody extends HookConsumerWidget {
                 Icon(
                   icon,
                   color: isSelected ? Colors.white : const Color(0xFF64748B),
-                  size: 16.sp,
+                  size: 15.sp,
                 ),
-                SizedBox(width: 8.w),
+                SizedBox(width: 6.w),
                 Text(
                   label,
-                  style: GoogleFonts.outfit(
+                  style: GoogleFonts.poppins(
                     color: isSelected ? Colors.white : const Color(0xFF64748B),
-                    fontSize: 13.5.sp,
-                    fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
+                    fontSize: 13.sp,
+                    fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
                   ),
                 ),
               ],
@@ -160,22 +155,15 @@ class InviteBody extends HookConsumerWidget {
                         Padding(
                           padding: EdgeInsets.symmetric(horizontal: 16.w),
                           child: Container(
-                            height: 48.h,
+                            height: 46.h,
                             padding: EdgeInsets.all(4.w),
                             decoration: BoxDecoration(
-                              color: const Color(0xFFFAF5FF),
-                              borderRadius: BorderRadius.circular(18.r),
+                              color: const Color(0xFFF8FAFC),
+                              borderRadius: BorderRadius.circular(14.r),
                               border: Border.all(
-                                color: const Color(0xFFE9D5FF),
+                                color: const Color(0xFFE2E8F0),
                                 width: 1.2,
                               ),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: const Color(0xFFAB31DE).withValues(alpha: 0.06),
-                                  blurRadius: 10,
-                                  offset: const Offset(0, 2),
-                                ),
-                              ],
                             ),
                             child: Row(
                               children: [

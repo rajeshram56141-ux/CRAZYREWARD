@@ -635,19 +635,14 @@ class SuperOfferWidget extends HookConsumerWidget {
         color: Colors.white,
         borderRadius: BorderRadius.circular(20.r),
         border: Border.all(
-          color: const Color(0xFFF1F5F9),
+          color: const Color(0xFFE2E8F0),
           width: 1.2,
         ),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF0F172A).withValues(alpha: 0.05),
-            blurRadius: 14,
-            offset: const Offset(0, 5),
-          ),
-          BoxShadow(
-            color: const Color(0xFFAB31DE).withValues(alpha: 0.03),
-            blurRadius: 8,
-            offset: const Offset(0, 3),
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
           ),
         ],
       ),
@@ -655,65 +650,39 @@ class SuperOfferWidget extends HookConsumerWidget {
         borderRadius: BorderRadius.circular(20.r),
         child: Stack(
           children: [
-            // 1. Card Background Color Fading Gradient Layer (Bottom-Left Purple Glow)
-            Positioned.fill(
+            // 1. Subtle background glow
+            Positioned(
+              left: -10.w,
+              top: -10.h,
               child: Container(
+                width: 100.w,
+                height: 100.h,
                 decoration: BoxDecoration(
-                  color: Colors.white,
-                  gradient: RadialGradient(
-                    center: Alignment.bottomLeft,
-                    radius: 1.70,
-                    colors: [
-                      const Color(0xFFAB31DE).withValues(alpha: 0.65),
-                      const Color(0xFFC046F4).withValues(alpha: 0.35),
-                      const Color(0xFFFAF5FF).withValues(alpha: 0.15),
-                      Colors.white,
-                    ],
-                    stops: const [0.0, 0.35, 0.70, 1.0],
-                  ),
+                  shape: BoxShape.circle,
+                  color: const Color(0xFFF1F5F9).withValues(alpha: 0.8),
                 ),
               ),
             ),
 
             // 2. Ultra Large 3D Icon Positioned at Bottom-Left
             Positioned(
-              left: -26.w,
-              bottom: -24.h,
+              left: -12.w,
+              bottom: -14.h,
               child: Image.asset(
-                'assets/icons/suprerofferdhn.png',
-                width: 126.w,
-                height: 126.w,
+                'assets/Icons1/super_offer_3d.png',
+                width: 104.w,
+                height: 104.w,
                 fit: BoxFit.contain,
                 errorBuilder: (_, __, ___) => Image.asset(
-                  'assets/icons/super coin.png',
-                  width: 110.w,
-                  height: 110.w,
+                  'assets/icons/suprerofferdhn.png',
+                  width: 96.w,
+                  height: 96.w,
                   fit: BoxFit.contain,
                 ),
               ),
             ),
 
-            // 3. Smooth Top Fade Overlay on Icon for Perfect Integration
-            Positioned.fill(
-              child: IgnorePointer(
-                child: Container(
-                  decoration: BoxDecoration(
-                    gradient: RadialGradient(
-                      center: Alignment.bottomLeft,
-                      radius: 1.40,
-                      colors: [
-                        const Color(0xFFAB31DE).withValues(alpha: 0.35),
-                        const Color(0xFFC046F4).withValues(alpha: 0.15),
-                        Colors.white.withValues(alpha: 0.0),
-                      ],
-                      stops: const [0.0, 0.40, 1.0],
-                    ),
-                  ),
-                ),
-              ),
-            ),
-
-            // 2. Foreground Card Content Row
+            // 3. Foreground Card Content Row
             Positioned.fill(
               child: Padding(
                 padding: EdgeInsets.fromLTRB(86.w, 10.h, 14.w, 10.h),
@@ -728,262 +697,239 @@ class SuperOfferWidget extends HookConsumerWidget {
                         children: [
                           Text(
                             'SUPER REWARD',
-                          maxLines: 1,
-                          style: GoogleFonts.outfit(
-                            color: const Color(0xFFAB31DE),
-                            fontSize: 10.sp,
-                            fontWeight: FontWeight.w800,
-                            letterSpacing: 0.8,
-                          ),
-                        ),
-                        SizedBox(height: 2.h),
-                        Row(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Image.asset(
-                              'assets/icons/coin.png',
-                              height: 15.h,
-                              width: 15.h,
-                              fit: BoxFit.contain,
+                            maxLines: 1,
+                            style: GoogleFonts.poppins(
+                              color: const Color(0xFF26262B),
+                              fontSize: 10.sp,
+                              fontWeight: FontWeight.w700,
+                              letterSpacing: 0.5,
                             ),
-                            SizedBox(width: 4.w),
-                            Flexible(
-                              child: Text(
-                                '+$displayCoins',
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: GoogleFonts.outfit(
-                                  color: const Color(0xFF1E1B4B),
-                                  fontSize: 17.sp,
-                                  fontWeight: FontWeight.w900,
-                                  letterSpacing: -0.3,
+                          ),
+                          SizedBox(height: 2.h),
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Image.asset(
+                                'assets/icons/coin.png',
+                                height: 16.h,
+                                width: 16.h,
+                                fit: BoxFit.contain,
+                              ),
+                              SizedBox(width: 4.w),
+                              Flexible(
+                                child: Text(
+                                  '+$displayCoins',
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: GoogleFonts.poppins(
+                                    color: const Color(0xFF1E1B4B),
+                                    fontSize: 16.5.sp,
+                                    fontWeight: FontWeight.w800,
+                                    letterSpacing: -0.3,
+                                  ),
                                 ),
                               ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 5.h),
-                        // Mini Gem Progress Bar
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(4.r),
-                          child: SizedBox(
-                            width: 85.w,
-                            height: 4.h,
-                            child: LinearProgressIndicator(
-                              value: progressVal,
-                              backgroundColor: const Color(0xFFF1F5F9),
-                              valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFFAB31DE)),
-                            ),
+                            ],
                           ),
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  SizedBox(width: 8.w),
-
-            // RIGHT SECTION: Fees Pill (Top) + Unlock Offer Button (Bottom)
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.end,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                // 1. Fees Pill (Matching User Screenshot 1-to-1)
-                Container(
-                  height: 28.h,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(100.r),
-                    border: Border.all(
-                      color: const Color(0xFFF1F5F9),
-                      width: 1.2,
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: const Color(0xFF0F172A).withValues(alpha: 0.04),
-                        blurRadius: 8,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      // Left Segment: Purple Oval Pill with Gems Count + Gem Icon
-                      Container(
-                        height: 24.h,
-                        padding: EdgeInsets.symmetric(horizontal: 8.w),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFFAB31DE),
-                          borderRadius: BorderRadius.circular(100.r),
-                          border: Border.all(
-                            color: const Color(0xFFE9D5FF),
-                            width: 1.2,
-                          ),
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(
-                              '$gemsRequired',
-                              style: GoogleFonts.outfit(
-                                color: Colors.white,
-                                fontSize: 12.sp,
-                                fontWeight: FontWeight.w800,
+                          SizedBox(height: 5.h),
+                          // Mini Gem Progress Bar
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(4.r),
+                            child: SizedBox(
+                              width: 85.w,
+                              height: 4.h,
+                              child: LinearProgressIndicator(
+                                value: progressVal,
+                                backgroundColor: const Color(0xFFF1F5F9),
+                                valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFF26262B)),
                               ),
                             ),
-                            SizedBox(width: 3.w),
-                            Image.asset(
-                              'assets/icons/gems.png',
-                              width: 13.w,
-                              height: 13.w,
-                              fit: BoxFit.contain,
-                            ),
-                          ],
-                        ),
-                      ),
-
-                      // Right Segment: "Fees" Text
-                      Padding(
-                        padding: EdgeInsets.only(left: 6.w, right: 10.w),
-                        child: Text(
-                          'Fees',
-                          style: GoogleFonts.outfit(
-                            color: const Color(0xFF475569),
-                            fontSize: 12.sp,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-
-                SizedBox(height: 5.h),
-
-                // 2. Unlock Offer Button or Locked Timer State
-                if (isButtonLoading.value || hasPendingStep2 || (!isOfferLocked && (effectiveEligible || isUnlockedState.value))) ...[
-                  GestureDetector(
-                    onTap: handleTap,
-                    child: Container(
-                      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 7.h),
-                      decoration: BoxDecoration(
-                        gradient: const LinearGradient(
-                          colors: [
-                            Color(0xFFE39FFF),
-                            Color(0xFFAB31DE),
-                          ],
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                        ),
-                        borderRadius: BorderRadius.circular(12.r),
-                        boxShadow: [
-                          BoxShadow(
-                            color: const Color(0xFFAB31DE).withValues(alpha: 0.28),
-                            blurRadius: 8,
-                            offset: const Offset(0, 3),
                           ),
                         ],
                       ),
-                      child: isButtonLoading.value
-                          ? Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                SizedBox(
-                                  width: 12.sp,
-                                  height: 12.sp,
-                                  child: const CircularProgressIndicator(
-                                    strokeWidth: 2,
-                                    color: Colors.white,
-                                  ),
+                    ),
+
+                    SizedBox(width: 8.w),
+
+                    // RIGHT SECTION: Fees Pill (Top) + Unlock Offer Button (Bottom)
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        // 1. Fees Pill
+                        Container(
+                          height: 26.h,
+                          padding: EdgeInsets.symmetric(horizontal: 8.w),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFF26262E),
+                            borderRadius: BorderRadius.circular(100.r),
+                            border: Border.all(
+                              color: const Color(0xFF383842),
+                              width: 1,
+                            ),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                '$gemsRequired',
+                                style: GoogleFonts.poppins(
+                                  color: Colors.white,
+                                  fontSize: 11.sp,
+                                  fontWeight: FontWeight.w700,
                                 ),
-                                SizedBox(width: 5.w),
-                                Text(
-                                  buttonLoadingText.value,
-                                  style: GoogleFonts.outfit(
-                                    color: Colors.white,
-                                    fontSize: 11.5.sp,
-                                    fontWeight: FontWeight.w700,
-                                  ),
+                              ),
+                              SizedBox(width: 3.w),
+                              Image.asset(
+                                'assets/icons/gems.png',
+                                width: 12.w,
+                                height: 12.w,
+                                fit: BoxFit.contain,
+                              ),
+                              SizedBox(width: 5.w),
+                              Text(
+                                'Fees',
+                                style: GoogleFonts.poppins(
+                                  color: const Color(0xFF9E9EA7),
+                                  fontSize: 10.5.sp,
+                                  fontWeight: FontWeight.w500,
                                 ),
-                              ],
-                            )
-                          : Row(
+                              ),
+                            ],
+                          ),
+                        ),
+
+                        SizedBox(height: 5.h),
+
+                        // 2. Unlock Offer Button or Locked Timer State
+                        if (isButtonLoading.value || hasPendingStep2 || (!isOfferLocked && (effectiveEligible || isUnlockedState.value))) ...[
+                          GestureDetector(
+                            onTap: handleTap,
+                            child: Container(
+                              padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 7.h),
+                              decoration: BoxDecoration(
+                                gradient: const LinearGradient(
+                                  colors: [
+                                    Colors.white,
+                                    Color(0xFFE5E7EB),
+                                    Color(0xFFB0B5C2),
+                                  ],
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
+                                ),
+                                borderRadius: BorderRadius.circular(12.r),
+                                border: Border.all(
+                                  color: const Color(0xFF9CA3AF),
+                                  width: 1,
+                                ),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withValues(alpha: 0.10),
+                                    blurRadius: 6,
+                                    offset: const Offset(0, 2),
+                                  ),
+                                ],
+                              ),
+                              child: isButtonLoading.value
+                                  ? Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        SizedBox(
+                                          width: 12.sp,
+                                          height: 12.sp,
+                                          child: const CircularProgressIndicator(
+                                            strokeWidth: 2,
+                                            color: Color(0xFF16161A),
+                                          ),
+                                        ),
+                                        SizedBox(width: 5.w),
+                                        Text(
+                                          buttonLoadingText.value,
+                                          style: GoogleFonts.poppins(
+                                            color: const Color(0xFF16161A),
+                                            fontSize: 11.5.sp,
+                                            fontWeight: FontWeight.w700,
+                                          ),
+                                        ),
+                                      ],
+                                    )
+                                  : Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Icon(
+                                          !isUnlockedState.value && !hasPendingStep2
+                                              ? Icons.lock_open_rounded
+                                              : (hasPendingStep2
+                                                  ? Icons.file_upload_outlined
+                                                  : (!installTask
+                                                      ? Icons.play_circle_filled_rounded
+                                                      : Icons.play_arrow_rounded)),
+                                          color: const Color(0xFF16161A),
+                                          size: 13.sp,
+                                        ),
+                                        SizedBox(width: 4.w),
+                                        Text(
+                                          !isUnlockedState.value && !hasPendingStep2
+                                              ? 'Unlock Offer'
+                                              : (hasPendingStep2
+                                                  ? 'Upload Screenshot'
+                                                  : (!installTask
+                                                      ? 'Watch Ad'
+                                                      : 'Complete Now')),
+                                          style: GoogleFonts.poppins(
+                                            color: const Color(0xFF16161A),
+                                            fontSize: 12.sp,
+                                            fontWeight: FontWeight.w700,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                            ),
+                          ),
+                        ] else ...[
+                          // Timer Locked Pill State
+                          Container(
+                            padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 7.h),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFF8FAFC),
+                              borderRadius: BorderRadius.circular(10.r),
+                              border: Border.all(
+                                color: const Color(0xFFE2E8F0),
+                                width: 1,
+                              ),
+                            ),
+                            child: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 Icon(
-                                  !isUnlockedState.value && !hasPendingStep2
-                                      ? Icons.lock_open_rounded
-                                      : (hasPendingStep2
-                                          ? Icons.file_upload_outlined
-                                          : (!installTask
-                                              ? Icons.play_circle_filled_rounded
-                                              : Icons.play_arrow_rounded)),
-                                  color: Colors.white,
+                                  (limitType == 'daily' || isDailyLimitReached || lastClaimedAt == null) ? Icons.calendar_today_rounded : Icons.timer_outlined,
+                                  color: const Color(0xFF64748B),
                                   size: 13.sp,
                                 ),
                                 SizedBox(width: 4.w),
                                 Text(
-                                  !isUnlockedState.value && !hasPendingStep2
-                                      ? 'Unlock Offer'
-                                      : (hasPendingStep2
-                                          ? 'Upload Screenshot'
-                                          : (!installTask
-                                              ? 'Watch Ad'
-                                              : 'Complete Now')),
-                                  style: GoogleFonts.outfit(
-                                    color: Colors.white,
-                                    fontSize: 12.sp,
-                                    fontWeight: FontWeight.w800,
+                                  formatDuration(remainingTime.value),
+                                  style: GoogleFonts.poppins(
+                                    color: const Color(0xFF64748B),
+                                    fontSize: 11.sp,
+                                    fontWeight: FontWeight.w600,
                                   ),
                                 ),
                               ],
                             ),
-                    ),
-                  ),
-                ] else ...[
-                  // Timer Locked Pill State
-                  Container(
-                    padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 7.h),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFF8FAFC),
-                      borderRadius: BorderRadius.circular(10.r),
-                      border: Border.all(
-                        color: const Color(0xFFE2E8F0),
-                        width: 1,
-                      ),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(
-                          (limitType == 'daily' || isDailyLimitReached || lastClaimedAt == null) ? Icons.calendar_today_rounded : Icons.timer_outlined,
-                          color: const Color(0xFF64748B),
-                          size: 13.sp,
-                        ),
-                        SizedBox(width: 4.w),
-                        Text(
-                          formatDuration(remainingTime.value),
-                          style: GoogleFonts.outfit(
-                            color: const Color(0xFF64748B),
-                            fontSize: 11.5.sp,
-                            fontWeight: FontWeight.w700,
                           ),
-                        ),
+                        ],
                       ],
                     ),
-                  ),
-                ],
-              ],
+                  ],
+                ),
+              ),
             ),
           ],
         ),
       ),
-    ),
-  ],
-),
-),
-);
+    );
   }
 }

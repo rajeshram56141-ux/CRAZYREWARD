@@ -160,36 +160,45 @@ class ReadTskVerificationScreen extends HookConsumerWidget {
                               alignment: Alignment.center,
                               decoration: BoxDecoration(
                                 color: Colors.white,
-                                borderRadius: BorderRadius.circular(15.r),
+                                borderRadius: BorderRadius.circular(14.r),
                                 border: Border.all(
-                                  color: const Color(0xFFF1F5F9),
+                                  color: const Color(0xFFE2E8F0),
                                   width: 1.2,
                                 ),
                                 boxShadow: [
                                   BoxShadow(
-                                    color: const Color(0xFFAB31DE).withValues(alpha: 0.08),
-                                    blurRadius: 10,
-                                    offset: const Offset(0, 3),
+                                    color: Colors.black.withValues(alpha: 0.04),
+                                    blurRadius: 8,
+                                    offset: const Offset(0, 2),
                                   ),
                                 ],
                               ),
                               child: Icon(
                                 Icons.arrow_back_rounded,
-                                color: const Color(0xFFAB31DE),
-                                size: 22.sp,
+                                color: const Color(0xFF26262B),
+                                size: 20.sp,
                               ),
                             ),
                           ),
                           SizedBox(width: 12.w),
+                          Text(
+                            'Task Verification',
+                            style: GoogleFonts.kaushanScript(
+                              fontSize: 24.sp,
+                              fontWeight: FontWeight.w800,
+                              color: const Color(0xFF26262B),
+                              letterSpacing: 0.5,
+                            ),
+                          ),
                           const Spacer(),
-                          // Coins Reward Pill
+                          // Coins Reward Pill (Dark Coin Badge)
                           Container(
                             padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
                             decoration: BoxDecoration(
-                              color: const Color(0xFFFAF5FF),
-                              borderRadius: BorderRadius.circular(20.r),
+                              color: const Color(0xFF26262E),
+                              borderRadius: BorderRadius.circular(8.r),
                               border: Border.all(
-                                color: const Color(0xFFE9D5FF),
+                                color: const Color(0xFF383842),
                                 width: 1,
                               ),
                             ),
@@ -204,11 +213,11 @@ class ReadTskVerificationScreen extends HookConsumerWidget {
                                 ),
                                 SizedBox(width: 4.w),
                                 Text(
-                                  '+${offer.coins.formatCoins()}',
-                                  style: GoogleFonts.outfit(
-                                    color: const Color(0xFFAB31DE),
-                                    fontSize: 12.5.sp,
-                                    fontWeight: FontWeight.w800,
+                                  '+${offer.coins.toInt().formatCoins()}',
+                                  style: GoogleFonts.poppins(
+                                    color: Colors.white,
+                                    fontSize: 12.sp,
+                                    fontWeight: FontWeight.w700,
                                   ),
                                 ),
                               ],
@@ -231,52 +240,47 @@ class ReadTskVerificationScreen extends HookConsumerWidget {
                               child: Column(
                                 children: [
                                   Container(
-                                    width: 60.w,
-                                    height: 60.w,
+                                    width: 56.w,
+                                    height: 56.w,
                                     decoration: BoxDecoration(
                                       shape: BoxShape.circle,
-                                      color: const Color(0xFFFAF5FF),
+                                      color: const Color(0xFFF8FAFC),
                                       border: Border.all(
-                                        color: const Color(0xFFE9D5FF),
+                                        color: const Color(0xFFE2E8F0),
                                         width: 1.2,
                                       ),
                                       boxShadow: [
                                         BoxShadow(
-                                          color: const Color(0xFFAB31DE).withValues(alpha: 0.1),
-                                          blurRadius: 10,
-                                          offset: const Offset(0, 3),
+                                          color: Colors.black.withValues(alpha: 0.04),
+                                          blurRadius: 8,
+                                          offset: const Offset(0, 2),
                                         ),
                                       ],
                                     ),
                                     alignment: Alignment.center,
                                     child: Image.asset(
                                       'assets/icons/coin.png',
-                                      width: 36.w,
-                                      height: 36.w,
+                                      width: 32.w,
+                                      height: 32.w,
                                       fit: BoxFit.contain,
-                                      errorBuilder: (_, __, ___) => Icon(
-                                        Icons.monetization_on_rounded,
-                                        color: const Color(0xFFAB31DE),
-                                        size: 28.sp,
-                                      ),
                                     ),
                                   ),
                                   SizedBox(height: 10.h),
                                   Text(
                                     'How to Complete?',
-                                    style: GoogleFonts.outfit(
+                                    style: GoogleFonts.poppins(
                                       color: const Color(0xFF1E1B4B),
                                       fontSize: 18.sp,
-                                      fontWeight: FontWeight.w800,
+                                      fontWeight: FontWeight.w700,
                                     ),
                                   ),
                                   SizedBox(height: 2.h),
                                   Text(
-                                    'Get +${offer.coins.formatCoins()} coins by following these steps:',
-                                    style: GoogleFonts.outfit(
+                                    'Get +${offer.coins.toInt().formatCoins()} coins by following these steps:',
+                                    style: GoogleFonts.poppins(
                                       color: const Color(0xFF64748B),
                                       fontSize: 12.sp,
-                                      fontWeight: FontWeight.w500,
+                                      fontWeight: FontWeight.w400,
                                     ),
                                   ),
                                 ],
@@ -342,7 +346,7 @@ class ReadTskVerificationScreen extends HookConsumerWidget {
               ),
             ),
 
-            // 2. Fixed Bottom Read Now Button (Transparent Background - No White Card Box Behind It)
+            // 2. Fixed Bottom Read Now Button (Silver Metallic Button)
             if (MediaQuery.of(context).viewInsets.bottom == 0)
               Positioned(
                 bottom: 0,
@@ -360,17 +364,27 @@ class ReadTskVerificationScreen extends HookConsumerWidget {
                     },
                     child: Container(
                       width: double.infinity,
-                      height: 50.h,
+                      height: 48.h,
                       decoration: BoxDecoration(
                         gradient: const LinearGradient(
-                          colors: [Color(0xFFE39FFF), Color(0xFFAB31DE)],
+                          colors: [
+                            Colors.white,
+                            Color(0xFFE5E7EB),
+                            Color(0xFFB0B5C2),
+                          ],
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
                         ),
-                        borderRadius: BorderRadius.circular(25.r),
+                        borderRadius: BorderRadius.circular(14.r),
+                        border: Border.all(
+                          color: const Color(0xFF9CA3AF),
+                          width: 1,
+                        ),
                         boxShadow: [
                           BoxShadow(
-                            color: const Color(0xFFAB31DE).withValues(alpha: 0.35),
-                            blurRadius: 10,
-                            offset: const Offset(0, 4),
+                            color: Colors.black.withValues(alpha: 0.08),
+                            blurRadius: 8,
+                            offset: const Offset(0, 3),
                           ),
                         ],
                       ),
@@ -379,16 +393,17 @@ class ReadTskVerificationScreen extends HookConsumerWidget {
                         children: [
                           Icon(
                             Icons.menu_book_rounded,
-                            color: Colors.white,
+                            color: const Color(0xFF16161A),
                             size: 18.sp,
                           ),
                           SizedBox(width: 8.w),
                           Text(
                             'Read Now',
-                            style: GoogleFonts.outfit(
-                              color: Colors.white,
-                              fontSize: 16.sp,
+                            style: GoogleFonts.poppins(
+                              color: const Color(0xFF16161A),
+                              fontSize: 15.sp,
                               fontWeight: FontWeight.w800,
+                              letterSpacing: 0.3,
                             ),
                           ),
                         ],
@@ -422,22 +437,15 @@ class ReadTskVerificationScreen extends HookConsumerWidget {
                 height: 28.w,
                 decoration: const BoxDecoration(
                   shape: BoxShape.circle,
-                  gradient: LinearGradient(
-                    colors: [
-                      Color(0xFFE39FFF),
-                      Color(0xFFAB31DE),
-                    ],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
+                  color: Color(0xFF26262B),
                 ),
                 alignment: Alignment.center,
                 child: Text(
                   '$stepNumber',
-                  style: GoogleFonts.outfit(
+                  style: GoogleFonts.poppins(
                     color: Colors.white,
-                    fontSize: 13.sp,
-                    fontWeight: FontWeight.w800,
+                    fontSize: 12.sp,
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
               ),
@@ -445,7 +453,7 @@ class ReadTskVerificationScreen extends HookConsumerWidget {
                 Expanded(
                   child: Container(
                     width: 2.w,
-                    color: const Color(0xFFE9D5FF),
+                    color: const Color(0xFFE2E8F0),
                     margin: EdgeInsets.symmetric(vertical: 4.h),
                   ),
                 ),
@@ -457,12 +465,19 @@ class ReadTskVerificationScreen extends HookConsumerWidget {
             child: Container(
               margin: EdgeInsets.only(bottom: 12.h),
               decoration: BoxDecoration(
-                color: const Color(0xFFFAF5FF),
+                color: Colors.white,
                 borderRadius: BorderRadius.circular(16.r),
                 border: Border.all(
-                  color: const Color(0xFFF3E8FF),
-                  width: 1,
+                  color: const Color(0xFFE2E8F0),
+                  width: 1.2,
                 ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.02),
+                    blurRadius: 6,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
               ),
               padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
               child: Column(
@@ -470,20 +485,20 @@ class ReadTskVerificationScreen extends HookConsumerWidget {
                 children: [
                   Text(
                     title,
-                    style: GoogleFonts.outfit(
+                    style: GoogleFonts.poppins(
                       color: const Color(0xFF1E1B4B),
                       fontSize: 13.5.sp,
-                      fontWeight: FontWeight.w800,
+                      fontWeight: FontWeight.w700,
                     ),
                   ),
                   SizedBox(height: 4.h),
                   Text(
                     description,
-                    style: GoogleFonts.outfit(
+                    style: GoogleFonts.poppins(
                       color: const Color(0xFF64748B),
                       fontSize: 11.5.sp,
                       height: 1.35,
-                      fontWeight: FontWeight.w500,
+                      fontWeight: FontWeight.w400,
                     ),
                   ),
                 ],
@@ -520,22 +535,15 @@ class ReadTskVerificationScreen extends HookConsumerWidget {
                 height: 28.w,
                 decoration: const BoxDecoration(
                   shape: BoxShape.circle,
-                  gradient: LinearGradient(
-                    colors: [
-                      Color(0xFFE39FFF),
-                      Color(0xFFAB31DE),
-                    ],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
+                  color: Color(0xFF26262B),
                 ),
                 alignment: Alignment.center,
                 child: Text(
                   '5',
-                  style: GoogleFonts.outfit(
+                  style: GoogleFonts.poppins(
                     color: Colors.white,
-                    fontSize: 13.sp,
-                    fontWeight: FontWeight.w800,
+                    fontSize: 12.sp,
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
               ),
@@ -547,12 +555,19 @@ class ReadTskVerificationScreen extends HookConsumerWidget {
             child: Container(
               margin: EdgeInsets.only(bottom: 12.h),
               decoration: BoxDecoration(
-                color: const Color(0xFFFAF5FF),
+                color: Colors.white,
                 borderRadius: BorderRadius.circular(16.r),
                 border: Border.all(
-                  color: const Color(0xFFF3E8FF),
-                  width: 1,
+                  color: const Color(0xFFE2E8F0),
+                  width: 1.2,
                 ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.02),
+                    blurRadius: 6,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
               ),
               padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
               child: Column(
@@ -560,19 +575,19 @@ class ReadTskVerificationScreen extends HookConsumerWidget {
                 children: [
                   Text(
                     'Step 5: Paste and Verify',
-                    style: GoogleFonts.outfit(
+                    style: GoogleFonts.poppins(
                       color: const Color(0xFF1E1B4B),
                       fontSize: 13.5.sp,
-                      fontWeight: FontWeight.w800,
+                      fontWeight: FontWeight.w700,
                     ),
                   ),
                   SizedBox(height: 4.h),
                   Text(
                     'Paste the copied URL below and tap Verify.',
-                    style: GoogleFonts.outfit(
+                    style: GoogleFonts.poppins(
                       color: const Color(0xFF64748B),
                       fontSize: 11.5.sp,
-                      fontWeight: FontWeight.w500,
+                      fontWeight: FontWeight.w400,
                     ),
                   ),
                   SizedBox(height: 10.h),
@@ -580,10 +595,10 @@ class ReadTskVerificationScreen extends HookConsumerWidget {
                   Container(
                     height: 44.h,
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: const Color(0xFFF8FAFC),
                       borderRadius: BorderRadius.circular(12.r),
                       border: Border.all(
-                        color: const Color(0xFFE9D5FF),
+                        color: const Color(0xFFE2E8F0),
                         width: 1,
                       ),
                     ),
@@ -593,15 +608,15 @@ class ReadTskVerificationScreen extends HookConsumerWidget {
                         Expanded(
                           child: TextField(
                             controller: urlController,
-                            cursorColor: const Color(0xFFAB31DE),
-                            style: GoogleFonts.outfit(
+                            cursorColor: const Color(0xFF26262B),
+                            style: GoogleFonts.poppins(
                               color: const Color(0xFF1E1B4B),
                               fontSize: 12.5.sp,
                               fontWeight: FontWeight.w600,
                             ),
                             decoration: InputDecoration(
                               hintText: 'https://example.com/article...',
-                              hintStyle: GoogleFonts.outfit(
+                              hintStyle: GoogleFonts.poppins(
                                 color: const Color(0xFF94A3B8),
                                 fontSize: 11.5.sp,
                               ),
@@ -623,19 +638,19 @@ class ReadTskVerificationScreen extends HookConsumerWidget {
                             padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
                             margin: EdgeInsets.only(right: 6.w),
                             decoration: BoxDecoration(
-                              color: const Color(0xFFFAF5FF),
-                              borderRadius: BorderRadius.circular(10.r),
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(8.r),
                               border: Border.all(
-                                color: const Color(0xFFE9D5FF),
+                                color: const Color(0xFFE2E8F0),
                                 width: 1,
                               ),
                             ),
                             child: Text(
                               'PASTE',
-                              style: GoogleFonts.outfit(
-                                color: const Color(0xFFAB31DE),
+                              style: GoogleFonts.poppins(
+                                color: const Color(0xFF26262B),
                                 fontSize: 11.sp,
-                                fontWeight: FontWeight.w800,
+                                fontWeight: FontWeight.w700,
                               ),
                             ),
                           ),
@@ -695,7 +710,7 @@ class ReadTskVerificationScreen extends HookConsumerWidget {
                         if (context.mounted) {
                           CustomStatusPopup.showSuccess(
                             context: context,
-                            title: '${offer.coins.formatCoins()} Coins Claimed!',
+                            title: '${offer.coins.toInt().formatCoins()} Coins Claimed!',
                             message: 'Verification successful! Coins have been credited to your balance.',
                             onPrimaryTap: () {
                               Navigator.pop(context);
@@ -722,9 +737,12 @@ class ReadTskVerificationScreen extends HookConsumerWidget {
                         gradient: isTimerCompleted.value
                             ? const LinearGradient(
                                 colors: [
-                                  Color(0xFFE39FFF),
-                                  Color(0xFFAB31DE),
+                                  Colors.white,
+                                  Color(0xFFE5E7EB),
+                                  Color(0xFFB0B5C2),
                                 ],
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
                               )
                             : null,
                         color: isTimerCompleted.value
@@ -733,10 +751,19 @@ class ReadTskVerificationScreen extends HookConsumerWidget {
                         borderRadius: BorderRadius.circular(12.r),
                         border: Border.all(
                           color: isTimerCompleted.value
-                              ? const Color(0xFFAB31DE)
+                              ? const Color(0xFF9CA3AF)
                               : const Color(0xFFE2E8F0),
                           width: 1,
                         ),
+                        boxShadow: isTimerCompleted.value
+                            ? [
+                                BoxShadow(
+                                  color: Colors.black.withValues(alpha: 0.08),
+                                  blurRadius: 4,
+                                  offset: const Offset(0, 2),
+                                ),
+                              ]
+                            : null,
                       ),
                       alignment: Alignment.center,
                       child: isVerifying.value
@@ -746,7 +773,7 @@ class ReadTskVerificationScreen extends HookConsumerWidget {
                                 height: 20,
                                 child: CircularProgressIndicator(
                                   strokeWidth: 2,
-                                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                                  valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF26262B)),
                                 ),
                               ),
                             )
@@ -758,7 +785,7 @@ class ReadTskVerificationScreen extends HookConsumerWidget {
                                       ? Icons.check_circle_rounded
                                       : Icons.lock_outline_rounded,
                                   color: isTimerCompleted.value
-                                      ? Colors.white
+                                      ? const Color(0xFF16161A)
                                       : const Color(0xFF94A3B8),
                                   size: 16.sp,
                                 ),
@@ -767,11 +794,11 @@ class ReadTskVerificationScreen extends HookConsumerWidget {
                                   isTimerCompleted.value
                                       ? 'Verify & Claim Coins'
                                       : 'Verify (Read Article First)',
-                                  style: GoogleFonts.outfit(
+                                  style: GoogleFonts.poppins(
                                     color: isTimerCompleted.value
-                                        ? Colors.white
+                                        ? const Color(0xFF16161A)
                                         : const Color(0xFF94A3B8),
-                                    fontSize: 13.5.sp,
+                                    fontSize: 13.sp,
                                     fontWeight: FontWeight.w800,
                                   ),
                                 ),

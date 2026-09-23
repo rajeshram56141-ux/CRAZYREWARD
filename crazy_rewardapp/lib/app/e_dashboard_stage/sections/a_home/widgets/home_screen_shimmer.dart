@@ -553,13 +553,13 @@ class HomeScreenShimmer extends StatelessWidget {
 
                 SizedBox(height: 14.h),
 
-                // 2. Banner Slider
-                _buildBannerSliderSkeleton(),
+                // 2. Daily Tasks Carousel
+                const HomeDailyTaskShimmer(),
 
                 SizedBox(height: 14.h),
 
-                // 3. Daily Tasks Carousel
-                const HomeDailyTaskShimmer(),
+                // 3. Banner Slider
+                _buildBannerSliderSkeleton(),
 
                 SizedBox(height: 14.h),
 
@@ -637,77 +637,78 @@ class HomeDailyTaskShimmer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+      padding: EdgeInsets.only(top: 0.h, bottom: 2.h),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          // 1. Header Row (Title on Left, "View All" Button on Right)
-          Row(
-            children: [
-              _buildSkeletonBox(width: 110.w, height: 20.h, borderRadius: 6.r),
-              const Spacer(),
-              _buildSkeletonBox(width: 75.w, height: 28.h, borderRadius: 10.r),
-            ],
+          // Centered Header
+          Center(
+            child: _buildSkeletonBox(width: 150.w, height: 28.h, borderRadius: 8.r),
           ),
-          SizedBox(height: 14.h),
+          SizedBox(height: 6.h),
 
-          // 2. Wide Horizontal Banner Card (122.h height matching exact 1-to-1 card layout)
-          Container(
-            height: 122.h,
-            width: double.infinity,
-            padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(20.r),
-              border: Border.all(color: const Color(0xFFF1F5F9), width: 1.2),
-              boxShadow: [
-                BoxShadow(
-                  color: const Color(0xFF0F172A).withValues(alpha: 0.04),
-                  blurRadius: 10,
-                  offset: const Offset(0, 4),
-                ),
-              ],
-            ),
+          // 2 Cards Side-by-Side in Row matching HomeDailyTaskSection
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16.w),
             child: Row(
               children: [
-                // Left Content: Category Tag, Title, Subtitle & Reward Pill
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      _buildSkeletonBox(width: 60.w, height: 12.h, borderRadius: 4.r),
-                      SizedBox(height: 8.h),
-                      _buildSkeletonBox(width: 120.w, height: 18.h, borderRadius: 6.r),
-                      SizedBox(height: 6.h),
-                      _buildSkeletonBox(width: 90.w, height: 10.h, borderRadius: 4.r),
-                      SizedBox(height: 10.h),
-                      _buildSkeletonBox(width: 65.w, height: 22.h, borderRadius: 11.r),
-                    ],
-                  ),
-                ),
+                Expanded(child: _buildCardSkeleton()),
                 SizedBox(width: 12.w),
-                // Right Content: App Thumbnail / Artwork Box
-                _buildSkeletonBox(width: 86.w, height: 86.w, borderRadius: 18.r),
+                Expanded(child: _buildCardSkeleton()),
               ],
             ),
           ),
-          SizedBox(height: 14.h),
+        ],
+      ),
+    );
+  }
 
-          // 3. Bottom Indicator Dots (5 Dots)
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              _buildSkeletonBox(width: 18.w, height: 6.h, borderRadius: 3.r, baseColor: _shimmerAccentViolet),
-              SizedBox(width: 5.w),
-              _buildSkeletonBox(width: 6.w, height: 6.h, borderRadius: 3.r),
-              SizedBox(width: 5.w),
-              _buildSkeletonBox(width: 6.w, height: 6.h, borderRadius: 3.r),
-              SizedBox(width: 5.w),
-              _buildSkeletonBox(width: 6.w, height: 6.h, borderRadius: 3.r),
-              SizedBox(width: 5.w),
-              _buildSkeletonBox(width: 6.w, height: 6.h, borderRadius: 3.r),
-            ],
+  Widget _buildCardSkeleton() {
+    return Container(
+      height: 206.h,
+      padding: EdgeInsets.all(8.w),
+      decoration: BoxDecoration(
+        color: const Color(0xFF141417),
+        borderRadius: BorderRadius.circular(22.r),
+        border: Border.all(color: const Color(0xFF282832), width: 1.2),
+      ),
+      child: Column(
+        children: [
+          _buildSkeletonBox(
+            width: double.infinity,
+            height: 88.h,
+            borderRadius: 15.r,
+            baseColor: const Color(0xFF222228),
+            highlightColor: const Color(0xFF2E2E38),
+          ),
+          SizedBox(height: 5.h),
+          _buildSkeletonBox(
+            width: 105.w,
+            height: 13.h,
+            borderRadius: 4.r,
+            baseColor: const Color(0xFF2E2E38),
+          ),
+          SizedBox(height: 3.h),
+          _buildSkeletonBox(
+            width: 75.w,
+            height: 10.h,
+            borderRadius: 3.r,
+            baseColor: const Color(0xFF222228),
+          ),
+          SizedBox(height: 5.h),
+          _buildSkeletonBox(
+            width: 110.w,
+            height: 15.h,
+            borderRadius: 8.r,
+            baseColor: const Color(0xFF2E2E38),
+          ),
+          SizedBox(height: 5.h),
+          _buildSkeletonBox(
+            width: double.infinity,
+            height: 26.h,
+            borderRadius: 13.r,
+            baseColor: const Color(0xFFE2E4E8),
+            highlightColor: Colors.white,
           ),
         ],
       ),

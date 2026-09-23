@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:ui';
 import 'package:auto_route/annotations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -9,6 +8,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:share_plus/share_plus.dart';
 
+import '../../../../../../utils/helper/helper.dart';
 import '../../../../../../widgets/common/custom_loading.dart';
 import '../../../../../../widgets/common/screen_banner_widget.dart';
 import '../../../../../../widgets/common/shimmer_tag.dart';
@@ -85,148 +85,23 @@ class BattleArenaScreen extends HookConsumerWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              // Executive Top Header Bar (Profile Avatar & Name on Left + Back Button on Right)
+                              // Executive Top Header Bar (Back button, "Battle Quiz" Kaushan Header, User Profile on Right)
                               Padding(
                                 padding: EdgeInsets.fromLTRB(
                                   16.w,
                                   topPadding + 8.h,
                                   16.w,
-                                  14.h,
+                                  12.h,
                                 ),
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
-                                    // Left: Profile Circle Avatar + User Name underneath
-                                    userAsync.when(
-                                      loading: () => SizedBox(width: 40.w),
-                                      error: (_, __) => SizedBox(width: 40.w),
-                                      data: (user) {
-                                        final photoUrl = user.photoUrl;
-                                        final name = user.name.isNotEmpty ? user.name : 'User';
-
-                                        return GestureDetector(
-                                          onTap: () {
-                                            HapticFeedback.lightImpact();
-                                            Navigator.of(context).push(
-                                              MaterialPageRoute(
-                                                builder: (_) => Scaffold(
-                                                  backgroundColor: Colors.white,
-                                                  appBar: AppBar(
-                                                    backgroundColor: Colors.white,
-                                                    elevation: 0,
-                                                    leading: IconButton(
-                                                      icon: const Icon(Icons.arrow_back_rounded, color: Color(0xFF1E1B4B)),
-                                                      onPressed: () => Navigator.of(context).pop(),
-                                                    ),
-                                                    title: Text(
-                                                      'My Career & Profile',
-                                                      style: GoogleFonts.outfit(
-                                                        color: const Color(0xFF1E1B4B),
-                                                        fontSize: 18.sp,
-                                                        fontWeight: FontWeight.w800,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  body: SingleChildScrollView(
-                                                    padding: EdgeInsets.all(16.r),
-                                                    child: _MyHistoryTabView(userId: userId),
-                                                  ),
-                                                ),
-                                              ),
-                                            );
-                                          },
-                                          child: Row(
-                                            children: [
-                                              Container(
-                                                width: 38.w,
-                                                height: 38.w,
-                                                padding: EdgeInsets.all(2.r),
-                                                decoration: BoxDecoration(
-                                                  shape: BoxShape.circle,
-                                                  gradient: const LinearGradient(
-                                                    colors: [Color(0xFFE39FFF), Color(0xFFAB31DE)],
-                                                  ),
-                                                  boxShadow: [
-                                                    BoxShadow(
-                                                      color: const Color(0xFFAB31DE).withValues(alpha: 0.18),
-                                                      blurRadius: 10,
-                                                      offset: const Offset(0, 3),
-                                                    ),
-                                                  ],
-                                                ),
-                                                child: CircleAvatar(
-                                                  backgroundColor: const Color(0xFFFAF5FF),
-                                                  backgroundImage: photoUrl.isNotEmpty
-                                                      ? NetworkImage(photoUrl)
-                                                      : const AssetImage('assets/icons/DIAMONDPANDA_LOGO.png') as ImageProvider,
-                                                ),
-                                              ),
-                                              SizedBox(width: 10.w),
-                                              Column(
-                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                mainAxisSize: MainAxisSize.min,
-                                                children: [
-                                                  Text(
-                                                    'Welcome back,',
-                                                    style: GoogleFonts.outfit(
-                                                      color: const Color(0xFF64748B),
-                                                      fontSize: 10.sp,
-                                                      fontWeight: FontWeight.w500,
-                                                    ),
-                                                  ),
-                                                  ConstrainedBox(
-                                                    constraints: BoxConstraints(maxWidth: 140.w),
-                                                    child: Text(
-                                                      name,
-                                                      maxLines: 1,
-                                                      overflow: TextOverflow.ellipsis,
-                                                      style: GoogleFonts.outfit(
-                                                        color: const Color(0xFF1E1B4B),
-                                                        fontSize: 14.5.sp,
-                                                        fontWeight: FontWeight.w800,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ],
-                                          ),
-                                        );
-                                      },
-                                    ),
-
-                                    // Right: Executive Profile Action Button
+                                    // Left: Back Arrow
                                     GestureDetector(
                                       onTap: () {
                                         HapticFeedback.lightImpact();
-                                        Navigator.of(context).push(
-                                          MaterialPageRoute(
-                                            builder: (_) => Scaffold(
-                                              backgroundColor: Colors.white,
-                                              appBar: AppBar(
-                                                backgroundColor: Colors.white,
-                                                elevation: 0,
-                                                leading: IconButton(
-                                                  icon: const Icon(Icons.arrow_back_rounded, color: Color(0xFF1E1B4B)),
-                                                  onPressed: () => Navigator.of(context).pop(),
-                                                ),
-                                                title: Text(
-                                                  'My Career & Profile',
-                                                  style: GoogleFonts.outfit(
-                                                    color: const Color(0xFF1E1B4B),
-                                                    fontSize: 18.sp,
-                                                    fontWeight: FontWeight.w800,
-                                                  ),
-                                                ),
-                                              ),
-                                              body: SingleChildScrollView(
-                                                padding: EdgeInsets.all(16.r),
-                                                child: _MyHistoryTabView(userId: userId),
-                                              ),
-                                            ),
-                                          ),
-                                        );
+                                        Navigator.of(context).maybePop();
                                       },
                                       child: Container(
                                         width: 40.w,
@@ -234,226 +109,229 @@ class BattleArenaScreen extends HookConsumerWidget {
                                         alignment: Alignment.center,
                                         decoration: BoxDecoration(
                                           color: Colors.white,
-                                          borderRadius: BorderRadius.circular(15.r),
+                                          borderRadius: BorderRadius.circular(14.r),
                                           border: Border.all(
-                                            color: const Color(0xFFF1F5F9),
+                                            color: const Color(0xFFE2E8F0),
                                             width: 1.2,
                                           ),
                                           boxShadow: [
                                             BoxShadow(
-                                              color: const Color(0xFFAB31DE).withValues(alpha: 0.08),
-                                              blurRadius: 10,
-                                              offset: const Offset(0, 3),
+                                              color: Colors.black.withValues(alpha: 0.04),
+                                              blurRadius: 8,
+                                              offset: const Offset(0, 2),
                                             ),
                                           ],
                                         ),
                                         child: Icon(
                                           Icons.arrow_back_rounded,
-                                          color: const Color(0xFFAB31DE),
-                                          size: 22.sp,
+                                          color: const Color(0xFF26262B),
+                                          size: 20.sp,
                                         ),
                                       ),
+                                    ),
+
+                                    // Center Title: "Battle Quiz" (Exact Home Screen Style)
+                                    Text(
+                                      'Battle Quiz',
+                                      style: GoogleFonts.kaushanScript(
+                                        color: const Color(0xFF26262B),
+                                        fontSize: 28.sp,
+                                        fontWeight: FontWeight.w800,
+                                        letterSpacing: 0.5,
+                                      ),
+                                    ),
+
+                                    // Right: Profile Avatar Button
+                                    userAsync.when(
+                                      loading: () => SizedBox(width: 40.w),
+                                      error: (_, __) => SizedBox(width: 40.w),
+                                      data: (user) {
+                                        final photoUrl = user.photoUrl;
+
+                                        return GestureDetector(
+                                          onTap: () {
+                                            HapticFeedback.lightImpact();
+                                            Navigator.of(context).push(
+                                              MaterialPageRoute(
+                                                builder: (_) => Scaffold(
+                                                  backgroundColor: const Color(0xFFF8FAFC),
+                                                  appBar: AppBar(
+                                                    backgroundColor: Colors.white,
+                                                    surfaceTintColor: Colors.transparent,
+                                                    elevation: 0,
+                                                    leading: IconButton(
+                                                      icon: const Icon(Icons.arrow_back_rounded, color: Color(0xFF26262B)),
+                                                      onPressed: () => Navigator.of(context).pop(),
+                                                    ),
+                                                    title: Text(
+                                                      'My Career & Profile',
+                                                      style: GoogleFonts.kaushanScript(
+                                                        color: const Color(0xFF26262B),
+                                                        fontSize: 22.sp,
+                                                        fontWeight: FontWeight.w800,
+                                                        letterSpacing: 0.5,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  body: SingleChildScrollView(
+                                                    physics: const BouncingScrollPhysics(),
+                                                    padding: EdgeInsets.fromLTRB(16.w, 14.h, 16.w, 32.h),
+                                                    child: _MyHistoryTabView(userId: userId),
+                                                  ),
+                                                ),
+                                              ),
+                                            );
+                                          },
+                                          child: Container(
+                                            width: 40.w,
+                                            height: 40.w,
+                                            padding: EdgeInsets.all(2.r),
+                                            decoration: BoxDecoration(
+                                              shape: BoxShape.circle,
+                                              color: const Color(0xFF26262B),
+                                              border: Border.all(
+                                                color: const Color(0xFFE2E8F0),
+                                                width: 1.2,
+                                              ),
+                                            ),
+                                            child: CircleAvatar(
+                                              backgroundColor: const Color(0xFFFAF5FF),
+                                              backgroundImage: photoUrl.isNotEmpty
+                                                  ? NetworkImage(photoUrl)
+                                                  : const AssetImage('assets/icons/DIAMONDPANDA_LOGO.png') as ImageProvider,
+                                            ),
+                                          ),
+                                        );
+                                      },
                                     ),
                                   ],
                                 ),
                               ),
 
-                              // FEATURED BATTLE PANDA STYLE HERO BANNER CARD
+                              // FEATURED HERO BANNER CARD (Home Screen Rectangle 13 Style)
                               Padding(
                                 padding: EdgeInsets.symmetric(horizontal: 16.w),
                                 child: Container(
-                                  height: 132.h,
                                   width: double.infinity,
-                                  clipBehavior: Clip.antiAlias,
+                                  padding: EdgeInsets.fromLTRB(16.w, 14.h, 14.w, 14.h),
                                   decoration: BoxDecoration(
-                                    gradient: LinearGradient(
-                                      colors: [
-                                        const Color(0xFFAB31DE).withValues(alpha: 0.22),
-                                        const Color(0xFFE39FFF).withValues(alpha: 0.08),
-                                        Colors.white.withValues(alpha: 0.0),
-                                      ],
-                                      begin: Alignment.topCenter,
-                                      end: Alignment.bottomCenter,
+                                    image: const DecorationImage(
+                                      image: AssetImage('assets/Icons1/Rectangle 13.png'),
+                                      fit: BoxFit.fill,
                                     ),
-                                    borderRadius: BorderRadius.circular(22.r),
+                                    borderRadius: BorderRadius.circular(20.r),
                                     boxShadow: [
                                       BoxShadow(
-                                        color: Colors.black.withValues(alpha: 0.06),
-                                        blurRadius: 16,
+                                        color: Colors.black.withValues(alpha: 0.18),
+                                        blurRadius: 12,
                                         offset: const Offset(0, 4),
                                       ),
                                     ],
                                   ),
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(22.r),
-                                    child: Stack(
-                                      clipBehavior: Clip.antiAlias,
-                                      children: [
-                                        // Bottom Gradient Fade Overlay on Card
-                                        Positioned(
-                                          left: 0,
-                                          right: 0,
-                                          bottom: 0,
-                                          height: 52.h,
-                                          child: IgnorePointer(
-                                            child: Container(
+                                  child: Row(
+                                    children: [
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            // Top Tag
+                                            Container(
+                                              padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 3.h),
                                               decoration: BoxDecoration(
-                                                gradient: LinearGradient(
-                                                  colors: [
-                                                    Colors.white.withValues(alpha: 0.0),
-                                                    Colors.white.withValues(alpha: 0.45),
-                                                    Colors.white.withValues(alpha: 0.85),
-                                                  ],
-                                                  begin: Alignment.topCenter,
-                                                  end: Alignment.bottomCenter,
+                                                color: const Color(0xFF26262E),
+                                                borderRadius: BorderRadius.circular(8.r),
+                                                border: Border.all(
+                                                  color: const Color(0xFF383842),
+                                                  width: 1,
                                                 ),
+                                              ),
+                                              child: Row(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  Icon(
+                                                    Icons.sports_esports_rounded,
+                                                    color: const Color(0xFFF97316),
+                                                    size: 12.sp,
+                                                  ),
+                                                  SizedBox(width: 4.w),
+                                                  Text(
+                                                    '1V1 QUIZ CLASH',
+                                                    style: GoogleFonts.poppins(
+                                                      color: Colors.white,
+                                                      fontSize: 9.5.sp,
+                                                      fontWeight: FontWeight.w700,
+                                                    ),
+                                                  ),
+                                                ],
                                               ),
                                             ),
-                                          ),
-                                        ),
+                                            SizedBox(height: 8.h),
 
-                                        // Glassmorphism aura behind Panda / Battle Icon
-                                        Positioned(
-                                          left: 0.w,
-                                          bottom: -20.h,
-                                          child: ClipOval(
-                                            child: BackdropFilter(
-                                              filter: ImageFilter.blur(sigmaX: 14, sigmaY: 14),
-                                              child: Container(
-                                                width: 165.w,
-                                                height: 165.w,
-                                                decoration: BoxDecoration(
-                                                  shape: BoxShape.circle,
-                                                  gradient: RadialGradient(
-                                                    colors: [
-                                                      Colors.white.withValues(alpha: 0.38),
-                                                      Colors.white.withValues(alpha: 0.06),
-                                                    ],
-                                                  ),
-                                                  border: Border.all(
-                                                    color: Colors.white.withValues(alpha: 0.5),
-                                                    width: 1.5,
-                                                  ),
-                                                  boxShadow: [
-                                                    BoxShadow(
-                                                      color: Colors.white.withValues(alpha: 0.25),
-                                                      blurRadius: 20,
-                                                      spreadRadius: 4,
-                                                    ),
-                                                  ],
-                                                ),
+                                            // Headline
+                                            Text(
+                                              'Live Battle Arena',
+                                              style: GoogleFonts.poppins(
+                                                color: Colors.white,
+                                                fontSize: 16.sp,
+                                                fontWeight: FontWeight.w700,
+                                                height: 1.15,
                                               ),
                                             ),
-                                          ),
-                                        ),
+                                            SizedBox(height: 3.h),
 
-                                        // Tilted & Enlarged Battle Icon Asset (with Bottom Fade)
-                                        Positioned(
-                                          left: -10.w,
-                                          bottom: -32.h,
-                                          child: Transform.rotate(
-                                            angle: 0.22,
-                                            child: SizedBox(
-                                              width: 185.w,
-                                              height: 185.w,
-                                              child: ShaderMask(
-                                                shaderCallback: (Rect bounds) {
-                                                  return const LinearGradient(
-                                                    colors: [
-                                                      Colors.black,
-                                                      Colors.black,
-                                                      Colors.transparent,
-                                                    ],
-                                                    stops: [0.0, 0.55, 0.95],
-                                                    begin: Alignment.topCenter,
-                                                    end: Alignment.bottomCenter,
-                                                  ).createShader(bounds);
-                                                },
-                                                blendMode: BlendMode.dstIn,
-                                                child: Image.asset(
-                                                  'assets/icons/battle.png',
-                                                  fit: BoxFit.contain,
-                                                  errorBuilder: (_, __, ___) => Image.asset(
-                                                    'assets/icons/battle game.png',
-                                                    fit: BoxFit.contain,
-                                                    errorBuilder: (_, __, ___) => Icon(
-                                                      Icons.sports_esports_rounded,
-                                                      color: const Color(0xFFC084FC),
-                                                      size: 54.w,
-                                                    ),
-                                                  ),
-                                                ),
+                                            // Subtitle
+                                            Text(
+                                              'Play 1v1 quizzes & win coin prize pools',
+                                              style: GoogleFonts.poppins(
+                                                color: const Color(0xFF9E9EA7),
+                                                fontSize: 10.sp,
+                                                fontWeight: FontWeight.w400,
                                               ),
                                             ),
-                                          ),
-                                        ),
+                                            SizedBox(height: 8.h),
 
-
-
-                                        // Right-Center User Coin Balance Pill (Flush to Right Edge)
-                                        userAsync.when(
-                                          loading: () => const SizedBox.shrink(),
-                                          error: (_, __) => const SizedBox.shrink(),
-                                          data: (user) {
-                                            return Positioned(
-                                              right: 0,
-                                              top: 54.h,
-                                              child: Container(
-                                                padding: EdgeInsets.only(right: 16.w, left: 20.w, top: 8.h, bottom: 8.h),
-                                                decoration: BoxDecoration(
-                                                  borderRadius: BorderRadius.only(
-                                                    topLeft: Radius.circular(18.r),
-                                                    bottomLeft: Radius.circular(18.r),
+                                            // Coin Balance Pill
+                                            userAsync.maybeWhen(
+                                              data: (u) => Row(
+                                                children: [
+                                                  Text(
+                                                    'Your Balance: ',
+                                                    style: GoogleFonts.poppins(
+                                                      color: Colors.white,
+                                                      fontSize: 9.sp,
+                                                      fontWeight: FontWeight.w500,
+                                                    ),
                                                   ),
-                                                  gradient: LinearGradient(
-                                                    begin: Alignment.centerRight,
-                                                    end: Alignment.centerLeft,
-                                                    colors: [
-                                                      Colors.white,
-                                                      Colors.white.withValues(alpha: 0.85),
-                                                      Colors.white.withValues(alpha: 0.20),
-                                                    ],
-                                                    stops: const [0.0, 0.55, 1.0],
-                                                  ),
-                                                  boxShadow: [
-                                                    BoxShadow(
-                                                      color: Colors.white.withValues(alpha: 0.40),
-                                                      blurRadius: 10,
-                                                      offset: const Offset(-2, 2),
-                                                    ),
-                                                  ],
-                                                ),
-                                                child: Row(
-                                                  mainAxisSize: MainAxisSize.min,
-                                                  children: [
-                                                    Image.asset(
-                                                      'assets/icons/coin.png',
-                                                      width: 17.w,
-                                                      height: 17.w,
-                                                      fit: BoxFit.contain,
-                                                    ),
-                                                    SizedBox(width: 6.w),
-                                                    Text(
-                                                      '${user.coins} Coins',
-                                                      style: GoogleFonts.outfit(
-                                                        color: const Color(0xFF1E1B4B),
-                                                        fontSize: 14.sp,
-                                                        fontWeight: FontWeight.w900,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
+                                                  SizedBox(width: 4.w),
+                                                  _HeroCoinBadge(coins: u.coins),
+                                                ],
                                               ),
-                                            );
-                                          },
+                                              orElse: () => const SizedBox.shrink(),
+                                            ),
+                                          ],
                                         ),
-                                      ],
-                                    ),
+                                      ),
+                                      SizedBox(width: 8.w),
+
+                                      // 3D Battle Graphic
+                                      Image.asset(
+                                        'assets/Icons1/battle-3d-icon-png-download-11623292 3.png',
+                                        width: 76.w,
+                                        height: 76.w,
+                                        fit: BoxFit.contain,
+                                        errorBuilder: (_, __, ___) => Image.asset(
+                                          'assets/icons/battle.png',
+                                          width: 70.w,
+                                          height: 70.w,
+                                          fit: BoxFit.contain,
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ),
 
-                              SizedBox(height: 16.h),
+                              SizedBox(height: 14.h),
 
                               // Screen Banner (Admin Configurable 700x200 with AD badge)
                               const ScreenBannerWidget(
@@ -492,6 +370,63 @@ class BattleArenaScreen extends HookConsumerWidget {
 }
 
 
+
+// ---------------------------------------------------------------------------
+// HERO COIN BADGE (Exact Home Screen Style)
+// ---------------------------------------------------------------------------
+class _HeroCoinBadge extends StatelessWidget {
+  const _HeroCoinBadge({required this.coins});
+  final num coins;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.h),
+      decoration: BoxDecoration(
+        color: const Color(0xFF26262E),
+        borderRadius: BorderRadius.circular(8.r),
+        border: Border.all(
+          color: const Color(0xFF383842),
+          width: 1,
+        ),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 11.w,
+            height: 11.w,
+            decoration: const BoxDecoration(
+              shape: BoxShape.circle,
+              gradient: LinearGradient(
+                colors: [Color(0xFFE5E7EB), Color(0xFF9CA3AF)],
+              ),
+            ),
+            padding: EdgeInsets.all(1.w),
+            child: Image.asset(
+              'assets/icons/coin.png',
+              fit: BoxFit.contain,
+              errorBuilder: (_, __, ___) => const Icon(
+                Icons.monetization_on,
+                color: Color(0xFFFBBF24),
+                size: 9,
+              ),
+            ),
+          ),
+          SizedBox(width: 4.w),
+          Text(
+            coins.toInt().formatCoins(),
+            style: GoogleFonts.poppins(
+              color: Colors.white,
+              fontSize: 9.5.sp,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
 
 // ---------------------------------------------------------------------------
 // BATTLE TAB VIEW (EXECUTIVE WHITE THEME)
@@ -861,48 +796,49 @@ class _BattleTabViewState extends State<_BattleTabView> {
         color: Colors.white,
         borderRadius: BorderRadius.circular(20.r),
         border: Border.all(
-          color: const Color(0xFFF1F5F9),
+          color: const Color(0xFFE2E8F0),
+          width: 1.2,
         ),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFFAB31DE).withValues(alpha: 0.05),
+            color: Colors.black.withValues(alpha: 0.04),
             blurRadius: 10,
-            offset: const Offset(0, 3),
+            offset: const Offset(0, 2),
           ),
         ],
       ),
       child: Column(
         children: [
           Container(
-            width: 60.w,
-            height: 60.w,
+            width: 56.w,
+            height: 56.w,
             decoration: BoxDecoration(
-              color: const Color(0xFFFAF5FF),
-              shape: BoxShape.circle,
+              color: const Color(0xFF26262B),
+              borderRadius: BorderRadius.circular(16.r),
             ),
             alignment: Alignment.center,
             child: Icon(
               Icons.sports_esports_rounded,
-              color: const Color(0xFFAB31DE),
-              size: 32.sp,
+              color: Colors.white,
+              size: 28.sp,
             ),
           ),
           SizedBox(height: 14.h),
           Text(
             title,
-            style: GoogleFonts.outfit(
+            style: GoogleFonts.poppins(
               color: const Color(0xFF1E1B4B),
-              fontSize: 16.sp,
-              fontWeight: FontWeight.w800,
+              fontSize: 15.sp,
+              fontWeight: FontWeight.w700,
             ),
           ),
           SizedBox(height: 6.h),
           Text(
             subtitle,
             textAlign: TextAlign.center,
-            style: GoogleFonts.outfit(
+            style: GoogleFonts.poppins(
               color: const Color(0xFF64748B),
-              fontSize: 12.5.sp,
+              fontSize: 12.sp,
             ),
           ),
         ],
@@ -933,28 +869,18 @@ class _FilterChip extends StatelessWidget {
         height: 36.h,
         padding: EdgeInsets.symmetric(horizontal: 16.w),
         decoration: BoxDecoration(
-          gradient: isSelected
-              ? const LinearGradient(
-                  colors: [
-                    Color(0xFFE39FFF),
-                    Color(0xFFAB31DE),
-                  ],
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                )
-              : null,
-          color: isSelected ? null : const Color(0xFFFAF5FF),
-          borderRadius: BorderRadius.circular(14.r),
+          color: isSelected ? const Color(0xFF26262B) : Colors.white,
+          borderRadius: BorderRadius.circular(12.r),
           border: Border.all(
-            color: isSelected ? Colors.transparent : const Color(0xFFE39FFF).withValues(alpha: 0.5),
-            width: 1,
+            color: isSelected ? const Color(0xFF26262B) : const Color(0xFFE2E8F0),
+            width: 1.2,
           ),
           boxShadow: isSelected
               ? [
                   BoxShadow(
-                    color: const Color(0xFFAB31DE).withValues(alpha: 0.25),
-                    blurRadius: 8,
-                    offset: const Offset(0, 3),
+                    color: Colors.black.withValues(alpha: 0.12),
+                    blurRadius: 6,
+                    offset: const Offset(0, 2),
                   ),
                 ]
               : null,
@@ -962,10 +888,10 @@ class _FilterChip extends StatelessWidget {
         alignment: Alignment.center,
         child: Text(
           label,
-          style: GoogleFonts.outfit(
-            color: isSelected ? Colors.white : const Color(0xFF1E1B4B),
-            fontSize: 12.5.sp,
-            fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
+          style: GoogleFonts.poppins(
+            color: isSelected ? Colors.white : const Color(0xFF26262B),
+            fontSize: 12.sp,
+            fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
           ),
         ),
       ),
@@ -1075,17 +1001,12 @@ class _BattleRoomCardState extends State<_BattleRoomCard> with SingleTickerProvi
         color: Colors.white,
         borderRadius: BorderRadius.circular(20.r),
         border: Border.all(
-          color: const Color(0xFFF1F5F9),
+          color: const Color(0xFFE2E8F0),
           width: 1.2,
         ),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFFAB31DE).withValues(alpha: 0.06),
-            blurRadius: 14,
-            offset: const Offset(0, 4),
-          ),
-          BoxShadow(
-            color: const Color(0xFF0F172A).withValues(alpha: 0.03),
+            color: Colors.black.withValues(alpha: 0.04),
             blurRadius: 10,
             offset: const Offset(0, 2),
           ),
@@ -1102,21 +1023,17 @@ class _BattleRoomCardState extends State<_BattleRoomCard> with SingleTickerProvi
                 Expanded(
                   child: Row(
                     children: [
-                      // Light Lavender Icon Dish
+                      // Executive Dark Icon Dish
                       Container(
-                        width: 42.w,
-                        height: 42.w,
+                        width: 44.w,
+                        height: 44.w,
                         decoration: BoxDecoration(
-                          color: const Color(0xFFFAF5FF),
-                          borderRadius: BorderRadius.circular(13.r),
-                          border: Border.all(
-                            color: const Color(0xFFF3E8FF),
-                            width: 1.0,
-                          ),
+                          color: const Color(0xFF26262B),
+                          borderRadius: BorderRadius.circular(14.r),
                         ),
                         child: Icon(
                           Icons.sports_esports_rounded,
-                          color: const Color(0xFFAB31DE),
+                          color: Colors.white,
                           size: 22.sp,
                         ),
                       ),
@@ -1127,10 +1044,10 @@ class _BattleRoomCardState extends State<_BattleRoomCard> with SingleTickerProvi
                           children: [
                             Text(
                               m['title'].toString(),
-                              style: GoogleFonts.outfit(
+                              style: GoogleFonts.poppins(
                                 color: const Color(0xFF1E1B4B),
-                                fontSize: 15.sp,
-                                fontWeight: FontWeight.w800,
+                                fontSize: 14.5.sp,
+                                fontWeight: FontWeight.w700,
                               ),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
@@ -1138,10 +1055,10 @@ class _BattleRoomCardState extends State<_BattleRoomCard> with SingleTickerProvi
                             SizedBox(height: 2.h),
                             Text(
                               m['subtitle'].toString(),
-                              style: GoogleFonts.outfit(
+                              style: GoogleFonts.poppins(
                                 color: const Color(0xFF64748B),
-                                fontSize: 12.sp,
-                                fontWeight: FontWeight.w500,
+                                fontSize: 11.5.sp,
+                                fontWeight: FontWeight.w400,
                               ),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
@@ -1156,12 +1073,12 @@ class _BattleRoomCardState extends State<_BattleRoomCard> with SingleTickerProvi
 
                 // Live Players Capacity Badge Tag
                 Container(
-                  padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
+                  padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFF0F9FF),
-                    borderRadius: BorderRadius.circular(12.r),
+                    color: const Color(0xFFF1F5F9),
+                    borderRadius: BorderRadius.circular(10.r),
                     border: Border.all(
-                      color: const Color(0xFFBAE6FD),
+                      color: const Color(0xFFE2E8F0),
                       width: 1.0,
                     ),
                   ),
@@ -1170,16 +1087,16 @@ class _BattleRoomCardState extends State<_BattleRoomCard> with SingleTickerProvi
                     children: [
                       Icon(
                         Icons.group_rounded,
-                        color: const Color(0xFF0284C7),
+                        color: const Color(0xFF475569),
                         size: 13.sp,
                       ),
                       SizedBox(width: 4.w),
                       Text(
                         '${m['capacity'] ?? 2} Players',
-                        style: GoogleFonts.outfit(
-                          color: const Color(0xFF0369A1),
-                          fontSize: 11.sp,
-                          fontWeight: FontWeight.w700,
+                        style: GoogleFonts.poppins(
+                          color: const Color(0xFF334155),
+                          fontSize: 10.5.sp,
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
                     ],
@@ -1211,7 +1128,7 @@ class _BattleRoomCardState extends State<_BattleRoomCard> with SingleTickerProvi
                           color: const Color(0xFFF8FAFC),
                           borderRadius: BorderRadius.circular(12.r),
                           border: Border.all(
-                            color: const Color(0xFFF1F5F9),
+                            color: const Color(0xFFE2E8F0),
                           ),
                         ),
                         child: Column(
@@ -1220,11 +1137,11 @@ class _BattleRoomCardState extends State<_BattleRoomCard> with SingleTickerProvi
                               fit: BoxFit.scaleDown,
                               child: Text(
                                 'ENTRY FEE',
-                                style: GoogleFonts.outfit(
+                                style: GoogleFonts.poppins(
                                   color: const Color(0xFF64748B),
                                   fontSize: 9.5.sp,
-                                  fontWeight: FontWeight.w700,
-                                  letterSpacing: 0.2,
+                                  fontWeight: FontWeight.w600,
+                                  letterSpacing: 0.5,
                                 ),
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
@@ -1247,10 +1164,10 @@ class _BattleRoomCardState extends State<_BattleRoomCard> with SingleTickerProvi
                                   ],
                                   Text(
                                     isFree ? 'FREE' : m['fee'].toString().replaceAll(' Coins', ''),
-                                    style: GoogleFonts.outfit(
-                                      color: isFree ? const Color(0xFF16A34A) : const Color(0xFFE11D48),
-                                      fontSize: 13.5.sp,
-                                      fontWeight: FontWeight.w900,
+                                    style: GoogleFonts.poppins(
+                                      color: isFree ? const Color(0xFF16A34A) : const Color(0xFFDC2626),
+                                      fontSize: 13.sp,
+                                      fontWeight: FontWeight.w700,
                                     ),
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
@@ -1281,11 +1198,11 @@ class _BattleRoomCardState extends State<_BattleRoomCard> with SingleTickerProvi
                               fit: BoxFit.scaleDown,
                               child: Text(
                                 'PRIZE POOL',
-                                style: GoogleFonts.outfit(
-                                  color: const Color(0xFF64748B),
+                                style: GoogleFonts.poppins(
+                                  color: const Color(0xFF92400E),
                                   fontSize: 9.5.sp,
-                                  fontWeight: FontWeight.w700,
-                                  letterSpacing: 0.2,
+                                  fontWeight: FontWeight.w600,
+                                  letterSpacing: 0.5,
                                 ),
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
@@ -1306,10 +1223,10 @@ class _BattleRoomCardState extends State<_BattleRoomCard> with SingleTickerProvi
                                   SizedBox(width: 3.w),
                                   Text(
                                     m['prize'].toString().replaceAll(' Coins', ''),
-                                    style: GoogleFonts.outfit(
+                                    style: GoogleFonts.poppins(
                                       color: const Color(0xFFD97706),
-                                      fontSize: 13.5.sp,
-                                      fontWeight: FontWeight.w900,
+                                      fontSize: 13.sp,
+                                      fontWeight: FontWeight.w700,
                                     ),
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
@@ -1326,7 +1243,7 @@ class _BattleRoomCardState extends State<_BattleRoomCard> with SingleTickerProvi
 
                 SizedBox(height: 14.h),
 
-                // JOIN BATTLE GLOSSY CTA BUTTON
+                // JOIN BATTLE METALLIC CTA BUTTON
                 ScaleTransition(
                   scale: _buttonScaleAnimation,
                   child: GestureDetector(
@@ -1351,19 +1268,24 @@ class _BattleRoomCardState extends State<_BattleRoomCard> with SingleTickerProvi
                       width: double.infinity,
                       decoration: BoxDecoration(
                         gradient: const LinearGradient(
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
                           colors: [
-                            Color(0xFFE39FFF),
-                            Color(0xFFAB31DE),
+                            Colors.white,
+                            Color(0xFFE5E7EB),
+                            Color(0xFFB0B5C2),
                           ],
                         ),
-                        borderRadius: BorderRadius.circular(23.r),
+                        borderRadius: BorderRadius.circular(14.r),
+                        border: Border.all(
+                          color: const Color(0xFF9CA3AF),
+                          width: 1.0,
+                        ),
                         boxShadow: [
                           BoxShadow(
-                            color: const Color(0xFFAB31DE).withValues(alpha: 0.35),
-                            blurRadius: 12,
-                            offset: const Offset(0, 4),
+                            color: Colors.black.withValues(alpha: 0.08),
+                            blurRadius: 8,
+                            offset: const Offset(0, 2),
                           ),
                         ],
                       ),
@@ -1373,9 +1295,9 @@ class _BattleRoomCardState extends State<_BattleRoomCard> with SingleTickerProvi
                         children: [
                           Text(
                             'JOIN BATTLE',
-                            style: GoogleFonts.outfit(
-                              color: Colors.white,
-                              fontSize: 14.sp,
+                            style: GoogleFonts.poppins(
+                              color: const Color(0xFF16161A),
+                              fontSize: 13.5.sp,
                               fontWeight: FontWeight.w800,
                               letterSpacing: 0.6,
                             ),
@@ -1383,8 +1305,8 @@ class _BattleRoomCardState extends State<_BattleRoomCard> with SingleTickerProvi
                           SizedBox(width: 8.w),
                           Icon(
                             Icons.arrow_forward_rounded,
-                            color: Colors.white,
-                            size: 18.sp,
+                            color: const Color(0xFF16161A),
+                            size: 16.sp,
                           ),
                         ],
                       ),
@@ -1454,13 +1376,24 @@ class _MyHistoryTabViewState extends State<_MyHistoryTabView> {
           children: [
             SizedBox(height: 8.h),
 
-            // 1. EXECUTIVE PLAYER PROFILE CARD (WHITE THEME)
+            // 1. EXECUTIVE PLAYER PROFILE CARD (DARK OBSIDIAN THEME)
             userAsync.when(
               loading: () => Container(
                 height: 80.h,
                 decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(16.r),
+                  gradient: const LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      Color(0xFF222226),
+                      Color(0xFF131316),
+                    ],
+                  ),
+                  borderRadius: BorderRadius.circular(22.r),
+                  border: Border.all(
+                    color: const Color(0xFF2E2E36),
+                    width: 1.0,
+                  ),
                 ),
                 child: const Center(child: GlowLightingSpinner(size: 20)),
               ),
@@ -1473,16 +1406,23 @@ class _MyHistoryTabViewState extends State<_MyHistoryTabView> {
                   width: double.infinity,
                   padding: EdgeInsets.all(18.r),
                   decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(18.r),
+                    gradient: const LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        Color(0xFF222226),
+                        Color(0xFF131316),
+                      ],
+                    ),
+                    borderRadius: BorderRadius.circular(22.r),
                     border: Border.all(
-                      color: const Color(0xFFF1F5F9),
-                      width: 1.2,
+                      color: const Color(0xFF2E2E36),
+                      width: 1.0,
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: const Color(0xFFAB31DE).withValues(alpha: 0.06),
-                        blurRadius: 14,
+                        color: Colors.black.withValues(alpha: 0.18),
+                        blurRadius: 12,
                         offset: const Offset(0, 4),
                       ),
                     ],
@@ -1493,7 +1433,7 @@ class _MyHistoryTabViewState extends State<_MyHistoryTabView> {
                     children: [
                       // Circular Avatar
                       Container(
-                        padding: EdgeInsets.all(2.r),
+                        padding: EdgeInsets.all(2.5.r),
                         decoration: const BoxDecoration(
                           shape: BoxShape.circle,
                           gradient: LinearGradient(
@@ -1501,8 +1441,8 @@ class _MyHistoryTabViewState extends State<_MyHistoryTabView> {
                           ),
                         ),
                         child: CircleAvatar(
-                          radius: 30.r,
-                          backgroundColor: const Color(0xFFFAF5FF),
+                          radius: 32.r,
+                          backgroundColor: const Color(0xFF1E1B2E),
                           backgroundImage: photoUrl.isNotEmpty
                               ? NetworkImage(photoUrl)
                               : const AssetImage('assets/icons/DIAMONDPANDA_LOGO.png') as ImageProvider,
@@ -1513,10 +1453,10 @@ class _MyHistoryTabViewState extends State<_MyHistoryTabView> {
                       // User Name
                       Text(
                         name,
-                        style: GoogleFonts.outfit(
-                          color: const Color(0xFF1E1B4B),
-                          fontSize: 16.5.sp,
-                          fontWeight: FontWeight.w800,
+                        style: GoogleFonts.poppins(
+                          color: Colors.white,
+                          fontSize: 17.5.sp,
+                          fontWeight: FontWeight.w700,
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -1527,15 +1467,16 @@ class _MyHistoryTabViewState extends State<_MyHistoryTabView> {
                       // User Email
                       Text(
                         user.email,
-                        style: GoogleFonts.outfit(
-                          color: const Color(0xFF64748B),
+                        style: GoogleFonts.poppins(
+                          color: const Color(0xFF9E9EA7),
                           fontSize: 12.sp,
+                          fontWeight: FontWeight.w400,
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         textAlign: TextAlign.center,
                       ),
-                      SizedBox(height: 10.h),
+                      SizedBox(height: 12.h),
 
                       // Badge Pill + Copy UID Pill
                       Row(
@@ -1545,10 +1486,10 @@ class _MyHistoryTabViewState extends State<_MyHistoryTabView> {
                           Container(
                             padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
                             decoration: BoxDecoration(
-                              color: const Color(0xFFFAF5FF),
+                              color: const Color(0xFF2E2E38),
                               borderRadius: BorderRadius.circular(8.r),
                               border: Border.all(
-                                color: const Color(0xFFF3E8FF),
+                                color: const Color(0xFF3E3E4C),
                                 width: 1.0,
                               ),
                             ),
@@ -1564,10 +1505,10 @@ class _MyHistoryTabViewState extends State<_MyHistoryTabView> {
                                 SizedBox(width: 5.w),
                                 Text(
                                   badge.title,
-                                  style: GoogleFonts.outfit(
-                                    color: const Color(0xFFAB31DE),
+                                  style: GoogleFonts.poppins(
+                                    color: const Color(0xFFFBBF24),
                                     fontSize: 11.sp,
-                                    fontWeight: FontWeight.w800,
+                                    fontWeight: FontWeight.w700,
                                   ),
                                 ),
                               ],
@@ -1584,7 +1525,7 @@ class _MyHistoryTabViewState extends State<_MyHistoryTabView> {
                                 SnackBar(
                                   content: Text(
                                     'Player UID copied!',
-                                    style: GoogleFonts.outfit(color: Colors.white, fontSize: 12.sp),
+                                    style: GoogleFonts.poppins(color: Colors.white, fontSize: 12.sp),
                                   ),
                                   backgroundColor: const Color(0xFF1E1B4B),
                                   duration: const Duration(seconds: 2),
@@ -1595,10 +1536,10 @@ class _MyHistoryTabViewState extends State<_MyHistoryTabView> {
                             child: Container(
                               padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
                               decoration: BoxDecoration(
-                                color: const Color(0xFFF8FAFC),
+                                color: const Color(0xFF2E2E38),
                                 borderRadius: BorderRadius.circular(8.r),
                                 border: Border.all(
-                                  color: const Color(0xFFE2E8F0),
+                                  color: const Color(0xFF3E3E4C),
                                   width: 1.0,
                                 ),
                               ),
@@ -1607,17 +1548,17 @@ class _MyHistoryTabViewState extends State<_MyHistoryTabView> {
                                 children: [
                                   Text(
                                     'UID: ${widget.userId.length > 8 ? '${widget.userId.substring(0, 8)}...' : widget.userId}',
-                                    style: GoogleFonts.outfit(
-                                      color: const Color(0xFF64748B),
+                                    style: GoogleFonts.poppins(
+                                      color: Colors.white,
                                       fontSize: 11.sp,
                                       fontWeight: FontWeight.w600,
                                     ),
                                   ),
-                                  SizedBox(width: 4.w),
+                                  SizedBox(width: 5.w),
                                   Icon(
                                     Icons.copy_rounded,
                                     size: 12.sp,
-                                    color: const Color(0xFF64748B),
+                                    color: const Color(0xFF38BDF8),
                                   ),
                                 ],
                               ),
@@ -1631,19 +1572,32 @@ class _MyHistoryTabViewState extends State<_MyHistoryTabView> {
               },
             ),
 
-            SizedBox(height: 20.h),
+            SizedBox(height: 24.h),
 
             // 2. CAREER BATTLE STATS (4-GRID SYSTEM)
-            Text(
-              'CAREER BATTLE STATS',
-              style: GoogleFonts.outfit(
-                color: const Color(0xFF1E1B4B),
-                fontSize: 14.5.sp,
-                fontWeight: FontWeight.w800,
-                letterSpacing: 0.4,
-              ),
+            Row(
+              children: [
+                Container(
+                  width: 4.w,
+                  height: 18.h,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF1E1B4B),
+                    borderRadius: BorderRadius.circular(2.r),
+                  ),
+                ),
+                SizedBox(width: 8.w),
+                Text(
+                  'Career Battle Stats',
+                  style: GoogleFonts.kaushanScript(
+                    color: const Color(0xFF26262B),
+                    fontSize: 22.sp,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: 0.5,
+                  ),
+                ),
+              ],
             ),
-            SizedBox(height: 10.h),
+            SizedBox(height: 12.h),
 
             Row(
               children: [
@@ -1659,42 +1613,42 @@ class _MyHistoryTabViewState extends State<_MyHistoryTabView> {
                     label: 'Battles',
                   ),
                 ),
-                SizedBox(width: 6.w),
+                SizedBox(width: 8.w),
 
                 // Card 2: Victories
                 Expanded(
                   child: _buildWhiteStatCard(
                     iconWidget: Icon(
                       Icons.emoji_events_rounded,
-                      color: const Color(0xFFD97706),
+                      color: const Color(0xFFFBBF24),
                       size: 18.sp,
                     ),
                     value: '$totalWins',
                     label: 'Wins',
                   ),
                 ),
-                SizedBox(width: 6.w),
+                SizedBox(width: 8.w),
 
                 // Card 3: Defeats
                 Expanded(
                   child: _buildWhiteStatCard(
                     iconWidget: Icon(
                       Icons.cancel_rounded,
-                      color: const Color(0xFFE11D48),
+                      color: const Color(0xFFEF4444),
                       size: 18.sp,
                     ),
                     value: '$totalLosses',
                     label: 'Losses',
                   ),
                 ),
-                SizedBox(width: 6.w),
+                SizedBox(width: 8.w),
 
                 // Card 4: Win Rate
                 Expanded(
                   child: _buildWhiteStatCard(
                     iconWidget: Icon(
                       Icons.analytics_rounded,
-                      color: const Color(0xFF0284C7),
+                      color: const Color(0xFF38BDF8),
                       size: 18.sp,
                     ),
                     value: '$winRate%',
@@ -1704,33 +1658,53 @@ class _MyHistoryTabViewState extends State<_MyHistoryTabView> {
               ],
             ),
 
-            SizedBox(height: 20.h),
+            SizedBox(height: 24.h),
 
             // 3. QUICK ACTIONS MENU OPTIONS
-            Text(
-              'QUICK ACTIONS',
-              style: GoogleFonts.outfit(
-                color: const Color(0xFF1E1B4B),
-                fontSize: 14.5.sp,
-                fontWeight: FontWeight.w800,
-                letterSpacing: 0.4,
-              ),
+            Row(
+              children: [
+                Container(
+                  width: 4.w,
+                  height: 18.h,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF1E1B4B),
+                    borderRadius: BorderRadius.circular(2.r),
+                  ),
+                ),
+                SizedBox(width: 8.w),
+                Text(
+                  'Quick Actions',
+                  style: GoogleFonts.kaushanScript(
+                    color: const Color(0xFF26262B),
+                    fontSize: 22.sp,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: 0.5,
+                  ),
+                ),
+              ],
             ),
-            SizedBox(height: 10.h),
+            SizedBox(height: 12.h),
 
             Container(
               decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(18.r),
+                gradient: const LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    Color(0xFF222226),
+                    Color(0xFF131316),
+                  ],
+                ),
+                borderRadius: BorderRadius.circular(22.r),
                 border: Border.all(
-                  color: const Color(0xFFF1F5F9),
-                  width: 1.2,
+                  color: const Color(0xFF2E2E36),
+                  width: 1.0,
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: const Color(0xFFAB31DE).withValues(alpha: 0.05),
+                    color: Colors.black.withValues(alpha: 0.18),
                     blurRadius: 10,
-                    offset: const Offset(0, 3),
+                    offset: const Offset(0, 4),
                   ),
                 ],
               ),
@@ -1738,7 +1712,7 @@ class _MyHistoryTabViewState extends State<_MyHistoryTabView> {
                 children: [
                   _buildMenuTile(
                     icon: Icons.emoji_events_rounded,
-                    iconColor: const Color(0xFFD97706),
+                    iconColor: const Color(0xFFFBBF24),
                     title: 'Leaderboard History',
                     subtitle: 'View past champion cycles & winners',
                     onTap: () {
@@ -1768,7 +1742,7 @@ class _MyHistoryTabViewState extends State<_MyHistoryTabView> {
                   _buildMenuDivider(),
                   _buildMenuTile(
                     icon: Icons.share_rounded,
-                    iconColor: const Color(0xFF0284C7),
+                    iconColor: const Color(0xFF38BDF8),
                     title: 'Share Battle Arena',
                     subtitle: 'Invite friends & challenge them to quiz clash',
                     onTap: () {
@@ -1781,7 +1755,7 @@ class _MyHistoryTabViewState extends State<_MyHistoryTabView> {
                   _buildMenuDivider(),
                   _buildMenuTile(
                     icon: Icons.exit_to_app_rounded,
-                    iconColor: const Color(0xFFE11D48),
+                    iconColor: const Color(0xFFEF4444),
                     title: 'Exit Battle Arena',
                     subtitle: 'Leave Battle Panda & return to main dashboard',
                     onTap: () {
@@ -1807,7 +1781,7 @@ class _MyHistoryTabViewState extends State<_MyHistoryTabView> {
   }) {
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(18.r),
+      borderRadius: BorderRadius.circular(22.r),
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
         child: Row(
@@ -1816,10 +1790,11 @@ class _MyHistoryTabViewState extends State<_MyHistoryTabView> {
               width: 42.w,
               height: 42.w,
               decoration: BoxDecoration(
-                color: const Color(0xFFFAF5FF),
+                color: const Color(0xFF2E2E38),
                 borderRadius: BorderRadius.circular(12.r),
                 border: Border.all(
-                  color: const Color(0xFFF3E8FF),
+                  color: const Color(0xFF3E3E4C),
+                  width: 1.0,
                 ),
               ),
               alignment: Alignment.center,
@@ -1832,18 +1807,19 @@ class _MyHistoryTabViewState extends State<_MyHistoryTabView> {
                 children: [
                   Text(
                     title,
-                    style: GoogleFonts.outfit(
-                      color: const Color(0xFF1E1B4B),
+                    style: GoogleFonts.poppins(
+                      color: Colors.white,
                       fontSize: 14.sp,
-                      fontWeight: FontWeight.w800,
+                      fontWeight: FontWeight.w700,
                     ),
                   ),
                   SizedBox(height: 2.h),
                   Text(
                     subtitle,
-                    style: GoogleFonts.outfit(
-                      color: const Color(0xFF64748B),
-                      fontSize: 11.5.sp,
+                    style: GoogleFonts.poppins(
+                      color: const Color(0xFF9E9EA7),
+                      fontSize: 11.sp,
+                      fontWeight: FontWeight.w400,
                     ),
                   ),
                 ],
@@ -1851,7 +1827,7 @@ class _MyHistoryTabViewState extends State<_MyHistoryTabView> {
             ),
             Icon(
               Icons.chevron_right_rounded,
-              color: const Color(0xFF94A3B8),
+              color: const Color(0xFF9E9EA7),
               size: 22.sp,
             ),
           ],
@@ -1864,7 +1840,7 @@ class _MyHistoryTabViewState extends State<_MyHistoryTabView> {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 16.w),
       height: 1,
-      color: const Color(0xFFF1F5F9),
+      color: const Color(0xFF2E2E38),
     );
   }
 
@@ -1876,23 +1852,39 @@ class _MyHistoryTabViewState extends State<_MyHistoryTabView> {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 14.h),
       decoration: BoxDecoration(
-        color: const Color(0xFFF8FAFC),
-        borderRadius: BorderRadius.circular(14.r),
-        border: Border.all(
-          color: const Color(0xFFF1F5F9),
+        gradient: const LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Color(0xFF222226),
+            Color(0xFF131316),
+          ],
         ),
+        borderRadius: BorderRadius.circular(16.r),
+        border: Border.all(
+          color: const Color(0xFF2E2E36),
+          width: 1.0,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.15),
+            blurRadius: 8,
+            offset: const Offset(0, 3),
+          ),
+        ],
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           Container(
-            width: 34.w,
-            height: 34.w,
+            width: 32.w,
+            height: 32.w,
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: const Color(0xFF2E2E38),
               borderRadius: BorderRadius.circular(10.r),
               border: Border.all(
-                color: const Color(0xFFE2E8F0),
+                color: const Color(0xFF3E3E4C),
+                width: 1.0,
               ),
             ),
             alignment: Alignment.center,
@@ -1903,10 +1895,10 @@ class _MyHistoryTabViewState extends State<_MyHistoryTabView> {
             value,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: GoogleFonts.outfit(
-              color: const Color(0xFF1E1B4B),
+            style: GoogleFonts.poppins(
+              color: Colors.white,
               fontSize: 15.sp,
-              fontWeight: FontWeight.w900,
+              fontWeight: FontWeight.w800,
             ),
           ),
           SizedBox(height: 2.h),
@@ -1915,10 +1907,10 @@ class _MyHistoryTabViewState extends State<_MyHistoryTabView> {
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             textAlign: TextAlign.center,
-            style: GoogleFonts.outfit(
-              color: const Color(0xFF64748B),
+            style: GoogleFonts.poppins(
+              color: const Color(0xFF9E9EA7),
               fontSize: 9.5.sp,
-              fontWeight: FontWeight.w700,
+              fontWeight: FontWeight.w500,
             ),
           ),
         ],
@@ -2060,13 +2052,13 @@ class _BattleArenaNavbar extends StatelessWidget {
                                           Icon(
                                             item.icon,
                                             size: 20.sp,
-                                            color: const Color(0xFF94A3B8),
+                                            color: const Color(0xFF9E9EA7),
                                           ),
                                           SizedBox(width: 6.w),
                                           Text(
                                             item.label,
-                                            style: GoogleFonts.outfit(
-                                              color: const Color(0xFF94A3B8),
+                                            style: GoogleFonts.poppins(
+                                              color: const Color(0xFF9E9EA7),
                                               fontSize: 12.sp,
                                               fontWeight: FontWeight.w600,
                                             ),
@@ -2135,17 +2127,22 @@ class _BattleElevatedActiveButton extends StatelessWidget {
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             gradient: const LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
               colors: [
-                Color(0xFFE39FFF),
-                Color(0xFFAB31DE),
+                Colors.white,
+                Color(0xFFE5E7EB),
+                Color(0xFFB0B5C2),
               ],
+            ),
+            border: Border.all(
+              color: const Color(0xFF9CA3AF),
+              width: 1.2,
             ),
             boxShadow: [
               BoxShadow(
-                color: const Color(0xFFAB31DE).withValues(alpha: 0.40),
-                blurRadius: 10,
+                color: Colors.black.withValues(alpha: 0.20),
+                blurRadius: 8,
                 offset: const Offset(0, 3),
               ),
             ],
@@ -2154,7 +2151,7 @@ class _BattleElevatedActiveButton extends StatelessWidget {
             child: Icon(
               icon,
               size: 21.sp,
-              color: Colors.white,
+              color: const Color(0xFF16161A),
             ),
           ),
         ),
@@ -2233,14 +2230,14 @@ class _BattleNotchedNavPainter extends CustomPainter {
     final path = _buildBattleNotchedPath(size, cx);
 
     final shadowPaint = Paint()
-      ..color = const Color(0xFFAB31DE).withValues(alpha: 0.10)
-      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 10);
+      ..color = Colors.black.withValues(alpha: 0.04)
+      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 8);
     canvas.drawPath(path, shadowPaint);
 
     final borderPaint = Paint()
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1.0
-      ..color = const Color(0xFFF1F5F9);
+      ..color = const Color(0xFFE2E8F0);
 
     canvas.drawPath(path, borderPaint);
   }

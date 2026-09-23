@@ -5,13 +5,10 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import '../../../utils/theme/theme.dart';
 import '../../../widgets/common/custom_status_popup.dart';
 import '../../b_splash_stage/splash_service.dart';
 import '../../d_authentication_stage/users_data_model.dart';
 import '../provider/dashboard_provider.dart';
-import '../sections/a_home/daily_task/daily_task_model.dart';
-import '../sections/a_home/daily_task/daily_task_provider.dart';
 import '../sections/a_home/home_body.dart';
 import '../sections/a_home/daily_task/daily_task_screen.dart';
 import '../sections/c_leaderboard/_leaderboard_body.dart';
@@ -46,17 +43,7 @@ class DashboardScaffold extends HookConsumerWidget {
     final isLoading = useState<bool>(false);
     final isNavbarVisible = useMemoized(() => ValueNotifier<bool>(true));
 
-    final taskProvider = dailyTaskProvider((
-      userId: userId,
-      email: userData.email,
-      countryCode: userData.country,
-      offerType: DailyTaskType.dailyTask,
-    ));
-
-    final taskAsync = ref.watch(taskProvider);
-    final isTaskLoading = !taskAsync.hasValue && taskAsync.isLoading;
-
-    final effectiveLoading = isLoadingOverride || isLoading.value || isTaskLoading;
+    final effectiveLoading = isLoadingOverride || isLoading.value;
 
     useEffect(() {
       isNavbarVisible.value = true;

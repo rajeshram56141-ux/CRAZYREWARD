@@ -30,12 +30,18 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     if (effectiveLeading == null && showBackButton) {
       effectiveLeading = GestureDetector(
         onTap: () => AutoRouter.of(context).maybePop(),
-        child: Center(
-          child: Image.asset(
-            'assets/icons/backk.png',
-            width: 38,
-            height: 38,
-            fit: BoxFit.contain,
+        child: Container(
+          width: 38,
+          height: 38,
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            color: isDarkBackground ? Colors.white.withValues(alpha: 0.12) : const Color(0xFFF1F5F9),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Icon(
+            Icons.arrow_back_ios_new_rounded,
+            color: isDarkBackground ? Colors.white : const Color(0xFF1E1B4B),
+            size: 18,
           ),
         ),
       );

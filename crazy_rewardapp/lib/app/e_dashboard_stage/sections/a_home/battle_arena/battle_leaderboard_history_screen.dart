@@ -82,7 +82,7 @@ class _BattleLeaderboardHistoryScreenState extends State<BattleLeaderboardHistor
         statusBarBrightness: Brightness.light,
       ),
       child: Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: const Color(0xFFF8FAFC),
         body: RefreshIndicator(
           color: const Color(0xFFAB31DE),
           backgroundColor: Colors.white,
@@ -120,12 +120,12 @@ class _BattleLeaderboardHistoryScreenState extends State<BattleLeaderboardHistor
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(15.r),
                           border: Border.all(
-                            color: const Color(0xFFF1F5F9),
+                            color: const Color(0xFFE2E8F0),
                             width: 1.2,
                           ),
                           boxShadow: [
                             BoxShadow(
-                              color: const Color(0xFFAB31DE).withValues(alpha: 0.08),
+                              color: Colors.black.withValues(alpha: 0.05),
                               blurRadius: 10,
                               offset: const Offset(0, 3),
                             ),
@@ -133,7 +133,7 @@ class _BattleLeaderboardHistoryScreenState extends State<BattleLeaderboardHistor
                         ),
                         child: Icon(
                           Icons.arrow_back_rounded,
-                          color: const Color(0xFFAB31DE),
+                          color: const Color(0xFF26262B),
                           size: 22.sp,
                         ),
                       ),
@@ -142,11 +142,10 @@ class _BattleLeaderboardHistoryScreenState extends State<BattleLeaderboardHistor
                     Expanded(
                       child: Text(
                         'Leaderboard History',
-                        style: GoogleFonts.outfit(
-                          color: const Color(0xFF1E1B4B),
-                          fontSize: 18.5.sp,
-                          fontWeight: FontWeight.w900,
-                          letterSpacing: -0.2,
+                        style: GoogleFonts.kaushanScript(
+                          color: const Color(0xFF26262B),
+                          fontSize: 22.sp,
+                          fontWeight: FontWeight.w800,
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -161,12 +160,26 @@ class _BattleLeaderboardHistoryScreenState extends State<BattleLeaderboardHistor
                 Container(
                   padding: EdgeInsets.all(4.r),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFFAF5FF),
-                    borderRadius: BorderRadius.circular(16.r),
-                    border: Border.all(
-                      color: const Color(0xFFF3E8FF),
-                      width: 1.2,
+                    gradient: const LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        Color(0xFF222226),
+                        Color(0xFF131316),
+                      ],
                     ),
+                    borderRadius: BorderRadius.circular(18.r),
+                    border: Border.all(
+                      color: const Color(0xFF2E2E36),
+                      width: 1.0,
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.18),
+                        blurRadius: 10,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
                   ),
                   child: Row(
                     children: [
@@ -221,19 +234,19 @@ class _BattleLeaderboardHistoryScreenState extends State<BattleLeaderboardHistor
                                     : (_activeTab == 2
                                         ? 'No Records for Yesterday'
                                         : 'No Past Tournament Records'),
-                                style: GoogleFonts.outfit(
-                                  color: const Color(0xFF1E1B4B),
+                                style: GoogleFonts.poppins(
+                                  color: const Color(0xFF26262B),
                                   fontSize: 15.sp,
-                                  fontWeight: FontWeight.w800,
+                                  fontWeight: FontWeight.w700,
                                 ),
                               ),
                               SizedBox(height: 4.h),
                               Text(
                                 'Records will appear once tournament cycles complete.',
-                                style: GoogleFonts.outfit(
+                                style: GoogleFonts.poppins(
                                   color: const Color(0xFF64748B),
                                   fontSize: 12.sp,
-                                  fontWeight: FontWeight.w500,
+                                  fontWeight: FontWeight.w400,
                                 ),
                               ),
                             ],
@@ -267,19 +280,26 @@ class _BattleLeaderboardHistoryScreenState extends State<BattleLeaderboardHistor
                         return Container(
                           margin: EdgeInsets.only(bottom: 14.h),
                           decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(18.r),
+                            gradient: const LinearGradient(
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                              colors: [
+                                Color(0xFF222226),
+                                Color(0xFF131316),
+                              ],
+                            ),
+                            borderRadius: BorderRadius.circular(20.r),
                             border: Border.all(
                               color: isExpanded
                                   ? const Color(0xFFAB31DE)
-                                  : const Color(0xFFF1F5F9),
-                              width: isExpanded ? 1.5 : 1.2,
+                                  : const Color(0xFF2E2E36),
+                              width: isExpanded ? 1.5 : 1.0,
                             ),
                             boxShadow: [
                               BoxShadow(
                                 color: isExpanded
-                                    ? const Color(0xFFAB31DE).withValues(alpha: 0.12)
-                                    : Colors.black.withValues(alpha: 0.04),
+                                    ? const Color(0xFFAB31DE).withValues(alpha: 0.20)
+                                    : Colors.black.withValues(alpha: 0.15),
                                 blurRadius: 10,
                                 offset: const Offset(0, 3),
                               ),
@@ -306,67 +326,65 @@ class _BattleLeaderboardHistoryScreenState extends State<BattleLeaderboardHistor
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                       // Top Meta Row: Status Badge and Date
-                                       Row(
-                                         children: [
-                                           Container(
-                                             padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 3.5.h),
-                                             decoration: BoxDecoration(
-                                               color: isPending
-                                                   ? const Color(0xFFF59E0B).withValues(alpha: 0.12)
-                                                   : const Color(0xFF10B981).withValues(alpha: 0.12),
-                                               borderRadius: BorderRadius.circular(8.r),
-                                               border: Border.all(
-                                                 color: isPending
-                                                     ? const Color(0xFFF59E0B).withValues(alpha: 0.35)
-                                                     : const Color(0xFF10B981).withValues(alpha: 0.35),
-                                                 width: 1.0,
-                                               ),
-                                             ),
-                                             child: Row(
-                                               mainAxisSize: MainAxisSize.min,
-                                               children: [
-                                                 Icon(
-                                                   isPending
-                                                       ? Icons.hourglass_top_rounded
-                                                       : Icons.check_circle_rounded,
-                                                   color: isPending
-                                                       ? const Color(0xFFD97706)
-                                                       : const Color(0xFF10B981),
-                                                   size: 11.sp,
-                                                 ),
-                                                 SizedBox(width: 4.w),
-                                                 Text(
-                                                   isPending ? 'PENDING' : 'DECLARED',
-                                                   style: GoogleFonts.outfit(
-                                                     color: isPending
-                                                         ? const Color(0xFFD97706)
-                                                         : const Color(0xFF10B981),
-                                                     fontSize: 9.5.sp,
-                                                     fontWeight: FontWeight.w900,
-                                                     letterSpacing: 0.4,
-                                                   ),
-                                                 ),
-                                               ],
-                                             ),
-                                           ),
-                                           SizedBox(width: 8.w),
-                                           Expanded(
-                                             child: Text(
-                                               declaredAtStr,
-                                               style: GoogleFonts.outfit(
-                                                 color: isPending
-                                                     ? const Color(0xFFD97706)
-                                                     : const Color(0xFF64748B),
-                                                 fontSize: 11.5.sp,
-                                                 fontWeight: isPending ? FontWeight.w700 : FontWeight.w600,
-                                               ),
-                                               maxLines: 1,
-                                               overflow: TextOverflow.ellipsis,
-                                             ),
-                                           ),
-                                         ],
-                                       ),
+                                      // Top Meta Row: Status Badge and Date
+                                      Row(
+                                        children: [
+                                          Container(
+                                            padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 3.5.h),
+                                            decoration: BoxDecoration(
+                                              color: isPending
+                                                  ? const Color(0xFFF59E0B).withValues(alpha: 0.18)
+                                                  : const Color(0xFF10B981).withValues(alpha: 0.18),
+                                              borderRadius: BorderRadius.circular(8.r),
+                                              border: Border.all(
+                                                color: isPending
+                                                    ? const Color(0xFFF59E0B).withValues(alpha: 0.5)
+                                                    : const Color(0xFF10B981).withValues(alpha: 0.5),
+                                                width: 1.0,
+                                              ),
+                                            ),
+                                            child: Row(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                Icon(
+                                                  isPending
+                                                      ? Icons.hourglass_top_rounded
+                                                      : Icons.check_circle_rounded,
+                                                  color: isPending
+                                                      ? const Color(0xFFFBBF24)
+                                                      : const Color(0xFF34D399),
+                                                  size: 11.sp,
+                                                ),
+                                                SizedBox(width: 4.w),
+                                                Text(
+                                                  isPending ? 'PENDING' : 'DECLARED',
+                                                  style: GoogleFonts.poppins(
+                                                    color: isPending
+                                                        ? const Color(0xFFFBBF24)
+                                                        : const Color(0xFF34D399),
+                                                    fontSize: 9.5.sp,
+                                                    fontWeight: FontWeight.w800,
+                                                    letterSpacing: 0.4,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          SizedBox(width: 8.w),
+                                          Expanded(
+                                            child: Text(
+                                              declaredAtStr,
+                                              style: GoogleFonts.poppins(
+                                                color: const Color(0xFF9E9EA7),
+                                                fontSize: 11.5.sp,
+                                                fontWeight: FontWeight.w500,
+                                              ),
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
 
                                       SizedBox(height: 12.h),
 
@@ -374,26 +392,12 @@ class _BattleLeaderboardHistoryScreenState extends State<BattleLeaderboardHistor
                                       Container(
                                         padding: EdgeInsets.all(10.r),
                                         decoration: BoxDecoration(
-                                          gradient: const LinearGradient(
-                                            colors: [
-                                              Color(0xFFFFFBEB),
-                                              Color(0xFFFEF3C7),
-                                            ],
-                                            begin: Alignment.topLeft,
-                                            end: Alignment.bottomRight,
-                                          ),
+                                          color: const Color(0xFF2E2E38),
                                           borderRadius: BorderRadius.circular(14.r),
                                           border: Border.all(
-                                            color: const Color(0xFFFDE68A),
-                                            width: 1.2,
+                                            color: const Color(0xFFFBBF24).withValues(alpha: 0.5),
+                                            width: 1.0,
                                           ),
-                                          boxShadow: [
-                                            BoxShadow(
-                                              color: const Color(0xFFF59E0B).withValues(alpha: 0.08),
-                                              blurRadius: 6,
-                                              offset: const Offset(0, 2),
-                                            ),
-                                          ],
                                         ),
                                         child: Row(
                                           children: [
@@ -420,12 +424,12 @@ class _BattleLeaderboardHistoryScreenState extends State<BattleLeaderboardHistor
                                                   decoration: BoxDecoration(
                                                     shape: BoxShape.circle,
                                                     border: Border.all(
-                                                      color: const Color(0xFFFFB800),
-                                                      width: 2.5,
+                                                      color: const Color(0xFFFBBF24),
+                                                      width: 2.0,
                                                     ),
                                                     boxShadow: [
                                                       BoxShadow(
-                                                        color: const Color(0xFFFFB800).withValues(alpha: 0.35),
+                                                        color: const Color(0xFFFBBF24).withValues(alpha: 0.35),
                                                         blurRadius: 6,
                                                         spreadRadius: 1,
                                                       ),
@@ -433,12 +437,12 @@ class _BattleLeaderboardHistoryScreenState extends State<BattleLeaderboardHistor
                                                   ),
                                                   child: ClipOval(
                                                     child: Container(
-                                                      color: const Color(0xFFFFFDF0),
+                                                      color: const Color(0xFF1E1B4B),
                                                       child: (() {
                                                         if (rank1 == null) {
                                                           return Icon(
                                                             Icons.emoji_events_rounded,
-                                                            color: const Color(0xFFD97706),
+                                                            color: const Color(0xFFFBBF24),
                                                             size: 22.sp,
                                                           );
                                                         }
@@ -452,10 +456,10 @@ class _BattleLeaderboardHistoryScreenState extends State<BattleLeaderboardHistor
                                                             : Center(
                                                                 child: Text(
                                                                   winnerName.isNotEmpty ? winnerName.substring(0, 1).toUpperCase() : 'W',
-                                                                  style: GoogleFonts.outfit(
-                                                                    color: const Color(0xFFB45309),
+                                                                  style: GoogleFonts.poppins(
+                                                                    color: Colors.white,
                                                                     fontSize: 16.sp,
-                                                                    fontWeight: FontWeight.w900,
+                                                                    fontWeight: FontWeight.w800,
                                                                   ),
                                                                 ),
                                                               );
@@ -469,25 +473,13 @@ class _BattleLeaderboardHistoryScreenState extends State<BattleLeaderboardHistor
                                                   child: Container(
                                                     padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 1.h),
                                                     decoration: BoxDecoration(
-                                                      gradient: const LinearGradient(
-                                                        colors: [Color(0xFFFFE500), Color(0xFFFF9900)],
-                                                      ),
+                                                      color: const Color(0xFFFBBF24),
                                                       borderRadius: BorderRadius.circular(6.r),
-                                                      border: Border.all(
-                                                        color: Colors.white,
-                                                        width: 1.0,
-                                                      ),
-                                                      boxShadow: [
-                                                        BoxShadow(
-                                                          color: Colors.black.withValues(alpha: 0.15),
-                                                          blurRadius: 3,
-                                                        ),
-                                                      ],
                                                     ),
                                                     child: Text(
                                                       '#1',
-                                                      style: GoogleFonts.outfit(
-                                                        color: const Color(0xFF78350F),
+                                                      style: GoogleFonts.poppins(
+                                                        color: const Color(0xFF1B0B3B),
                                                         fontSize: 9.sp,
                                                         fontWeight: FontWeight.w900,
                                                       ),
@@ -514,10 +506,10 @@ class _BattleLeaderboardHistoryScreenState extends State<BattleLeaderboardHistor
                                                                   ? rank1['userName'].toString()
                                                                   : 'Player')
                                                               : (isPending ? 'Calculating Winner...' : 'No Winner Recorded'),
-                                                          style: GoogleFonts.outfit(
-                                                            color: const Color(0xFF1E1B4B),
+                                                          style: GoogleFonts.poppins(
+                                                            color: Colors.white,
                                                             fontSize: 13.5.sp,
-                                                            fontWeight: FontWeight.w900,
+                                                            fontWeight: FontWeight.w700,
                                                           ),
                                                           maxLines: 1,
                                                           overflow: TextOverflow.ellipsis,
@@ -526,7 +518,7 @@ class _BattleLeaderboardHistoryScreenState extends State<BattleLeaderboardHistor
                                                       SizedBox(width: 4.w),
                                                       Icon(
                                                         Icons.verified_rounded,
-                                                        color: const Color(0xFFD97706),
+                                                        color: const Color(0xFFFBBF24),
                                                         size: 13.sp,
                                                       ),
                                                     ],
@@ -535,10 +527,10 @@ class _BattleLeaderboardHistoryScreenState extends State<BattleLeaderboardHistor
                                                   if (rank1 != null)
                                                     Text(
                                                       '${rank1['totalSpeedPoints'] ?? 0} Pts • ${rank1['winsCount'] ?? 0} Wins',
-                                                      style: GoogleFonts.outfit(
-                                                        color: const Color(0xFF78350F),
+                                                      style: GoogleFonts.poppins(
+                                                        color: const Color(0xFFFBBF24),
                                                         fontSize: 11.sp,
-                                                        fontWeight: FontWeight.w700,
+                                                        fontWeight: FontWeight.w600,
                                                       ),
                                                       maxLines: 1,
                                                       overflow: TextOverflow.ellipsis,
@@ -555,18 +547,11 @@ class _BattleLeaderboardHistoryScreenState extends State<BattleLeaderboardHistor
                                                 padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.5.h),
                                                 decoration: BoxDecoration(
                                                   gradient: const LinearGradient(
-                                                    colors: [Color(0xFFE39FFF), Color(0xFFAB31DE)],
+                                                    colors: [Color(0xFFAB31DE), Color(0xFF7928CA)],
                                                     begin: Alignment.topCenter,
                                                     end: Alignment.bottomCenter,
                                                   ),
-                                                  borderRadius: BorderRadius.circular(12.r),
-                                                  boxShadow: [
-                                                    BoxShadow(
-                                                      color: const Color(0xFFAB31DE).withValues(alpha: 0.30),
-                                                      blurRadius: 6,
-                                                      offset: const Offset(0, 2),
-                                                    ),
-                                                  ],
+                                                  borderRadius: BorderRadius.circular(10.r),
                                                 ),
                                                 child: Row(
                                                   mainAxisSize: MainAxisSize.min,
@@ -580,10 +565,10 @@ class _BattleLeaderboardHistoryScreenState extends State<BattleLeaderboardHistor
                                                     SizedBox(width: 3.w),
                                                     Text(
                                                       '+${_formatCoins(rank1['coinsAwarded'] ?? rank1['rewardCoins'])}',
-                                                      style: GoogleFonts.outfit(
+                                                      style: GoogleFonts.poppins(
                                                         color: Colors.white,
                                                         fontSize: 11.5.sp,
-                                                        fontWeight: FontWeight.w900,
+                                                        fontWeight: FontWeight.w700,
                                                       ),
                                                     ),
                                                   ],
@@ -600,10 +585,10 @@ class _BattleLeaderboardHistoryScreenState extends State<BattleLeaderboardHistor
                                         width: double.infinity,
                                         padding: EdgeInsets.symmetric(vertical: 7.5.h),
                                         decoration: BoxDecoration(
-                                          color: const Color(0xFFFAF5FF),
+                                          color: const Color(0xFF2E2E38),
                                           borderRadius: BorderRadius.circular(10.r),
                                           border: Border.all(
-                                            color: isExpanded ? const Color(0xFFE9D5FF) : const Color(0xFFF3E8FF),
+                                            color: isExpanded ? const Color(0xFFAB31DE) : const Color(0xFF3E3E4C),
                                             width: 1.0,
                                           ),
                                         ),
@@ -612,17 +597,17 @@ class _BattleLeaderboardHistoryScreenState extends State<BattleLeaderboardHistor
                                           children: [
                                             Text(
                                               isExpanded ? 'Hide Details' : 'View All',
-                                              style: GoogleFonts.outfit(
-                                                color: const Color(0xFFAB31DE),
+                                              style: GoogleFonts.poppins(
+                                                color: Colors.white,
                                                 fontSize: 12.sp,
-                                                fontWeight: FontWeight.w800,
+                                                fontWeight: FontWeight.w600,
                                                 letterSpacing: 0.3,
                                               ),
                                             ),
                                             SizedBox(width: 4.w),
                                             Icon(
                                               isExpanded ? Icons.keyboard_arrow_up_rounded : Icons.keyboard_arrow_down_rounded,
-                                              color: const Color(0xFFAB31DE),
+                                              color: Colors.white,
                                               size: 16.sp,
                                             ),
                                           ],
@@ -636,7 +621,7 @@ class _BattleLeaderboardHistoryScreenState extends State<BattleLeaderboardHistor
                               // Expandable Details Panel
                               if (isExpanded) ...[
                                 const Divider(
-                                  color: Color(0xFFF1F5F9),
+                                  color: Color(0xFF2E2E38),
                                   height: 1,
                                   thickness: 1,
                                 ),
@@ -645,10 +630,10 @@ class _BattleLeaderboardHistoryScreenState extends State<BattleLeaderboardHistor
                                     margin: EdgeInsets.fromLTRB(12.w, 12.h, 12.w, 4.h),
                                     padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
                                     decoration: BoxDecoration(
-                                      color: const Color(0xFFFFFBEB),
+                                      color: const Color(0xFF2E2E38),
                                       borderRadius: BorderRadius.circular(10.r),
                                       border: Border.all(
-                                        color: const Color(0xFFFDE68A),
+                                        color: const Color(0xFFF59E0B).withValues(alpha: 0.4),
                                         width: 1.0,
                                       ),
                                     ),
@@ -656,17 +641,17 @@ class _BattleLeaderboardHistoryScreenState extends State<BattleLeaderboardHistor
                                       children: [
                                         Icon(
                                           Icons.info_outline_rounded,
-                                          color: const Color(0xFFD97706),
+                                          color: const Color(0xFFFBBF24),
                                           size: 15.sp,
                                         ),
                                         SizedBox(width: 8.w),
                                         Expanded(
                                           child: Text(
                                             'Results are being verified. Reward coins will be credited soon.',
-                                            style: GoogleFonts.outfit(
-                                              color: const Color(0xFFB45309),
+                                            style: GoogleFonts.poppins(
+                                              color: const Color(0xFFFBBF24),
                                               fontSize: 11.5.sp,
-                                              fontWeight: FontWeight.w600,
+                                              fontWeight: FontWeight.w500,
                                             ),
                                           ),
                                         ),
@@ -691,10 +676,10 @@ class _BattleLeaderboardHistoryScreenState extends State<BattleLeaderboardHistor
                                     padding: EdgeInsets.all(16.r),
                                     child: Text(
                                       'No rankers recorded for this cycle.',
-                                      style: GoogleFonts.outfit(
-                                        color: const Color(0xFF64748B),
+                                      style: GoogleFonts.poppins(
+                                        color: const Color(0xFF9E9EA7),
                                         fontSize: 12.sp,
-                                        fontWeight: FontWeight.w500,
+                                        fontWeight: FontWeight.w400,
                                       ),
                                     ),
                                   ),
@@ -707,7 +692,7 @@ class _BattleLeaderboardHistoryScreenState extends State<BattleLeaderboardHistor
                                     padding: EdgeInsets.symmetric(horizontal: 14.w),
                                     child: Text(
                                       'OTHER RANKERS',
-                                      style: GoogleFonts.outfit(
+                                      style: GoogleFonts.poppins(
                                         color: const Color(0xFFAB31DE),
                                         fontSize: 11.sp,
                                         fontWeight: FontWeight.w800,
@@ -728,10 +713,10 @@ class _BattleLeaderboardHistoryScreenState extends State<BattleLeaderboardHistor
                                       margin: EdgeInsets.symmetric(horizontal: 12.w, vertical: 4.h),
                                       padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 9.h),
                                       decoration: BoxDecoration(
-                                        color: const Color(0xFFFAF5FF),
+                                        color: const Color(0xFF2E2E38),
                                         borderRadius: BorderRadius.circular(12.r),
                                         border: Border.all(
-                                          color: const Color(0xFFF3E8FF),
+                                          color: const Color(0xFF3E3E4C),
                                           width: 1.0,
                                         ),
                                       ),
@@ -742,16 +727,16 @@ class _BattleLeaderboardHistoryScreenState extends State<BattleLeaderboardHistor
                                             width: 26.r,
                                             height: 26.r,
                                             alignment: Alignment.center,
-                                            decoration: const BoxDecoration(
-                                              color: Colors.white,
-                                              shape: BoxShape.circle,
+                                            decoration: BoxDecoration(
+                                              color: const Color(0xFF1E1B4B),
+                                              borderRadius: BorderRadius.circular(8.r),
                                             ),
                                             child: Text(
                                               '#$rank',
-                                              style: GoogleFonts.outfit(
-                                                color: const Color(0xFFAB31DE),
+                                              style: GoogleFonts.poppins(
+                                                color: Colors.white,
                                                 fontSize: 11.sp,
-                                                fontWeight: FontWeight.w900,
+                                                fontWeight: FontWeight.w700,
                                               ),
                                             ),
                                           ),
@@ -760,7 +745,7 @@ class _BattleLeaderboardHistoryScreenState extends State<BattleLeaderboardHistor
                                           // Avatar Circle
                                           CircleAvatar(
                                             radius: 16.r,
-                                            backgroundColor: Colors.white,
+                                            backgroundColor: const Color(0xFF1E1B4B),
                                             child: avatarUrl.isNotEmpty && avatarUrl != 'null'
                                                 ? ClipOval(
                                                     child: AvatarInternetImage(
@@ -770,9 +755,10 @@ class _BattleLeaderboardHistoryScreenState extends State<BattleLeaderboardHistor
                                                   )
                                                 : Text(
                                                     name.substring(0, name.isNotEmpty ? 1 : 0).toUpperCase(),
-                                                    style: GoogleFonts.outfit(
-                                                      color: const Color(0xFFAB31DE),
+                                                    style: GoogleFonts.poppins(
+                                                      color: Colors.white,
                                                       fontWeight: FontWeight.bold,
+                                                      fontSize: 12.sp,
                                                     ),
                                                   ),
                                           ),
@@ -785,10 +771,10 @@ class _BattleLeaderboardHistoryScreenState extends State<BattleLeaderboardHistor
                                               children: [
                                                 Text(
                                                   name,
-                                                  style: GoogleFonts.outfit(
-                                                    color: const Color(0xFF1E1B4B),
+                                                  style: GoogleFonts.poppins(
+                                                    color: Colors.white,
                                                     fontSize: 13.sp,
-                                                    fontWeight: FontWeight.w800,
+                                                    fontWeight: FontWeight.w700,
                                                   ),
                                                   maxLines: 1,
                                                   overflow: TextOverflow.ellipsis,
@@ -796,10 +782,10 @@ class _BattleLeaderboardHistoryScreenState extends State<BattleLeaderboardHistor
                                                 SizedBox(height: 1.h),
                                                 Text(
                                                   '$pts Pts • $winsCount Wins',
-                                                  style: GoogleFonts.outfit(
-                                                    color: const Color(0xFF64748B),
+                                                  style: GoogleFonts.poppins(
+                                                    color: const Color(0xFF9E9EA7),
                                                     fontSize: 10.5.sp,
-                                                    fontWeight: FontWeight.w500,
+                                                    fontWeight: FontWeight.w400,
                                                   ),
                                                 ),
                                               ],
@@ -809,12 +795,12 @@ class _BattleLeaderboardHistoryScreenState extends State<BattleLeaderboardHistor
                                           // Prize Coins Badge
                                           if (coins > 0)
                                             Container(
-                                              padding: EdgeInsets.symmetric(horizontal: 9.w, vertical: 3.5.h),
+                                              padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 3.5.h),
                                               decoration: BoxDecoration(
-                                                color: Colors.white,
+                                                color: const Color(0xFF1E1B4B),
                                                 borderRadius: BorderRadius.circular(8.r),
                                                 border: Border.all(
-                                                  color: const Color(0xFFF3E8FF),
+                                                  color: const Color(0xFFAB31DE).withValues(alpha: 0.4),
                                                   width: 1,
                                                 ),
                                               ),
@@ -830,10 +816,10 @@ class _BattleLeaderboardHistoryScreenState extends State<BattleLeaderboardHistor
                                                   SizedBox(width: 4.w),
                                                   Text(
                                                     '+${_formatCoins(coins)}',
-                                                    style: GoogleFonts.outfit(
-                                                      color: const Color(0xFFAB31DE),
+                                                    style: GoogleFonts.poppins(
+                                                      color: const Color(0xFFFBBF24),
                                                       fontSize: 11.5.sp,
-                                                      fontWeight: FontWeight.w900,
+                                                      fontWeight: FontWeight.w700,
                                                     ),
                                                   ),
                                                 ],
@@ -886,7 +872,7 @@ class _BattleLeaderboardHistoryScreenState extends State<BattleLeaderboardHistor
           decoration: BoxDecoration(
             gradient: isSelected
                 ? const LinearGradient(
-                    colors: [Color(0xFFE39FFF), Color(0xFFAB31DE)],
+                    colors: [Color(0xFFAB31DE), Color(0xFF7928CA)],
                   )
                 : null,
             color: isSelected ? null : Colors.transparent,
@@ -894,7 +880,7 @@ class _BattleLeaderboardHistoryScreenState extends State<BattleLeaderboardHistor
             boxShadow: isSelected
                 ? [
                     BoxShadow(
-                      color: const Color(0xFFAB31DE).withValues(alpha: 0.25),
+                      color: const Color(0xFFAB31DE).withValues(alpha: 0.35),
                       blurRadius: 8,
                       offset: const Offset(0, 2),
                     ),
@@ -906,17 +892,17 @@ class _BattleLeaderboardHistoryScreenState extends State<BattleLeaderboardHistor
             children: [
               Icon(
                 icon,
-                color: isSelected ? Colors.white : const Color(0xFF64748B),
+                color: isSelected ? Colors.white : const Color(0xFF9E9EA7),
                 size: 14.sp,
               ),
               SizedBox(width: 4.w),
               Flexible(
                 child: Text(
                   label,
-                  style: GoogleFonts.outfit(
-                    color: isSelected ? Colors.white : const Color(0xFF64748B),
+                  style: GoogleFonts.poppins(
+                    color: isSelected ? Colors.white : const Color(0xFF9E9EA7),
                     fontSize: 11.5.sp,
-                    fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
+                    fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
                     letterSpacing: 0.3,
                   ),
                   maxLines: 1,
@@ -1005,7 +991,7 @@ class _HistoryPodiumBlock extends StatelessWidget {
     final Color ringColor;
 
     if (rank == 1) {
-      ringColor = const Color(0xFFFFB800); // Gold
+      ringColor = const Color(0xFFFBBF24); // Gold
     } else if (rank == 2) {
       ringColor = const Color(0xFF94A3B8); // Silver
     } else {
@@ -1029,165 +1015,166 @@ class _HistoryPodiumBlock extends StatelessWidget {
             ),
           ),
 
-        // Outer 3D Pink/Purple Base Container
+        // Outer Dark Obsidian Base Container
         Container(
           margin: EdgeInsets.only(top: isCenter ? 8.h : 18.h),
-          padding: EdgeInsets.only(bottom: 5.h),
+          padding: EdgeInsets.fromLTRB(4.w, 10.h, 4.w, 10.h),
           decoration: BoxDecoration(
-            color: const Color(0xFFC88BE2),
+            color: const Color(0xFF2E2E38),
             borderRadius: BorderRadius.circular(16.r),
+            border: Border.all(
+              color: isCenter
+                  ? const Color(0xFFFBBF24)
+                  : (rank == 2 ? const Color(0xFF94A3B8) : const Color(0xFFD97706)),
+              width: isCenter ? 1.5 : 1.0,
+            ),
             boxShadow: [
               BoxShadow(
-                color: const Color(0xFFAB31DE).withValues(alpha: isCenter ? 0.15 : 0.08),
+                color: isCenter
+                    ? const Color(0xFFFBBF24).withValues(alpha: 0.20)
+                    : Colors.black.withValues(alpha: 0.15),
                 blurRadius: isCenter ? 12 : 6,
                 offset: const Offset(0, 3),
               ),
             ],
           ),
-          child: Container(
-            padding: EdgeInsets.fromLTRB(4.w, 8.h, 4.w, 8.h),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(16.r),
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                SizedBox(height: isCenter ? 3.h : 0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SizedBox(height: isCenter ? 3.h : 0),
 
-                // Avatar Circle with Ring & Overlapping Hexagon Badge
-                Stack(
-                  alignment: Alignment.bottomCenter,
-                  clipBehavior: Clip.none,
-                  children: [
-                    Container(
-                      width: avatarSize,
-                      height: avatarSize,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        border: Border.all(
-                          color: ringColor,
-                          width: 2.5,
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: ringColor.withValues(alpha: 0.35),
-                            blurRadius: 6,
-                            spreadRadius: 1,
-                          ),
-                        ],
+              // Avatar Circle with Ring & Overlapping Hexagon Badge
+              Stack(
+                alignment: Alignment.bottomCenter,
+                clipBehavior: Clip.none,
+                children: [
+                  Container(
+                    width: avatarSize,
+                    height: avatarSize,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: ringColor,
+                        width: 2.5,
                       ),
-                      child: ClipOval(
-                        child: Container(
-                          color: const Color(0xFFFAF5FF),
-                          child: (() {
-                            if (!hasPlayer) {
-                              return Icon(
-                                Icons.person_rounded,
-                                color: const Color(0xFFAB31DE),
-                                size: rank == 1 ? 22.sp : 18.sp,
-                              );
-                            }
-                            final String avatarUrl = player['avatar']?.toString() ?? '';
-                            return avatarUrl.isNotEmpty && avatarUrl != 'null'
-                                ? AvatarInternetImage(
-                                    url: avatarUrl,
-                                    size: avatarSize,
-                                  )
-                                : Center(
-                                    child: Text(
-                                      name.substring(0, name.isNotEmpty ? 1 : 0).toUpperCase(),
-                                      style: GoogleFonts.outfit(
-                                        color: const Color(0xFFAB31DE),
-                                        fontSize: rank == 1 ? 15.sp : 13.sp,
-                                        fontWeight: FontWeight.w900,
-                                      ),
-                                    ),
-                                  );
-                          })(),
+                      boxShadow: [
+                        BoxShadow(
+                          color: ringColor.withValues(alpha: 0.35),
+                          blurRadius: 6,
+                          spreadRadius: 1,
                         ),
+                      ],
+                    ),
+                    child: ClipOval(
+                      child: Container(
+                        color: const Color(0xFF1E1B4B),
+                        child: (() {
+                          if (!hasPlayer) {
+                            return Icon(
+                              Icons.person_rounded,
+                              color: const Color(0xFF9E9EA7),
+                              size: rank == 1 ? 22.sp : 18.sp,
+                            );
+                          }
+                          final String avatarUrl = player['avatar']?.toString() ?? '';
+                          return avatarUrl.isNotEmpty && avatarUrl != 'null'
+                              ? AvatarInternetImage(
+                                  url: avatarUrl,
+                                  size: avatarSize,
+                                )
+                              : Center(
+                                  child: Text(
+                                    name.substring(0, name.isNotEmpty ? 1 : 0).toUpperCase(),
+                                    style: GoogleFonts.poppins(
+                                      color: Colors.white,
+                                      fontSize: rank == 1 ? 15.sp : 13.sp,
+                                      fontWeight: FontWeight.w800,
+                                    ),
+                                  ),
+                                );
+                        })(),
                       ),
                     ),
+                  ),
 
-                    // Overlapping Vertical Hexagon Badge
-                    Positioned(
-                      bottom: -9.h,
-                      child: _HexagonBadge(
-                        rank: rank,
-                        fillColor: rank == 1
-                            ? const Color(0xFFFFEA00)
-                            : (rank == 2 ? const Color(0xFF94A3B8) : const Color(0xFFD97706)),
-                        borderColor: rank == 1
-                            ? const Color(0xFFFFF59D)
-                            : (rank == 2 ? const Color(0xFFE2E8F0) : const Color(0xFFFDE68A)),
+                  // Overlapping Vertical Hexagon Badge
+                  Positioned(
+                    bottom: -9.h,
+                    child: _HexagonBadge(
+                      rank: rank,
+                      fillColor: rank == 1
+                          ? const Color(0xFFFBBF24)
+                          : (rank == 2 ? const Color(0xFF94A3B8) : const Color(0xFFD97706)),
+                      borderColor: rank == 1
+                          ? const Color(0xFFFFF59D)
+                          : (rank == 2 ? const Color(0xFFE2E8F0) : const Color(0xFFFDE68A)),
+                    ),
+                  ),
+                ],
+              ),
+
+              SizedBox(height: 12.h),
+
+              // Name
+              Text(
+                name,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.center,
+                style: GoogleFonts.poppins(
+                  color: Colors.white,
+                  fontSize: isCenter ? 12.sp : 11.sp,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+
+              SizedBox(height: 2.h),
+
+              // Coins Awarded
+              if (coinsAwarded > 0) ...[
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Image.asset(
+                      'assets/icons/coin.png',
+                      width: 11.w,
+                      height: 11.w,
+                      fit: BoxFit.contain,
+                    ),
+                    SizedBox(width: 2.w),
+                    Flexible(
+                      child: Text(
+                        '+${_formatCoins(coinsAwarded)}',
+                        style: GoogleFonts.poppins(
+                          color: const Color(0xFFFBBF24),
+                          fontSize: 10.sp,
+                          fontWeight: FontWeight.w700,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
                   ],
                 ),
-
-                SizedBox(height: 12.h),
-
-                // Name
-                Text(
-                  name,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  textAlign: TextAlign.center,
-                  style: GoogleFonts.outfit(
-                    color: const Color(0xFF1E1B4B),
-                    fontSize: isCenter ? 12.sp : 11.sp,
-                    fontWeight: isCenter ? FontWeight.w800 : FontWeight.w700,
-                  ),
-                ),
-
-                SizedBox(height: 2.h),
-
-                // Coins Awarded
-                if (coinsAwarded > 0) ...[
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Image.asset(
-                        'assets/icons/coin.png',
-                        width: 11.w,
-                        height: 11.w,
-                        fit: BoxFit.contain,
-                      ),
-                      SizedBox(width: 2.w),
-                      Flexible(
-                        child: Text(
-                          '+${_formatCoins(coinsAwarded)}',
-                          style: GoogleFonts.outfit(
-                            color: const Color(0xFF1E1B4B),
-                            fontSize: 10.sp,
-                            fontWeight: FontWeight.w800,
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 1.h),
-                ],
-                // Points and Wins Subtitle (Multi-line so it never overflows narrow podium block)
-                Text(
-                  hasPlayer
-                      ? '$totalSpeedPoints Pts\n$winsCount Wins'
-                      : '0 Pts\n0 Wins',
-                  textAlign: TextAlign.center,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: GoogleFonts.outfit(
-                    color: const Color(0xFF64748B),
-                    fontSize: 9.sp,
-                    fontWeight: FontWeight.w600,
-                    height: 1.15,
-                  ),
-                ),
+                SizedBox(height: 1.h),
               ],
-            ),
+              // Points and Wins Subtitle
+              Text(
+                hasPlayer
+                    ? '$totalSpeedPoints Pts\n$winsCount Wins'
+                    : '0 Pts\n0 Wins',
+                textAlign: TextAlign.center,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: GoogleFonts.poppins(
+                  color: const Color(0xFF9E9EA7),
+                  fontSize: 9.sp,
+                  fontWeight: FontWeight.w500,
+                  height: 1.15,
+                ),
+              ),
+            ],
           ),
         ),
       ],
@@ -1264,7 +1251,7 @@ class _HexagonBadge extends StatelessWidget {
             padding: EdgeInsets.only(bottom: 1.h),
             child: Text(
               '$rank',
-              style: GoogleFonts.outfit(
+              style: GoogleFonts.poppins(
                 color: rank == 1 ? const Color(0xFF1B0B3B) : Colors.white,
                 fontSize: 10.sp,
                 fontWeight: FontWeight.w900,

@@ -18,7 +18,7 @@ enum StatusPopupType {
   permission,
 }
 
-/// Universal Status Popup Dialog (Matching Luxury Center-Notched UI with Multi-Type Support)
+/// Universal Status Popup Dialog (Matching Executive Clean Home Screen UI)
 class CustomStatusPopup extends StatelessWidget {
   const CustomStatusPopup({
     super.key,
@@ -215,7 +215,8 @@ class CustomStatusPopup extends StatelessWidget {
     required BuildContext context,
     String? tag = 'Stay Tuned',
     String title = 'Coming Soon!',
-    String? message = 'This feature is currently under active development and will be available very soon.',
+    String? message =
+        'This feature is currently under active development and will be available very soon.',
     Widget? customBody,
     String primaryButtonText = 'GOT IT',
     VoidCallback? onPrimaryTap,
@@ -231,10 +232,23 @@ class CustomStatusPopup extends StatelessWidget {
       title: title,
       message: message,
       customBody: customBody,
-      centerIcon: const Icon(
-        Icons.rocket_launch_rounded,
-        color: Colors.white,
-        size: 34,
+      centerIcon: Container(
+        width: 44.w,
+        height: 44.w,
+        decoration: BoxDecoration(
+          color: const Color(0xFFF8FAFC),
+          shape: BoxShape.circle,
+          border: Border.all(
+            color: const Color(0xFFE2E8F0),
+            width: 1.2,
+          ),
+        ),
+        alignment: Alignment.center,
+        child: Icon(
+          Icons.rocket_launch_rounded,
+          color: const Color(0xFF26262B),
+          size: 24.sp,
+        ),
       ),
       primaryButtonText: primaryButtonText,
       onPrimaryTap: onPrimaryTap,
@@ -245,7 +259,7 @@ class CustomStatusPopup extends StatelessWidget {
     );
   }
 
-  /// 5. Static Shortcut: Warning / Notice Dialog
+  /// 6. Static Shortcut: Warning / Notice Dialog
   static Future<T?> showWarning<T>({
     required BuildContext context,
     String? tag = 'Attention',
@@ -277,7 +291,7 @@ class CustomStatusPopup extends StatelessWidget {
     );
   }
 
-  /// 6. Static Shortcut: Info Dialog
+  /// 7. Static Shortcut: Info Dialog
   static Future<T?> showInfo<T>({
     required BuildContext context,
     String? tag = 'Information',
@@ -307,7 +321,7 @@ class CustomStatusPopup extends StatelessWidget {
     );
   }
 
-  /// 7. Static Shortcut: App Usage Access Permission Dialog (Matching Signature Luxury Center-Notched Card UI with DBCCFF/FFFFFF Colors)
+  /// 8. Static Shortcut: App Usage Access Permission Dialog
   static Future<bool> showUsagePermission({
     required BuildContext context,
     required VoidCallback onAllow,
@@ -329,17 +343,17 @@ class CustomStatusPopup extends StatelessWidget {
           width: 44.w,
           height: 44.w,
           decoration: BoxDecoration(
-            color: Colors.white.withValues(alpha: 0.15),
+            color: const Color(0xFFF8FAFC),
             shape: BoxShape.circle,
             border: Border.all(
-              color: Colors.white.withValues(alpha: 0.35),
-              width: 1,
+              color: const Color(0xFFE2E8F0),
+              width: 1.2,
             ),
           ),
           alignment: Alignment.center,
           child: Icon(
             Icons.bolt_rounded,
-            color: const Color(0xFFFDE047),
+            color: const Color(0xFF26262B),
             size: 26.sp,
           ),
         ),
@@ -360,7 +374,7 @@ class CustomStatusPopup extends StatelessWidget {
     return allowed;
   }
 
-  /// 8. Static Shortcut: Confirm Logout Dialog (Matching User Reference Mockup 1-to-1)
+  /// 9. Static Shortcut: Confirm Logout Dialog
   static Future<bool> showConfirmLogout({
     required BuildContext context,
     VoidCallback? onConfirm,
@@ -374,12 +388,27 @@ class CustomStatusPopup extends StatelessWidget {
       type: StatusPopupType.warning,
       tag: null,
       title: 'Logout',
-      message: 'Are you sure you want to logout from our account',
+      message: 'Are you sure you want to logout from your account?',
       orbSize: 76.w,
-      centerIcon: Icon(
-        Icons.logout_rounded,
-        color: const Color(0xFFFF4757),
-        size: 32.sp,
+      centerIcon: Center(
+        child: Container(
+          width: 44.w,
+          height: 44.w,
+          decoration: BoxDecoration(
+            color: const Color(0xFFFEF2F2),
+            shape: BoxShape.circle,
+            border: Border.all(
+              color: const Color(0xFFFEE2E2),
+              width: 1.2,
+            ),
+          ),
+          alignment: Alignment.center,
+          child: Icon(
+            Icons.logout_rounded,
+            color: const Color(0xFFEF4444),
+            size: 24.sp,
+          ),
+        ),
       ),
       primaryButtonText: 'Logout',
       onPrimaryTap: () {
@@ -401,7 +430,7 @@ class CustomStatusPopup extends StatelessWidget {
     return confirmed;
   }
 
-  /// 9. Static Shortcut: Confirm Delete Account Dialog (Matching User Reference Mockup 1-to-1)
+  /// 10. Static Shortcut: Confirm Delete Account Dialog
   static Future<bool> showConfirmDeleteAccount({
     required BuildContext context,
     VoidCallback? onConfirm,
@@ -418,10 +447,25 @@ class CustomStatusPopup extends StatelessWidget {
       message:
           'Are you sure you want to permanently delete your account? All progress & balance will be lost.',
       orbSize: 76.w,
-      centerIcon: Icon(
-        Icons.delete_forever_rounded,
-        color: const Color(0xFFFF4757),
-        size: 34.sp,
+      centerIcon: Center(
+        child: Container(
+          width: 44.w,
+          height: 44.w,
+          decoration: BoxDecoration(
+            color: const Color(0xFFFEF2F2),
+            shape: BoxShape.circle,
+            border: Border.all(
+              color: const Color(0xFFFEE2E2),
+              width: 1.2,
+            ),
+          ),
+          alignment: Alignment.center,
+          child: Icon(
+            Icons.delete_forever_rounded,
+            color: const Color(0xFFEF4444),
+            size: 24.sp,
+          ),
+        ),
       ),
       primaryButtonText: 'Delete',
       onPrimaryTap: () {
@@ -443,7 +487,7 @@ class CustomStatusPopup extends StatelessWidget {
     return confirmed;
   }
 
-  /// 10. Static Shortcut: Exit App Dialog (Matching Signature Luxury Center-Notched Card UI with DBCCFF/FFFFFF Colors)
+  /// 11. Static Shortcut: Exit App Dialog
   static Future<bool> showAppExit({
     required BuildContext context,
     VoidCallback? onExit,
@@ -464,17 +508,17 @@ class CustomStatusPopup extends StatelessWidget {
           width: 44.w,
           height: 44.w,
           decoration: BoxDecoration(
-            color: Colors.white.withValues(alpha: 0.15),
+            color: const Color(0xFFF8FAFC),
             shape: BoxShape.circle,
             border: Border.all(
-              color: Colors.white.withValues(alpha: 0.35),
-              width: 1,
+              color: const Color(0xFFE2E8F0),
+              width: 1.2,
             ),
           ),
           alignment: Alignment.center,
           child: Icon(
             Icons.power_settings_new_rounded,
-            color: const Color(0xFFFDE047),
+            color: const Color(0xFF26262B),
             size: 26.sp,
           ),
         ),
@@ -503,7 +547,7 @@ class CustomStatusPopup extends StatelessWidget {
     return willExit;
   }
 
-  /// 11. Static Shortcut: Disclaimer & Policy Disclosure Dialog (Matching Signature Luxury Center-Notched Card UI with DBCCFF/FFFFFF Colors)
+  /// 12. Static Shortcut: Disclaimer & Policy Disclosure Dialog
   static Future<bool> showDisclosure(BuildContext context) async {
     if (!context.mounted) return false;
 
@@ -519,24 +563,17 @@ class CustomStatusPopup extends StatelessWidget {
           width: 44.w,
           height: 44.w,
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: const Color(0xFFF8FAFC),
             shape: BoxShape.circle,
             border: Border.all(
-              color: const Color(0xFFAB31DE).withValues(alpha: 0.15),
+              color: const Color(0xFFE2E8F0),
               width: 1.2,
             ),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.05),
-                blurRadius: 6,
-                offset: const Offset(0, 2),
-              ),
-            ],
           ),
           alignment: Alignment.center,
           child: Icon(
             Icons.description_rounded,
-            color: const Color(0xFFAB31DE),
+            color: const Color(0xFF26262B),
             size: 24.sp,
           ),
         ),
@@ -548,7 +585,7 @@ class CustomStatusPopup extends StatelessWidget {
             'By continuing, you acknowledge that rewards, tasks, and games are strictly intended for entertainment and follow all applicable guidelines.',
             textAlign: TextAlign.center,
             style: GoogleFonts.poppins(
-              color: const Color(0xFF475569),
+              color: const Color(0xFF64748B),
               fontSize: 12.5.sp,
               fontWeight: FontWeight.w500,
               height: 1.45,
@@ -561,7 +598,7 @@ class CustomStatusPopup extends StatelessWidget {
               color: Colors.white,
               borderRadius: BorderRadius.circular(14.r),
               border: Border.all(
-                color: const Color(0xFFAB31DE).withValues(alpha: 0.15),
+                color: const Color(0xFFE2E8F0),
                 width: 1.2,
               ),
               boxShadow: [
@@ -583,11 +620,11 @@ class CustomStatusPopup extends StatelessWidget {
                   child: Text(
                     'Privacy Policy',
                     style: GoogleFonts.poppins(
-                      color: const Color(0xFFAB31DE),
+                      color: const Color(0xFF26262B),
                       fontSize: 12.sp,
                       fontWeight: FontWeight.w700,
                       decoration: TextDecoration.underline,
-                      decorationColor: const Color(0xFFAB31DE),
+                      decorationColor: const Color(0xFF26262B),
                     ),
                   ),
                 ),
@@ -604,11 +641,11 @@ class CustomStatusPopup extends StatelessWidget {
                   child: Text(
                     'Terms of Service',
                     style: GoogleFonts.poppins(
-                      color: const Color(0xFFAB31DE),
+                      color: const Color(0xFF26262B),
                       fontSize: 12.sp,
                       fontWeight: FontWeight.w700,
                       decoration: TextDecoration.underline,
-                      decorationColor: const Color(0xFFAB31DE),
+                      decorationColor: const Color(0xFF26262B),
                     ),
                   ),
                 ),
@@ -634,6 +671,7 @@ class CustomStatusPopup extends StatelessWidget {
     return accepted;
   }
 
+  /// 13. Static Shortcut: Guest Account Notice Dialog
   static Future<bool> showGuestDisclosure(BuildContext context) async {
     if (!context.mounted) return false;
 
@@ -649,24 +687,17 @@ class CustomStatusPopup extends StatelessWidget {
           width: 44.w,
           height: 44.w,
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: const Color(0xFFF8FAFC),
             shape: BoxShape.circle,
             border: Border.all(
-              color: const Color(0xFFAB31DE).withValues(alpha: 0.15),
+              color: const Color(0xFFE2E8F0),
               width: 1.2,
             ),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.05),
-                blurRadius: 6,
-                offset: const Offset(0, 2),
-              ),
-            ],
           ),
           alignment: Alignment.center,
           child: Icon(
             Icons.explore_rounded,
-            color: const Color(0xFFAB31DE),
+            color: const Color(0xFF26262B),
             size: 24.sp,
           ),
         ),
@@ -678,7 +709,7 @@ class CustomStatusPopup extends StatelessWidget {
             'A Guest account is only for exploration. Since it is a temporary account, your progress, coins, and rewards are not securely saved and can be lost if you clear app cache, uninstall the app, or change devices.',
             textAlign: TextAlign.center,
             style: GoogleFonts.poppins(
-              color: const Color(0xFF475569),
+              color: const Color(0xFF64748B),
               fontSize: 12.5.sp,
               fontWeight: FontWeight.w500,
               height: 1.45,
@@ -689,7 +720,7 @@ class CustomStatusPopup extends StatelessWidget {
             'To securely save your actual data and rewards, we highly recommend signing in with Google.',
             textAlign: TextAlign.center,
             style: GoogleFonts.poppins(
-              color: const Color(0xFFAB31DE),
+              color: const Color(0xFF26262B),
               fontSize: 12.5.sp,
               fontWeight: FontWeight.w700,
               height: 1.45,
@@ -714,7 +745,7 @@ class CustomStatusPopup extends StatelessWidget {
     return accepted;
   }
 
-  /// 12. Static Shortcut: Welcome Popup Dialog (Matching Signature Exit/Logout Luxury Center-Notched UI)
+  /// 14. Static Shortcut: Welcome Popup Dialog
   static Future<void> showWelcomePopup({
     required BuildContext context,
     required WelcomePopupConfig welcomePopup,
@@ -736,8 +767,8 @@ class CustomStatusPopup extends StatelessWidget {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(16.r),
                 border: Border.all(
-                  color: const Color(0xFFDBCCFF).withValues(alpha: 0.35),
-                  width: 1,
+                  color: const Color(0xFFE2E8F0),
+                  width: 1.2,
                 ),
               ),
               clipBehavior: Clip.antiAlias,
@@ -757,7 +788,7 @@ class CustomStatusPopup extends StatelessWidget {
                           end: Alignment.bottomCenter,
                           colors: [
                             Colors.transparent,
-                            const Color(0xFF0F172A).withValues(alpha: 0.75),
+                            Colors.black.withValues(alpha: 0.35),
                           ],
                         ),
                       ),
@@ -773,17 +804,17 @@ class CustomStatusPopup extends StatelessWidget {
           width: 44.w,
           height: 44.w,
           decoration: BoxDecoration(
-            color: Colors.white.withValues(alpha: 0.15),
+            color: const Color(0xFFF8FAFC),
             shape: BoxShape.circle,
             border: Border.all(
-              color: Colors.white.withValues(alpha: 0.35),
-              width: 1,
+              color: const Color(0xFFE2E8F0),
+              width: 1.2,
             ),
           ),
           alignment: Alignment.center,
           child: Icon(
             Icons.card_giftcard_rounded,
-            color: const Color(0xFFFDE047),
+            color: const Color(0xFF26262B),
             size: 24.sp,
           ),
         ),
@@ -804,13 +835,13 @@ class CustomStatusPopup extends StatelessWidget {
           LaunchUrl.inWeb(url: finalUrl, context: context);
         }
       },
-      secondaryButtonText: null, // Removed Close button as requested
+      secondaryButtonText: null,
       onSecondaryTap: null,
       isDismissible: true,
     );
   }
 
-  /// 12. Static Shortcut: Finish To Unlock / Instructions Dialog with Steps & Actions
+  /// 15. Static Shortcut: Finish To Unlock / Instructions Dialog with Steps & Actions
   static Future<T?> showFinishToUnlock<T>({
     required BuildContext context,
     String? tag = 'Super Mission',
@@ -830,7 +861,7 @@ class CustomStatusPopup extends StatelessWidget {
       context: context,
       barrierDismissible: isDismissible,
       barrierLabel: 'Dismiss',
-      barrierColor: Colors.black.withValues(alpha: 0.80),
+      barrierColor: Colors.black.withValues(alpha: 0.70),
       transitionDuration: const Duration(milliseconds: 360),
       pageBuilder: (dialogContext, anim1, anim2) {
         bool isAdLoading = false;
@@ -850,17 +881,17 @@ class CustomStatusPopup extends StatelessWidget {
                     width: 44.w,
                     height: 44.w,
                     decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.12),
+                      color: const Color(0xFFF8FAFC),
                       shape: BoxShape.circle,
                       border: Border.all(
-                        color: Colors.white.withValues(alpha: 0.28),
-                        width: 1,
+                        color: const Color(0xFFE2E8F0),
+                        width: 1.2,
                       ),
                     ),
                     alignment: Alignment.center,
                     child: Icon(
                       Icons.lock_open_rounded,
-                      color: Colors.white,
+                      color: const Color(0xFF26262B),
                       size: 22.sp,
                     ),
                   ),
@@ -874,7 +905,7 @@ class CustomStatusPopup extends StatelessWidget {
                         textAlign: TextAlign.center,
                         style: GoogleFonts.poppins(
                           fontSize: 12.5.sp,
-                          color: const Color(0xFFCBD5E1),
+                          color: const Color(0xFF64748B),
                           fontWeight: FontWeight.w400,
                           height: 1.4,
                         ),
@@ -898,19 +929,17 @@ class CustomStatusPopup extends StatelessWidget {
                                 height: 48.h,
                                 alignment: Alignment.center,
                                 decoration: BoxDecoration(
-                                  color: const Color(0xFF140F2D),
+                                  color: Colors.white,
                                   borderRadius: BorderRadius.circular(14.r),
                                   border: Border.all(
-                                    color: const Color(0xFF8B5CF6)
-                                        .withValues(alpha: 0.50),
+                                    color: const Color(0xFFE2E8F0),
                                     width: 1.2,
                                   ),
                                   boxShadow: [
                                     BoxShadow(
-                                      color: const Color(0xFF7C3AED)
-                                          .withValues(alpha: 0.20),
-                                      blurRadius: 10,
-                                      offset: const Offset(0, 3),
+                                      color: Colors.black.withValues(alpha: 0.03),
+                                      blurRadius: 8,
+                                      offset: const Offset(0, 2),
                                     ),
                                   ],
                                 ),
@@ -919,14 +948,14 @@ class CustomStatusPopup extends StatelessWidget {
                                   children: [
                                     Icon(
                                       Icons.help_outline_rounded,
-                                      color: const Color(0xFFDDD6FE),
+                                      color: const Color(0xFF26262B),
                                       size: 16.sp,
                                     ),
                                     SizedBox(width: 5.w),
                                     Text(
                                       'HOW TO ?',
                                       style: GoogleFonts.poppins(
-                                        color: const Color(0xFFDDD6FE),
+                                        color: const Color(0xFF26262B),
                                         fontSize: 12.5.sp,
                                         fontWeight: FontWeight.w700,
                                         letterSpacing: 0.2,
@@ -939,7 +968,7 @@ class CustomStatusPopup extends StatelessWidget {
                           ),
                           SizedBox(width: 10.w),
                         ],
-                        // 2. WATCH AD BUTTON
+                        // 2. WATCH AD BUTTON (Silver Metallic Executive Button)
                         Expanded(
                           flex: 3,
                           child: _PopScaleButton(
@@ -963,8 +992,27 @@ class CustomStatusPopup extends StatelessWidget {
                               width: double.infinity,
                               height: 48.h,
                               decoration: BoxDecoration(
-                                color: const Color(0xFFAB31DE),
+                                gradient: const LinearGradient(
+                                  colors: [
+                                    Colors.white,
+                                    Color(0xFFE5E7EB),
+                                    Color(0xFFB0B5C2),
+                                  ],
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
+                                ),
                                 borderRadius: BorderRadius.circular(14.r),
+                                border: Border.all(
+                                  color: const Color(0xFF9CA3AF),
+                                  width: 1.2,
+                                ),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withValues(alpha: 0.08),
+                                    blurRadius: 8,
+                                    offset: const Offset(0, 3),
+                                  ),
+                                ],
                               ),
                               child: Center(
                                 child: isAdLoading
@@ -975,7 +1023,7 @@ class CustomStatusPopup extends StatelessWidget {
                                           strokeWidth: 2.2,
                                           valueColor:
                                               AlwaysStoppedAnimation<Color>(
-                                                  Colors.white),
+                                                  Color(0xFF16161A)),
                                         ),
                                       )
                                     : FittedBox(
@@ -990,14 +1038,14 @@ class CustomStatusPopup extends StatelessWidget {
                                             children: [
                                               Icon(
                                                 primaryButtonIcon,
-                                                color: Colors.white,
+                                                color: const Color(0xFF16161A),
                                                 size: 18.sp,
                                               ),
                                               SizedBox(width: 6.w),
                                               Text(
                                                 primaryButtonText,
-                                                style: GoogleFonts.outfit(
-                                                  color: Colors.white,
+                                                style: GoogleFonts.poppins(
+                                                  color: const Color(0xFF16161A),
                                                   fontSize: 14.sp,
                                                   fontWeight: FontWeight.w700,
                                                   letterSpacing: 0.4,
@@ -1047,15 +1095,22 @@ class CustomStatusPopup extends StatelessWidget {
   static Widget _buildStepCard(String index, String title) {
     return Container(
       width: double.infinity,
-      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 9.h),
+      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 10.h),
       margin: EdgeInsets.only(bottom: 8.h),
       decoration: BoxDecoration(
-        color: const Color(0xFF140F2D),
+        color: Colors.white,
         borderRadius: BorderRadius.circular(14.r),
         border: Border.all(
-          color: const Color(0xFFBA4FFF).withValues(alpha: 0.28),
-          width: 1,
+          color: const Color(0xFFE2E8F0),
+          width: 1.2,
         ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.02),
+            blurRadius: 6,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
       child: Row(
         children: [
@@ -1064,11 +1119,7 @@ class CustomStatusPopup extends StatelessWidget {
             height: 24.w,
             alignment: Alignment.center,
             decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [Color(0xFFA855F7), Color(0xFF7E10C8)],
-              ),
+              color: Color(0xFF26262E),
               shape: BoxShape.circle,
             ),
             child: Text(
@@ -1085,9 +1136,9 @@ class CustomStatusPopup extends StatelessWidget {
             child: Text(
               title,
               style: GoogleFonts.poppins(
-                color: const Color(0xFFE2E8F0),
+                color: const Color(0xFF26262B),
                 fontSize: 12.sp,
-                fontWeight: FontWeight.w500,
+                fontWeight: FontWeight.w600,
               ),
             ),
           ),
@@ -1097,11 +1148,10 @@ class CustomStatusPopup extends StatelessWidget {
   }
 
   @override
-  @override
   Widget build(BuildContext context) {
     final curType = resolvedType;
 
-    // Palette per status type matching user reference image 1-to-1
+    // Palette per status type matching clean executive UI
     final Color iconBgLight;
     final Color iconBgInner;
     final Color iconColor;
@@ -1113,44 +1163,44 @@ class CustomStatusPopup extends StatelessWidget {
 
     switch (curType) {
       case StatusPopupType.success:
-        iconBgLight = const Color(0xFFF0FDF4); // Softest green
+        iconBgLight = const Color(0xFFF0FDF4); // Soft green
         iconBgInner = const Color(0xFFDCFCE7); // Light green ring
-        iconColor = const Color(0xFF22C55E); // Green checkmark
-        iconData = Icons.check_rounded;
-        primaryBtnColor = const Color(0xFF22C55E);
+        iconColor = const Color(0xFF16A34A); // Green checkmark
+        iconData = Icons.check_circle_rounded;
+        primaryBtnColor = const Color(0xFF16A34A);
         defaultTag = '';
         defaultTitle = 'Success!';
         defaultButtonText = 'Continue';
         break;
 
       case StatusPopupType.failed:
-        iconBgLight = const Color(0xFFFEF2F2); // Softest red
+        iconBgLight = const Color(0xFFFEF2F2); // Soft red
         iconBgInner = const Color(0xFFFEE2E2); // Light red ring
-        iconColor = const Color(0xFFEF4444); // Red cross
-        iconData = Icons.close_rounded;
-        primaryBtnColor = const Color(0xFFEF4444);
+        iconColor = const Color(0xFFDC2626); // Red cross
+        iconData = Icons.cancel_rounded;
+        primaryBtnColor = const Color(0xFFDC2626);
         defaultTag = '';
         defaultTitle = 'Error!';
         defaultButtonText = 'Try Again';
         break;
 
       case StatusPopupType.inProgress:
-        iconBgLight = const Color(0xFFFFFBEB); // Softest amber
+        iconBgLight = const Color(0xFFFFFBEB); // Soft amber
         iconBgInner = const Color(0xFFFEF3C7); // Light amber ring
-        iconColor = const Color(0xFFF59E0B);
+        iconColor = const Color(0xFFD97706);
         iconData = Icons.hourglass_top_rounded;
-        primaryBtnColor = const Color(0xFFF59E0B);
+        primaryBtnColor = const Color(0xFFD97706);
         defaultTag = '';
         defaultTitle = 'Processing...';
         defaultButtonText = 'Got It';
         break;
 
       case StatusPopupType.warning:
-        iconBgLight = const Color(0xFFFEF2F2); // Soft pink/red
+        iconBgLight = const Color(0xFFFEF2F2); // Soft red
         iconBgInner = const Color(0xFFFEE2E2);
-        iconColor = const Color(0xFFEF4444); // Red warning !
-        iconData = Icons.priority_high_rounded;
-        primaryBtnColor = const Color(0xFFEF4444);
+        iconColor = const Color(0xFFDC2626); // Red warning !
+        iconData = Icons.warning_amber_rounded;
+        primaryBtnColor = const Color(0xFFDC2626);
         defaultTag = '';
         defaultTitle = 'Confirm Action?';
         defaultButtonText = 'Confirm';
@@ -1158,11 +1208,11 @@ class CustomStatusPopup extends StatelessWidget {
 
       case StatusPopupType.info:
       case StatusPopupType.permission:
-        iconBgLight = const Color(0xFFFAF5FF); // Soft lavender
-        iconBgInner = const Color(0xFFF3E8FF);
-        iconColor = const Color(0xFFAB31DE);
+        iconBgLight = const Color(0xFFF8FAFC); // Clean slate
+        iconBgInner = const Color(0xFFF1F5F9);
+        iconColor = const Color(0xFF26262B);
         iconData = Icons.info_outline_rounded;
-        primaryBtnColor = const Color(0xFFAB31DE);
+        primaryBtnColor = const Color(0xFF26262B);
         defaultTag = '';
         defaultTitle = 'Notice';
         defaultButtonText = 'Understand';
@@ -1178,15 +1228,40 @@ class CustomStatusPopup extends StatelessWidget {
     final effectiveButtonText = primaryButtonText ?? defaultButtonText;
 
     final bottomInset = MediaQuery.of(context).padding.bottom;
+    final bool isDestructive = curType == StatusPopupType.warning || curType == StatusPopupType.failed;
+
+    // Use executive silver metallic gradient by default if not destructive and no specific button styling was given
+    final Gradient? effectivePrimaryGradient = primaryButtonGradient ??
+        (primaryButtonColor != null
+            ? null
+            : isDestructive
+                ? null
+                : const LinearGradient(
+                    colors: [
+                      Colors.white,
+                      Color(0xFFE5E7EB),
+                      Color(0xFFB0B5C2),
+                    ],
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                  ));
+
+    final Color effectivePrimaryTextColor = isDestructive || primaryButtonColor != null || primaryButtonGradient != null
+        ? Colors.white
+        : const Color(0xFF16161A);
 
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(28.r),
+        border: Border.all(
+          color: const Color(0xFFE2E8F0),
+          width: 1.2,
+        ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.12),
+            color: Colors.black.withValues(alpha: 0.08),
             blurRadius: 24,
             offset: const Offset(0, 8),
           ),
@@ -1208,7 +1283,10 @@ class CustomStatusPopup extends StatelessWidget {
                   if (onClose != null) {
                     onClose!();
                   }
-                  if (navigator.mounted && modalRoute != null && modalRoute.isCurrent && navigator.canPop()) {
+                  if (navigator.mounted &&
+                      modalRoute != null &&
+                      modalRoute.isCurrent &&
+                      navigator.canPop()) {
                     navigator.pop();
                   }
                 },
@@ -1231,12 +1309,13 @@ class CustomStatusPopup extends StatelessWidget {
 
             // Content
             Padding(
-              padding: EdgeInsets.fromLTRB(20.w, 24.h, 20.w, 20.h + bottomInset),
+              padding:
+                  EdgeInsets.fromLTRB(20.w, 24.h, 20.w, 20.h + bottomInset),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  // 1. Center Glowing Icon Orb Aura (Matching mockup 1-to-1)
+                  // 1. Center Glowing Icon Orb Aura
                   centerIcon ??
                       Container(
                         width: orbSize ?? 80.w,
@@ -1244,6 +1323,10 @@ class CustomStatusPopup extends StatelessWidget {
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           color: iconBgLight,
+                          border: Border.all(
+                            color: const Color(0xFFE2E8F0),
+                            width: 1.2,
+                          ),
                         ),
                         padding: EdgeInsets.all(8.w),
                         child: Container(
@@ -1266,7 +1349,7 @@ class CustomStatusPopup extends StatelessWidget {
                     Text(
                       effectiveTag,
                       textAlign: TextAlign.center,
-                      style: GoogleFonts.outfit(
+                      style: GoogleFonts.poppins(
                         color: const Color(0xFF94A3B8),
                         fontSize: 12.sp,
                         fontWeight: FontWeight.w600,
@@ -1280,8 +1363,8 @@ class CustomStatusPopup extends StatelessWidget {
                   Text(
                     effectiveTitle,
                     textAlign: TextAlign.center,
-                    style: GoogleFonts.outfit(
-                      color: const Color(0xFF1E1B4B),
+                    style: GoogleFonts.poppins(
+                      color: const Color(0xFF26262B),
                       fontSize: 20.sp,
                       fontWeight: FontWeight.w700,
                       height: 1.2,
@@ -1296,11 +1379,11 @@ class CustomStatusPopup extends StatelessWidget {
                       child: Text(
                         message!,
                         textAlign: TextAlign.center,
-                        style: GoogleFonts.outfit(
+                        style: GoogleFonts.poppins(
                           color: const Color(0xFF64748B),
                           fontSize: 13.sp,
                           fontWeight: FontWeight.w400,
-                          height: 1.4,
+                          height: 1.45,
                         ),
                       ),
                     ),
@@ -1315,7 +1398,8 @@ class CustomStatusPopup extends StatelessWidget {
                   SizedBox(height: 20.h),
 
                   // 6. Action Buttons Row (Dual Side-by-Side vs Single Full Width)
-                  if (secondaryButtonText != null && secondaryButtonText!.isNotEmpty) ...[
+                  if (secondaryButtonText != null &&
+                      secondaryButtonText!.isNotEmpty) ...[
                     Row(
                       children: [
                         // Secondary / Cancel Button (White with subtle border)
@@ -1328,7 +1412,10 @@ class CustomStatusPopup extends StatelessWidget {
                               if (onSecondaryTap != null) {
                                 onSecondaryTap!();
                               }
-                              if (navigator.mounted && modalRoute != null && modalRoute.isCurrent && navigator.canPop()) {
+                              if (navigator.mounted &&
+                                  modalRoute != null &&
+                                  modalRoute.isCurrent &&
+                                  navigator.canPop()) {
                                 navigator.pop();
                               }
                             },
@@ -1338,11 +1425,12 @@ class CustomStatusPopup extends StatelessWidget {
                               decoration: BoxDecoration(
                                 color: Colors.white,
                                 borderRadius: BorderRadius.circular(14.r),
-                                border: Border.all(color: const Color(0xFFE2E8F0), width: 1.2),
+                                border: Border.all(
+                                    color: const Color(0xFFE2E8F0), width: 1.2),
                               ),
                               child: Text(
                                 secondaryButtonText!,
-                                style: GoogleFonts.outfit(
+                                style: GoogleFonts.poppins(
                                   color: const Color(0xFF64748B),
                                   fontSize: 14.sp,
                                   fontWeight: FontWeight.w600,
@@ -1354,7 +1442,7 @@ class CustomStatusPopup extends StatelessWidget {
 
                         SizedBox(width: 12.w),
 
-                        // Primary / Confirm Button (Solid Vibrant Color)
+                        // Primary / Confirm Button
                         Expanded(
                           child: _PopScaleButton(
                             onTap: () {
@@ -1364,7 +1452,10 @@ class CustomStatusPopup extends StatelessWidget {
                               if (onPrimaryTap != null) {
                                 onPrimaryTap!();
                               }
-                              if (navigator.mounted && modalRoute != null && modalRoute.isCurrent && navigator.canPop()) {
+                              if (navigator.mounted &&
+                                  modalRoute != null &&
+                                  modalRoute.isCurrent &&
+                                  navigator.canPop()) {
                                 navigator.pop();
                               }
                             },
@@ -1372,23 +1463,34 @@ class CustomStatusPopup extends StatelessWidget {
                               height: 46.h,
                               alignment: Alignment.center,
                               decoration: BoxDecoration(
-                                color: primaryButtonGradient == null ? primaryBtnColor : null,
-                                gradient: primaryButtonGradient,
-                                borderRadius: BorderRadius.circular(14.r),
-                                boxShadow: primaryButtonGradient != null
-                                    ? [
-                                        BoxShadow(
-                                          color: (primaryButtonColor ?? const Color(0xFFAB31DE)).withValues(alpha: 0.3),
-                                          blurRadius: 8,
-                                          offset: const Offset(0, 3),
-                                        ),
-                                      ]
+                                color: effectivePrimaryGradient == null
+                                    ? primaryBtnColor
                                     : null,
+                                gradient: effectivePrimaryGradient,
+                                borderRadius: BorderRadius.circular(14.r),
+                                border: effectivePrimaryGradient != null &&
+                                        !isDestructive &&
+                                        primaryButtonColor == null
+                                    ? Border.all(
+                                        color: const Color(0xFF9CA3AF),
+                                        width: 1.2,
+                                      )
+                                    : null,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: (isDestructive
+                                            ? const Color(0xFFDC2626)
+                                            : Colors.black)
+                                        .withValues(alpha: 0.12),
+                                    blurRadius: 8,
+                                    offset: const Offset(0, 3),
+                                  ),
+                                ],
                               ),
                               child: Text(
                                 effectiveButtonText,
-                                style: GoogleFonts.outfit(
-                                  color: Colors.white,
+                                style: GoogleFonts.poppins(
+                                  color: effectivePrimaryTextColor,
                                   fontSize: 14.sp,
                                   fontWeight: FontWeight.w700,
                                 ),
@@ -1408,7 +1510,10 @@ class CustomStatusPopup extends StatelessWidget {
                         if (onPrimaryTap != null) {
                           onPrimaryTap!();
                         }
-                        if (navigator.mounted && modalRoute != null && modalRoute.isCurrent && navigator.canPop()) {
+                        if (navigator.mounted &&
+                            modalRoute != null &&
+                            modalRoute.isCurrent &&
+                            navigator.canPop()) {
                           navigator.pop();
                         }
                       },
@@ -1417,23 +1522,34 @@ class CustomStatusPopup extends StatelessWidget {
                         height: 46.h,
                         alignment: Alignment.center,
                         decoration: BoxDecoration(
-                          color: primaryButtonGradient == null ? primaryBtnColor : null,
-                          gradient: primaryButtonGradient,
-                          borderRadius: BorderRadius.circular(14.r),
-                          boxShadow: primaryButtonGradient != null
-                              ? [
-                                  BoxShadow(
-                                    color: (primaryButtonColor ?? const Color(0xFFAB31DE)).withValues(alpha: 0.3),
-                                    blurRadius: 8,
-                                    offset: const Offset(0, 3),
-                                  ),
-                                ]
+                          color: effectivePrimaryGradient == null
+                              ? primaryBtnColor
                               : null,
+                          gradient: effectivePrimaryGradient,
+                          borderRadius: BorderRadius.circular(14.r),
+                          border: effectivePrimaryGradient != null &&
+                                  !isDestructive &&
+                                  primaryButtonColor == null
+                              ? Border.all(
+                                  color: const Color(0xFF9CA3AF),
+                                  width: 1.2,
+                                )
+                              : null,
+                          boxShadow: [
+                            BoxShadow(
+                              color: (isDestructive
+                                      ? const Color(0xFFDC2626)
+                                      : Colors.black)
+                                  .withValues(alpha: 0.12),
+                              blurRadius: 8,
+                              offset: const Offset(0, 3),
+                            ),
+                          ],
                         ),
                         child: Text(
                           effectiveButtonText,
-                          style: GoogleFonts.outfit(
-                            color: Colors.white,
+                          style: GoogleFonts.poppins(
+                            color: effectivePrimaryTextColor,
                             fontSize: 14.5.sp,
                             fontWeight: FontWeight.w700,
                           ),

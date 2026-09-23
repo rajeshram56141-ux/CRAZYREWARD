@@ -34,26 +34,26 @@ class ErrorScreen extends StatelessWidget {
             child: Center(
               child: SingleChildScrollView(
                 physics: const BouncingScrollPhysics(),
-                padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
+                padding: EdgeInsets.symmetric(horizontal: 22.w, vertical: 20.h),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    // 1. Top System Badge
+                    // 1. Home Screen Signature Dark Obsidian Capsule Pill
                     Container(
-                      padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 6.h),
+                      padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 7.h),
                       decoration: BoxDecoration(
-                        color: const Color(0xFFFAF5FF),
+                        color: const Color(0xFF1E1B2E),
                         borderRadius: BorderRadius.circular(20.r),
                         border: Border.all(
-                          color: const Color(0xFFE9D5FF),
-                          width: 1.2,
+                          color: const Color(0xFF2E2E36),
+                          width: 1.0,
                         ),
                         boxShadow: [
                           BoxShadow(
-                            color: const Color(0xFFAB31DE).withValues(alpha: 0.08),
+                            color: Colors.black.withValues(alpha: 0.18),
                             blurRadius: 8,
-                            offset: const Offset(0, 2),
+                            offset: const Offset(0, 3),
                           ),
                         ],
                       ),
@@ -64,107 +64,118 @@ class ErrorScreen extends StatelessWidget {
                             width: 8.w,
                             height: 8.w,
                             decoration: const BoxDecoration(
-                              color: Color(0xFFAB31DE),
+                              color: Color(0xFFEF4444),
                               shape: BoxShape.circle,
                             ),
                           ),
                           SizedBox(width: 8.w),
                           Text(
                             'UNEXPECTED ERROR',
-                            style: GoogleFonts.outfit(
+                            style: GoogleFonts.poppins(
                               fontSize: 11.sp,
-                              fontWeight: FontWeight.w800,
-                              color: const Color(0xFFAB31DE),
-                              letterSpacing: 0.5,
+                              fontWeight: FontWeight.w700,
+                              color: Colors.white,
+                              letterSpacing: 0.6,
                             ),
                           ),
                         ],
                       ),
                     ),
 
-                    SizedBox(height: 24.h),
+                    SizedBox(height: 28.h),
 
-                    // 2. Error Hero Artwork (assets/icons/somthiwnt.png)
+                    // 2. Error Hero Artwork
                     Container(
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         boxShadow: [
                           BoxShadow(
-                            color: const Color(0xFFAB31DE).withValues(alpha: 0.12),
-                            blurRadius: 30,
-                            spreadRadius: 10,
+                            color: const Color(0xFFEF4444).withValues(alpha: 0.08),
+                            blurRadius: 32,
+                            spreadRadius: 8,
                           ),
                         ],
                       ),
                       child: Image.asset(
                         'assets/icons/somthiwnt.png',
-                        width: 230.w,
-                        height: 230.w,
+                        width: 220.w,
+                        height: 220.w,
                         fit: BoxFit.contain,
-                      ),
-                    ),
-
-                    SizedBox(height: 24.h),
-
-                    // 3. Headline & Subtitle
-                    Text(
-                      'Something Went Wrong!',
-                      textAlign: TextAlign.center,
-                      style: GoogleFonts.outfit(
-                        color: const Color(0xFF1E1B4B),
-                        fontSize: 26.sp,
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: -0.3,
-                      ),
-                    ),
-
-                    SizedBox(height: 8.h),
-
-                    Text(
-                      'An unexpected error occurred while processing your request. Please try refreshing or restart the application.',
-                      textAlign: TextAlign.center,
-                      style: GoogleFonts.outfit(
-                        color: const Color(0xFF64748B),
-                        fontSize: 13.sp,
-                        fontWeight: FontWeight.w500,
-                        height: 1.4,
                       ),
                     ),
 
                     SizedBox(height: 28.h),
 
-                    // 4. Info Card: Unexpected Error Status
+                    // 3. Headline & Subtitle
+                    Text(
+                      'Something Went Wrong!',
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.poppins(
+                        color: const Color(0xFF26262B),
+                        fontSize: 24.sp,
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: -0.3,
+                      ),
+                    ),
+
+                    SizedBox(height: 10.h),
+
+                    Text(
+                      'An unexpected error occurred while processing your request. Please try refreshing or restart the application.',
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.poppins(
+                        color: const Color(0xFF64748B),
+                        fontSize: 13.sp,
+                        fontWeight: FontWeight.w400,
+                        height: 1.5,
+                      ),
+                    ),
+
+                    SizedBox(height: 28.h),
+
+                    // 4. Home Screen Signature Dark Obsidian Info Card
                     Container(
                       padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
                       decoration: BoxDecoration(
-                        color: const Color(0xFFFAF5FF),
-                        borderRadius: BorderRadius.circular(18.r),
+                        gradient: const LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [
+                            Color(0xFF222226),
+                            Color(0xFF131316),
+                          ],
+                        ),
+                        borderRadius: BorderRadius.circular(20.r),
                         border: Border.all(
-                          color: const Color(0xFFE9D5FF),
-                          width: 1.2,
+                          color: const Color(0xFF2E2E36),
+                          width: 1.0,
                         ),
                         boxShadow: [
                           BoxShadow(
-                            color: const Color(0xFFAB31DE).withValues(alpha: 0.05),
+                            color: Colors.black.withValues(alpha: 0.12),
                             blurRadius: 10,
-                            offset: const Offset(0, 3),
+                            offset: const Offset(0, 4),
                           ),
                         ],
                       ),
                       child: Row(
                         children: [
                           Container(
-                            width: 40.w,
-                            height: 40.w,
-                            decoration: const BoxDecoration(
-                              color: Color(0xFFF3E8FF),
+                            width: 42.w,
+                            height: 42.w,
+                            decoration: BoxDecoration(
+                              color: const Color(0xFF1E1B2E),
                               shape: BoxShape.circle,
+                              border: Border.all(
+                                color: const Color(0xFF383842),
+                                width: 1,
+                              ),
                             ),
                             alignment: Alignment.center,
                             child: Icon(
                               Icons.error_outline_rounded,
-                              color: const Color(0xFFAB31DE),
-                              size: 20.sp,
+                              color: const Color(0xFFEF4444),
+                              size: 22.sp,
                             ),
                           ),
                           SizedBox(width: 12.w),
@@ -174,19 +185,19 @@ class ErrorScreen extends StatelessWidget {
                               children: [
                                 Text(
                                   'System Exception',
-                                  style: GoogleFonts.outfit(
-                                    color: const Color(0xFF1E1B4B),
+                                  style: GoogleFonts.poppins(
+                                    color: Colors.white,
                                     fontSize: 13.5.sp,
-                                    fontWeight: FontWeight.w800,
+                                    fontWeight: FontWeight.w700,
                                   ),
                                 ),
                                 SizedBox(height: 2.h),
                                 Text(
                                   'Tap refresh to reload your application session',
-                                  style: GoogleFonts.outfit(
-                                    color: const Color(0xFF64748B),
-                                    fontSize: 12.sp,
-                                    fontWeight: FontWeight.w500,
+                                  style: GoogleFonts.poppins(
+                                    color: const Color(0xFF9E9EA7),
+                                    fontSize: 11.5.sp,
+                                    fontWeight: FontWeight.w400,
                                   ),
                                 ),
                               ],
@@ -198,7 +209,7 @@ class ErrorScreen extends StatelessWidget {
 
                     SizedBox(height: 28.h),
 
-                    // 5. Refresh Action Button
+                    // 5. Home Screen Signature Silver-Chrome Gradient Action Button
                     GestureDetector(
                       onTap: () {
                         HapticFeedback.lightImpact();
@@ -209,15 +220,19 @@ class ErrorScreen extends StatelessWidget {
                         width: double.infinity,
                         decoration: BoxDecoration(
                           gradient: const LinearGradient(
-                            colors: [Color(0xFFE39FFF), Color(0xFFAB31DE)],
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
+                            colors: [
+                              Colors.white,
+                              Color(0xFFE5E7EB),
+                              Color(0xFFB0B5C2),
+                            ],
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
                           ),
                           borderRadius: BorderRadius.circular(18.r),
                           boxShadow: [
                             BoxShadow(
-                              color: const Color(0xFFAB31DE).withValues(alpha: 0.35),
-                              blurRadius: 12,
+                              color: Colors.black.withValues(alpha: 0.22),
+                              blurRadius: 10,
                               offset: const Offset(0, 4),
                             ),
                           ],
@@ -228,16 +243,16 @@ class ErrorScreen extends StatelessWidget {
                             children: [
                               Icon(
                                 Icons.refresh_rounded,
-                                color: Colors.white,
+                                color: const Color(0xFF16161A),
                                 size: 20.sp,
                               ),
                               SizedBox(width: 8.w),
                               Text(
                                 'Refresh Application',
-                                style: GoogleFonts.outfit(
-                                  color: Colors.white,
-                                  fontSize: 15.sp,
-                                  fontWeight: FontWeight.w800,
+                                style: GoogleFonts.poppins(
+                                  color: const Color(0xFF16161A),
+                                  fontSize: 14.5.sp,
+                                  fontWeight: FontWeight.w700,
                                   letterSpacing: 0.3,
                                 ),
                               ),
@@ -247,7 +262,7 @@ class ErrorScreen extends StatelessWidget {
                       ),
                     ),
 
-                    SizedBox(height: 12.h),
+                    SizedBox(height: 14.h),
 
                     // Close App Option
                     TextButton(
@@ -260,10 +275,10 @@ class ErrorScreen extends StatelessWidget {
                       ),
                       child: Text(
                         'Close Application',
-                        style: GoogleFonts.outfit(
+                        style: GoogleFonts.poppins(
                           color: const Color(0xFF94A3B8),
-                          fontSize: 12.5.sp,
-                          fontWeight: FontWeight.w600,
+                          fontSize: 13.sp,
+                          fontWeight: FontWeight.w500,
                         ),
                       ),
                     ),

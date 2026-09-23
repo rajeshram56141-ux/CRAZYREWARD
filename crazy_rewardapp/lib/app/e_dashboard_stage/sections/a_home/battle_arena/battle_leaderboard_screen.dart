@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 import '../../../../../../widgets/common/internet_image.dart';
 import '../../../../../../widgets/common/shimmer_tag.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'battle_arena_provider.dart';
 import 'battle_leaderboard_history_screen.dart';
 
@@ -26,19 +26,6 @@ class _BattleLeaderboardScreenState extends State<BattleLeaderboardScreen> {
   void initState() {
     super.initState();
     _leaderboardFuture = BattleArenaService.instance.fetchWeeklyLeaderboard(widget.userId);
-  }
-
-  int _getRewardCoinsForRank(int rank, List<dynamic> tiers) {
-    for (final t in tiers) {
-      if (t is Map) {
-        final int start = (t['rankStart'] as num?)?.toInt() ?? 0;
-        final int end = (t['rankEnd'] as num?)?.toInt() ?? 0;
-        if (rank >= start && rank <= end) {
-          return (t['coins'] as num?)?.toInt() ?? 0;
-        }
-      }
-    }
-    return 0;
   }
 
   Map<String, dynamic>? _getRewardTierForRank(int rank, List<dynamic> tiers) {
@@ -69,9 +56,9 @@ class _BattleLeaderboardScreenState extends State<BattleLeaderboardScreen> {
   Widget _buildTopHeroBanner(String headerTitle) {
     return Column(
       children: [
-        // Trophy Illustration Box with Purple Laurel Glow
+        // Trophy Illustration Box with Aureole Glow
         SizedBox(
-          height: 90.h,
+          height: 95.h,
           child: Stack(
             alignment: Alignment.center,
             children: [
@@ -80,16 +67,16 @@ class _BattleLeaderboardScreenState extends State<BattleLeaderboardScreen> {
                 height: 70.h,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: const Color(0xFFE39FFF).withValues(alpha: 0.22),
+                  color: const Color(0xFFAB31DE).withValues(alpha: 0.18),
                 ),
               ),
               Image.asset(
                 'assets/icons/leader.png',
-                height: 100.h,
+                height: 95.h,
                 fit: BoxFit.contain,
                 errorBuilder: (_, __, ___) => Icon(
                   Icons.emoji_events_rounded,
-                  color: const Color(0xFFFFB800),
+                  color: const Color(0xFFFBBF24),
                   size: 70.sp,
                 ),
               ),
@@ -97,26 +84,26 @@ class _BattleLeaderboardScreenState extends State<BattleLeaderboardScreen> {
           ),
         ),
 
-        SizedBox(height: 6.h),
+        SizedBox(height: 8.h),
 
-        // Big Leaderboard Title
+        // Big Leaderboard Title (Home Screen Signature Style)
         Text(
           headerTitle,
           textAlign: TextAlign.center,
-          style: GoogleFonts.outfit(
-            color: const Color(0xFF1E1B4B),
+          style: GoogleFonts.kaushanScript(
+            color: const Color(0xFF26262B),
             fontSize: 26.sp,
-            fontWeight: FontWeight.w900,
-            letterSpacing: -0.5,
+            fontWeight: FontWeight.w800,
+            letterSpacing: 0.5,
           ),
         ),
 
-        SizedBox(height: 2.h),
+        SizedBox(height: 3.h),
 
         // Tagline Subtitle
         Text(
-          'Compete. Earn. Win Big!',
-          style: GoogleFonts.outfit(
+          'Compete. Climb Ranks. Win Big!',
+          style: GoogleFonts.poppins(
             color: const Color(0xFF64748B),
             fontSize: 12.sp,
             fontWeight: FontWeight.w500,
@@ -131,12 +118,26 @@ class _BattleLeaderboardScreenState extends State<BattleLeaderboardScreen> {
       height: 48.h,
       padding: EdgeInsets.all(4.w),
       decoration: BoxDecoration(
-        color: const Color(0xFFFAF5FF),
+        gradient: const LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Color(0xFF222226),
+            Color(0xFF131316),
+          ],
+        ),
         borderRadius: BorderRadius.circular(24.r),
         border: Border.all(
-          color: const Color(0xFFF3E8FF),
-          width: 1.2,
+          color: const Color(0xFF2E2E36),
+          width: 1.0,
         ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.18),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Row(
         children: [
@@ -174,7 +175,9 @@ class _BattleLeaderboardScreenState extends State<BattleLeaderboardScreen> {
           decoration: BoxDecoration(
             gradient: isSelected
                 ? const LinearGradient(
-                    colors: [Color(0xFFE39FFF), Color(0xFFAB31DE)],
+                    colors: [Color(0xFFAB31DE), Color(0xFF7928CA)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
                   )
                 : null,
             color: isSelected ? null : Colors.transparent,
@@ -182,7 +185,7 @@ class _BattleLeaderboardScreenState extends State<BattleLeaderboardScreen> {
             boxShadow: isSelected
                 ? [
                     BoxShadow(
-                      color: const Color(0xFFAB31DE).withValues(alpha: 0.30),
+                      color: const Color(0xFFAB31DE).withValues(alpha: 0.35),
                       blurRadius: 8,
                       offset: const Offset(0, 2),
                     ),
@@ -195,16 +198,17 @@ class _BattleLeaderboardScreenState extends State<BattleLeaderboardScreen> {
             children: [
               Icon(
                 icon,
-                color: isSelected ? Colors.white : const Color(0xFF64748B),
+                color: isSelected ? Colors.white : const Color(0xFF9E9EA7),
                 size: 16.sp,
               ),
               SizedBox(width: 6.w),
               Text(
                 label,
-                style: GoogleFonts.outfit(
-                  color: isSelected ? Colors.white : const Color(0xFF64748B),
-                  fontSize: 13.sp,
-                  fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
+                style: GoogleFonts.poppins(
+                  color: isSelected ? Colors.white : const Color(0xFF9E9EA7),
+                  fontSize: 12.5.sp,
+                  fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+                  letterSpacing: 0.3,
                 ),
               ),
             ],
@@ -219,16 +223,23 @@ class _BattleLeaderboardScreenState extends State<BattleLeaderboardScreen> {
       width: double.infinity,
       padding: EdgeInsets.fromLTRB(20.w, 18.h, 20.w, 18.h),
       decoration: BoxDecoration(
-        color: const Color(0xFFFAF5FF),
-        borderRadius: BorderRadius.circular(20.r),
+        gradient: const LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Color(0xFF222226),
+            Color(0xFF131316),
+          ],
+        ),
+        borderRadius: BorderRadius.circular(22.r),
         border: Border.all(
-          color: const Color(0xFFF3E8FF),
-          width: 1.2,
+          color: const Color(0xFF2E2E36),
+          width: 1.0,
         ),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFFAB31DE).withValues(alpha: 0.08),
-            blurRadius: 14,
+            color: Colors.black.withValues(alpha: 0.18),
+            blurRadius: 12,
             offset: const Offset(0, 4),
           ),
         ],
@@ -239,9 +250,13 @@ class _BattleLeaderboardScreenState extends State<BattleLeaderboardScreen> {
           Container(
             width: 52.w,
             height: 52.w,
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: Colors.white,
+              color: const Color(0xFF2E2E38),
+              border: Border.all(
+                color: const Color(0xFF3E3E4C),
+                width: 1.0,
+              ),
             ),
             padding: EdgeInsets.all(10.r),
             child: Image.asset(
@@ -251,30 +266,30 @@ class _BattleLeaderboardScreenState extends State<BattleLeaderboardScreen> {
               fit: BoxFit.contain,
             ),
           ),
-          SizedBox(height: 10.h),
+          SizedBox(height: 12.h),
           Text(
             'WIN HIGH REWARDS!',
             textAlign: TextAlign.center,
-            style: GoogleFonts.outfit(
-              color: const Color(0xFFAB31DE),
-              fontSize: 14.5.sp,
-              fontWeight: FontWeight.w900,
-              letterSpacing: 0.6,
+            style: GoogleFonts.poppins(
+              color: const Color(0xFFFBBF24),
+              fontSize: 15.sp,
+              fontWeight: FontWeight.w800,
+              letterSpacing: 0.8,
             ),
           ),
-          SizedBox(height: 4.h),
+          SizedBox(height: 5.h),
           Text(
             'Play Free Battles, climb up the Leaderboard and win exciting Coin Rewards!',
             textAlign: TextAlign.center,
-            style: GoogleFonts.outfit(
-              color: const Color(0xFF1E1B4B),
+            style: GoogleFonts.poppins(
+              color: const Color(0xFF9E9EA7),
               fontSize: 12.sp,
-              fontWeight: FontWeight.w600,
-              height: 1.35,
+              fontWeight: FontWeight.w400,
+              height: 1.4,
             ),
           ),
           if (endTime != null) ...[
-            SizedBox(height: 14.h),
+            SizedBox(height: 16.h),
             _LeaderboardCountdownPill(endTimeStr: endTime),
           ],
         ],
@@ -326,7 +341,7 @@ class _BattleLeaderboardScreenState extends State<BattleLeaderboardScreen> {
               rewardText: reward1,
               rewardIcon: rewardIcon1,
               avatarSize: 66.w,
-              ringColor: const Color(0xFFFFB800),
+              ringColor: const Color(0xFFFBBF24),
               isPrizePool: isPrizePool,
               showWinnersOnly: showWinnersOnly,
               isCenter: true,
@@ -385,193 +400,201 @@ class _BattleLeaderboardScreenState extends State<BattleLeaderboardScreen> {
           Positioned(
             top: -18.h,
             child: SizedBox(
-              width: 32.w,
-              height: 20.h,
+              width: 34.w,
+              height: 22.h,
               child: const CustomPaint(
                 painter: _GoldenCrownPainter(),
               ),
             ),
           ),
 
-        // Outer 3D Pink/Purple Base Container
+        // Outer Dark Obsidian Podium Card Container
         Container(
-          margin: EdgeInsets.only(top: isCenter ? 10.h : 20.h),
-          padding: EdgeInsets.only(bottom: 6.h),
+          margin: EdgeInsets.only(top: isCenter ? 12.h : 22.h),
+          padding: EdgeInsets.fromLTRB(8.w, 14.h, 8.w, 14.h),
           decoration: BoxDecoration(
-            color: const Color(0xFFC88BE2),
-            borderRadius: BorderRadius.circular(20.r),
+            gradient: const LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                Color(0xFF222226),
+                Color(0xFF131316),
+              ],
+            ),
+            borderRadius: BorderRadius.circular(22.r),
+            border: Border.all(
+              color: isCenter
+                  ? const Color(0xFFFBBF24)
+                  : (rank == 2 ? const Color(0xFF94A3B8) : const Color(0xFFD97706)),
+              width: isCenter ? 1.5 : 1.0,
+            ),
             boxShadow: [
               BoxShadow(
-                color: const Color(0xFFAB31DE).withValues(alpha: isCenter ? 0.15 : 0.08),
+                color: isCenter
+                    ? const Color(0xFFFBBF24).withValues(alpha: 0.20)
+                    : Colors.black.withValues(alpha: 0.18),
                 blurRadius: isCenter ? 14 : 8,
                 offset: const Offset(0, 4),
               ),
             ],
           ),
-          child: Container(
-            padding: EdgeInsets.fromLTRB(8.w, 12.h, 8.w, 12.h),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(20.r),
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                SizedBox(height: isCenter ? 4.h : 0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SizedBox(height: isCenter ? 4.h : 0),
 
-                // Avatar Circle with Ring & Overlapping Hexagon Badge
-                Stack(
-                  alignment: Alignment.bottomCenter,
-                  clipBehavior: Clip.none,
-                  children: [
-                    Container(
-                      width: avatarSize,
-                      height: avatarSize,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        border: Border.all(
-                          color: ringColor,
-                          width: 3.5,
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: ringColor.withValues(alpha: 0.40),
-                            blurRadius: 10,
-                            spreadRadius: 1,
-                          ),
-                        ],
+              // Avatar Circle with Ring & Overlapping Hexagon Badge
+              Stack(
+                alignment: Alignment.bottomCenter,
+                clipBehavior: Clip.none,
+                children: [
+                  Container(
+                    width: avatarSize,
+                    height: avatarSize,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: ringColor,
+                        width: 3.0,
                       ),
-                      child: ClipOval(
-                        child: Container(
-                          color: const Color(0xFFFAF5FF),
-                          child: (() {
-                            if (isPrizePool) {
-                              return Center(
-                                child: (rewardIcon != null && rewardIcon.isNotEmpty)
-                                    ? CachedNetworkImage(
-                                        imageUrl: rewardIcon,
-                                        height: rank == 1 ? 36.r : 30.r,
-                                        width: rank == 1 ? 36.r : 30.r,
-                                        fit: BoxFit.contain,
-                                        errorWidget: (_, __, ___) => Image.asset(
-                                          'assets/icons/coin.png',
-                                          height: rank == 1 ? 36.r : 30.r,
-                                          width: rank == 1 ? 36.r : 30.r,
-                                        ),
-                                      )
-                                    : Image.asset(
+                      boxShadow: [
+                        BoxShadow(
+                          color: ringColor.withValues(alpha: 0.35),
+                          blurRadius: 10,
+                          spreadRadius: 1,
+                        ),
+                      ],
+                    ),
+                    child: ClipOval(
+                      child: Container(
+                        color: const Color(0xFF2E2E38),
+                        child: (() {
+                          if (isPrizePool) {
+                            return Center(
+                              child: (rewardIcon != null && rewardIcon.isNotEmpty)
+                                  ? CachedNetworkImage(
+                                      imageUrl: rewardIcon,
+                                      height: rank == 1 ? 36.r : 30.r,
+                                      width: rank == 1 ? 36.r : 30.r,
+                                      fit: BoxFit.contain,
+                                      errorWidget: (_, __, ___) => Image.asset(
                                         'assets/icons/coin.png',
                                         height: rank == 1 ? 36.r : 30.r,
                                         width: rank == 1 ? 36.r : 30.r,
                                       ),
-                              );
-                            }
-                            if (!hasPlayer) {
-                              return Icon(
-                                Icons.person_rounded,
-                                color: const Color(0xFFAB31DE),
-                                size: rank == 1 ? 26.sp : 22.sp,
-                              );
-                            }
-                            final String avatarUrl = player['avatar']?.toString() ?? '';
-                            return avatarUrl.isNotEmpty && avatarUrl != 'null'
-                                ? AvatarInternetImage(
-                                    url: avatarUrl,
-                                    size: avatarSize,
-                                  )
-                                : Center(
-                                    child: Text(
-                                      name.substring(0, name.isNotEmpty ? 1 : 0).toUpperCase(),
-                                      style: GoogleFonts.outfit(
-                                        color: const Color(0xFFAB31DE),
-                                        fontSize: rank == 1 ? 18.sp : 15.sp,
-                                        fontWeight: FontWeight.w900,
-                                      ),
+                                    )
+                                  : Image.asset(
+                                      'assets/icons/coin.png',
+                                      height: rank == 1 ? 36.r : 30.r,
+                                      width: rank == 1 ? 36.r : 30.r,
                                     ),
-                                  );
-                          })(),
-                        ),
+                            );
+                          }
+                          if (!hasPlayer) {
+                            return Icon(
+                              Icons.person_rounded,
+                              color: const Color(0xFF9E9EA7),
+                              size: rank == 1 ? 26.sp : 22.sp,
+                            );
+                          }
+                          final String avatarUrl = player['avatar']?.toString() ?? '';
+                          return avatarUrl.isNotEmpty && avatarUrl != 'null'
+                              ? AvatarInternetImage(
+                                  url: avatarUrl,
+                                  size: avatarSize,
+                                )
+                              : Center(
+                                  child: Text(
+                                    name.substring(0, name.isNotEmpty ? 1 : 0).toUpperCase(),
+                                    style: GoogleFonts.poppins(
+                                      color: Colors.white,
+                                      fontSize: rank == 1 ? 18.sp : 15.sp,
+                                      fontWeight: FontWeight.w800,
+                                    ),
+                                  ),
+                                );
+                        })(),
                       ),
                     ),
-
-                    // Overlapping Vertical Hexagon Badge
-                    Positioned(
-                      bottom: -11.h,
-                      child: _HexagonBadge(
-                        rank: rank,
-                        fillColor: rank == 1
-                            ? const Color(0xFFFFEA00)
-                            : (rank == 2 ? const Color(0xFF94A3B8) : const Color(0xFFD97706)),
-                        borderColor: rank == 1
-                            ? const Color(0xFFFFF59D)
-                            : (rank == 2 ? const Color(0xFFE2E8F0) : const Color(0xFFFDE68A)),
-                      ),
-                    ),
-                  ],
-                ),
-
-                SizedBox(height: 16.h),
-
-                // Name or Rank Tag
-                Text(
-                  isPrizePool ? 'Rank #$rank' : name,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  textAlign: TextAlign.center,
-                  style: GoogleFonts.outfit(
-                    color: const Color(0xFF1E1B4B),
-                    fontSize: isCenter ? 13.5.sp : 12.sp,
-                    fontWeight: isCenter ? FontWeight.w800 : FontWeight.w700,
                   ),
+
+                  // Overlapping Vertical Hexagon Badge
+                  Positioned(
+                    bottom: -11.h,
+                    child: _HexagonBadge(
+                      rank: rank,
+                      fillColor: rank == 1
+                          ? const Color(0xFFFBBF24)
+                          : (rank == 2 ? const Color(0xFF94A3B8) : const Color(0xFFD97706)),
+                      borderColor: rank == 1
+                          ? const Color(0xFFFFF59D)
+                          : (rank == 2 ? const Color(0xFFE2E8F0) : const Color(0xFFFDE68A)),
+                    ),
+                  ),
+                ],
+              ),
+
+              SizedBox(height: 16.h),
+
+              // Name or Rank Tag
+              Text(
+                isPrizePool ? 'Rank #$rank' : name,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.center,
+                style: GoogleFonts.poppins(
+                  color: Colors.white,
+                  fontSize: isCenter ? 13.5.sp : 12.sp,
+                  fontWeight: FontWeight.w700,
                 ),
+              ),
 
-                SizedBox(height: 3.h),
+              SizedBox(height: 4.h),
 
-                // Reward / Stats Subtitle
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    if (rewardIcon != null && rewardIcon.isNotEmpty)
-                      Padding(
-                        padding: EdgeInsets.only(right: 4.w),
-                        child: CachedNetworkImage(
-                          imageUrl: rewardIcon,
-                          width: 13.w,
-                          height: 13.w,
-                          fit: BoxFit.contain,
-                          errorWidget: (_, __, ___) => Image.asset(
-                            'assets/icons/coin.png',
-                            width: 13.w,
-                            height: 13.w,
-                            fit: BoxFit.contain,
-                          ),
-                        ),
-                      )
-                    else ...[
-                      Image.asset(
-                        'assets/icons/coin.png',
+              // Reward / Stats Subtitle
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  if (rewardIcon != null && rewardIcon.isNotEmpty)
+                    Padding(
+                      padding: EdgeInsets.only(right: 4.w),
+                      child: CachedNetworkImage(
+                        imageUrl: rewardIcon,
                         width: 13.w,
                         height: 13.w,
                         fit: BoxFit.contain,
-                      ),
-                      SizedBox(width: 4.w),
-                    ],
-                    Flexible(
-                      child: Text(
-                        isPrizePool ? rewardText : badgeText,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: GoogleFonts.outfit(
-                          color: const Color(0xFF64748B),
-                          fontSize: 11.5.sp,
-                          fontWeight: FontWeight.w600,
+                        errorWidget: (_, __, ___) => Image.asset(
+                          'assets/icons/coin.png',
+                          width: 13.w,
+                          height: 13.w,
+                          fit: BoxFit.contain,
                         ),
                       ),
+                    )
+                  else ...[
+                    Image.asset(
+                      'assets/icons/coin.png',
+                      width: 13.w,
+                      height: 13.w,
+                      fit: BoxFit.contain,
                     ),
+                    SizedBox(width: 4.w),
                   ],
-                ),
-              ],
-            ),
+                  Flexible(
+                    child: Text(
+                      isPrizePool ? rewardText : badgeText,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: GoogleFonts.poppins(
+                        color: const Color(0xFFFBBF24),
+                        fontSize: 11.5.sp,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
           ),
         ),
       ],
@@ -587,7 +610,7 @@ class _BattleLeaderboardScreenState extends State<BattleLeaderboardScreen> {
             width: 44.w,
             child: Text(
               'Rank',
-              style: GoogleFonts.outfit(
+              style: GoogleFonts.poppins(
                 color: const Color(0xFF64748B),
                 fontSize: 12.sp,
                 fontWeight: FontWeight.w600,
@@ -596,8 +619,8 @@ class _BattleLeaderboardScreenState extends State<BattleLeaderboardScreen> {
           ),
           Expanded(
             child: Text(
-              'User',
-              style: GoogleFonts.outfit(
+              'Player',
+              style: GoogleFonts.poppins(
                 color: const Color(0xFF64748B),
                 fontSize: 12.sp,
                 fontWeight: FontWeight.w600,
@@ -606,7 +629,7 @@ class _BattleLeaderboardScreenState extends State<BattleLeaderboardScreen> {
           ),
           Text(
             'Reward',
-            style: GoogleFonts.outfit(
+            style: GoogleFonts.poppins(
               color: const Color(0xFFAB31DE),
               fontSize: 12.sp,
               fontWeight: FontWeight.w700,
@@ -627,7 +650,7 @@ class _BattleLeaderboardScreenState extends State<BattleLeaderboardScreen> {
             SizedBox(height: 8.h),
             Text(
               'No reward tiers configured.',
-              style: GoogleFonts.outfit(
+              style: GoogleFonts.poppins(
                 color: const Color(0xFF64748B),
                 fontSize: 13.5.sp,
                 fontWeight: FontWeight.w600,
@@ -639,127 +662,133 @@ class _BattleLeaderboardScreenState extends State<BattleLeaderboardScreen> {
     }
 
     return ListView.builder(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          padding: EdgeInsets.zero,
-          itemCount: tiers.length,
-          itemBuilder: (context, index) {
-            final tier = tiers[index];
-            final int start = (tier['rankStart'] as num?)?.toInt() ?? (index + 1);
-            final int end = (tier['rankEnd'] as num?)?.toInt() ?? start;
-            final int coins = (tier['coins'] as num?)?.toInt() ?? 0;
-            final String? iconUrl = tier['iconUrl']?.toString().trim();
-            final String? customText = tier['customText']?.toString().trim();
-            final String rangeText = start == end ? 'Rank #$start' : 'Rank #$start – #$end';
-            final String displayRewardText = (customText != null && customText.isNotEmpty)
-                ? customText
-                : '${_formatCoins(coins)} Coins';
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      padding: EdgeInsets.zero,
+      itemCount: tiers.length,
+      itemBuilder: (context, index) {
+        final tier = tiers[index];
+        final int start = (tier['rankStart'] as num?)?.toInt() ?? (index + 1);
+        final int end = (tier['rankEnd'] as num?)?.toInt() ?? start;
+        final int coins = (tier['coins'] as num?)?.toInt() ?? 0;
+        final String? iconUrl = tier['iconUrl']?.toString().trim();
+        final String? customText = tier['customText']?.toString().trim();
+        final String rangeText = start == end ? 'Rank #$start' : 'Rank #$start – #$end';
+        final String displayRewardText = (customText != null && customText.isNotEmpty)
+            ? customText
+            : '${_formatCoins(coins)} Coins';
 
-            Color rankColor = const Color(0xFFAB31DE);
-            Color bgColor = const Color(0xFFFAF5FF);
-            Color borderColor = const Color(0xFFF3E8FF);
+        Color rankColor = const Color(0xFFAB31DE);
+        Color borderHighlight = const Color(0xFF2E2E36);
 
-            if (start == 1) {
-              rankColor = const Color(0xFFD97706);
-              bgColor = const Color(0xFFFFFBEB);
-              borderColor = const Color(0xFFFCD34D);
-            } else if (start == 2) {
-              rankColor = const Color(0xFF475569);
-              bgColor = const Color(0xFFF8FAFC);
-              borderColor = const Color(0xFFCBD5E1);
-            } else if (start == 3) {
-              rankColor = const Color(0xFFC2410C);
-              bgColor = const Color(0xFFFFF7ED);
-              borderColor = const Color(0xFFFDBA74);
-            }
+        if (start == 1) {
+          rankColor = const Color(0xFFFBBF24);
+          borderHighlight = const Color(0xFFFBBF24).withValues(alpha: 0.5);
+        } else if (start == 2) {
+          rankColor = const Color(0xFF94A3B8);
+          borderHighlight = const Color(0xFF94A3B8).withValues(alpha: 0.5);
+        } else if (start == 3) {
+          rankColor = const Color(0xFFD97706);
+          borderHighlight = const Color(0xFFD97706).withValues(alpha: 0.5);
+        }
 
-            return Container(
-              margin: EdgeInsets.only(bottom: 10.h),
-              padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
-              decoration: BoxDecoration(
-                color: bgColor,
-                borderRadius: BorderRadius.circular(16.r),
-                border: Border.all(
-                  color: borderColor,
-                  width: 1.2,
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.03),
-                    blurRadius: 8,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
+        return Container(
+          margin: EdgeInsets.only(bottom: 10.h),
+          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
+          decoration: BoxDecoration(
+            gradient: const LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                Color(0xFF222226),
+                Color(0xFF131316),
+              ],
+            ),
+            borderRadius: BorderRadius.circular(18.r),
+            border: Border.all(
+              color: borderHighlight,
+              width: 1.0,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.15),
+                blurRadius: 8,
+                offset: const Offset(0, 3),
               ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            ],
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
                 children: [
-                  Row(
-                    children: [
-                      Container(
-                        padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(12.r),
-                          border: Border.all(color: borderColor, width: 1),
-                        ),
-                        child: Text(
-                          rangeText,
-                          style: GoogleFonts.outfit(
-                            color: rankColor,
-                            fontSize: 13.sp,
-                            fontWeight: FontWeight.w900,
-                          ),
-                        ),
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF2E2E38),
+                      borderRadius: BorderRadius.circular(10.r),
+                      border: Border.all(
+                        color: rankColor.withValues(alpha: 0.4),
+                        width: 1.0,
                       ),
-                    ],
-                  ),
-                  Flexible(
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        if (iconUrl != null && iconUrl.isNotEmpty)
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(4.r),
-                            child: CachedNetworkImage(
-                              imageUrl: iconUrl,
-                              width: 20.w,
-                              height: 20.w,
-                              fit: BoxFit.contain,
-                              errorWidget: (_, __, ___) => Image.asset(
-                                'assets/icons/coin.png',
-                                width: 18.w,
-                                height: 18.w,
-                              ),
-                            ),
-                          )
-                        else
-                          Image.asset(
-                            'assets/icons/coin.png',
-                            width: 18.w,
-                            height: 18.w,
-                          ),
-                        SizedBox(width: 6.w),
-                        Flexible(
-                          child: Text(
-                            displayRewardText,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: GoogleFonts.outfit(
-                              color: const Color(0xFF1E1B4B),
-                              fontSize: 14.sp,
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
-                        ),
-                      ],
+                    ),
+                    child: Text(
+                      rangeText,
+                      style: GoogleFonts.poppins(
+                        color: rankColor,
+                        fontSize: 12.5.sp,
+                        fontWeight: FontWeight.w700,
+                      ),
                     ),
                   ),
                 ],
               ),
-            );
-          },
+              Flexible(
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (iconUrl != null && iconUrl.isNotEmpty)
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(4.r),
+                        child: CachedNetworkImage(
+                          imageUrl: iconUrl,
+                          width: 20.w,
+                          height: 20.w,
+                          fit: BoxFit.contain,
+                          errorWidget: (_, __, ___) => Image.asset(
+                            'assets/icons/coin.png',
+                            width: 18.w,
+                            height: 18.w,
+                          ),
+                        ),
+                      )
+                    else
+                      Image.asset(
+                        'assets/icons/coin.png',
+                        width: 18.w,
+                        height: 18.w,
+                      ),
+                    SizedBox(width: 6.w),
+                    Flexible(
+                      child: Text(
+                        displayRewardText,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: GoogleFonts.poppins(
+                          color: const Color(0xFFFBBF24),
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         );
+      },
+    );
   }
 
   Widget _buildRankListItem(
@@ -778,21 +807,28 @@ class _BattleLeaderboardScreenState extends State<BattleLeaderboardScreen> {
 
     return Container(
       margin: EdgeInsets.only(bottom: 8.h),
-      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 10.h),
+      padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
       decoration: BoxDecoration(
-        color: isMe ? const Color(0xFFFAF5FF) : Colors.white,
-        borderRadius: BorderRadius.circular(16.r),
+        gradient: const LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Color(0xFF222226),
+            Color(0xFF131316),
+          ],
+        ),
+        borderRadius: BorderRadius.circular(18.r),
         border: Border.all(
-          color: isMe ? const Color(0xFFAB31DE) : const Color(0xFFF1F5F9),
-          width: isMe ? 1.4 : 1.0,
+          color: isMe ? const Color(0xFFAB31DE) : const Color(0xFF2E2E36),
+          width: isMe ? 1.5 : 1.0,
         ),
         boxShadow: [
           BoxShadow(
             color: isMe
-                ? const Color(0xFFAB31DE).withValues(alpha: 0.12)
-                : Colors.black.withValues(alpha: 0.03),
+                ? const Color(0xFFAB31DE).withValues(alpha: 0.20)
+                : Colors.black.withValues(alpha: 0.15),
             blurRadius: 8,
-            offset: const Offset(0, 2),
+            offset: const Offset(0, 3),
           ),
         ],
       ),
@@ -800,19 +836,23 @@ class _BattleLeaderboardScreenState extends State<BattleLeaderboardScreen> {
         children: [
           // Rank Badge Pill
           Container(
-            width: 28.w,
-            height: 28.w,
+            width: 30.w,
+            height: 30.w,
             alignment: Alignment.center,
             decoration: BoxDecoration(
-              color: isMe ? const Color(0xFFAB31DE) : const Color(0xFFFAF5FF),
-              shape: BoxShape.circle,
+              color: isMe ? const Color(0xFFAB31DE) : const Color(0xFF2E2E38),
+              borderRadius: BorderRadius.circular(10.r),
+              border: Border.all(
+                color: isMe ? const Color(0xFFE39FFF) : const Color(0xFF3E3E4C),
+                width: 1.0,
+              ),
             ),
             child: Text(
               '$rankNum',
-              style: GoogleFonts.outfit(
-                color: isMe ? Colors.white : const Color(0xFFAB31DE),
+              style: GoogleFonts.poppins(
+                color: Colors.white,
                 fontSize: 12.sp,
-                fontWeight: FontWeight.w800,
+                fontWeight: FontWeight.w700,
               ),
             ),
           ),
@@ -821,25 +861,26 @@ class _BattleLeaderboardScreenState extends State<BattleLeaderboardScreen> {
 
           // User Avatar
           CircleAvatar(
-            radius: 17.r,
-            backgroundColor: const Color(0xFFFAF5FF),
+            radius: 18.r,
+            backgroundColor: const Color(0xFF2E2E38),
             child: pAvatar.isNotEmpty && pAvatar != 'null'
                 ? ClipOval(
                     child: AvatarInternetImage(
                       url: pAvatar,
-                      size: 34.r,
+                      size: 36.r,
                     ),
                   )
                 : Text(
                     pName.substring(0, pName.isNotEmpty ? 1 : 0).toUpperCase(),
-                    style: GoogleFonts.outfit(
-                      color: const Color(0xFFAB31DE),
+                    style: GoogleFonts.poppins(
+                      color: Colors.white,
                       fontWeight: FontWeight.bold,
+                      fontSize: 14.sp,
                     ),
                   ),
           ),
 
-          SizedBox(width: 10.w),
+          SizedBox(width: 12.w),
 
           // Name & Stats
           Expanded(
@@ -850,18 +891,19 @@ class _BattleLeaderboardScreenState extends State<BattleLeaderboardScreen> {
                   pName,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: GoogleFonts.outfit(
-                    color: const Color(0xFF1E1B4B),
+                  style: GoogleFonts.poppins(
+                    color: Colors.white,
                     fontSize: 13.5.sp,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
+                SizedBox(height: 2.h),
                 Text(
                   (BattleArenaService.instance.rankingBasis == 'wins') ? '$wins Wins' : '$pts Speed Points',
-                  style: GoogleFonts.outfit(
-                    color: const Color(0xFF64748B),
+                  style: GoogleFonts.poppins(
+                    color: const Color(0xFF9E9EA7),
                     fontSize: 11.sp,
-                    fontWeight: FontWeight.w500,
+                    fontWeight: FontWeight.w400,
                   ),
                 ),
               ],
@@ -901,10 +943,10 @@ class _BattleLeaderboardScreenState extends State<BattleLeaderboardScreen> {
                   (rwCustomText != null && rwCustomText.isNotEmpty)
                       ? rwCustomText
                       : '+${_formatCoins(rwCoins)}',
-                  style: GoogleFonts.outfit(
-                    color: const Color(0xFF1E1B4B),
+                  style: GoogleFonts.poppins(
+                    color: const Color(0xFFFBBF24),
                     fontSize: 12.5.sp,
-                    fontWeight: FontWeight.w800,
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
               ],
@@ -933,16 +975,23 @@ class _BattleLeaderboardScreenState extends State<BattleLeaderboardScreen> {
       ),
       padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
       decoration: BoxDecoration(
-        color: const Color(0xFFFAF5FF),
+        gradient: const LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Color(0xFF222226),
+            Color(0xFF131316),
+          ],
+        ),
         borderRadius: BorderRadius.circular(22.r),
         border: Border.all(
-          color: const Color(0xFFE9D5FF),
+          color: const Color(0xFFAB31DE),
           width: 1.5,
         ),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFFAB31DE).withValues(alpha: 0.14),
-            blurRadius: 12,
+            color: const Color(0xFFAB31DE).withValues(alpha: 0.25),
+            blurRadius: 16,
             offset: const Offset(0, 4),
           ),
         ],
@@ -951,10 +1000,10 @@ class _BattleLeaderboardScreenState extends State<BattleLeaderboardScreen> {
         children: [
           // User Rank Number
           Text(
-            userRank > 0 ? '$userRank' : '-',
-            style: GoogleFonts.outfit(
-              color: const Color(0xFFAB31DE),
-              fontSize: 22.sp,
+            userRank > 0 ? '#$userRank' : '-',
+            style: GoogleFonts.poppins(
+              color: const Color(0xFFFBBF24),
+              fontSize: 18.sp,
               fontWeight: FontWeight.w900,
             ),
           ),
@@ -963,8 +1012,8 @@ class _BattleLeaderboardScreenState extends State<BattleLeaderboardScreen> {
 
           // User Avatar
           Container(
-            width: 36.w,
-            height: 36.w,
+            width: 38.w,
+            height: 38.w,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               border: Border.all(
@@ -976,14 +1025,14 @@ class _BattleLeaderboardScreenState extends State<BattleLeaderboardScreen> {
               child: photoUrl.isNotEmpty
                   ? AvatarInternetImage(
                       url: photoUrl,
-                      size: 36.w,
+                      size: 38.w,
                     )
                   : CircleAvatar(
-                      backgroundColor: const Color(0xFFFAF5FF),
+                      backgroundColor: const Color(0xFF2E2E38),
                       child: Text(
                         userName.substring(0, userName.isNotEmpty ? 1 : 0).toUpperCase(),
-                        style: GoogleFonts.outfit(
-                          color: const Color(0xFFAB31DE),
+                        style: GoogleFonts.poppins(
+                          color: Colors.white,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -991,7 +1040,7 @@ class _BattleLeaderboardScreenState extends State<BattleLeaderboardScreen> {
             ),
           ),
 
-          SizedBox(width: 10.w),
+          SizedBox(width: 12.w),
 
           // "You" Title + Encouragement Subtitle
           Expanded(
@@ -1001,18 +1050,18 @@ class _BattleLeaderboardScreenState extends State<BattleLeaderboardScreen> {
               children: [
                 Text(
                   'You',
-                  style: GoogleFonts.outfit(
-                    color: const Color(0xFFAB31DE),
-                    fontSize: 15.sp,
+                  style: GoogleFonts.poppins(
+                    color: Colors.white,
+                    fontSize: 14.5.sp,
                     fontWeight: FontWeight.w800,
                   ),
                 ),
                 Text(
                   "Keep playing & climbing up!",
-                  style: GoogleFonts.outfit(
-                    color: const Color(0xFF64748B),
+                  style: GoogleFonts.poppins(
+                    color: const Color(0xFF9E9EA7),
                     fontSize: 10.5.sp,
-                    fontWeight: FontWeight.w500,
+                    fontWeight: FontWeight.w400,
                   ),
                 ),
               ],
@@ -1032,10 +1081,10 @@ class _BattleLeaderboardScreenState extends State<BattleLeaderboardScreen> {
               SizedBox(width: 4.w),
               Text(
                 (BattleArenaService.instance.rankingBasis == 'wins') ? '$winsCount Wins' : '$score Pts',
-                style: GoogleFonts.outfit(
-                  color: const Color(0xFF1E1B4B),
+                style: GoogleFonts.poppins(
+                  color: const Color(0xFFFBBF24),
                   fontSize: 13.5.sp,
-                  fontWeight: FontWeight.w800,
+                  fontWeight: FontWeight.w700,
                 ),
               ),
             ],
@@ -1052,13 +1101,13 @@ class _BattleLeaderboardScreenState extends State<BattleLeaderboardScreen> {
   }) {
     return ShimmerTag(
       type: ShimmerType.pulse,
-      baseColor: const Color(0xFFF1F5F9),
+      baseColor: const Color(0xFFE2E8F0),
       highlightColor: Colors.white,
       child: Container(
         width: width,
         height: height,
         decoration: BoxDecoration(
-          color: const Color(0xFFF1F5F9),
+          color: const Color(0xFFE2E8F0),
           borderRadius: BorderRadius.circular(borderRadius.r),
         ),
       ),
@@ -1151,12 +1200,12 @@ class _BattleLeaderboardScreenState extends State<BattleLeaderboardScreen> {
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(15.r),
                       border: Border.all(
-                        color: const Color(0xFFF1F5F9),
+                        color: const Color(0xFFE2E8F0),
                         width: 1.2,
                       ),
                       boxShadow: [
                         BoxShadow(
-                          color: const Color(0xFFAB31DE).withValues(alpha: 0.08),
+                          color: Colors.black.withValues(alpha: 0.05),
                           blurRadius: 10,
                           offset: const Offset(0, 3),
                         ),
@@ -1164,7 +1213,7 @@ class _BattleLeaderboardScreenState extends State<BattleLeaderboardScreen> {
                     ),
                     child: Icon(
                       Icons.arrow_back_rounded,
-                      color: const Color(0xFFAB31DE),
+                      color: const Color(0xFF26262B),
                       size: 22.sp,
                     ),
                   ),
@@ -1185,12 +1234,12 @@ class _BattleLeaderboardScreenState extends State<BattleLeaderboardScreen> {
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(15.r),
                       border: Border.all(
-                        color: const Color(0xFFF1F5F9),
+                        color: const Color(0xFFE2E8F0),
                         width: 1.2,
                       ),
                       boxShadow: [
                         BoxShadow(
-                          color: const Color(0xFFAB31DE).withValues(alpha: 0.08),
+                          color: Colors.black.withValues(alpha: 0.05),
                           blurRadius: 10,
                           offset: const Offset(0, 3),
                         ),
@@ -1199,7 +1248,7 @@ class _BattleLeaderboardScreenState extends State<BattleLeaderboardScreen> {
                     child: Center(
                       child: Icon(
                         Icons.history_rounded,
-                        color: const Color(0xFFAB31DE),
+                        color: const Color(0xFF26262B),
                         size: 21.sp,
                       ),
                     ),
@@ -1210,21 +1259,28 @@ class _BattleLeaderboardScreenState extends State<BattleLeaderboardScreen> {
 
             SizedBox(height: 36.h),
 
-            // No Active Leaderboard Card
+            // No Active Leaderboard Card (Dark Obsidian Theme)
             Container(
               width: double.infinity,
               padding: EdgeInsets.symmetric(horizontal: 22.w, vertical: 34.h),
               decoration: BoxDecoration(
-                color: const Color(0xFFFAF5FF),
+                gradient: const LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    Color(0xFF222226),
+                    Color(0xFF131316),
+                  ],
+                ),
                 borderRadius: BorderRadius.circular(28.r),
                 border: Border.all(
-                  color: const Color(0xFFF3E8FF),
-                  width: 1.5,
+                  color: const Color(0xFF2E2E36),
+                  width: 1.0,
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: const Color(0xFFAB31DE).withValues(alpha: 0.06),
-                    blurRadius: 20,
+                    color: Colors.black.withValues(alpha: 0.18),
+                    blurRadius: 16,
                     offset: const Offset(0, 6),
                   ),
                 ],
@@ -1241,7 +1297,7 @@ class _BattleLeaderboardScreenState extends State<BattleLeaderboardScreen> {
                         height: 110.w,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: const Color(0xFFE39FFF).withValues(alpha: 0.22),
+                          color: const Color(0xFFAB31DE).withValues(alpha: 0.18),
                         ),
                       ),
                       Image.asset(
@@ -1251,7 +1307,7 @@ class _BattleLeaderboardScreenState extends State<BattleLeaderboardScreen> {
                         errorBuilder: (_, __, ___) => Icon(
                           Icons.leaderboard_rounded,
                           size: 60.sp,
-                          color: const Color(0xFFAB31DE),
+                          color: const Color(0xFFFBBF24),
                         ),
                       ),
                     ],
@@ -1263,11 +1319,10 @@ class _BattleLeaderboardScreenState extends State<BattleLeaderboardScreen> {
                   Text(
                     'No Active Leaderboard',
                     textAlign: TextAlign.center,
-                    style: GoogleFonts.outfit(
-                      color: const Color(0xFF1E1B4B),
+                    style: GoogleFonts.kaushanScript(
+                      color: Colors.white,
                       fontSize: 22.sp,
-                      fontWeight: FontWeight.w900,
-                      letterSpacing: -0.3,
+                      fontWeight: FontWeight.w800,
                     ),
                   ),
 
@@ -1277,10 +1332,10 @@ class _BattleLeaderboardScreenState extends State<BattleLeaderboardScreen> {
                   Text(
                     'There is currently no active leaderboard cycle running. Stay tuned! New exciting reward tournaments will start soon.',
                     textAlign: TextAlign.center,
-                    style: GoogleFonts.outfit(
-                      color: const Color(0xFF64748B),
-                      fontSize: 13.sp,
-                      fontWeight: FontWeight.w500,
+                    style: GoogleFonts.poppins(
+                      color: const Color(0xFF9E9EA7),
+                      fontSize: 12.5.sp,
+                      fontWeight: FontWeight.w400,
                       height: 1.45,
                     ),
                   ),
@@ -1300,11 +1355,11 @@ class _BattleLeaderboardScreenState extends State<BattleLeaderboardScreen> {
                     child: Container(
                       padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: const Color(0xFF2E2E38),
                         borderRadius: BorderRadius.circular(14.r),
                         border: Border.all(
-                          color: const Color(0xFFE2E8F0),
-                          width: 1.2,
+                          color: const Color(0xFF3E3E4C),
+                          width: 1.0,
                         ),
                       ),
                       child: Row(
@@ -1312,16 +1367,16 @@ class _BattleLeaderboardScreenState extends State<BattleLeaderboardScreen> {
                         children: [
                           Icon(
                             Icons.history_rounded,
-                            color: const Color(0xFFAB31DE),
+                            color: const Color(0xFF38BDF8),
                             size: 16.sp,
                           ),
                           SizedBox(width: 6.w),
                           Text(
                             'View Past Cycle Winners',
-                            style: GoogleFonts.outfit(
-                              color: const Color(0xFF1E1B4B),
+                            style: GoogleFonts.poppins(
+                              color: Colors.white,
                               fontSize: 12.5.sp,
-                              fontWeight: FontWeight.w700,
+                              fontWeight: FontWeight.w600,
                             ),
                           ),
                         ],
@@ -1348,12 +1403,12 @@ class _BattleLeaderboardScreenState extends State<BattleLeaderboardScreen> {
                 height: 50.h,
                 decoration: BoxDecoration(
                   gradient: const LinearGradient(
-                    colors: [Color(0xFFE39FFF), Color(0xFFAB31DE)],
+                    colors: [Color(0xFFAB31DE), Color(0xFF7928CA)],
                   ),
                   borderRadius: BorderRadius.circular(16.r),
                   boxShadow: [
                     BoxShadow(
-                      color: const Color(0xFFAB31DE).withValues(alpha: 0.30),
+                      color: const Color(0xFFAB31DE).withValues(alpha: 0.35),
                       blurRadius: 12,
                       offset: const Offset(0, 4),
                     ),
@@ -1371,10 +1426,10 @@ class _BattleLeaderboardScreenState extends State<BattleLeaderboardScreen> {
                     SizedBox(width: 8.w),
                     Text(
                       'Check Again',
-                      style: GoogleFonts.outfit(
+                      style: GoogleFonts.poppins(
                         color: Colors.white,
                         fontSize: 14.5.sp,
-                        fontWeight: FontWeight.w800,
+                        fontWeight: FontWeight.w700,
                         letterSpacing: 0.3,
                       ),
                     ),
@@ -1400,7 +1455,7 @@ class _BattleLeaderboardScreenState extends State<BattleLeaderboardScreen> {
         statusBarBrightness: Brightness.light,
       ),
       child: Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: const Color(0xFFF8FAFC),
         body: Stack(
           children: [
             // 1. Scrollable Main Content
@@ -1503,12 +1558,12 @@ class _BattleLeaderboardScreenState extends State<BattleLeaderboardScreen> {
                                     color: Colors.white,
                                     borderRadius: BorderRadius.circular(15.r),
                                     border: Border.all(
-                                      color: const Color(0xFFF1F5F9),
+                                      color: const Color(0xFFE2E8F0),
                                       width: 1.2,
                                     ),
                                     boxShadow: [
                                       BoxShadow(
-                                        color: const Color(0xFFAB31DE).withValues(alpha: 0.08),
+                                        color: Colors.black.withValues(alpha: 0.05),
                                         blurRadius: 10,
                                         offset: const Offset(0, 3),
                                       ),
@@ -1516,7 +1571,7 @@ class _BattleLeaderboardScreenState extends State<BattleLeaderboardScreen> {
                                   ),
                                   child: Icon(
                                     Icons.arrow_back_rounded,
-                                    color: const Color(0xFFAB31DE),
+                                    color: const Color(0xFF26262B),
                                     size: 22.sp,
                                   ),
                                 ),
@@ -1538,12 +1593,12 @@ class _BattleLeaderboardScreenState extends State<BattleLeaderboardScreen> {
                                     color: Colors.white,
                                     borderRadius: BorderRadius.circular(15.r),
                                     border: Border.all(
-                                      color: const Color(0xFFF1F5F9),
+                                      color: const Color(0xFFE2E8F0),
                                       width: 1.2,
                                     ),
                                     boxShadow: [
                                       BoxShadow(
-                                        color: const Color(0xFFAB31DE).withValues(alpha: 0.08),
+                                        color: Colors.black.withValues(alpha: 0.05),
                                         blurRadius: 10,
                                         offset: const Offset(0, 3),
                                       ),
@@ -1552,7 +1607,7 @@ class _BattleLeaderboardScreenState extends State<BattleLeaderboardScreen> {
                                   child: Center(
                                     child: Icon(
                                       Icons.history_rounded,
-                                      color: const Color(0xFFAB31DE),
+                                      color: const Color(0xFF26262B),
                                       size: 21.sp,
                                     ),
                                   ),
@@ -1639,10 +1694,10 @@ class _BattleLeaderboardScreenState extends State<BattleLeaderboardScreen> {
                                 padding: EdgeInsets.symmetric(vertical: 24.h),
                                 child: Text(
                                   'No rankers active yet.',
-                                  style: GoogleFonts.outfit(
+                                  style: GoogleFonts.poppins(
                                     color: const Color(0xFF64748B),
                                     fontSize: 13.5.sp,
-                                    fontWeight: FontWeight.w600,
+                                    fontWeight: FontWeight.w500,
                                   ),
                                 ),
                               ),
@@ -1661,34 +1716,34 @@ class _BattleLeaderboardScreenState extends State<BattleLeaderboardScreen> {
                 bottom: 0,
                 left: 0,
                 right: 0,
-              child: FutureBuilder<List<dynamic>>(
-                future: _leaderboardFuture,
-                builder: (context, snapshot) {
-                  if (!snapshot.hasData || !BattleArenaService.instance.isLeaderboardActive) return const SizedBox.shrink();
-                  final standings = snapshot.data!;
-                  final idx = standings.indexWhere((p) => p['userId']?.toString() == widget.userId);
-                  if (idx == -1) return const SizedBox.shrink();
+                child: FutureBuilder<List<dynamic>>(
+                  future: _leaderboardFuture,
+                  builder: (context, snapshot) {
+                    if (!snapshot.hasData || !BattleArenaService.instance.isLeaderboardActive) return const SizedBox.shrink();
+                    final standings = snapshot.data!;
+                    final idx = standings.indexWhere((p) => p['userId']?.toString() == widget.userId);
+                    if (idx == -1) return const SizedBox.shrink();
 
-                  final myUserObj = standings[idx];
-                  final int myRank = myUserObj['rank'] ?? (idx + 1);
-                  final String myName = myUserObj['userName']?.toString() ?? 'You';
-                  final String myPhoto = myUserObj['avatar']?.toString() ?? '';
-                  final int myPoints = myUserObj['totalSpeedPoints'] ?? 0;
+                    final myUserObj = standings[idx];
+                    final int myRank = myUserObj['rank'] ?? (idx + 1);
+                    final String myName = myUserObj['userName']?.toString() ?? 'You';
+                    final String myPhoto = myUserObj['avatar']?.toString() ?? '';
+                    final int myPoints = myUserObj['totalSpeedPoints'] ?? 0;
 
-                  final int myWins = myUserObj['winsCount'] ?? 0;
-                  final bool isWinnersOnly = BattleArenaService.instance.showWinnersOnly;
+                    final int myWins = myUserObj['winsCount'] ?? 0;
+                    final bool isWinnersOnly = BattleArenaService.instance.showWinnersOnly;
 
-                  return _buildUserStickyRankBar(
-                    userRank: myRank,
-                    userName: myName,
-                    photoUrl: myPhoto,
-                    score: myPoints,
-                    winsCount: myWins,
-                    showWinnersOnly: isWinnersOnly,
-                  );
-                },
+                    return _buildUserStickyRankBar(
+                      userRank: myRank,
+                      userName: myName,
+                      photoUrl: myPhoto,
+                      score: myPoints,
+                      winsCount: myWins,
+                      showWinnersOnly: isWinnersOnly,
+                    );
+                  },
+                ),
               ),
-            ),
           ],
         ),
       ),
@@ -1752,13 +1807,13 @@ class _LeaderboardCountdownPillState extends State<_LeaderboardCountdownPill> {
         : '${hours.toString().padLeft(2, '0')}h : ${minutes.toString().padLeft(2, '0')}m : ${seconds.toString().padLeft(2, '0')}s';
 
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 6.h),
+      padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 7.h),
       decoration: BoxDecoration(
-        color: const Color(0xFFFAF5FF),
+        color: const Color(0xFF2E2E38),
         borderRadius: BorderRadius.circular(100.r),
         border: Border.all(
-          color: const Color(0xFFF3E8FF),
-          width: 1.2,
+          color: const Color(0xFF3E3E4C),
+          width: 1.0,
         ),
       ),
       child: Row(
@@ -1766,17 +1821,17 @@ class _LeaderboardCountdownPillState extends State<_LeaderboardCountdownPill> {
         children: [
           Icon(
             Icons.access_time_filled_rounded,
-            color: const Color(0xFFAB31DE),
+            color: const Color(0xFFFBBF24),
             size: 14.sp,
           ),
-          SizedBox(width: 5.w),
+          SizedBox(width: 6.w),
           Text(
             timerString,
-            style: GoogleFonts.outfit(
-              color: const Color(0xFF1E1B4B),
-              fontSize: 12.5.sp,
-              fontWeight: FontWeight.w800,
-              letterSpacing: 0.3,
+            style: GoogleFonts.poppins(
+              color: Colors.white,
+              fontSize: 12.sp,
+              fontWeight: FontWeight.w700,
+              letterSpacing: 0.4,
             ),
           ),
         ],
@@ -1842,8 +1897,8 @@ class _HexagonBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 20.w,
-      height: 22.h,
+      width: 22.w,
+      height: 24.h,
       child: CustomPaint(
         painter: _HexagonPainter(
           fillColor: fillColor,
@@ -1854,7 +1909,7 @@ class _HexagonBadge extends StatelessWidget {
             padding: EdgeInsets.only(bottom: 1.h),
             child: Text(
               '$rank',
-              style: GoogleFonts.outfit(
+              style: GoogleFonts.poppins(
                 color: rank == 1 ? const Color(0xFF1B0B3B) : Colors.white,
                 fontSize: 10.5.sp,
                 fontWeight: FontWeight.w900,

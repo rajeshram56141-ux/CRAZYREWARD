@@ -19,6 +19,8 @@ import '../e_dashboard_stage/sections/a_home/offerwall/provider/offerwall_manage
 import '../e_dashboard_stage/sections/b_invite/model/referral_level_model.dart';
 import '../e_dashboard_stage/sections/a_home/more_apps/more_apps_model.dart';
 import '../e_dashboard_stage/sections/a_home/wallet/model/wallet_catalog_model.dart';
+import '../d_authentication_stage/users_data_model.dart';
+import '../e_dashboard_stage/provider/dashboard_provider.dart';
 import 'model.dart';
 
 class SplashService {
@@ -94,6 +96,18 @@ class SplashService {
     }
     if (key == 'readAndEarn' && screenSettings.containsKey('readTask')) {
       return getScreenStatus('readTask');
+    }
+    if (key == 'diamondCatch' && screenSettings.containsKey('diamond_catch')) {
+      return getScreenStatus('diamond_catch');
+    }
+    if (key == 'diamond_catch' && screenSettings.containsKey('diamondCatch')) {
+      return getScreenStatus('diamondCatch');
+    }
+    if (key == 'playGames' && screenSettings.containsKey('play_games')) {
+      return getScreenStatus('play_games');
+    }
+    if (key == 'play_games' && screenSettings.containsKey('playGames')) {
+      return getScreenStatus('playGames');
     }
     return 'enabled';
   }
@@ -223,6 +237,11 @@ class SplashService {
             await SecurityService.clearSecureKeys();
             return UserCheckResult(user: null, userNotFound: true, isBlocked: false);
           }
+
+          try {
+            final parsedUser = UserDataModel.fromJson(userData);
+            DashboardService.setCachedUser(parsedUser);
+          } catch (_) {}
 
           return UserCheckResult(
             user: user,
@@ -492,7 +511,11 @@ class SplashService {
       } else {
         defaultDisclaimer = [];
       }
-      final rawConversionRate = appData['conversionRate'] ?? (appData['config'] is Map ? appData['config']['conversionRate'] : null);
+      final rawConversionRate = appData['conversionRate'] ??
+          appData['coinConversionRate'] ??
+          (appData['config'] is Map
+              ? (appData['config']['conversionRate'] ?? appData['config']['coinConversionRate'])
+              : null);
       if (rawConversionRate is num && rawConversionRate > 0) {
         coinConversionRate = rawConversionRate.toInt();
       } else if (rawConversionRate != null) {
@@ -501,9 +524,13 @@ class SplashService {
         coinConversionRate = 150;
       }
 
-      final rawShowConversionRate = appData['showCoinConversionRate'] ?? (appData['config'] is Map ? appData['config']['showCoinConversionRate'] : null);
+      final rawShowConversionRate = appData['showCoinConversionRate'] ??
+          appData['showConversionRate'] ??
+          (appData['config'] is Map
+              ? (appData['config']['showCoinConversionRate'] ?? appData['config']['showConversionRate'])
+              : null);
       if (rawShowConversionRate != null) {
-        showCoinConversionRate = rawShowConversionRate == true || rawShowConversionRate.toString() == 'true';
+        showCoinConversionRate = rawShowConversionRate == true || rawShowConversionRate.toString() == 'true' || rawShowConversionRate == 1 || rawShowConversionRate.toString() == '1';
       } else {
         showCoinConversionRate = false;
       }

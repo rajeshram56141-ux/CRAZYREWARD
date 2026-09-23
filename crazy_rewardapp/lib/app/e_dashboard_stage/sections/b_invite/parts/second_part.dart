@@ -88,28 +88,31 @@ class InviteSecondPart extends HookConsumerWidget {
           children: [
             Row(
               children: [
-                Icon(
-                  Icons.hub_rounded,
-                  color: const Color(0xFFAB31DE),
-                  size: 19.sp,
+                Container(
+                  width: 4.w,
+                  height: 16.h,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF26262B),
+                    borderRadius: BorderRadius.circular(2.r),
+                  ),
                 ),
                 SizedBox(width: 8.w),
                 Text(
                   'Your Referral Team',
-                  style: GoogleFonts.outfit(
-                    color: const Color(0xFF1E1B4B),
-                    fontSize: 16.5.sp,
-                    fontWeight: FontWeight.w800,
+                  style: GoogleFonts.poppins(
+                    color: const Color(0xFF26262B),
+                    fontSize: 15.sp,
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
               ],
             ),
             Text(
               '3 Levels Network',
-              style: GoogleFonts.outfit(
+              style: GoogleFonts.poppins(
                 color: const Color(0xFF64748B),
-                fontSize: 12.sp,
-                fontWeight: FontWeight.w600,
+                fontSize: 11.5.sp,
+                fontWeight: FontWeight.w500,
               ),
             ),
           ],
@@ -123,8 +126,8 @@ class InviteSecondPart extends HookConsumerWidget {
           title: 'Level 1',
           subtitle: 'Direct referrals',
           iconData: Icons.people_alt_rounded,
-          iconBgColor: Color(0xFFF3E8FF),
-          themeColor: Color(0xFFAB31DE),
+          iconBgColor: Color(0xFFF1F5F9),
+          themeColor: Color(0xFF26262B),
         ),
 
         // Level 2 (Indirect Referrals)
@@ -133,8 +136,8 @@ class InviteSecondPart extends HookConsumerWidget {
           title: 'Level 2',
           subtitle: 'Indirect referrals',
           iconData: Icons.card_giftcard_rounded,
-          iconBgColor: Color(0xFFDCFCE7),
-          themeColor: Color(0xFF16A34A),
+          iconBgColor: Color(0xFFF1F5F9),
+          themeColor: Color(0xFF26262B),
         ),
 
         // Level 3 (Indirect Referrals)
@@ -143,8 +146,8 @@ class InviteSecondPart extends HookConsumerWidget {
           title: 'Level 3',
           subtitle: 'Indirect referrals',
           iconData: Icons.groups_rounded,
-          iconBgColor: Color(0xFFFCE7F3),
-          themeColor: Color(0xFFE11D48),
+          iconBgColor: Color(0xFFF1F5F9),
+          themeColor: Color(0xFF26262B),
         ),
 
         SizedBox(height: 24.h),
@@ -153,15 +156,15 @@ class InviteSecondPart extends HookConsumerWidget {
         // 3. TASK COMMISSION RATES BREAKDOWN
         // -------------------------------------------------------------
 
-        // Level Selector Tabs (Level A, Level B, Level C)
+        // Level Selector Tabs
         Container(
           padding: EdgeInsets.all(4.w),
           decoration: BoxDecoration(
-            color: const Color(0xFFFAF5FF),
+            color: const Color(0xFFF8FAFC),
             borderRadius: BorderRadius.circular(14.r),
             border: Border.all(
-              color: const Color(0xFFE9D5FF),
-              width: 1,
+              color: const Color(0xFFE2E8F0),
+              width: 1.2,
             ),
           ),
           child: Row(
@@ -184,20 +187,15 @@ class InviteSecondPart extends HookConsumerWidget {
                   child: AnimatedContainer(
                     duration: const Duration(milliseconds: 200),
                     curve: Curves.easeInOut,
-                    padding: EdgeInsets.symmetric(vertical: 9.h),
+                    padding: EdgeInsets.symmetric(vertical: 8.h),
                     decoration: BoxDecoration(
-                      gradient: isSelected
-                          ? const LinearGradient(
-                              colors: [Color(0xFFE39FFF), Color(0xFFAB31DE)],
-                            )
-                          : null,
-                      color: isSelected ? null : Colors.transparent,
+                      color: isSelected ? const Color(0xFF26262E) : Colors.transparent,
                       borderRadius: BorderRadius.circular(10.r),
                       boxShadow: isSelected
                           ? [
                               BoxShadow(
-                                color: const Color(0xFFAB31DE).withValues(alpha: 0.3),
-                                blurRadius: 8,
+                                color: Colors.black.withValues(alpha: 0.12),
+                                blurRadius: 6,
                                 offset: const Offset(0, 2),
                               ),
                             ]
@@ -208,10 +206,10 @@ class InviteSecondPart extends HookConsumerWidget {
                       levelName,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: GoogleFonts.outfit(
+                      style: GoogleFonts.poppins(
                         color: isSelected ? Colors.white : const Color(0xFF64748B),
                         fontSize: 11.5.sp,
-                        fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
+                        fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
                       ),
                     ),
                   ),
@@ -230,7 +228,7 @@ class InviteSecondPart extends HookConsumerWidget {
             child: Center(
               child: Text(
                 'No commission tasks found',
-                style: GoogleFonts.outfit(
+                style: GoogleFonts.poppins(
                   color: const Color(0xFF64748B),
                   fontSize: 12.sp,
                 ),
@@ -257,34 +255,41 @@ class InviteSecondPart extends HookConsumerWidget {
               return Container(
                 padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 10.h),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFFAF5FF),
-                  borderRadius: BorderRadius.circular(16.r),
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(14.r),
                   border: Border.all(
-                    color: const Color(0xFFE9D5FF),
-                    width: 1,
+                    color: const Color(0xFFE2E8F0),
+                    width: 1.2,
                   ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.03),
+                      blurRadius: 6,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
                 ),
                 child: Row(
                   children: [
                     Container(
-                      width: 36.w,
-                      height: 36.w,
+                      width: 34.w,
+                      height: 34.w,
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: const Color(0xFFF1F5F9),
                         borderRadius: BorderRadius.circular(10.r),
                         border: Border.all(
-                          color: const Color(0xFFE9D5FF),
+                          color: const Color(0xFFE2E8F0),
                           width: 1,
                         ),
                       ),
                       alignment: Alignment.center,
                       child: Icon(
                         icon,
-                        color: const Color(0xFFAB31DE),
-                        size: 18.sp,
+                        color: const Color(0xFF26262B),
+                        size: 17.sp,
                       ),
                     ),
-                    SizedBox(width: 9.w),
+                    SizedBox(width: 8.w),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -294,9 +299,9 @@ class InviteSecondPart extends HookConsumerWidget {
                             taskKey.tr(),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
-                            style: GoogleFonts.outfit(
-                              color: const Color(0xFF1E1B4B),
-                              fontSize: 12.sp,
+                            style: GoogleFonts.poppins(
+                              color: const Color(0xFF26262B),
+                              fontSize: 11.5.sp,
                               fontWeight: FontWeight.w700,
                             ),
                           ),
@@ -304,15 +309,15 @@ class InviteSecondPart extends HookConsumerWidget {
                           Container(
                             padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 1.5.h),
                             decoration: BoxDecoration(
-                              color: const Color(0xFFF3E8FF),
+                              color: const Color(0xFF26262E),
                               borderRadius: BorderRadius.circular(4.r),
                             ),
                             child: Text(
                               '+$commission% Extra',
-                              style: GoogleFonts.outfit(
-                                color: const Color(0xFFAB31DE),
-                                fontSize: 9.5.sp,
-                                fontWeight: FontWeight.w800,
+                              style: GoogleFonts.poppins(
+                                color: Colors.white,
+                                fontSize: 9.sp,
+                                fontWeight: FontWeight.w700,
                               ),
                             ),
                           ),
@@ -342,16 +347,16 @@ class InviteSecondPart extends HookConsumerWidget {
       padding: EdgeInsets.all(18.w),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(22.r),
+        borderRadius: BorderRadius.circular(20.r),
         border: Border.all(
-          color: const Color(0xFFE9D5FF),
+          color: const Color(0xFFE2E8F0),
           width: 1.2,
         ),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFFAB31DE).withValues(alpha: 0.08),
-            blurRadius: 16,
-            offset: const Offset(0, 4),
+            color: Colors.black.withValues(alpha: 0.04),
+            blurRadius: 12,
+            offset: const Offset(0, 3),
           ),
         ],
       ),
@@ -362,37 +367,42 @@ class InviteSecondPart extends HookConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Container(
-                  padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
+                  padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 3.h),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFF3E8FF),
-                    borderRadius: BorderRadius.circular(20.r),
+                    color: const Color(0xFF26262E),
+                    borderRadius: BorderRadius.circular(6.r),
+                    border: Border.all(
+                      color: const Color(0xFF383842),
+                      width: 1,
+                    ),
                   ),
                   child: Text(
                     '3-TIER SQUAD PERKS',
-                    style: GoogleFonts.outfit(
-                      color: const Color(0xFFAB31DE),
-                      fontSize: 9.5.sp,
-                      fontWeight: FontWeight.w800,
-                      letterSpacing: 0.6,
+                    style: GoogleFonts.poppins(
+                      color: Colors.white,
+                      fontSize: 9.sp,
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: 0.5,
                     ),
                   ),
                 ),
                 SizedBox(height: 8.h),
                 Text(
                   'Build Your Squad',
-                  style: GoogleFonts.outfit(
-                    color: const Color(0xFF1E1B4B),
+                  style: GoogleFonts.kaushanScript(
+                    color: const Color(0xFF26262B),
                     fontSize: 20.sp,
                     fontWeight: FontWeight.w800,
+                    letterSpacing: 0.5,
                   ),
                 ),
-                SizedBox(height: 3.h),
+                SizedBox(height: 2.h),
                 Text(
                   'Unlock rewards whenever your friends & team play!',
-                  style: GoogleFonts.outfit(
+                  style: GoogleFonts.poppins(
                     color: const Color(0xFF64748B),
                     fontSize: 11.5.sp,
-                    fontWeight: FontWeight.w500,
+                    fontWeight: FontWeight.w400,
                     height: 1.3,
                   ),
                 ),
@@ -400,29 +410,28 @@ class InviteSecondPart extends HookConsumerWidget {
             ),
           ),
           SizedBox(width: 10.w),
-          // Illustration / Icon
           Container(
-            width: 64.w,
-            height: 64.w,
+            width: 58.w,
+            height: 58.w,
             decoration: BoxDecoration(
-              color: const Color(0xFFFAF5FF),
+              color: const Color(0xFFF8FAFC),
               shape: BoxShape.circle,
               border: Border.all(
-                color: const Color(0xFFE9D5FF),
+                color: const Color(0xFFE2E8F0),
                 width: 1,
               ),
             ),
             alignment: Alignment.center,
             child: Image.asset(
               'assets/icons/panda invite.png',
-              width: 52.w,
-              height: 52.w,
+              width: 48.w,
+              height: 48.w,
               fit: BoxFit.contain,
               errorBuilder: (context, error, stackTrace) {
                 return Image.asset(
                   'assets/icons/coin.png',
-                  width: 36.w,
-                  height: 36.w,
+                  width: 32.w,
+                  height: 32.w,
                 );
               },
             ),
@@ -434,7 +443,7 @@ class InviteSecondPart extends HookConsumerWidget {
 }
 
 // -----------------------------------------------------------------------------
-// MODERN LEVEL TIER CARD (STATE-OF-THE-ART GLASSMORPHIC DESIGN)
+// MODERN LEVEL TIER CARD
 // -----------------------------------------------------------------------------
 class _ModernLevelTierCard extends ConsumerWidget {
   final int level;
@@ -473,7 +482,7 @@ class _ModernLevelTierCard extends ConsumerWidget {
     final earning = earningAsync.value ?? 0.0;
 
     return Padding(
-      padding: EdgeInsets.only(bottom: 12.h),
+      padding: EdgeInsets.only(bottom: 10.h),
       child: GestureDetector(
         onTap: () {
           HapticFeedback.lightImpact();
@@ -486,28 +495,28 @@ class _ModernLevelTierCard extends ConsumerWidget {
         },
         child: Container(
           width: double.infinity,
-          padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 14.h),
+          padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(16.r),
             border: Border.all(
-              color: const Color(0xFFE9D5FF),
+              color: const Color(0xFFE2E8F0),
               width: 1.2,
             ),
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withValues(alpha: 0.03),
-                blurRadius: 10,
-                offset: const Offset(0, 3),
+                blurRadius: 8,
+                offset: const Offset(0, 2),
               ),
             ],
           ),
           child: Row(
             children: [
-              // 1. Icon + Title + Subtitle (Left Section)
+              // 1. Icon + Title + Subtitle
               Container(
-                width: 42.w,
-                height: 42.w,
+                width: 38.w,
+                height: 38.w,
                 decoration: BoxDecoration(
                   color: iconBgColor,
                   shape: BoxShape.circle,
@@ -516,7 +525,7 @@ class _ModernLevelTierCard extends ConsumerWidget {
                 child: Icon(
                   iconData,
                   color: themeColor,
-                  size: 20.sp,
+                  size: 18.sp,
                 ),
               ),
               SizedBox(width: 10.w),
@@ -528,20 +537,19 @@ class _ModernLevelTierCard extends ConsumerWidget {
                   children: [
                     Text(
                       title,
-                      style: GoogleFonts.outfit(
-                        color: themeColor,
-                        fontSize: 15.sp,
-                        fontWeight: FontWeight.w800,
+                      style: GoogleFonts.poppins(
+                        color: const Color(0xFF26262B),
+                        fontSize: 14.sp,
+                        fontWeight: FontWeight.w700,
                       ),
                     ),
-                    SizedBox(height: 1.h),
                     Text(
                       subtitle,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: GoogleFonts.outfit(
+                      style: GoogleFonts.poppins(
                         color: const Color(0xFF64748B),
-                        fontSize: 11.5.sp,
+                        fontSize: 11.sp,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
@@ -552,7 +560,7 @@ class _ModernLevelTierCard extends ConsumerWidget {
               // Vertical Divider 1
               Container(
                 width: 1.w,
-                height: 28.h,
+                height: 24.h,
                 color: const Color(0xFFE2E8F0),
               ),
 
@@ -564,19 +572,18 @@ class _ModernLevelTierCard extends ConsumerWidget {
                   children: [
                     Text(
                       'People',
-                      style: GoogleFonts.outfit(
+                      style: GoogleFonts.poppins(
                         color: const Color(0xFF64748B),
-                        fontSize: 11.5.sp,
+                        fontSize: 11.sp,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
-                    SizedBox(height: 2.h),
                     Text(
                       _formatCompact(count),
-                      style: GoogleFonts.outfit(
-                        color: const Color(0xFF1E1B4B),
-                        fontSize: 15.sp,
-                        fontWeight: FontWeight.w800,
+                      style: GoogleFonts.poppins(
+                        color: const Color(0xFF26262B),
+                        fontSize: 14.sp,
+                        fontWeight: FontWeight.w700,
                       ),
                     ),
                   ],
@@ -586,7 +593,7 @@ class _ModernLevelTierCard extends ConsumerWidget {
               // Vertical Divider 2
               Container(
                 width: 1.w,
-                height: 28.h,
+                height: 24.h,
                 color: const Color(0xFFE2E8F0),
               ),
 
@@ -598,30 +605,29 @@ class _ModernLevelTierCard extends ConsumerWidget {
                   children: [
                     Text(
                       'Coins',
-                      style: GoogleFonts.outfit(
+                      style: GoogleFonts.poppins(
                         color: const Color(0xFF64748B),
-                        fontSize: 11.5.sp,
+                        fontSize: 11.sp,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
-                    SizedBox(height: 2.h),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
                           earning > 0 ? _formatCompact(earning) : '0',
-                          style: GoogleFonts.outfit(
-                            color: const Color(0xFF1E1B4B),
-                            fontSize: 15.sp,
-                            fontWeight: FontWeight.w800,
+                          style: GoogleFonts.poppins(
+                            color: const Color(0xFF26262B),
+                            fontSize: 14.sp,
+                            fontWeight: FontWeight.w700,
                           ),
                         ),
                         SizedBox(width: 4.w),
                         Image.asset(
                           'assets/icons/coin.png',
-                          width: 15.w,
-                          height: 15.w,
+                          width: 13.w,
+                          height: 13.w,
                           fit: BoxFit.contain,
                         ),
                       ],
@@ -636,7 +642,7 @@ class _ModernLevelTierCard extends ConsumerWidget {
               Icon(
                 Icons.arrow_forward_ios_rounded,
                 color: const Color(0xFF94A3B8),
-                size: 13.sp,
+                size: 12.sp,
               ),
             ],
           ),

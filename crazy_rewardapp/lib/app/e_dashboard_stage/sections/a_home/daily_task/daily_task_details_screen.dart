@@ -49,7 +49,7 @@ class DailyTaskDetailsScreen extends HookConsumerWidget {
     final topPadding = MediaQuery.of(context).padding.top;
 
     final animController = useAnimationController(
-      duration: const Duration(milliseconds: 500),
+      duration: const Duration(milliseconds: 400),
     );
 
     final parsedOfferType = item.offerType.toLowerCase().contains('watch')
@@ -77,7 +77,7 @@ class DailyTaskDetailsScreen extends HookConsumerWidget {
       end: 1.0,
     ).animate(CurvedAnimation(
       parent: animController,
-      curve: Curves.easeOut,
+      curve: Curves.easeOutCubic,
     ));
 
     final taskListAsync = ref.watch(dailyTaskProvider(taskParam));
@@ -111,7 +111,7 @@ class DailyTaskDetailsScreen extends HookConsumerWidget {
         backgroundColor: Colors.white,
         body: Stack(
           children: [
-            // 1. Solid Clean White Base Background
+            // 1. Clean Solid Background
             Positioned.fill(
               child: Container(
                 color: Colors.white,
@@ -133,86 +133,185 @@ class DailyTaskDetailsScreen extends HookConsumerWidget {
                         constraints: BoxConstraints(
                           minHeight: constraints.maxHeight,
                         ),
-                        child: Container(
-                          color: Colors.transparent,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              // Executive Header Section (Matching Screenshot Mockup 1-to-1)
-                              _TopHeroHeaderSection(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // Top Bar (Back Button + Header Title + Status Chip)
+                            Padding(
+                              padding: EdgeInsets.fromLTRB(
+                                16.w,
+                                topPadding + 8.h,
+                                16.w,
+                                12.h,
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  GestureDetector(
+                                    onTap: () {
+                                      HapticFeedback.lightImpact();
+                                      AutoRouter.of(context).maybePop();
+                                    },
+                                    child: Container(
+                                      width: 40.w,
+                                      height: 40.w,
+                                      alignment: Alignment.center,
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(14.r),
+                                        border: Border.all(
+                                          color: const Color(0xFFE2E8F0),
+                                          width: 1.2,
+                                        ),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Colors.black.withValues(alpha: 0.04),
+                                            blurRadius: 8,
+                                            offset: const Offset(0, 2),
+                                          ),
+                                        ],
+                                      ),
+                                      child: Icon(
+                                        Icons.arrow_back_rounded,
+                                        color: const Color(0xFF26262B),
+                                        size: 20.sp,
+                                      ),
+                                    ),
+                                  ),
+
+                                  Text(
+                                    'Offer Details',
+                                    style: GoogleFonts.poppins(
+                                      color: const Color(0xFF26262B),
+                                      fontSize: 18.sp,
+                                      fontWeight: FontWeight.w700,
+                                      letterSpacing: 0.2,
+                                    ),
+                                  ),
+
+                                  if (liveItem.dailyReset)
+                                    Container(
+                                      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
+                                      decoration: BoxDecoration(
+                                        color: const Color(0xFFFEF3C7),
+                                        borderRadius: BorderRadius.circular(12.r),
+                                        border: Border.all(
+                                          color: const Color(0xFFFDE68A),
+                                          width: 1,
+                                        ),
+                                      ),
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Icon(
+                                            Icons.autorenew_rounded,
+                                            color: const Color(0xFFD97706),
+                                            size: 13.sp,
+                                          ),
+                                          SizedBox(width: 4.w),
+                                          Text(
+                                            'Daily Reset',
+                                            style: GoogleFonts.poppins(
+                                              color: const Color(0xFFD97706),
+                                              fontSize: 10.5.sp,
+                                              fontWeight: FontWeight.w700,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    )
+                                  else
+                                    SizedBox(width: 40.w),
+                                ],
+                              ),
+                            ),
+
+                            // Executive Hero Header Section
+                            Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 16.w),
+                              child: _TopHeroHeaderSection(
                                 item: liveItem,
-                                topPadding: topPadding,
                                 displayCoins: displayCoins,
                                 userName: userName,
                               ),
+                            ),
 
-                              SizedBox(height: 12.h),
+                            SizedBox(height: 14.h),
 
-                              // Golden Coins Promo Banner Strip (Complete all tasks & earn upto X Coins!)
-                              Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 16.w),
-                                child: _PromoBannerStrip(displayCoins: displayCoins),
-                              ),
+                            // Golden Coins Promo Banner Strip
+                            Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 16.w),
+                              child: _PromoBannerStrip(displayCoins: displayCoins),
+                            ),
 
-                              SizedBox(height: 14.h),
+                            SizedBox(height: 18.h),
 
-
-
-                              // "Task & Rewards" Stepper Section Header
-                              Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 16.w),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      'Instruction',
-                                      style: GoogleFonts.outfit(
-                                        color: const Color(0xFF1E1B4B),
-                                        fontSize: 15.5.sp,
-                                        fontWeight: FontWeight.w800,
-                                        letterSpacing: -0.2,
-                                      ),
+                            // "Task Instructions & Rewards" Section Header
+                            Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 16.w),
+                              child: Row(
+                                children: [
+                                  Container(
+                                    width: 4.w,
+                                    height: 18.h,
+                                    decoration: BoxDecoration(
+                                      color: const Color(0xFF26262B),
+                                      borderRadius: BorderRadius.circular(2.r),
                                     ),
-                                    if (liveItem.cleanSubtitle.isNotEmpty) ...[
-                                      SizedBox(height: 4.h),
-                                      Text(
-                                        liveItem.cleanSubtitle,
-                                        style: GoogleFonts.outfit(
-                                          color: const Color(0xFF64748B),
-                                          fontSize: 12.sp,
-                                          fontWeight: FontWeight.w500,
-                                          height: 1.3,
-                                        ),
-                                      ),
-                                    ],
-                                  ],
-                                ),
+                                  ),
+                                  SizedBox(width: 8.w),
+                                  Text(
+                                    'Task Instructions',
+                                    style: GoogleFonts.poppins(
+                                      color: const Color(0xFF26262B),
+                                      fontSize: 16.sp,
+                                      fontWeight: FontWeight.w700,
+                                      letterSpacing: 0.2,
+                                    ),
+                                  ),
+                                ],
                               ),
+                            ),
 
-                              SizedBox(height: 12.h),
-
-                              // Connected Stepper Roadmap List
+                            if (liveItem.cleanSubtitle.isNotEmpty) ...[
+                              SizedBox(height: 4.h),
                               Padding(
                                 padding: EdgeInsets.symmetric(horizontal: 16.w),
-                                child: _TaskStepperRoadmapCard(item: liveItem),
-                              ),
-
-                              // Disclaimer Section
-                              if (liveItem.offerDisclaimer.isNotEmpty ||
-                                  SplashService.defaultDisclaimer.isNotEmpty)
-                                Padding(
-                                  padding: EdgeInsets.fromLTRB(16.w, 18.h, 16.w, 0),
-                                  child: _DisclaimerCard(
-                                    disclaimers: liveItem.offerDisclaimer,
+                                child: Text(
+                                  liveItem.cleanSubtitle,
+                                  style: GoogleFonts.poppins(
+                                    color: const Color(0xFF64748B),
+                                    fontSize: 12.sp,
+                                    fontWeight: FontWeight.w400,
+                                    height: 1.3,
                                   ),
                                 ),
-
-                              // Bottom spacing for floating sticky action bar
-                              SizedBox(
-                                height: MediaQuery.of(context).padding.bottom + 95.h,
                               ),
                             ],
-                          ),
+
+                            SizedBox(height: 12.h),
+
+                            // Connected Stepper Roadmap List
+                            Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 16.w),
+                              child: _TaskStepperRoadmapCard(item: liveItem),
+                            ),
+
+                            // Notice & Disclaimer Section
+                            if (liveItem.offerDisclaimer.isNotEmpty ||
+                                SplashService.defaultDisclaimer.isNotEmpty)
+                              Padding(
+                                padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 0),
+                                child: _DisclaimerCard(
+                                  disclaimers: liveItem.offerDisclaimer,
+                                ),
+                              ),
+
+                            // Bottom spacing for floating sticky action bar
+                            SizedBox(
+                              height: MediaQuery.of(context).padding.bottom + 105.h,
+                            ),
+                          ],
                         ),
                       ),
                     );
@@ -241,397 +340,260 @@ class DailyTaskDetailsScreen extends HookConsumerWidget {
 }
 
 // ---------------------------------------------------------------------------
-// TOP HERO HEADER SECTION (EXACT MOCKUP CARD WITH DAILY TASK BLUR ICON)
+// TOP HERO HEADER SECTION (Executive Modern Card)
 // ---------------------------------------------------------------------------
 class _TopHeroHeaderSection extends StatelessWidget {
   const _TopHeroHeaderSection({
     required this.item,
-    required this.topPadding,
     required this.displayCoins,
     required this.userName,
   });
 
   final DailyTaskModel item;
-  final double topPadding;
   final int displayCoins;
   final String userName;
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // Top Navigation Bar
-        Padding(
-          padding: EdgeInsets.fromLTRB(
-            16.w,
-            topPadding + 8.h,
-            16.w,
-            12.h,
+    return Container(
+      width: double.infinity,
+      clipBehavior: Clip.antiAlias,
+      decoration: BoxDecoration(
+        color: const Color(0xFFF8FAFC),
+        borderRadius: BorderRadius.circular(22.r),
+        border: Border.all(
+          color: const Color(0xFFE2E8F0),
+          width: 1.2,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.04),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
           ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      HapticFeedback.lightImpact();
-                      AutoRouter.of(context).maybePop();
-                    },
-                    child: Container(
-                      width: 40.w,
-                      height: 40.w,
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(15.r),
-                        border: Border.all(
-                          color: const Color(0xFFF1F5F9),
-                          width: 1.2,
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: const Color(0xFFAB31DE).withValues(alpha: 0.08),
-                            blurRadius: 10,
-                            offset: const Offset(0, 3),
-                          ),
-                        ],
-                      ),
-                      child: Icon(
-                        Icons.arrow_back_rounded,
-                        color: const Color(0xFFAB31DE),
-                        size: 22.sp,
-                      ),
-                    ),
+        ],
+      ),
+      child: Stack(
+        children: [
+          // 1. Ambient Background 3D Graphic
+          Positioned(
+            right: -10.w,
+            top: -10.h,
+            bottom: -10.h,
+            width: 140.w,
+            child: ImageFiltered(
+              imageFilter: ImageFilter.blur(sigmaX: 3.0, sigmaY: 3.0),
+              child: Opacity(
+                opacity: 0.25,
+                child: Image.asset(
+                  'assets/icons/daily task blur.png',
+                  fit: BoxFit.contain,
+                  errorBuilder: (_, __, ___) => Image.asset(
+                    'assets/icons/coin.png',
+                    fit: BoxFit.contain,
                   ),
-                  SizedBox(width: 12.w),
-
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        'Hi 👋',
-                        style: GoogleFonts.outfit(
-                          color: const Color(0xFF94A3B8),
-                          fontSize: 12.sp,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      SizedBox(height: 1.h),
-                      Text(
-                        userName,
-                        style: GoogleFonts.outfit(
-                          color: const Color(0xFF1E1B4B),
-                          fontSize: 17.5.sp,
-                          fontWeight: FontWeight.w800,
-                          letterSpacing: -0.2,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
+                ),
               ),
-              if (item.dailyReset)
+            ),
+          ),
+
+          // 2. Main Content
+          Padding(
+            padding: EdgeInsets.all(14.w),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                // App Logo
                 Container(
-                  padding: EdgeInsets.symmetric(horizontal: 9.w, vertical: 4.h),
+                  width: 64.w,
+                  height: 64.w,
                   decoration: BoxDecoration(
-                    color: const Color(0xFFFAF5FF),
-                    borderRadius: BorderRadius.circular(10.r),
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(16.r),
                     border: Border.all(
-                      color: const Color(0xFFE39FFF).withValues(alpha: 0.8),
-                      width: 1,
+                      color: const Color(0xFFE2E8F0),
+                      width: 1.2,
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: const Color(0xFFAB31DE).withValues(alpha: 0.12),
-                        blurRadius: 6,
-                        offset: const Offset(0, 2),
+                        color: Colors.black.withValues(alpha: 0.06),
+                        blurRadius: 10,
+                        offset: const Offset(0, 3),
                       ),
                     ],
                   ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(15.r),
+                    child: InternetImage(
+                      url: item.imagePath,
+                      width: 64.w,
+                      height: 64.w,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+
+                SizedBox(width: 14.w),
+
+                // Title, Meta Chips, and Tutorial Button
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(
-                        Icons.autorenew_rounded,
-                        color: const Color(0xFFAB31DE),
-                        size: 14.sp,
-                      ),
-                      SizedBox(width: 4.w),
                       Text(
-                        'Daily Refresh',
-                        style: GoogleFonts.outfit(
-                          color: const Color(0xFFAB31DE),
-                          fontSize: 10.5.sp,
-                          fontWeight: FontWeight.w800,
+                        item.offerName,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: GoogleFonts.poppins(
+                          color: const Color(0xFF1E1B4B),
+                          fontSize: 16.sp,
+                          fontWeight: FontWeight.w700,
+                          letterSpacing: 0.1,
                         ),
                       ),
-                    ],
-                  ),
-                ),
-            ],
-          ),
-        ),
+                      SizedBox(height: 5.h),
 
-        // Hero Card Container (Matching User Screenshot 1-to-1)
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16.w),
-          child: Container(
-            height: 110.h,
-            width: double.infinity,
-            clipBehavior: Clip.antiAlias,
-            decoration: BoxDecoration(
-              color: const Color(0xFFFAF5FF),
-              borderRadius: BorderRadius.circular(22.r),
-              border: Border.all(
-                color: const Color(0xFFF3E8FF),
-                width: 1.2,
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: const Color(0xFF0F172A).withValues(alpha: 0.04),
-                  blurRadius: 12,
-                  offset: const Offset(0, 3),
-                ),
-                BoxShadow(
-                  color: const Color(0xFFAB31DE).withValues(alpha: 0.04),
-                  blurRadius: 8,
-                  offset: const Offset(0, 2),
-                ),
-              ],
-            ),
-            child: Stack(
-              children: [
-                // 1. CLEARLY VISIBLE BACKGROUND ICON (assets/icons/daily task blur.png enlarged with light depth blur & 50% opacity)
-                Positioned(
-                  right: -14.w,
-                  top: -12.h,
-                  bottom: -12.h,
-                  width: 160.w,
-                  child: ImageFiltered(
-                    imageFilter: ImageFilter.blur(sigmaX: 4.0, sigmaY: 4.0),
-                    child: Opacity(
-                      opacity: 0.5,
-                      child: Image.asset(
-                        'assets/icons/daily task blur.png',
-                        fit: BoxFit.cover,
-                        errorBuilder: (_, __, ___) => Image.asset(
-                          'assets/icons/coin.png',
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-
-                // 2. CRISP FOREGROUND 3D BUCKET ASSET
-                Positioned(
-                  right: -6.w,
-                  top: -2.h,
-                  bottom: -2.h,
-                  width: 135.w,
-                  child: Image.asset(
-                    'assets/icons/daily task blur.png',
-                    fit: BoxFit.contain,
-                    alignment: Alignment.centerRight,
-                    errorBuilder: (_, __, ___) => Image.asset(
-                      'assets/icons/coin.png',
-                      fit: BoxFit.contain,
-                    ),
-                  ),
-                ),
-
-                // 3. Foreground Left Content: App Logo + Title + Subtitle + Ratings/Downloads
-                Positioned.fill(
-                  child: Padding(
-                    padding: EdgeInsets.fromLTRB(12.w, 10.h, 130.w, 10.h),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        // App Logo
-                        Container(
-                          width: 60.w,
-                          height: 60.w,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(15.r),
-                            border: Border.all(
-                              color: const Color(0xFFF3E8FF),
-                              width: 1,
-                            ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withValues(alpha: 0.04),
-                                blurRadius: 8,
-                                offset: const Offset(0, 2),
+                      // Meta Chips Row (Rating, Downloads, Category)
+                      Wrap(
+                        spacing: 8.w,
+                        runSpacing: 4.h,
+                        crossAxisAlignment: WrapCrossAlignment.center,
+                        children: [
+                          if (item.rating.trim().isNotEmpty)
+                            Container(
+                              padding: EdgeInsets.symmetric(horizontal: 7.w, vertical: 2.h),
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFFEF3C7),
+                                borderRadius: BorderRadius.circular(8.r),
                               ),
-                            ],
-                          ),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(15.r),
-                            child: InternetImage(
-                              url: item.imagePath,
-                              width: 60.w,
-                              height: 60.w,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        ),
-                        SizedBox(width: 10.w),
-
-                        // Title, Subtitle, Meta Chips Column
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                item.offerName,
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: GoogleFonts.outfit(
-                                  color: const Color(0xFF1E1B4B),
-                                  fontSize: 15.5.sp,
-                                  fontWeight: FontWeight.w800,
-                                  letterSpacing: -0.2,
-                                ),
-                              ),
-                              SizedBox(height: 4.h),
-
-                              // Meta Chips Row (Rating ⭐ 4.5 & 📥 10M+ & Tag)
-                              Wrap(
-                                spacing: 8.w,
-                                runSpacing: 4.h,
-                                crossAxisAlignment: WrapCrossAlignment.center,
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  if (item.rating.trim().isNotEmpty)
-                                    Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Icon(
-                                          Icons.star_rounded,
-                                          color: const Color(0xFFEAB308),
-                                          size: 13.sp,
-                                        ),
-                                        SizedBox(width: 2.w),
-                                        Text(
-                                          item.rating.trim(),
-                                          style: GoogleFonts.outfit(
-                                            color: const Color(0xFF475569),
-                                            fontSize: 10.5.sp,
-                                            fontWeight: FontWeight.w700,
-                                          ),
-                                        ),
-                                      ],
+                                  Icon(
+                                    Icons.star_rounded,
+                                    color: const Color(0xFFD97706),
+                                    size: 13.sp,
+                                  ),
+                                  SizedBox(width: 2.w),
+                                  Text(
+                                    item.rating.trim(),
+                                    style: GoogleFonts.poppins(
+                                      color: const Color(0xFFB45309),
+                                      fontSize: 11.sp,
+                                      fontWeight: FontWeight.w700,
                                     ),
-                                  if (item.downloads.trim().isNotEmpty)
-                                    Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Icon(
-                                          Icons.file_download_outlined,
-                                          color: const Color(0xFF9333EA),
-                                          size: 13.sp,
-                                        ),
-                                        SizedBox(width: 2.w),
-                                        Text(
-                                          item.downloads.trim(),
-                                          style: GoogleFonts.outfit(
-                                            color: const Color(0xFF475569),
-                                            fontSize: 10.5.sp,
-                                            fontWeight: FontWeight.w600,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  if (!item.dailyReset && item.offerCategory.trim().isNotEmpty)
-                                    Container(
-                                      padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 1.5.h),
-                                      decoration: BoxDecoration(
-                                        color: const Color(0xFFFAF5FF),
-                                        borderRadius: BorderRadius.circular(6.r),
-                                        border: Border.all(
-                                          color: const Color(0xFFE39FFF).withValues(alpha: 0.6),
-                                          width: 0.8,
-                                        ),
-                                      ),
-                                      child: Text(
-                                        item.offerCategory.trim(),
-                                        style: GoogleFonts.outfit(
-                                          color: const Color(0xFFAB31DE),
-                                          fontSize: 9.5.sp,
-                                          fontWeight: FontWeight.w800,
-                                        ),
-                                      ),
-                                    ),
+                                  ),
                                 ],
                               ),
+                            ),
 
-                              if (item.watchTutorial.trim().isNotEmpty) ...[
-                                SizedBox(height: 5.h),
-                                GestureDetector(
-                                  onTap: () {
-                                    HapticFeedback.lightImpact();
-                                    LaunchUrl.inWeb(
-                                      url: item.watchTutorial.trim(),
-                                      context: context,
-                                    );
-                                  },
-                                  child: Container(
-                                    padding: EdgeInsets.symmetric(
-                                      horizontal: 7.w,
-                                      vertical: 2.5.h,
+                          if (item.downloads.trim().isNotEmpty)
+                            Container(
+                              padding: EdgeInsets.symmetric(horizontal: 7.w, vertical: 2.h),
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFF1F5F9),
+                                borderRadius: BorderRadius.circular(8.r),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(
+                                    Icons.download_rounded,
+                                    color: const Color(0xFF64748B),
+                                    size: 12.sp,
+                                  ),
+                                  SizedBox(width: 2.w),
+                                  Text(
+                                    item.downloads.trim(),
+                                    style: GoogleFonts.poppins(
+                                      color: const Color(0xFF475569),
+                                      fontSize: 10.5.sp,
+                                      fontWeight: FontWeight.w600,
                                     ),
-                                    decoration: BoxDecoration(
-                                      color: const Color(0xFFFEF2F2),
-                                      borderRadius: BorderRadius.circular(8.r),
-                                      border: Border.all(
-                                        color: const Color(0xFFFECACA),
-                                        width: 0.8,
-                                      ),
-                                    ),
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Icon(
-                                          Icons.play_circle_fill_rounded,
-                                          color: const Color(0xFFEF4444),
-                                          size: 11.sp,
-                                        ),
-                                        SizedBox(width: 3.w),
-                                        Text(
-                                          'Watch Tutorial',
-                                          style: GoogleFonts.outfit(
-                                            color: const Color(0xFFEF4444),
-                                            fontSize: 9.5.sp,
-                                            fontWeight: FontWeight.w700,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+
+                          if (!item.dailyReset && item.offerCategory.trim().isNotEmpty)
+                            Container(
+                              padding: EdgeInsets.symmetric(horizontal: 7.w, vertical: 2.h),
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFF1F5F9),
+                                borderRadius: BorderRadius.circular(8.r),
+                              ),
+                              child: Text(
+                                item.offerCategory.trim(),
+                                style: GoogleFonts.poppins(
+                                  color: const Color(0xFF475569),
+                                  fontSize: 10.sp,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ),
+                        ],
+                      ),
+
+                      if (item.watchTutorial.trim().isNotEmpty) ...[
+                        SizedBox(height: 6.h),
+                        GestureDetector(
+                          onTap: () {
+                            HapticFeedback.lightImpact();
+                            LaunchUrl.inWeb(
+                              url: item.watchTutorial.trim(),
+                              context: context,
+                            );
+                          },
+                          child: Container(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 8.w,
+                              vertical: 3.h,
+                            ),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFFEE2E2),
+                              borderRadius: BorderRadius.circular(8.r),
+                              border: Border.all(
+                                color: const Color(0xFFFECACA),
+                                width: 0.8,
+                              ),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  Icons.play_circle_fill_rounded,
+                                  color: const Color(0xFFEF4444),
+                                  size: 13.sp,
+                                ),
+                                SizedBox(width: 4.w),
+                                Text(
+                                  'Watch Tutorial',
+                                  style: GoogleFonts.poppins(
+                                    color: const Color(0xFFDC2626),
+                                    fontSize: 10.sp,
+                                    fontWeight: FontWeight.w700,
                                   ),
                                 ),
                               ],
-                            ],
+                            ),
                           ),
                         ),
                       ],
-                    ),
+                    ],
                   ),
                 ),
               ],
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
 
 // ---------------------------------------------------------------------------
-// GOLDEN COINS PROMO BANNER STRIP (Exact Screenshot Mockup Banner)
+// GOLDEN COINS PROMO BANNER STRIP
 // ---------------------------------------------------------------------------
 class _PromoBannerStrip extends StatelessWidget {
   const _PromoBannerStrip({required this.displayCoins});
@@ -641,11 +603,11 @@ class _PromoBannerStrip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 10.h),
+      padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 11.h),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
           colors: [
-            Color(0xFFFEF9C3),
+            Color(0xFFFFFBEB),
             Color(0xFFFEF3C7),
             Color(0xFFFDE68A),
           ],
@@ -654,49 +616,52 @@ class _PromoBannerStrip extends StatelessWidget {
         ),
         borderRadius: BorderRadius.circular(16.r),
         border: Border.all(
-          color: const Color(0xFFFDE047).withValues(alpha: 0.8),
-          width: 1,
+          color: const Color(0xFFFCD34D),
+          width: 1.2,
         ),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFFF59E0B).withValues(alpha: 0.12),
+            blurRadius: 8,
+            offset: const Offset(0, 3),
+          ),
+        ],
       ),
       child: Row(
         children: [
-          // Left Gold Coins Graphic
           Image.asset(
             'assets/icons/coin.png',
             width: 32.w,
             height: 32.w,
             fit: BoxFit.contain,
           ),
-          SizedBox(width: 10.w),
+          SizedBox(width: 12.w),
 
-          // Center Text
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  'Complete all steps requirement and get up to',
-                  style: GoogleFonts.outfit(
-                    color: const Color(0xFF78350F),
+                  'Complete all steps requirement to earn up to',
+                  style: GoogleFonts.poppins(
+                    color: const Color(0xFF92400E),
                     fontSize: 11.sp,
-                    fontWeight: FontWeight.w600,
+                    fontWeight: FontWeight.w500,
                   ),
                 ),
                 Text(
-                  '${displayCoins.formatCoins()} Coins!',
-                  style: GoogleFonts.outfit(
-                    color: const Color(0xFF1E1B4B),
+                  '+${displayCoins.formatCoins()} Coins',
+                  style: GoogleFonts.poppins(
+                    color: const Color(0xFF78350F),
                     fontSize: 16.sp,
                     fontWeight: FontWeight.w800,
-                    letterSpacing: -0.2,
                   ),
                 ),
               ],
             ),
           ),
 
-          // Right Gold Coins Graphic Stack
           Image.asset(
             'assets/icons/coin.png',
             width: 36.w,
@@ -709,10 +674,8 @@ class _PromoBannerStrip extends StatelessWidget {
   }
 }
 
-
-
 // ---------------------------------------------------------------------------
-// CONNECTED STEPPER ROADMAP CARD (MATCHING MOCKUP 1-TO-1)
+// CONNECTED STEPPER ROADMAP CARD
 // ---------------------------------------------------------------------------
 class _TaskStepperRoadmapCard extends StatelessWidget {
   const _TaskStepperRoadmapCard({required this.item});
@@ -844,19 +807,19 @@ class _TaskStepperRoadmapCard extends StatelessWidget {
         return Padding(
           padding: EdgeInsets.only(bottom: 10.h),
           child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 10.h),
+            padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
             decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.circular(16.r),
+              borderRadius: BorderRadius.circular(18.r),
               border: Border.all(
                 color: isCompleted
-                    ? const Color(0xFFBBF7D0)
-                    : const Color(0xFFF1F5F9),
+                    ? const Color(0xFF86EFAC)
+                    : const Color(0xFFE2E8F0),
                 width: 1.2,
               ),
               boxShadow: [
                 BoxShadow(
-                  color: const Color(0xFF0F172A).withValues(alpha: 0.03),
+                  color: Colors.black.withValues(alpha: 0.03),
                   blurRadius: 8,
                   offset: const Offset(0, 2),
                 ),
@@ -864,15 +827,15 @@ class _TaskStepperRoadmapCard extends StatelessWidget {
             ),
             child: Row(
               children: [
-                // Left Step Number / Check Circle Container Inside Card
+                // Step Number / Checkmark
                 Container(
-                  width: 36.w,
-                  height: 36.w,
+                  width: 38.w,
+                  height: 38.w,
                   decoration: BoxDecoration(
-                    color: isCompleted ? const Color(0xFFDCFCE7) : const Color(0xFFFAF5FF),
+                    color: isCompleted ? const Color(0xFFDCFCE7) : const Color(0xFFF1F5F9),
                     borderRadius: BorderRadius.circular(12.r),
                     border: Border.all(
-                      color: isCompleted ? const Color(0xFF86EFAC) : const Color(0xFFF3E8FF),
+                      color: isCompleted ? const Color(0xFF86EFAC) : const Color(0xFFE2E8F0),
                       width: 1,
                     ),
                   ),
@@ -881,118 +844,118 @@ class _TaskStepperRoadmapCard extends StatelessWidget {
                       ? Icon(
                           Icons.check_circle_rounded,
                           color: const Color(0xFF16A34A),
-                          size: 20.sp,
+                          size: 22.sp,
                         )
                       : Text(
                           '${step.stepNumber}',
-                          style: GoogleFonts.outfit(
-                            color: const Color(0xFF9333EA),
+                          style: GoogleFonts.poppins(
+                            color: const Color(0xFF26262B),
                             fontSize: 15.sp,
-                            fontWeight: FontWeight.w800,
+                            fontWeight: FontWeight.w700,
                           ),
                         ),
                 ),
 
-                        SizedBox(width: 10.w),
+                SizedBox(width: 12.w),
 
-                        // Center: Title & Subtitle Instruction
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                step.title,
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                                style: GoogleFonts.outfit(
-                                  color: const Color(0xFF1E1B4B),
-                                  fontSize: 13.sp,
-                                  fontWeight: FontWeight.w700,
-                                ),
-                              ),
-                              if (step.subtitle.isNotEmpty) ...[
-                                SizedBox(height: 2.h),
-                                Text(
-                                  step.subtitle,
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: GoogleFonts.outfit(
-                                    color: const Color(0xFF64748B),
-                                    fontSize: 10.5.sp,
-                                    fontWeight: FontWeight.w400,
-                                    height: 1.2,
-                                  ),
-                                ),
-                              ],
-                            ],
+                // Title & Subtitle Instruction
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        step.title,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: GoogleFonts.poppins(
+                          color: const Color(0xFF1E1B4B),
+                          fontSize: 13.5.sp,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      if (step.subtitle.isNotEmpty) ...[
+                        SizedBox(height: 2.h),
+                        Text(
+                          step.subtitle,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: GoogleFonts.poppins(
+                            color: const Color(0xFF64748B),
+                            fontSize: 11.sp,
+                            fontWeight: FontWeight.w400,
+                            height: 1.25,
                           ),
                         ),
-
-                        SizedBox(width: 6.w),
-
-                        // Right: Coins Pill + Status Text (✓ Collected / In Progress)
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Container(
-                              padding: EdgeInsets.symmetric(horizontal: 7.w, vertical: 2.5.h),
-                              decoration: BoxDecoration(
-                                color: const Color(0xFFFEF3C7),
-                                borderRadius: BorderRadius.circular(10.r),
-                              ),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Image.asset(
-                                    'assets/icons/coin.png',
-                                    width: 11.sp,
-                                    height: 11.sp,
-                                    fit: BoxFit.contain,
-                                  ),
-                                  SizedBox(width: 3.w),
-                                  Text(
-                                    '${(step.coins > 0 ? step.coins : item.coins).formatCoins()} Coins',
-                                    style: GoogleFonts.outfit(
-                                      color: const Color(0xFF78350F),
-                                      fontSize: 10.sp,
-                                      fontWeight: FontWeight.w800,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            if (isCompleted) ...[
-                              SizedBox(height: 2.h),
-                              Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Icon(
-                                    Icons.check_rounded,
-                                    color: const Color(0xFF16A34A),
-                                    size: 11.sp,
-                                  ),
-                                  SizedBox(width: 2.w),
-                                  Text(
-                                    'Collected',
-                                    style: GoogleFonts.outfit(
-                                      color: const Color(0xFF16A34A),
-                                      fontSize: 9.5.sp,
-                                      fontWeight: FontWeight.w700,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ],
-                        ),
                       ],
-                    ),
+                    ],
                   ),
-                );
-              },
-            );
+                ),
+
+                SizedBox(width: 8.w),
+
+                // Coins Pill + Status Text
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 3.h),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFFEF3C7),
+                        borderRadius: BorderRadius.circular(10.r),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Image.asset(
+                            'assets/icons/coin.png',
+                            width: 12.sp,
+                            height: 12.sp,
+                            fit: BoxFit.contain,
+                          ),
+                          SizedBox(width: 3.w),
+                          Text(
+                            '+${(step.coins > 0 ? step.coins : item.coins).formatCoins()}',
+                            style: GoogleFonts.poppins(
+                              color: const Color(0xFFD97706),
+                              fontSize: 10.5.sp,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    if (isCompleted) ...[
+                      SizedBox(height: 3.h),
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            Icons.check_rounded,
+                            color: const Color(0xFF16A34A),
+                            size: 12.sp,
+                          ),
+                          SizedBox(width: 2.w),
+                          Text(
+                            'Collected',
+                            style: GoogleFonts.poppins(
+                              color: const Color(0xFF16A34A),
+                              fontSize: 10.sp,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 }
 
@@ -1032,12 +995,12 @@ class _DisclaimerCard extends StatelessWidget {
             .toList();
 
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
+      padding: EdgeInsets.all(14.w),
       decoration: BoxDecoration(
-        color: const Color(0xFFFAF5FF),
-        borderRadius: BorderRadius.circular(16.r),
+        color: const Color(0xFFF8FAFC),
+        borderRadius: BorderRadius.circular(18.r),
         border: Border.all(
-          color: const Color(0xFFF3E8FF),
+          color: const Color(0xFFE2E8F0),
           width: 1,
         ),
       ),
@@ -1048,21 +1011,21 @@ class _DisclaimerCard extends StatelessWidget {
             children: [
               Icon(
                 Icons.info_outline_rounded,
-                color: const Color(0xFFAB31DE),
-                size: 15.sp,
+                color: const Color(0xFF64748B),
+                size: 16.sp,
               ),
               SizedBox(width: 6.w),
               Text(
-                'Notice & Disclaimer',
-                style: GoogleFonts.outfit(
+                'Notice & Guidelines',
+                style: GoogleFonts.poppins(
                   color: const Color(0xFF1E1B4B),
-                  fontWeight: FontWeight.w800,
-                  fontSize: 12.5.sp,
+                  fontWeight: FontWeight.w700,
+                  fontSize: 13.sp,
                 ),
               ),
             ],
           ),
-          SizedBox(height: 6.h),
+          SizedBox(height: 8.h),
           if (displayList.isNotEmpty)
             ...displayList.map(
               (d) => Padding(
@@ -1072,18 +1035,18 @@ class _DisclaimerCard extends StatelessWidget {
                   children: [
                     Text(
                       '• ',
-                      style: GoogleFonts.outfit(
-                        color: const Color(0xFFAB31DE),
-                        fontSize: 11.sp,
+                      style: GoogleFonts.poppins(
+                        color: const Color(0xFF64748B),
+                        fontSize: 11.5.sp,
                       ),
                     ),
                     Expanded(
                       child: Text(
                         d,
-                        style: GoogleFonts.outfit(
+                        style: GoogleFonts.poppins(
                           color: const Color(0xFF64748B),
-                          fontSize: 11.sp,
-                          height: 1.3,
+                          fontSize: 11.5.sp,
+                          height: 1.35,
                         ),
                       ),
                     ),
@@ -1094,10 +1057,10 @@ class _DisclaimerCard extends StatelessWidget {
           else
             Text(
               'Complete all instructions to earn rewards. Rewards are credited following advertiser verification.',
-              style: GoogleFonts.outfit(
+              style: GoogleFonts.poppins(
                 color: const Color(0xFF64748B),
-                fontSize: 11.sp,
-                height: 1.3,
+                fontSize: 11.5.sp,
+                height: 1.35,
               ),
             ),
         ],
@@ -1107,7 +1070,7 @@ class _DisclaimerCard extends StatelessWidget {
 }
 
 // ---------------------------------------------------------------------------
-// BOTTOM TASK ACTION BAR (MATCHING DUAL-ACTION PILL DESIGN FROM MOCKUP)
+// BOTTOM TASK ACTION BAR (Executive Floating Bar)
 // ---------------------------------------------------------------------------
 class _BottomTaskActionBar extends HookConsumerWidget {
   const _BottomTaskActionBar({
@@ -1595,7 +1558,7 @@ class _BottomTaskActionBar extends HookConsumerWidget {
           return 'Open Store';
         }
       }
-      return 'Start';
+      return 'Start Offer';
     }
 
     Future<void> handleUploadScreenshot() async {
@@ -1621,9 +1584,9 @@ class _BottomTaskActionBar extends HookConsumerWidget {
         context: context,
         builder: (dialogCtx) {
           return Dialog(
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.r)),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(22.r)),
             backgroundColor: Colors.white,
-            elevation: 8,
+            elevation: 10,
             child: Padding(
               padding: EdgeInsets.all(20.w),
               child: Column(
@@ -1631,15 +1594,15 @@ class _BottomTaskActionBar extends HookConsumerWidget {
                 children: [
                   Text(
                     'Confirm Screenshot Proof',
-                    style: GoogleFonts.outfit(
+                    style: GoogleFonts.poppins(
                       fontSize: 17.sp,
-                      fontWeight: FontWeight.w800,
+                      fontWeight: FontWeight.w700,
                       color: const Color(0xFF1E1B4B),
                     ),
                   ),
                   SizedBox(height: 14.h),
                   ClipRRect(
-                    borderRadius: BorderRadius.circular(14.r),
+                    borderRadius: BorderRadius.circular(16.r),
                     child: Image.file(
                       File(image.path),
                       height: 210.h,
@@ -1648,9 +1611,9 @@ class _BottomTaskActionBar extends HookConsumerWidget {
                   ),
                   SizedBox(height: 14.h),
                   Text(
-                    'Submit this screenshot proof for admin verification and reward processing?',
+                    'Submit this screenshot proof for verification and reward processing?',
                     textAlign: TextAlign.center,
-                    style: GoogleFonts.outfit(fontSize: 13.sp, color: const Color(0xFF64748B)),
+                    style: GoogleFonts.poppins(fontSize: 12.5.sp, color: const Color(0xFF64748B)),
                   ),
                   SizedBox(height: 20.h),
                   Row(
@@ -1659,13 +1622,13 @@ class _BottomTaskActionBar extends HookConsumerWidget {
                         child: OutlinedButton(
                           style: OutlinedButton.styleFrom(
                             side: const BorderSide(color: Color(0xFFCBD5E1)),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14.r)),
                             padding: EdgeInsets.symmetric(vertical: 12.h),
                           ),
                           onPressed: () => Navigator.pop(dialogCtx),
                           child: Text(
                             'Cancel',
-                            style: GoogleFonts.outfit(color: const Color(0xFF64748B), fontWeight: FontWeight.w700),
+                            style: GoogleFonts.poppins(color: const Color(0xFF64748B), fontWeight: FontWeight.w600),
                           ),
                         ),
                       ),
@@ -1673,9 +1636,10 @@ class _BottomTaskActionBar extends HookConsumerWidget {
                       Expanded(
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFFAB31DE),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
+                            backgroundColor: const Color(0xFF26262B),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14.r)),
                             padding: EdgeInsets.symmetric(vertical: 12.h),
+                            elevation: 0,
                           ),
                           onPressed: () async {
                             Navigator.pop(dialogCtx);
@@ -1705,7 +1669,7 @@ class _BottomTaskActionBar extends HookConsumerWidget {
                                   DailyTaskPopup.showSuccess(
                                     context: context,
                                     title: 'Verification Pending!',
-                                    message: 'Your proof has been submitted for admin verification. Reward coins will be credited upon approval.',
+                                    message: 'Your proof has been submitted for verification. Reward coins will be credited upon approval.',
                                   );
                                 }
                               } else {
@@ -1729,7 +1693,7 @@ class _BottomTaskActionBar extends HookConsumerWidget {
                           },
                           child: Text(
                             'Submit',
-                            style: GoogleFonts.outfit(color: Colors.white, fontWeight: FontWeight.w800),
+                            style: GoogleFonts.poppins(color: Colors.white, fontWeight: FontWeight.w700),
                           ),
                         ),
                       ),
@@ -1746,11 +1710,26 @@ class _BottomTaskActionBar extends HookConsumerWidget {
     return Container(
       padding: EdgeInsets.fromLTRB(
         16.w,
-        10.h,
+        12.h,
         16.w,
         MediaQuery.of(context).padding.bottom + 12.h,
       ),
-      color: Colors.transparent,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        border: Border(
+          top: BorderSide(
+            color: const Color(0xFFE2E8F0),
+            width: 1,
+          ),
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.06),
+            blurRadius: 16,
+            offset: const Offset(0, -4),
+          ),
+        ],
+      ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -1760,176 +1739,136 @@ class _BottomTaskActionBar extends HookConsumerWidget {
               pendingRedirection.value = true;
               onStartTaskTap();
             },
-            child: Stack(
-              clipBehavior: Clip.none,
-              children: [
-                Container(
-                  height: 52.h,
-                  padding: EdgeInsets.symmetric(horizontal: 16.w),
-                  decoration: BoxDecoration(
-                    gradient: const LinearGradient(
-                      colors: [
-                        Color(0xFFE39FFF),
-                        Color(0xFFAB31DE),
-                      ],
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                    ),
-                    borderRadius: BorderRadius.circular(26.r),
-                    boxShadow: [
-                      BoxShadow(
-                        color: const Color(0xFFAB31DE).withValues(alpha: 0.35),
-                        blurRadius: 12,
-                        offset: const Offset(0, 4),
-                      ),
-                    ],
+            child: Container(
+              height: 52.h,
+              padding: EdgeInsets.symmetric(horizontal: 16.w),
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                  colors: [
+                    Color(0xFF2E2E36),
+                    Color(0xFF18181B),
+                  ],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                ),
+                borderRadius: BorderRadius.circular(18.r),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.2),
+                    blurRadius: 10,
+                    offset: const Offset(0, 3),
                   ),
-                  child: (displayCoins > 0 && !isCompleted)
-                      ? Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            // Left: Coin Reward Pill
-                            Container(
-                              padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
-                              decoration: BoxDecoration(
-                                color: Colors.white.withValues(alpha: 0.25),
-                                borderRadius: BorderRadius.circular(16.r),
-                              ),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Image.asset(
-                                    'assets/icons/coin.png',
-                                    width: 16.sp,
-                                    height: 16.sp,
-                                    fit: BoxFit.contain,
-                                  ),
-                                  SizedBox(width: 4.w),
-                                  Text(
-                                    '${displayCoins.formatCoins()} Coins',
-                                    style: GoogleFonts.outfit(
-                                      color: Colors.white,
-                                      fontSize: 12.5.sp,
-                                      fontWeight: FontWeight.w800,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-
-                            // Right: Action Text & Arrow Icon
-                            Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                if (isSubmitting.value)
-                                  SizedBox(
-                                    width: 18.w,
-                                    height: 18.w,
-                                    child: const CircularProgressIndicator(
-                                      strokeWidth: 2,
-                                      color: Colors.white,
-                                    ),
-                                  )
-                                else ...[
-                                  Text(
-                                    getButtonText(),
-                                    style: GoogleFonts.outfit(
-                                      color: Colors.white,
-                                      fontSize: 15.5.sp,
-                                      fontWeight: FontWeight.w800,
-                                      letterSpacing: -0.2,
-                                    ),
-                                  ),
-                                  SizedBox(width: 6.w),
-                                  Icon(
-                                    isCompleted
-                                        ? (item.dailyReset || isEligibleNextDay
-                                            ? Icons.schedule_rounded
-                                            : Icons.check_circle_rounded)
-                                        : Icons.arrow_forward_rounded,
-                                    color: Colors.white,
-                                    size: 18.sp,
-                                  ),
-                                ],
-                              ],
-                            ),
-                          ],
-                        )
-                      : Center(
+                ],
+              ),
+              child: (displayCoins > 0 && !isCompleted)
+                  ? Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        // Left: Coin Reward Pill
+                        Container(
+                          padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
+                          decoration: BoxDecoration(
+                            color: Colors.white.withValues(alpha: 0.14),
+                            borderRadius: BorderRadius.circular(12.r),
+                          ),
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              if (isSubmitting.value)
-                                SizedBox(
-                                  width: 18.w,
-                                  height: 18.w,
-                                  child: const CircularProgressIndicator(
-                                    strokeWidth: 2,
-                                    color: Colors.white,
-                                  ),
-                                )
-                              else ...[
-                                Text(
-                                  getButtonText(),
-                                  style: GoogleFonts.outfit(
-                                    color: Colors.white,
-                                    fontSize: 15.5.sp,
-                                    fontWeight: FontWeight.w800,
-                                    letterSpacing: -0.2,
-                                  ),
+                              Image.asset(
+                                'assets/icons/coin.png',
+                                width: 16.sp,
+                                height: 16.sp,
+                                fit: BoxFit.contain,
+                              ),
+                              SizedBox(width: 5.w),
+                              Text(
+                                '+${displayCoins.formatCoins()} Coins',
+                                style: GoogleFonts.poppins(
+                                  color: const Color(0xFFFDE68A),
+                                  fontSize: 12.5.sp,
+                                  fontWeight: FontWeight.w700,
                                 ),
-                                SizedBox(width: 6.w),
-                                Icon(
-                                  isCompleted
-                                      ? (item.dailyReset || isEligibleNextDay
-                                          ? Icons.schedule_rounded
-                                          : Icons.check_circle_rounded)
-                                      : Icons.arrow_forward_rounded,
-                                  color: Colors.white,
-                                  size: 18.sp,
-                                ),
-                              ],
+                              ),
                             ],
                           ),
                         ),
-                ),
 
-                // Top-Right Circular White/Black "AD" Badge
-                Positioned(
-                  top: -4.h,
-                  right: 12.w,
-                  child: Container(
-                    width: 22.w,
-                    height: 22.w,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                        color: const Color(0xFF0F172A).withValues(alpha: 0.15),
-                        width: 1.2,
-                      ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.18),
-                          blurRadius: 6,
-                          offset: const Offset(0, 2),
+                        // Right: Action Text & Icon
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            if (isSubmitting.value)
+                              SizedBox(
+                                width: 18.w,
+                                height: 18.w,
+                                child: const CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  color: Colors.white,
+                                ),
+                              )
+                            else ...[
+                              Text(
+                                getButtonText(),
+                                style: GoogleFonts.poppins(
+                                  color: Colors.white,
+                                  fontSize: 15.sp,
+                                  fontWeight: FontWeight.w700,
+                                  letterSpacing: 0.1,
+                                ),
+                              ),
+                              SizedBox(width: 6.w),
+                              Icon(
+                                isCompleted
+                                    ? (item.dailyReset || isEligibleNextDay
+                                        ? Icons.schedule_rounded
+                                        : Icons.check_circle_rounded)
+                                    : Icons.arrow_forward_rounded,
+                                color: Colors.white,
+                                size: 18.sp,
+                              ),
+                            ],
+                          ],
                         ),
                       ],
-                    ),
-                    alignment: Alignment.center,
-                    child: Text(
-                      'AD',
-                      style: GoogleFonts.outfit(
-                        color: Colors.black,
-                        fontSize: 8.5.sp,
-                        fontWeight: FontWeight.w900,
-                        height: 1.0,
+                    )
+                  : Center(
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          if (isSubmitting.value)
+                            SizedBox(
+                              width: 18.w,
+                              height: 18.w,
+                              child: const CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: Colors.white,
+                              ),
+                            )
+                          else ...[
+                            Text(
+                              getButtonText(),
+                              style: GoogleFonts.poppins(
+                                color: Colors.white,
+                                fontSize: 15.sp,
+                                fontWeight: FontWeight.w700,
+                                letterSpacing: 0.1,
+                              ),
+                            ),
+                            SizedBox(width: 6.w),
+                            Icon(
+                              isCompleted
+                                  ? (item.dailyReset || isEligibleNextDay
+                                      ? Icons.schedule_rounded
+                                      : Icons.check_circle_rounded)
+                                  : Icons.arrow_forward_rounded,
+                              color: Colors.white,
+                              size: 18.sp,
+                            ),
+                          ],
+                        ],
                       ),
                     ),
-                  ),
-                ),
-              ],
             ),
           ),
 
@@ -1951,7 +1890,7 @@ class _BottomTaskActionBar extends HookConsumerWidget {
                     SizedBox(width: 8.w),
                     Text(
                       'Verification Pending',
-                      style: GoogleFonts.outfit(
+                      style: GoogleFonts.poppins(
                         color: const Color(0xFF92400E),
                         fontSize: 13.sp,
                         fontWeight: FontWeight.w700,
@@ -1976,7 +1915,7 @@ class _BottomTaskActionBar extends HookConsumerWidget {
                     SizedBox(width: 8.w),
                     Text(
                       'Verification Approved',
-                      style: GoogleFonts.outfit(
+                      style: GoogleFonts.poppins(
                         color: const Color(0xFF065F46),
                         fontSize: 13.sp,
                         fontWeight: FontWeight.w700,
@@ -2003,7 +1942,7 @@ class _BottomTaskActionBar extends HookConsumerWidget {
                         SizedBox(width: 8.w),
                         Text(
                           'Verification Rejected (0 Coins)',
-                          style: GoogleFonts.outfit(
+                          style: GoogleFonts.poppins(
                             color: const Color(0xFF991B1B),
                             fontSize: 13.sp,
                             fontWeight: FontWeight.w700,
@@ -2015,7 +1954,7 @@ class _BottomTaskActionBar extends HookConsumerWidget {
                       SizedBox(height: 4.h),
                       Text(
                         'Reason: ${proofReason.value}',
-                        style: GoogleFonts.outfit(
+                        style: GoogleFonts.poppins(
                           color: const Color(0xFFB91C1C),
                           fontSize: 11.5.sp,
                           fontWeight: FontWeight.w500,
@@ -2030,21 +1969,16 @@ class _BottomTaskActionBar extends HookConsumerWidget {
               GestureDetector(
                 onTap: isUploadingScreenshot.value ? null : handleUploadScreenshot,
                 child: Container(
-                  height: 50.h,
+                  height: 48.h,
                   width: double.infinity,
                   decoration: BoxDecoration(
-                    gradient: const LinearGradient(
-                      colors: [
-                        Color(0xFF7E22CE),
-                        Color(0xFF9333EA),
-                      ],
-                    ),
-                    borderRadius: BorderRadius.circular(25.r),
+                    color: const Color(0xFF26262B),
+                    borderRadius: BorderRadius.circular(16.r),
                     boxShadow: [
                       BoxShadow(
-                        color: const Color(0xFF9333EA).withValues(alpha: 0.3),
-                        blurRadius: 10,
-                        offset: const Offset(0, 4),
+                        color: Colors.black.withValues(alpha: 0.15),
+                        blurRadius: 8,
+                        offset: const Offset(0, 3),
                       ),
                     ],
                   ),
@@ -2058,14 +1992,14 @@ class _BottomTaskActionBar extends HookConsumerWidget {
                         : Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Icon(Icons.upload_file_rounded, color: Colors.white, size: 19.sp),
+                              Icon(Icons.upload_file_rounded, color: Colors.white, size: 18.sp),
                               SizedBox(width: 8.w),
                               Text(
                                 proofStatus.value == 'rejected' ? 'RE-UPLOAD SCREENSHOT PROOF' : 'UPLOAD SCREENSHOT PROOF',
-                                style: GoogleFonts.outfit(
+                                style: GoogleFonts.poppins(
                                   color: Colors.white,
-                                  fontSize: 14.sp,
-                                  fontWeight: FontWeight.w800,
+                                  fontSize: 13.sp,
+                                  fontWeight: FontWeight.w700,
                                   letterSpacing: 0.2,
                                 ),
                               ),

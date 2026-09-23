@@ -8339,19 +8339,20 @@ router.get('/promoters', adminAuth, checkPermission('users'), async (req, res) =
 // API: GET LIST OF ALL PROMOTERS (with optional date filtering)
 router.get('/api/promoters/list', adminAuth, checkPermission('users'), async (req, res) => {
     try {
-        const { app, startDate, endDate } = req.query;
+        const { app, startDate, endDate, start, end } = req.query;
         if (!app) {
             return res.status(400).json({ success: false, message: 'App is required' });
         }
 
-        const selectedService = req.firebaseServices.find(s => s.appName === app);
-        const serviceAccount = selectedService?.serviceAccount;
+        const effectiveStart = startDate || start;
+        const effectiveEnd = endDate || end;
+
         await connectMongo();
         const mongoQuery = { app };
-        if (startDate || endDate) {
+        if (effectiveStart || effectiveEnd) {
             mongoQuery.promoDate = {};
-            if (startDate) mongoQuery.promoDate.$gte = new Date(startDate);
-            if (endDate) mongoQuery.promoDate.$lte = new Date(endDate + 'T23:59:59.999Z');
+            if (effectiveStart) mongoQuery.promoDate.$gte = new Date(effectiveStart);
+            if (effectiveEnd) mongoQuery.promoDate.$lte = new Date(effectiveEnd + 'T23:59:59.999Z');
         }
 
         const mongoPromoters = await Promoter.find(mongoQuery).sort({ promoDate: -1 });
@@ -8367,12 +8368,30 @@ router.get('/api/promoters/list', adminAuth, checkPermission('users'), async (re
             });
         }
 
+        // Aggregate actual direct referral counts
+        const allRefCodes = [];
+        mongoPromoters.forEach(p => {
+            const u = usersMap.get(p.userId) || {};
+            if (u.referralCode) allRefCodes.push(u.referralCode);
+            if (u.referCode) allRefCodes.push(u.referCode);
+            if (p.userId) allRefCodes.push(p.userId);
+        });
+
+        const countMap = {};
+        if (allRefCodes.length > 0) {
+            const refCountsAgg = await User.aggregate([
+                { $match: { referredBy: { $in: allRefCodes } } },
+                { $group: { _id: '$referredBy', count: { $sum: 1 } } }
+            ]);
+            refCountsAgg.forEach(r => { countMap[r._id] = r.count; });
+        }
+
         // For each MongoDB promotion, map user stats
         const results = mongoPromoters.map((p) => {
             const userData = usersMap.get(p.userId) || {};
-            const directReferralCount = Number(userData.referralCount) || 0;
-            const totalReferralCount = directReferralCount;
-            const totalEarnings = Number(userData.totalCoins) || 0;
+            const directCount = (countMap[userData.referralCode] || 0) + (countMap[userData.referCode] || 0) + (countMap[p.userId] || 0) || Number(userData.referralCount) || 0;
+            const totalReferralCount = directCount;
+            const totalEarnings = Number(userData.totalCoins) || Number(userData.coins) || 0;
 
             return {
                 id: p._id,
@@ -8380,14 +8399,16 @@ router.get('/api/promoters/list', adminAuth, checkPermission('users'), async (re
                 name: userData.displayName || userData.name || 'Unknown',
                 email: userData.email || '',
                 referralCode: userData.referralCode || userData.referCode || '',
-                directReferralCount,
-                totalReferralCount,
+                directRefers: directCount,
+                directReferralCount: directCount,
+                totalRefers: totalReferralCount,
+                totalReferralCount: totalReferralCount,
                 totalEarnings,
                 payoutBlocked: !!userData.payoutBlocked,
-                channelName: p.channelName,
-                priceInInr: p.priceInInr,
-                videoLink: p.videoLink,
-                promoDate: p.promoDate ? p.promoDate.toISOString().split('T')[0] : ''
+                channelName: p.channelName || '',
+                priceInInr: Number(p.priceInInr) || 0,
+                videoLink: p.videoLink || '',
+                promoDate: p.promoDate ? (p.promoDate instanceof Date ? p.promoDate.toISOString().split('T')[0] : String(p.promoDate).split('T')[0]) : ''
             };
         });
 
@@ -8411,30 +8432,29 @@ router.get('/api/promoters/search-users', adminAuth, checkPermission('users'), a
 
         await connectMongo();
         const trimmedQuery = String(query).trim();
+        const regex = new RegExp(trimmedQuery, 'i');
 
-        const user = await User.findOne({
+        const users = await User.find({
             $or: [
                 { userId: trimmedQuery },
-                { email: trimmedQuery.toLowerCase() },
+                { email: regex },
+                { displayName: regex },
+                { name: regex },
                 { referralCode: trimmedQuery },
                 { referCode: trimmedQuery }
             ]
-        }).lean();
-
-        if (!user) {
-            return res.json({ success: true, users: [] });
-        }
+        }).limit(10).lean();
 
         return res.json({
             success: true,
-            users: [{
+            users: users.map(user => ({
                 userId: user.userId,
                 name: user.displayName || user.name || 'Unknown',
                 email: user.email || '',
                 referralCode: user.referralCode || user.referCode || '',
                 isPromoter: !!user.isPromoter,
                 payoutBlocked: !!user.payoutBlocked,
-            }],
+            })),
         });
     } catch (err) {
         console.error('🔥 Error searching users for promoter:', err);
@@ -8514,10 +8534,13 @@ router.post('/api/promoters/remove', adminAuth, checkPermission('users'), async 
 // API: GET DETAIL STATS FOR PROMOTER (optionally by promoId)
 router.get('/api/promoters/detail', adminAuth, checkPermission('users'), async (req, res) => {
     try {
-        const { app, userId, promoId, startDate, endDate } = req.query;
+        const { app, userId, promoId, startDate, endDate, start, end } = req.query;
         if (!app || !userId) {
             return res.status(400).json({ success: false, message: 'App and userId are required' });
         }
+
+        const effectiveStart = startDate || start;
+        const effectiveEnd = endDate || end;
 
         await connectMongo();
         const userDoc = await User.findOne({ userId: String(userId) }).lean();
@@ -8530,53 +8553,96 @@ router.get('/api/promoters/detail', adminAuth, checkPermission('users'), async (
         // Date bounds parsing
         let startBound = null;
         let endBound = null;
-        if (startDate) {
-            startBound = new Date(startDate);
+        if (effectiveStart) {
+            startBound = new Date(effectiveStart);
         }
-        if (endDate) {
-            endBound = new Date(endDate + 'T23:59:59.999Z');
+        if (effectiveEnd) {
+            endBound = new Date(effectiveEnd + 'T23:59:59.999Z');
         }
 
-        // Find users referred by this promoter in MongoDB
-        const refCode = userData.referralCode || userData.referCode || userId;
-        const refUsersQuery = {
-            $or: [
-                { referredBy: refCode },
-                { referredBy: userId }
-            ]
+        const refCodes = [userData.referralCode, userData.referCode, userId].filter(Boolean);
+
+        // Level 1 Users: users whose referredBy is in refCodes
+        const lvl1Query = {
+            referredBy: { $in: refCodes }
         };
-
         if (startBound || endBound) {
-            refUsersQuery.createdAt = {};
-            if (startBound) refUsersQuery.createdAt.$gte = startBound;
-            if (endBound) refUsersQuery.createdAt.$lte = endBound;
+            lvl1Query.createdAt = {};
+            if (startBound) lvl1Query.createdAt.$gte = startBound;
+            if (endBound) lvl1Query.createdAt.$lte = endBound;
+        }
+        const lvl1Users = await User.find(lvl1Query).lean();
+
+        // Collect Level 1 identifiers (their userIds and referralCodes)
+        const lvl1Ids = lvl1Users.map(u => u.userId).filter(Boolean);
+        const lvl1RefCodes = lvl1Users.map(u => u.referralCode || u.referCode).filter(Boolean);
+        const lvl1Identifiers = [...new Set([...lvl1Ids, ...lvl1RefCodes])];
+
+        let lvl2Users = [];
+        if (lvl1Identifiers.length > 0) {
+            const lvl2Query = {
+                referredBy: { $in: lvl1Identifiers },
+                userId: { $nin: [userId, ...lvl1Ids] }
+            };
+            if (startBound || endBound) {
+                lvl2Query.createdAt = {};
+                if (startBound) lvl2Query.createdAt.$gte = startBound;
+                if (endBound) lvl2Query.createdAt.$lte = endBound;
+            }
+            lvl2Users = await User.find(lvl2Query).lean();
         }
 
-        const refUsers = await User.find(refUsersQuery).lean();
+        const lvl2Ids = lvl2Users.map(u => u.userId).filter(Boolean);
+        const lvl2RefCodes = lvl2Users.map(u => u.referralCode || u.referCode).filter(Boolean);
+        const lvl2Identifiers = [...new Set([...lvl2Ids, ...lvl2RefCodes])];
 
-        let totalReferrals = refUsers.length;
-        let totalEarnings = refUsers.reduce((sum, u) => sum + (Number(u.coins) || 0), 0);
+        let lvl3Users = [];
+        if (lvl2Identifiers.length > 0) {
+            const lvl3Query = {
+                referredBy: { $in: lvl2Identifiers },
+                userId: { $nin: [userId, ...lvl1Ids, ...lvl2Ids] }
+            };
+            if (startBound || endBound) {
+                lvl3Query.createdAt = {};
+                if (startBound) lvl3Query.createdAt.$gte = startBound;
+                if (endBound) lvl3Query.createdAt.$lte = endBound;
+            }
+            lvl3Users = await User.find(lvl3Query).lean();
+        }
 
-        let level1Count = totalReferrals, level2Count = 0, level3Count = 0;
-        let level1Earnings = totalEarnings, level2Earnings = 0, level3Earnings = 0;
-
-        const referredUsers = refUsers.map(u => ({
+        const mapUserItem = (u, level) => ({
             userId: u.userId,
             email: u.email || '',
-            name: u.displayName || u.name || '',
-            level: 1,
-            coins: u.coins || 0,
-            joinedAt: toIsoDate(u.createdAt)
-        }));
-        // Sort referred users by joined date descending
-        referredUsers.sort((a, b) => {
-            const dateA = a.joinedAt ? new Date(a.joinedAt) : 0;
-            const dateB = b.joinedAt ? new Date(b.joinedAt) : 0;
-            return dateB - dateA;
+            name: u.displayName || u.name || 'Unknown User',
+            level,
+            coins: Number(u.coins) || 0,
+            coinsEarned: Number(u.totalCoins) || Number(u.coins) || 0,
+            joinedAt: u.createdAt ? (u.createdAt instanceof Date ? u.createdAt.toISOString() : new Date(u.createdAt).toISOString()) : '',
+            createdAt: u.createdAt
         });
 
+        const lvl1List = lvl1Users.map(u => mapUserItem(u, 1));
+        const lvl2List = lvl2Users.map(u => mapUserItem(u, 2));
+        const lvl3List = lvl3Users.map(u => mapUserItem(u, 3));
+
+        // Sort descending by date
+        const sortByDate = (a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0);
+        lvl1List.sort(sortByDate);
+        lvl2List.sort(sortByDate);
+        lvl3List.sort(sortByDate);
+
+        const level1Count = lvl1List.length;
+        const level2Count = lvl2List.length;
+        const level3Count = lvl3List.length;
+
+        const level1Earnings = lvl1List.reduce((sum, u) => sum + u.coinsEarned, 0);
+        const level2Earnings = lvl2List.reduce((sum, u) => sum + u.coinsEarned, 0);
+        const level3Earnings = lvl3List.reduce((sum, u) => sum + u.coinsEarned, 0);
+
+        const totalReferrals = level1Count + level2Count + level3Count;
+        const totalEarnings = level1Earnings + level2Earnings + level3Earnings;
+
         // Fetch MongoDB details (optionally by promoId)
-        await connectMongo();
         let dbProm = null;
         if (promoId) {
             dbProm = await Promoter.findById(promoId);
@@ -8586,17 +8652,23 @@ router.get('/api/promoters/detail', adminAuth, checkPermission('users'), async (
 
         return res.json({
             success: true,
+            isBlocked: !!userData.payoutBlocked,
+            blockReason: userData.payoutBlockReason || '',
             promoter: {
-                userId: userSnap.id,
-                name: userData.name || 'Unknown',
+                userId: userData.userId,
+                name: userData.displayName || userData.name || 'Unknown',
                 email: userData.email || '',
                 referralCode: userData.referralCode || userData.referCode || '',
                 payoutBlocked: !!userData.payoutBlocked,
                 payoutBlockReason: userData.payoutBlockReason || '',
                 channelName: dbProm ? dbProm.channelName : '',
-                priceInInr: dbProm ? dbProm.priceInInr : 0,
+                priceInInr: dbProm ? Number(dbProm.priceInInr || 0) : 0,
                 videoLink: dbProm ? dbProm.videoLink : '',
-                promoDate: dbProm && dbProm.promoDate ? dbProm.promoDate.toISOString().split('T')[0] : '',
+                promoDate: dbProm && dbProm.promoDate ? (dbProm.promoDate instanceof Date ? dbProm.promoDate.toISOString().split('T')[0] : String(dbProm.promoDate).split('T')[0]) : ''
+            },
+            totals: {
+                refers: totalReferrals,
+                coins: totalEarnings
             },
             stats: {
                 totalReferrals,
@@ -8608,7 +8680,17 @@ router.get('/api/promoters/detail', adminAuth, checkPermission('users'), async (
                 level3Count,
                 level3Earnings,
             },
-            referredUsers,
+            levels: {
+                lvl1: { count: level1Count, coins: level1Earnings },
+                lvl2: { count: level2Count, coins: level2Earnings },
+                lvl3: { count: level3Count, coins: level3Earnings }
+            },
+            usersByLevel: {
+                lvl1: lvl1List,
+                lvl2: lvl2List,
+                lvl3: lvl3List
+            },
+            referredUsers: lvl1List,
         });
     } catch (err) {
         console.error('🔥 Error fetching promoter detail:', err);
@@ -8619,29 +8701,46 @@ router.get('/api/promoters/detail', adminAuth, checkPermission('users'), async (
 // API: UPDATE DETAILS OF PROMOTER (MongoDB fields, supporting promoId)
 router.post('/api/promoters/update-details', adminAuth, checkPermission('users'), async (req, res) => {
     try {
-        const { app, userId, promoId, channelName, priceInInr, videoLink, promoDate } = req.body;
+        const { app, userId, promoId, channelName, priceInInr, videoLink, promoDate, isBlocked, blockReason } = req.body;
         if (!app || !userId) {
             return res.status(400).json({ success: false, message: 'App and userId are required' });
         }
 
         await connectMongo();
-        const promoDateObj = promoDate ? new Date(promoDate) : new Date();
 
-        const updateData = {
-            channelName: channelName || '',
-            priceInInr: Number(priceInInr) || 0,
-            videoLink: videoLink || '',
-            promoDate: promoDateObj
-        };
-
-        if (promoId) {
-            await Promoter.findByIdAndUpdate(promoId, updateData);
-        } else {
-            await Promoter.findOneAndUpdate(
-                { userId: String(userId), app },
-                updateData,
-                { upsert: true }
+        // If blocking or unblocking payout
+        if (isBlocked !== undefined) {
+            await User.updateOne(
+                { userId: String(userId) },
+                {
+                    $set: {
+                        payoutBlocked: !!isBlocked,
+                        payoutBlockReason: blockReason || '',
+                        payoutBlockUpdatedAt: new Date()
+                    }
+                }
             );
+        }
+
+        if (channelName !== undefined || priceInInr !== undefined || videoLink !== undefined || promoDate !== undefined) {
+            const promoDateObj = promoDate ? new Date(promoDate) : new Date();
+
+            const updateData = {
+                channelName: channelName || '',
+                priceInInr: Number(priceInInr) || 0,
+                videoLink: videoLink || '',
+                promoDate: promoDateObj
+            };
+
+            if (promoId) {
+                await Promoter.findByIdAndUpdate(promoId, updateData);
+            } else {
+                await Promoter.findOneAndUpdate(
+                    { userId: String(userId), app },
+                    updateData,
+                    { upsert: true }
+                );
+            }
         }
 
         return res.json({
@@ -8657,7 +8756,10 @@ router.post('/api/promoters/update-details', adminAuth, checkPermission('users')
 // API: GET PROMOTERS COST SUMMARY
 router.get('/api/promoters/cost-summary', adminAuth, checkPermission('users'), async (req, res) => {
     try {
-        const { app, startDate, endDate } = req.query;
+        const app = String(req.query.app || '').trim();
+        const startDate = req.query.startDate || req.query.start;
+        const endDate = req.query.endDate || req.query.end;
+
         if (!app) {
             return res.status(400).json({ success: false, message: 'App is required' });
         }
@@ -8722,7 +8824,14 @@ router.get('/api/promoters/cost-summary', adminAuth, checkPermission('users'), a
             yesterdayCost,
             thisMonthCost,
             lastMonthCost,
-            filteredCost
+            filteredCost,
+            costs: {
+                today: todayCost,
+                yesterday: yesterdayCost,
+                thisMonth: thisMonthCost,
+                lastMonth: lastMonthCost,
+                filtered: filteredCost
+            }
         });
     } catch (err) {
         console.error('🔥 Error fetching cost summary:', err);
@@ -8733,18 +8842,26 @@ router.get('/api/promoters/cost-summary', adminAuth, checkPermission('users'), a
 // API: CALCULATE PROFIT & LOSS WITH 30% INVALID CUT AND 10% COMMISSION DEDUCTION
 router.post('/api/promoters/profit-loss', adminAuth, checkPermission('users'), async (req, res) => {
     try {
-        const { app, startDate, endDate } = req.body;
+        const app = String(req.body.app || '').trim();
+        const startDate = req.body.startDate || req.body.start || '';
+        const endDate = req.body.endDate || req.body.end || '';
         let usdToInrRate = Number(req.body.usdToInrRate || 95);
+        if (usdToInrRate <= 0) usdToInrRate = 95;
 
         if (!app) {
             return res.status(400).json({ success: false, message: 'App parameter required' });
         }
 
-        const dbState = await getFirestoreForApp(req, app);
-        if (!dbState.ok) {
-            return res.status(dbState.status).json({ success: false, message: dbState.message });
-        }
-        const db = dbState.db;
+        await connectMongo();
+        const firebaseServices = req.firebaseServices || [];
+        const targetService = pickFirebaseService(firebaseServices, app) || firebaseServices[0];
+        const db = targetService?.db;
+
+        let earningConfig = { adEcpm: 0.5 };
+        try {
+            const appDataDoc = await AppData.findOne({ appName: app }).lean();
+            if (appDataDoc?.earningConfig) earningConfig = appDataDoc.earningConfig;
+        } catch (e) {}
 
         const tz = 'Asia/Kolkata';
         const nowIST = DateTime.now().setZone(tz);
@@ -8752,36 +8869,37 @@ router.post('/api/promoters/profit-loss', adminAuth, checkPermission('users'), a
         const todayEnd = nowIST.endOf('day').toJSDate();
 
         let start = null, end = null;
-        if (startDate) {
+        if (startDate && startDate !== 'lifetime') {
             start = DateTime.fromISO(startDate, { zone: tz }).startOf('day').toJSDate();
         }
-        if (endDate) {
+        if (endDate && endDate !== 'lifetime') {
             end = DateTime.fromISO(endDate, { zone: tz }).endOf('day').toJSDate();
         }
 
-        // 1. Fetch Gross USD Earnings from modes
+        const boundsStart = start || nowIST.minus({ days: 365 }).startOf('day').toJSDate();
+        const boundsEnd = end || todayEnd;
+
+        // Fetch earnings across 3 modes
         const [adsSum, offerwallSum, readEarnSum] = await Promise.all([
-            getSummaryEarningForRange(db, app, 'ads', start, end, todayStart, todayEnd, null),
-            getSummaryEarningForRange(db, app, 'offerwall', start, end, todayStart, todayEnd, null),
-            getSummaryEarningForRange(db, app, 'read_earn', start, end, todayStart, todayEnd, null)
+            getSummaryEarningForRange(db, app, 'ads', boundsStart, boundsEnd, todayStart, todayEnd, null, earningConfig),
+            getSummaryEarningForRange(db, app, 'offerwall', boundsStart, boundsEnd, todayStart, todayEnd, null, earningConfig),
+            getSummaryEarningForRange(db, app, 'read_earn', boundsStart, boundsEnd, todayStart, todayEnd, null, earningConfig)
         ]);
 
         const grossEarningsUsd = adsSum.earnings + offerwallSum.earnings + readEarnSum.earnings;
         const grossEarningsInr = grossEarningsUsd * usdToInrRate;
 
-        // Apply Deductions in Sequence:
-        // A. 30% Invalid Traffic Cut
+        // 30% Invalid Traffic Cut
         const invalidCutInr = grossEarningsInr * 0.30;
         const postInvalidInr = grossEarningsInr - invalidCutInr;
 
-        // B. 10% Commission on the remaining amount
+        // 10% Commission on remaining amount
         const commissionCutInr = postInvalidInr * 0.10;
         const netAppRevenueInr = postInvalidInr - commissionCutInr;
 
-        // 1.5 Fetch Successful Payouts Sent to Users
-        await connectMongo();
+        // Successful Payouts to Users
         const mongoPayoutQuery = {
-            appName: app,
+            $or: [{ appName: app }, { appName: '' }, { appName: { $exists: false } }, { appName: null }],
             status: 'success'
         };
         if (start || end) {
@@ -8792,41 +8910,48 @@ router.post('/api/promoters/profit-loss', adminAuth, checkPermission('users'), a
         const payoutsList = await PayoutRecord.find(mongoPayoutQuery).lean();
         let totalPayoutsInr = 0;
         payoutsList.forEach(d => {
-            const amount = Number(d.amount || 0);
-            totalPayoutsInr += amount;
+            totalPayoutsInr += Number(d.amount || 0);
         });
 
-        // 2. Fetch Promoter costs from MongoDB
-        await connectMongo();
+        // Promoter Costs
         const promoMatch = { app };
         if (start || end) {
             promoMatch.promoDate = {};
             if (start) promoMatch.promoDate.$gte = start;
             if (end) promoMatch.promoDate.$lte = end;
         }
-
-        const promotions = await Promoter.find(promoMatch);
+        const promotions = await Promoter.find(promoMatch).lean();
         let promoterCostInr = 0;
         promotions.forEach(p => {
-            promoterCostInr += (p.priceInInr || 0);
+            promoterCostInr += Number(p.priceInInr || 0);
         });
 
-        // 3. Net Profit / Loss
+        // Net Profit / Loss
         const netProfitLossInr = netAppRevenueInr - promoterCostInr - totalPayoutsInr;
+        const isProfitable = netProfitLossInr >= 0;
 
         return res.json({
             success: true,
+            appName: app,
             startDate: startDate || 'Lifetime',
             endDate: endDate || 'Lifetime',
+            dateRange: (!startDate || startDate === 'lifetime') ? 'Lifetime' : `${startDate} to ${endDate || startDate}`,
             usdToInrRate,
             earningsUsd: Number(grossEarningsUsd.toFixed(4)),
+            grossUSD: Number(grossEarningsUsd.toFixed(4)),
             grossEarningsInr: Number(grossEarningsInr.toFixed(2)),
+            grossINR: Number(grossEarningsInr.toFixed(2)),
+            totalRevenue: Number(grossEarningsInr.toFixed(2)),
             invalidCutInr: Number(invalidCutInr.toFixed(2)),
             commissionCutInr: Number(commissionCutInr.toFixed(2)),
             netAppRevenueInr: Number(netAppRevenueInr.toFixed(2)),
+            netRevenue: Number(netAppRevenueInr.toFixed(2)),
             promoterCostInr,
-            netProfitLossInr: Number(netProfitLossInr.toFixed(2)),
+            totalCost: promoterCostInr,
             payoutsTotalInr: Number(totalPayoutsInr.toFixed(2)),
+            netProfitLossInr: Number(netProfitLossInr.toFixed(2)),
+            netProfit: Number(netProfitLossInr.toFixed(2)),
+            isProfitable,
             breakdown: {
                 adsUsd: Number(adsSum.earnings.toFixed(4)),
                 offerwallUsd: Number(offerwallSum.earnings.toFixed(4)),
@@ -9132,16 +9257,29 @@ async function getReferralStats(userId) {
 function rangeToDates(range, startDateStr, endDateStr) {
     let start = null, end = null;
     const zone = 'Asia/Kolkata';
+    const now = DateTime.now().setZone(zone);
 
     if (range === 'today') {
-        start = DateTime.now().setZone(zone).startOf('day').toJSDate();
-        end = DateTime.now().setZone(zone).endOf('day').toJSDate();
+        start = now.startOf('day').toJSDate();
+        end = now.endOf('day').toJSDate();
     } else if (range === 'yesterday') {
-        start = DateTime.now().setZone(zone).minus({ days: 1 }).startOf('day').toJSDate();
-        end = DateTime.now().setZone(zone).minus({ days: 1 }).endOf('day').toJSDate();
+        start = now.minus({ days: 1 }).startOf('day').toJSDate();
+        end = now.minus({ days: 1 }).endOf('day').toJSDate();
     } else if (range === 'last7') {
-        start = DateTime.now().setZone(zone).minus({ days: 6 }).startOf('day').toJSDate();
-        end = DateTime.now().setZone(zone).endOf('day').toJSDate();
+        start = now.minus({ days: 6 }).startOf('day').toJSDate();
+        end = now.endOf('day').toJSDate();
+    } else if (range === 'last30') {
+        start = now.minus({ days: 29 }).startOf('day').toJSDate();
+        end = now.endOf('day').toJSDate();
+    } else if (range === 'this_month' || range === 'thismonth') {
+        start = now.startOf('month').toJSDate();
+        end = now.endOf('month').toJSDate();
+    } else if (range === 'last_month' || range === 'lastmonth') {
+        start = now.minus({ months: 1 }).startOf('month').toJSDate();
+        end = now.minus({ months: 1 }).endOf('month').toJSDate();
+    } else if (range === 'lifetime') {
+        start = null;
+        end = null;
     } else if (range === 'custom') {
         if (startDateStr) {
             const parsed = DateTime.fromISO(startDateStr, { zone });
@@ -11128,6 +11266,9 @@ router.get('/task-performance', adminAuth, checkPermission('dashboard'), async (
     }
 });
 
+// In-memory cache for task performance stats (TTL: 30s)
+const taskPerfCache = new Map();
+
 // 2. FETCH AGGREGATED TASK PERFORMANCE STATS & GRAPH
 router.post('/api/task-performance/stats', adminAuth, checkPermission('dashboard'), async (req, res) => {
     try {
@@ -11140,20 +11281,17 @@ router.post('/api/task-performance/stats', adminAuth, checkPermission('dashboard
             return res.status(400).json({ success: false, message: 'app param required' });
         }
 
-        const dbState = await getFirestoreForApp(req, app);
-        if (!dbState.ok) {
-            return res.status(dbState.status).json({ success: false, message: dbState.message });
+        const cacheKey = `${app}_${range}_${startDate}_${endDate}`;
+        const cached = taskPerfCache.get(cacheKey);
+        if (cached && (Date.now() - cached.timestamp < 30000)) {
+            return res.json(cached.data);
         }
-        const db = dbState.db;
 
         let start = null, end = null;
         if (range !== 'lifetime') {
             const bounds = rangeToDates(range, startDate, endDate);
             start = bounds.start;
             end = bounds.end;
-            if (!start || !end) {
-                return res.status(400).json({ success: false, message: 'Invalid range filters' });
-            }
         }
 
         await connectMongo();
@@ -11180,7 +11318,8 @@ router.post('/api/task-performance/stats', adminAuth, checkPermission('dashboard
         const activeEarners = new Set();
 
         rewardsMongo.forEach(data => {
-            const provider = String(data.provider || 'Unknown').trim();
+            const rawProvider = String(data.provider || data.type || 'Activity').trim();
+            const provider = rawProvider || 'Activity';
             const coins = Number(data.coins) || 0;
             const userId = data.userId ? String(data.userId) : null;
 
@@ -11240,7 +11379,7 @@ router.post('/api/task-performance/stats', adminAuth, checkPermission('dashboard
             }
         });
 
-        return res.json({
+        const responsePayload = {
             success: true,
             totalCoins,
             totalCompletions,
@@ -11248,7 +11387,10 @@ router.post('/api/task-performance/stats', adminAuth, checkPermission('dashboard
             revenueInRs: Number((totalCoins / conversionRate).toFixed(2)),
             tasks: tasksResult,
             graphData
-        });
+        };
+
+        taskPerfCache.set(cacheKey, { timestamp: Date.now(), data: responsePayload });
+        return res.json(responsePayload);
     } catch (err) {
         console.error('🔥 Error fetching task stats:', err);
         return res.status(500).json({ success: false, message: 'Internal server error' });
@@ -11267,12 +11409,6 @@ router.get('/api/task-performance/leaderboard', adminAuth, checkPermission('dash
             return res.status(400).json({ success: false, message: 'app param required' });
         }
 
-        const dbState = await getFirestoreForApp(req, app);
-        if (!dbState.ok) {
-            return res.status(dbState.status).json({ success: false, message: dbState.message });
-        }
-        const db = dbState.db;
-
         let coinsToppers = [];
         let referralToppers = [];
 
@@ -11284,10 +11420,18 @@ router.get('/api/task-performance/leaderboard', adminAuth, checkPermission('dash
             end = bounds.end;
         }
 
+        await connectMongo();
+
         // 1. DYNAMIC COINS LEADERBOARD
         if (range === 'lifetime') {
-            await connectMongo();
-            const topUsers = await User.find({}).sort({ totalCoins: -1 }).limit(20).lean();
+            const topUsers = await User.find({
+                account_deleted: { $ne: true },
+                isBlocked: { $ne: true }
+            })
+            .sort({ totalCoins: -1, coins: -1 })
+            .limit(20)
+            .lean();
+
             coinsToppers = topUsers.map(u => ({
                 userId: u.userId,
                 name: u.displayName || u.name || 'Unknown User',
@@ -11295,15 +11439,21 @@ router.get('/api/task-performance/leaderboard', adminAuth, checkPermission('dash
                 totalCoins: Number(u.totalCoins) || Number(u.coins) || 0
             }));
         } else {
-            await connectMongo();
-            const mongoQuery = { appName: app };
+            const mongoQuery = {
+                $or: [
+                    { appName: app },
+                    { appName: '' },
+                    { appName: { $exists: false } },
+                    { appName: null }
+                ]
+            };
             if (start || end) {
                 mongoQuery.timestamp = {};
                 if (start) mongoQuery.timestamp.$gte = start;
                 if (end) mongoQuery.timestamp.$lte = end;
             }
 
-            const rewardsMongo = await RewardHistory.find(mongoQuery).lean();
+            const rewardsMongo = await RewardHistory.find(mongoQuery).select('userId coins').lean();
             const userCoinsMap = {};
 
             rewardsMongo.forEach(d => {
@@ -11312,62 +11462,123 @@ router.get('/api/task-performance/leaderboard', adminAuth, checkPermission('dash
                 const coins = Number(d.coins) || 0;
 
                 if (!userCoinsMap[userId]) {
-                    userCoinsMap[userId] = {
-                        userId,
-                        name: d.userName || d.name || 'Unknown User',
-                        photoUrl: d.photoUrl || '',
-                        totalCoins: 0
-                    };
+                    userCoinsMap[userId] = 0;
                 }
-                userCoinsMap[userId].totalCoins += coins;
+                userCoinsMap[userId] += coins;
             });
 
-            coinsToppers = Object.values(userCoinsMap)
-                .sort((a, b) => b.totalCoins - a.totalCoins)
+            const sortedCoinUsers = Object.entries(userCoinsMap)
+                .sort((a, b) => b[1] - a[1])
                 .slice(0, 20);
 
-            if (coinsToppers.length > 0) {
-                const userIds = coinsToppers.map(t => t.userId);
+            if (sortedCoinUsers.length > 0) {
+                const userIds = sortedCoinUsers.map(t => t[0]);
                 const dbUsers = await User.find({ userId: { $in: userIds } }).lean();
                 const usersDataMap = {};
                 dbUsers.forEach(uDoc => {
                     usersDataMap[uDoc.userId] = uDoc;
                 });
 
-                coinsToppers = coinsToppers.map(t => {
-                    const uData = usersDataMap[t.userId] || {};
+                coinsToppers = sortedCoinUsers.map(([uId, totalCoins]) => {
+                    const uData = usersDataMap[uId] || {};
                     return {
-                        userId: t.userId,
-                        name: uData.displayName || uData.name || t.name,
-                        photoUrl: uData.photoUrl || t.photoUrl,
-                        totalCoins: t.totalCoins
+                        userId: uId,
+                        name: uData.displayName || uData.name || 'Unknown User',
+                        photoUrl: uData.photoUrl || '',
+                        totalCoins
                     };
                 });
             }
         }
 
-        // 2. DYNAMIC REFERRALS LEADERBOARD
-        await connectMongo();
-        const topRefUsers = await User.find({ referralCount: { $gt: 0 } })
+        // 2. DYNAMIC REFERRALS LEADERBOARD (Date filtered if range != lifetime)
+        if (range === 'lifetime') {
+            // Check users with referralCount or group by referredBy
+            const topRefUsers = await User.find({
+                account_deleted: { $ne: true },
+                isBlocked: { $ne: true }
+            })
             .sort({ referralCount: -1 })
             .limit(20)
             .lean();
 
-        if (topRefUsers.length > 0) {
-            referralToppers = topRefUsers.map(u => ({
-                userId: u.userId,
-                name: u.displayName || u.name || 'Unknown User',
-                photoUrl: u.photoUrl || '',
-                totalReferrals: u.referralCount || 0
-            }));
+            if (topRefUsers.length > 0 && topRefUsers[0].referralCount > 0) {
+                referralToppers = topRefUsers.map(u => ({
+                    userId: u.userId,
+                    name: u.displayName || u.name || 'Unknown User',
+                    photoUrl: u.photoUrl || '',
+                    totalReferrals: u.referralCount || 0
+                }));
+            } else {
+                // Aggregate from all referred users
+                const refAgg = await User.aggregate([
+                    { $match: { referredBy: { $exists: true, $ne: '' } } },
+                    { $group: { _id: '$referredBy', count: { $sum: 1 } } },
+                    { $sort: { count: -1 } },
+                    { $limit: 20 }
+                ]);
+
+                if (refAgg.length > 0) {
+                    const refCodes = refAgg.map(r => r._id);
+                    const dbUsers = await User.find({
+                        $or: [{ userId: { $in: refCodes } }, { referralCode: { $in: refCodes } }]
+                    }).lean();
+                    const uMap = {};
+                    dbUsers.forEach(u => {
+                        uMap[u.userId] = u;
+                        if (u.referralCode) uMap[u.referralCode] = u;
+                    });
+
+                    referralToppers = refAgg.map(r => {
+                        const u = uMap[r._id] || {};
+                        return {
+                            userId: u.userId || r._id,
+                            name: u.displayName || u.name || 'Unknown User',
+                            photoUrl: u.photoUrl || '',
+                            totalReferrals: r.count
+                        };
+                    });
+                }
+            }
         } else {
-            const allUsers = await User.find({}).sort({ createdAt: -1 }).limit(20).lean();
-            referralToppers = allUsers.map(u => ({
-                userId: u.userId,
-                name: u.displayName || u.name || 'Unknown User',
-                photoUrl: u.photoUrl || '',
-                totalReferrals: u.referralCount || 0
-            }));
+            // Aggregate referred users created in the selected date range
+            const refDateQuery = {
+                referredBy: { $exists: true, $ne: '' }
+            };
+            if (start || end) {
+                refDateQuery.createdAt = {};
+                if (start) refDateQuery.createdAt.$gte = start;
+                if (end) refDateQuery.createdAt.$lte = end;
+            }
+
+            const refAgg = await User.aggregate([
+                { $match: refDateQuery },
+                { $group: { _id: '$referredBy', count: { $sum: 1 } } },
+                { $sort: { count: -1 } },
+                { $limit: 20 }
+            ]);
+
+            if (refAgg.length > 0) {
+                const refCodes = refAgg.map(r => r._id);
+                const dbUsers = await User.find({
+                    $or: [{ userId: { $in: refCodes } }, { referralCode: { $in: refCodes } }]
+                }).lean();
+                const uMap = {};
+                dbUsers.forEach(u => {
+                    uMap[u.userId] = u;
+                    if (u.referralCode) uMap[u.referralCode] = u;
+                });
+
+                referralToppers = refAgg.map(r => {
+                    const u = uMap[r._id] || {};
+                    return {
+                        userId: u.userId || r._id,
+                        name: u.displayName || u.name || 'Unknown User',
+                        photoUrl: u.photoUrl || '',
+                        totalReferrals: r.count
+                    };
+                });
+            }
         }
 
         return res.json({
@@ -11410,9 +11621,15 @@ router.get('/api/task-performance/user-breakdown', adminAuth, checkPermission('d
             end = bounds.end;
         }
 
-        await connectMongo();
-
-        const mongoQuery = { appName: app, userId };
+        const mongoQuery = {
+            $or: [
+                { appName: app },
+                { appName: '' },
+                { appName: { $exists: false } },
+                { appName: null }
+            ],
+            userId: String(userId)
+        };
         if (start || end) {
             mongoQuery.timestamp = {};
             if (start) mongoQuery.timestamp.$gte = start;
@@ -11425,16 +11642,18 @@ router.get('/api/task-performance/user-breakdown', adminAuth, checkPermission('d
 
         rewardsMongo.forEach(data => {
             const coins = Number(data.coins) || 0;
-            const provider = String(data.provider || 'unknown').trim();
+            const provider = String(data.provider || data.type || 'Task Activity').trim();
             const offerId = String(data.offerId || '').trim();
 
             let label = provider;
-            if (provider === 'DailyTask') {
+            if (provider.toLowerCase() === 'dailytask' || provider.toLowerCase() === 'daily task') {
                 label = `Daily Task: ${offerId || 'Daily Task'}`;
-            } else if (provider === 'PlayGames') {
+            } else if (provider.toLowerCase() === 'playgames' || provider.toLowerCase() === 'game') {
                 label = `Game: ${offerId || 'Game'}`;
-            } else if (provider === 'Task' || provider === 'Offerwall' || provider === 'cpx' || provider === 'wannads' || provider === 'pubscale' || provider === 'timewall' || provider === 'bitlabs') {
-                label = `Task: ${offerId || 'Task'}`;
+            } else if (provider.toLowerCase() === 'super offer' || provider.toLowerCase() === 'superoffer') {
+                label = `Super Offer: ${offerId || 'Super Offer'}`;
+            } else if (offerId) {
+                label = `${provider}: ${offerId}`;
             }
             breakdownMap[label] = (breakdownMap[label] || 0) + coins;
         });
@@ -11448,7 +11667,7 @@ router.get('/api/task-performance/user-breakdown', adminAuth, checkPermission('d
             success: true,
             user: {
                 userId,
-                name: userData.name || 'Unknown User',
+                name: userData.displayName || userData.name || 'Unknown User',
                 email: userData.email || '',
                 photoUrl: userData.photoUrl || ''
             },
@@ -11517,23 +11736,36 @@ async function getEarningRecords(db, mode, startBound, endBound) {
 
     const records = await RewardHistory.find(query).select('coins timestamp provider type').lean();
     return records.filter(data => {
-        const provider = data.provider || '';
-        const type = data.type || '';
+        const provider = (data.provider || '').toLowerCase().trim();
+        const type = (data.type || '').toLowerCase().trim();
+
+        // Exclude Signup bonus, Admin bonus, and Referral bonus/commissions completely
+        const excluded = [
+            'signup bonus', 'signup', 'sign up', 'admin bonus', 'admin adjustment', 
+            'admin added', 'referral bonus', 'referral commission', 'referral', 'referral mission'
+        ];
+        if (excluded.some(ex => provider.includes(ex) || type.includes(ex))) {
+            return false;
+        }
 
         if (mode === 'ads') {
-            const adsProviders = [
-                'streaks', 'daily check-in', 'super offer', 'game gems', 'app install gems',
-                'battle free join', 'battle arena free join', 'battle arena'
+            const adsKeywords = [
+                'streak', 'daily check-in', 'check-in', 'super offer', 'game gems', 'app install gems',
+                'battle free', 'battle arena', 'watch & earn', 'watch video', 'diamond catch', 'daily challenge', 'daily task'
             ];
-            const pClean = provider.toLowerCase();
-            if (!adsProviders.includes(pClean) && !pClean.includes('battle free')) return false;
+            return adsKeywords.some(ak => provider.includes(ak) || type.includes(ak));
         } else if (mode === 'offerwall') {
-            if (type !== 'Offerwall' && type !== 'Survey') return false;
-            if (provider === 'Read & Earn') return false;
+            if (provider.includes('read & earn') || type.includes('read & earn')) return false;
+            if (type === 'offerwall' || type === 'survey') return true;
+            const offerwallKeywords = [
+                'offerwall', 'survey', 'cpx', 'wannads', 'pubscale', 'timewall', 'bitlabs', 
+                'adgate', 'pollfish', 'monlix', 'inbrain', 'tapjoy', 'adjoe', 'torox', 'aye-t', 'revlum', 'offertoro', 'task'
+            ];
+            return offerwallKeywords.some(ok => provider.includes(ok) || type.includes(ok));
         } else if (mode === 'read_earn') {
-            if (provider !== 'Read & Earn') return false;
+            return provider.includes('read & earn') || type.includes('read & earn');
         }
-        return true;
+        return false;
     });
 }
 
@@ -11990,8 +12222,15 @@ router.get('/api/my-earning/provider-users', adminAuth, checkPermission('dashboa
             }
         }
 
-        // Query MongoDB RewardHistory
-        const mongoQuery = { appName: app };
+        // Query MongoDB RewardHistory with appName fallback
+        const mongoQuery = {
+            $or: [
+                { appName: app },
+                { appName: '' },
+                { appName: { $exists: false } },
+                { appName: null }
+            ]
+        };
         if (start || end) {
             mongoQuery.timestamp = {};
             if (start) mongoQuery.timestamp.$gte = start;
@@ -12000,20 +12239,25 @@ router.get('/api/my-earning/provider-users', adminAuth, checkPermission('dashboa
 
         const rewardsList = await RewardHistory.find(mongoQuery).lean();
 
-        const records = rewardsList.filter(rec => {
-            const provider = rec.provider || '';
-            const type = rec.type || '';
-            if (providerName && provider.toLowerCase() !== providerName.toLowerCase()) return false;
+        const pClean = providerName.toLowerCase().trim();
 
-            if (mode === 'ads') {
-                const adsProviders = ['streaks', 'daily check-in', 'super offer', 'game gems', 'app install gems'];
-                if (!adsProviders.includes(provider.toLowerCase())) return false;
-            } else if (mode === 'offerwall') {
-                if (type !== 'Offerwall' && type !== 'Survey') return false;
-                if (provider === 'Read & Earn') return false;
-            } else if (mode === 'read_earn') {
-                if (provider !== 'Read & Earn') return false;
+        const records = rewardsList.filter(rec => {
+            const provider = (rec.provider || '').toLowerCase().trim();
+            const type = (rec.type || '').toLowerCase().trim();
+
+            // Exclude bonus coins
+            const excluded = [
+                'signup bonus', 'signup', 'sign up', 'admin bonus', 'admin adjustment', 
+                'admin added', 'referral bonus', 'referral commission', 'referral', 'referral mission'
+            ];
+            if (excluded.some(ex => provider.includes(ex) || type.includes(ex))) {
+                return false;
             }
+
+            if (pClean && provider !== pClean && !provider.includes(pClean) && !pClean.includes(provider)) {
+                return false;
+            }
+
             return true;
         });
 

@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="/css/admin.css">
     <link rel="icon" href="/images/favicon.png">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         :root {
@@ -125,6 +126,7 @@
             border-bottom: 4px solid var(--lvl-color);
             cursor: pointer;
             transition: all 0.2s ease;
+            position: relative;
         }
 
         .level-card.level-1 { --lvl-color: #052e1f; }
@@ -133,14 +135,25 @@
 
         .level-card:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.06);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
+            border-color: var(--lvl-color);
+        }
+
+        .level-card.selected {
+            background: #f0fdf4;
+            border-color: #052e1f;
+            box-shadow: 0 4px 14px rgba(5, 46, 31, 0.15);
         }
 
         .level-title {
-            font-size: 12px;
+            font-size: 13px;
             font-weight: 800;
             color: #0f172a;
             margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
         }
 
         .level-stats {
@@ -150,7 +163,7 @@
         }
 
         .level-stat-val {
-            font-size: 16px;
+            font-size: 18px;
             font-weight: 800;
             color: #0f172a;
         }
@@ -160,14 +173,6 @@
             color: var(--muted);
             font-weight: 700;
             text-transform: uppercase;
-        }
-
-        .level-card .coins-stat {
-            display: none !important;
-        }
-
-        .level-card.selected .coins-stat {
-            display: flex !important;
         }
 
         /* Presets Buttons */
@@ -263,6 +268,7 @@
             border: 1px solid var(--border);
             border-radius: 14px;
             overflow: auto;
+            background: #ffffff;
         }
 
         table {
@@ -288,7 +294,49 @@
         }
 
         tr.selected-promoter-row {
-            background: rgba(5, 46, 31, 0.06) !important;
+            background: rgba(5, 46, 31, 0.08) !important;
+        }
+
+        tr:hover {
+            background: #f8fafc;
+        }
+
+        /* Pagination Bar */
+        .pagination-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            background: #f8fafc;
+            border-top: 1px solid var(--border);
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--muted);
+            border-bottom-left-radius: 14px;
+            border-bottom-right-radius: 14px;
+        }
+
+        .pagination-btn {
+            padding: 5px 12px;
+            border: 1px solid var(--border);
+            background: #ffffff;
+            color: #0f172a;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .pagination-btn:hover:not(:disabled) {
+            background: #052e1f;
+            color: #ffffff;
+            border-color: #052e1f;
+        }
+
+        .pagination-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
         }
 
         /* Detail Placeholder */
@@ -330,26 +378,33 @@
         }
 
         .modal-card {
-            width: min(560px, 94vw);
+            width: min(600px, 94vw);
             background: #ffffff;
             border-radius: 24px;
             overflow: hidden;
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
         }
 
         .modal-head {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 20px 24px;
+            padding: 18px 24px;
             background: linear-gradient(135deg, #052e1f 0%, #0a4731 100%);
             color: #ffffff;
+            flex-shrink: 0;
         }
 
         .modal-head h3 {
             margin: 0;
-            font-size: 18px;
+            font-size: 17px;
             font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .modal-close {
@@ -359,12 +414,46 @@
             height: 32px;
             border-radius: 50%;
             color: #ffffff;
-            font-size: 20px;
+            font-size: 18px;
             cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .modal-close:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(90deg);
         }
 
         .modal-body {
             padding: 24px;
+            overflow-y: auto;
+        }
+
+        /* P/L Report Breakdown Styles */
+        .pl-item-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 14px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 700;
+        }
+        .pl-item-row:nth-child(even) {
+            background: #f8fafc;
+        }
+        .pl-item-row.deduct {
+            color: #dc2626;
+        }
+        .pl-item-row.highlight {
+            background: #ecfdf5;
+            color: #052e1f;
+            font-size: 14px;
+            font-weight: 800;
+            border: 1px solid #a7f3d0;
         }
     </style>
 </head>
@@ -406,10 +495,10 @@
                 <section class="glass-card" style="margin-bottom: 24px; padding: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
                     <div>
                         <h1 style="font-size: 22px; font-weight: 800; color: #0f172a; margin: 0 0 4px 0;">Promoters Dashboard</h1>
-                        <p style="color: var(--muted); font-size: 13px; margin: 0;">Track top referrers, manage levels, and configure withdrawal permissions</p>
+                        <p style="color: var(--muted); font-size: 13px; margin: 0;">Track top referrers, manage levels, calculate accurate ROI / P&L, and configure withdrawal permissions</p>
                     </div>
                     <button class="btn-action-primary" onclick="openAddPromoterModal()">
-                        <i class="fa-solid fa-plus" style="margin-right: 4px;"></i> Add Promoter
+                        <i class="fa-solid fa-plus"></i> Add Promoter
                     </button>
                 </section>
 
@@ -430,7 +519,7 @@
                         <input type="date" id="globalEndDate" onchange="onGlobalDateChange()" style="padding: 7px 12px; border-radius: 10px; border: 1px solid var(--border); font-size: 13px; background: white;">
                     </div>
                     <button class="btn-action-primary" onclick="checkProfitLoss()" style="margin-left: auto; background: #10b981;">
-                        📊 Check P/L
+                        <i class="fa-solid fa-chart-pie"></i> Check P/L
                     </button>
                 </section>
 
@@ -613,7 +702,7 @@
                             </div>
 
                             <!-- General Stats Mini Cards -->
-                            <div class="stats-grid-3">
+                            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 24px;">
                                 <div class="kpi-mini-card">
                                     <span class="kpi-mini-label">Filtered Refers</span>
                                     <span class="kpi-mini-value" id="statsRefers">0</span>
@@ -628,65 +717,80 @@
                                 </div>
                             </div>
 
-                            <!-- Levels Breakdown Section -->
-                            <h4 style="font-size: 14px; font-weight: 800; color: #052e1f; margin-bottom: 12px; display: flex; justify-content: space-between;">
-                                <span>Referral Levels Breakdown</span>
-                                <span style="font-size: 11px; color: var(--muted); font-weight: 600; font-style: italic;">💡 Click card to filter users list</span>
+                            <!-- Referral Levels Breakdown Section -->
+                            <h4 style="font-size: 14px; font-weight: 800; color: #052e1f; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;">
+                                <span><i class="fa-solid fa-sitemap" style="margin-right: 6px;"></i> Referral Levels Breakdown</span>
+                                <span style="font-size: 11px; color: #16a34a; font-weight: 700; background: #ecfdf5; padding: 4px 10px; border-radius: 8px;">💡 Click card for 20/page Popup & List</span>
                             </h4>
                             <div class="level-grid">
-                                <div class="level-card level-1" id="lvlCard1" onclick="selectLevelFilter(1)">
-                                    <div class="level-title">Level 1 (Direct)</div>
+                                <div class="level-card level-1 selected" id="lvlCard1" onclick="selectLevelFilter(1, true)">
+                                    <div class="level-title">
+                                        <span>Level 1 (Direct)</span>
+                                        <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 10px; opacity: 0.7;"></i>
+                                    </div>
                                     <div class="level-stats">
                                         <div class="level-stat-group">
                                             <span class="level-stat-val" id="lvl1Count">0</span>
-                                            <span class="level-stat-lbl">Users</span>
+                                            <div class="level-stat-lbl">Users</div>
                                         </div>
-                                        <div class="level-stat-group coins-stat">
-                                            <span class="level-stat-val" id="lvl1Coins">0</span>
-                                            <span class="level-stat-lbl">Coins</span>
+                                        <div class="level-stat-group">
+                                            <span class="level-stat-val" id="lvl1Coins" style="color: #16a34a;">0</span>
+                                            <div class="level-stat-lbl">Coins</div>
                                         </div>
                                     </div>
                                 </div>
 
-                                <div class="level-card level-2" id="lvlCard2" onclick="selectLevelFilter(2)">
-                                    <div class="level-title">Level 2</div>
+                                <div class="level-card level-2" id="lvlCard2" onclick="selectLevelFilter(2, true)">
+                                    <div class="level-title">
+                                        <span>Level 2</span>
+                                        <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 10px; opacity: 0.7;"></i>
+                                    </div>
                                     <div class="level-stats">
                                         <div class="level-stat-group">
                                             <span class="level-stat-val" id="lvl2Count">0</span>
-                                            <span class="level-stat-lbl">Users</span>
+                                            <div class="level-stat-lbl">Users</div>
                                         </div>
-                                        <div class="level-stat-group coins-stat">
-                                            <span class="level-stat-val" id="lvl2Coins">0</span>
-                                            <span class="level-stat-lbl">Coins</span>
+                                        <div class="level-stat-group">
+                                            <span class="level-stat-val" id="lvl2Coins" style="color: #16a34a;">0</span>
+                                            <div class="level-stat-lbl">Coins</div>
                                         </div>
                                     </div>
                                 </div>
 
-                                <div class="level-card level-3" id="lvlCard3" onclick="selectLevelFilter(3)">
-                                    <div class="level-title">Level 3</div>
+                                <div class="level-card level-3" id="lvlCard3" onclick="selectLevelFilter(3, true)">
+                                    <div class="level-title">
+                                        <span>Level 3</span>
+                                        <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 10px; opacity: 0.7;"></i>
+                                    </div>
                                     <div class="level-stats">
                                         <div class="level-stat-group">
                                             <span class="level-stat-val" id="lvl3Count">0</span>
-                                            <span class="level-stat-lbl">Users</span>
+                                            <div class="level-stat-lbl">Users</div>
                                         </div>
-                                        <div class="level-stat-group coins-stat">
-                                            <span class="level-stat-val" id="lvl3Coins">0</span>
-                                            <span class="level-stat-lbl">Coins</span>
+                                        <div class="level-stat-group">
+                                            <span class="level-stat-val" id="lvl3Coins" style="color: #16a34a;">0</span>
+                                            <div class="level-stat-lbl">Coins</div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
-                            <!-- Referred Users Search & Table -->
+                            <!-- Referred Users Search & Paginated Table -->
                             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 12px;">
                                 <h4 style="font-size: 14px; font-weight: 800; color: #052e1f; margin: 0;" id="usersListTitle">Referred Users (Level 1)</h4>
-                                <input type="text" id="userSearchInput" onkeyup="filterReferredUsersTable()" placeholder="🔍 Search referred user..." style="padding: 6px 12px; border-radius: 8px; border: 1px solid var(--border); font-size: 12px; width: 200px;">
+                                <div style="display: flex; gap: 8px; align-items: center;">
+                                    <input type="text" id="userSearchInput" onkeyup="filterReferredUsersTable()" placeholder="🔍 Search referred user..." style="padding: 6px 12px; border-radius: 8px; border: 1px solid var(--border); font-size: 12px; width: 200px;">
+                                    <button class="btn-sm-info" onclick="openLevelModalForCurrentLevel()">
+                                        <i class="fa-solid fa-expand"></i> Popup View
+                                    </button>
+                                </div>
                             </div>
 
                             <div class="table-container">
                                 <table>
                                     <thead>
                                         <tr>
+                                            <th>#</th>
                                             <th>User</th>
                                             <th>Level</th>
                                             <th>Joined Date</th>
@@ -695,17 +799,65 @@
                                     </thead>
                                     <tbody id="referredUsersTableBody">
                                         <tr>
-                                            <td colspan="4" style="text-align: center; color: var(--muted); padding: 20px;">
+                                            <td colspan="5" style="text-align: center; color: var(--muted); padding: 20px;">
                                                 No users found for this level.
                                             </td>
                                         </tr>
                                     </tbody>
                                 </table>
+                                <div class="pagination-bar" id="tablePaginationBar">
+                                    <span id="tablePageInfo">Showing 0-0 of 0 users</span>
+                                    <div style="display: flex; gap: 8px; align-items: center;">
+                                        <button class="pagination-btn" id="btnPrevTablePage" onclick="changeTablePage(-1)">&laquo; Prev</button>
+                                        <span id="tablePageNumber" style="font-size: 12px; font-weight: 800; color: #052e1f;">Page 1</span>
+                                        <button class="pagination-btn" id="btnNextTablePage" onclick="changeTablePage(1)">Next &raquo;</button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </main>
+        </div>
+    </div>
+
+    <!-- REFERRAL LEVEL USERS DETAIL POPUP MODAL (20 per page) -->
+    <div id="levelUsersModal" class="modal">
+        <div class="modal-card" style="width: min(780px, 94vw);">
+            <div class="modal-head">
+                <h3 id="levelModalTitle"><i class="fa-solid fa-users"></i> Level 1 Referred Users</h3>
+                <button type="button" class="modal-close" onclick="closeLevelUsersModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 12px;">
+                    <input type="text" id="modalUserSearchInput" onkeyup="filterModalUsers()" placeholder="🔍 Filter by Name, Email, or UID..." style="padding: 8px 14px; border-radius: 10px; border: 1px solid var(--border); font-size: 13px; width: 280px;">
+                    <span id="modalTotalBadge" style="background: #f1f5f9; color: #334155; padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: 800;">0 Users</span>
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 45px;">#</th>
+                                <th>User</th>
+                                <th>UID</th>
+                                <th>Joined Date</th>
+                                <th style="text-align: right;">Total Earned</th>
+                            </tr>
+                        </thead>
+                        <tbody id="modalUsersTableBody">
+                            <!-- Dynamic rows -->
+                        </tbody>
+                    </table>
+                    <div class="pagination-bar">
+                        <span id="modalPageInfo">Showing 0-0 of 0 users</span>
+                        <div style="display: flex; gap: 8px; align-items: center;">
+                            <button class="pagination-btn" id="btnModalPrev" onclick="changeModalPage(-1)">&laquo; Prev</button>
+                            <span id="modalPageNumber" style="font-size: 12px; font-weight: 800; color: #052e1f;">Page 1</span>
+                            <button class="pagination-btn" id="btnModalNext" onclick="changeModalPage(1)">Next &raquo;</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -755,13 +907,15 @@
 
     <!-- PROFIT / LOSS REPORT MODAL OVERLAY -->
     <div id="profitLossModal" class="modal">
-        <div class="modal-card" style="width: min(720px, 94vw);">
+        <div class="modal-card" style="width: min(740px, 94vw);">
             <div class="modal-head">
-                <h3>📊 Profit / Loss Analysis Report</h3>
+                <h3 id="plModalHeaderTitle"><i class="fa-solid fa-chart-line"></i> 📊 Profit & Loss Report</h3>
                 <button type="button" class="modal-close" onclick="closeProfitLossModal()">&times;</button>
             </div>
-            <div class="modal-body" id="profitLossReportContent">
-                <div style="text-align: center; color: var(--muted); padding: 30px;">Loading P/L calculation...</div>
+            <div class="modal-body" id="profitLossModalBody">
+                <div id="profitLossReportContent">
+                    <div style="text-align: center; color: var(--muted); padding: 30px;">Loading P/L calculation...</div>
+                </div>
             </div>
         </div>
     </div>
@@ -773,13 +927,24 @@
         let currentDetailData = null;
         let selectedLevel = 1;
 
+        // Pagination state for bottom table
+        let tablePage = 1;
+        const pageSize = 20;
+
+        // Pagination state for popup modal
+        let modalLevelPage = 1;
+        const modalPageSize = 20;
+
+        // P/L Report dynamic calculation cache
+        let plCurrentData = null;
+
         document.addEventListener('DOMContentLoaded', () => {
             // Set initial dates for global date range
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('globalEndDate').value = today;
             document.getElementById('globalStartDate').value = getFirstDayOfMonth();
             
-            // Initial load of promoters
+            // Initial load of promoters and cost KPIs
             loadPromotersList();
             fetchCostSummary();
         });
@@ -839,6 +1004,34 @@
             if (currentPromoterId) loadPromoterDetail(currentPromoterId);
         }
 
+        // Fetch cost summary KPI cards
+        async function fetchCostSummary() {
+            try {
+                const app = getSelectedApp();
+                const preset = document.getElementById('globalPresetSelect').value;
+                const start = document.getElementById('globalStartDate').value;
+                const end = document.getElementById('globalEndDate').value;
+
+                let url = `/api/promoters/cost-summary?app=${encodeURIComponent(app)}`;
+                if (preset !== 'lifetime' && start && end) {
+                    url += `&start=${encodeURIComponent(start)}&end=${encodeURIComponent(end)}`;
+                }
+
+                const res = await fetch(url);
+                const data = await res.json();
+                if (!res.ok || !data.success) return;
+
+                const c = data.costs || data;
+                document.getElementById('costToday').textContent = `₹${Number(c.today ?? data.todayCost ?? 0).toLocaleString('en-IN')}`;
+                document.getElementById('costYesterday').textContent = `₹${Number(c.yesterday ?? data.yesterdayCost ?? 0).toLocaleString('en-IN')}`;
+                document.getElementById('costThisMonth').textContent = `₹${Number(c.thisMonth ?? data.thisMonthCost ?? 0).toLocaleString('en-IN')}`;
+                document.getElementById('costLastMonth').textContent = `₹${Number(c.lastMonth ?? data.lastMonthCost ?? 0).toLocaleString('en-IN')}`;
+                document.getElementById('costFiltered').textContent = `₹${Number(c.filtered ?? data.filteredCost ?? 0).toLocaleString('en-IN')}`;
+            } catch (err) {
+                console.error('Failed to fetch cost summary:', err);
+            }
+        }
+
         // Fetch promoters list from API
         async function loadPromotersList() {
             const app = getSelectedApp();
@@ -879,8 +1072,8 @@
                                 <div style="font-weight: 800; color: #0f172a;">${escapeHtml(prom.name || 'User')}</div>
                                 <div style="font-size: 11px; color: var(--muted);">${escapeHtml(prom.email || '')}</div>
                             </td>
-                            <td style="text-align: right; font-weight: 800;">${prom.directRefers || 0}</td>
-                            <td style="text-align: right; font-weight: 800; color: #052e1f;">${prom.totalRefers || 0}</td>
+                            <td style="text-align: right; font-weight: 800;">${Number(prom.directRefers || 0).toLocaleString('en-IN')}</td>
+                            <td style="text-align: right; font-weight: 800; color: #052e1f;">${Number(prom.totalRefers || 0).toLocaleString('en-IN')}</td>
                             <td style="text-align: right; font-weight: 800; color: #16a34a;">₹${Number(prom.priceInInr || 0).toLocaleString('en-IN')}</td>
                         </tr>
                     `;
@@ -944,7 +1137,7 @@
                 reasonBanner.style.display = 'none';
             }
 
-            // MongoDB deal details
+            // Deal details
             document.getElementById('detChannelName').textContent = prom.channelName || 'N/A';
             document.getElementById('detPriceInR').textContent = `₹${Number(prom.priceInInr || 0).toLocaleString('en-IN')}`;
             document.getElementById('detPromoDate').textContent = prom.promoDate ? new Date(prom.promoDate).toLocaleDateString('en-IN') : 'N/A';
@@ -959,22 +1152,23 @@
             }
 
             // General filtered stats
-            document.getElementById('statsRefers').textContent = data.totals?.refers || 0;
+            document.getElementById('statsRefers').textContent = Number(data.totals?.refers || 0).toLocaleString('en-IN');
             document.getElementById('statsCoins').textContent = Number(data.totals?.coins || 0).toLocaleString('en-IN');
             document.getElementById('statsStatus').textContent = data.isBlocked ? 'Blocked' : 'Active';
 
             // Levels stats
-            document.getElementById('lvl1Count').textContent = data.levels?.lvl1?.count || 0;
+            document.getElementById('lvl1Count').textContent = Number(data.levels?.lvl1?.count || 0).toLocaleString('en-IN');
             document.getElementById('lvl1Coins').textContent = Number(data.levels?.lvl1?.coins || 0).toLocaleString('en-IN');
-            document.getElementById('lvl2Count').textContent = data.levels?.lvl2?.count || 0;
+            document.getElementById('lvl2Count').textContent = Number(data.levels?.lvl2?.count || 0).toLocaleString('en-IN');
             document.getElementById('lvl2Coins').textContent = Number(data.levels?.lvl2?.coins || 0).toLocaleString('en-IN');
-            document.getElementById('lvl3Count').textContent = data.levels?.lvl3?.count || 0;
+            document.getElementById('lvl3Count').textContent = Number(data.levels?.lvl3?.count || 0).toLocaleString('en-IN');
             document.getElementById('lvl3Coins').textContent = Number(data.levels?.lvl3?.coins || 0).toLocaleString('en-IN');
 
-            selectLevelFilter(1);
+            selectLevelFilter(1, false);
         }
 
-        function selectLevelFilter(lvl) {
+        // Select Level Filter: Updates cards, bottom table pagination, and optionally opens popup modal
+        function selectLevelFilter(lvl, openModal = false) {
             selectedLevel = lvl;
             [1, 2, 3].forEach(l => {
                 const card = document.getElementById(`lvlCard${l}`);
@@ -985,41 +1179,428 @@
             });
 
             document.getElementById('usersListTitle').textContent = `Referred Users (Level ${lvl})`;
+            tablePage = 1;
+            modalLevelPage = 1;
+            renderReferredUsersTable();
+
+            if (openModal) {
+                openLevelModalForCurrentLevel();
+            }
+        }
+
+        function openLevelModalForCurrentLevel() {
+            if (!currentDetailData) return;
+            document.getElementById('levelModalTitle').innerHTML = `<i class="fa-solid fa-users"></i> Level ${selectedLevel} Referred Users`;
+            document.getElementById('modalUserSearchInput').value = '';
+            modalLevelPage = 1;
+            renderModalUsersTable();
+            document.getElementById('levelUsersModal').classList.add('is-open');
+        }
+
+        function closeLevelUsersModal() {
+            document.getElementById('levelUsersModal').classList.remove('is-open');
+        }
+
+        // Render bottom referred users table with 20 items pagination
+        function renderReferredUsersTable() {
+            if (!currentDetailData || !currentDetailData.usersByLevel) return;
+            const allUsers = currentDetailData.usersByLevel[`lvl${selectedLevel}`] || [];
+            const query = (document.getElementById('userSearchInput')?.value || '').toLowerCase();
+            
+            const filteredUsers = allUsers.filter(u => {
+                if (!query) return true;
+                return (u.name || '').toLowerCase().includes(query) ||
+                       (u.email || '').toLowerCase().includes(query) ||
+                       (u.userId || '').toLowerCase().includes(query);
+            });
+
+            const tbody = document.getElementById('referredUsersTableBody');
+            const total = filteredUsers.length;
+            const totalPages = Math.max(1, Math.ceil(total / pageSize));
+
+            if (tablePage > totalPages) tablePage = totalPages;
+
+            const startIdx = (tablePage - 1) * pageSize;
+            const pageUsers = filteredUsers.slice(startIdx, startIdx + pageSize);
+
+            if (pageUsers.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--muted); padding: 24px; font-weight: 600;">No users found for Level ${selectedLevel}.</td></tr>`;
+            } else {
+                tbody.innerHTML = pageUsers.map((u, i) => `
+                    <tr>
+                        <td style="font-weight: 800; color: #64748b;">${startIdx + i + 1}</td>
+                        <td>
+                            <div style="font-weight: 800; color: #0f172a;">${escapeHtml(u.name || 'User')}</div>
+                            <div style="font-size: 11px; color: var(--muted);">${escapeHtml(u.email || '')} | <span style="color:#64748b;">UID: ${u.userId}</span></div>
+                        </td>
+                        <td><span style="background: rgba(5, 46, 31, 0.08); color: #052e1f; padding: 2px 8px; border-radius: 6px; font-size: 11px; font-weight: 800;">Lvl ${selectedLevel}</span></td>
+                        <td style="font-size: 12px; color: var(--muted);">${u.createdAt ? new Date(u.createdAt).toLocaleDateString('en-IN') : '-'}</td>
+                        <td style="text-align: right; font-weight: 800; color: #16a34a;"><i class="fa-solid fa-coins" style="color: #d97706; margin-right: 3px;"></i> ${Number(u.coinsEarned || 0).toLocaleString('en-IN')}</td>
+                    </tr>
+                `).join('');
+            }
+
+            // Pagination Controls
+            const endIdx = Math.min(startIdx + pageUsers.length, total);
+            document.getElementById('tablePageInfo').textContent = total > 0 ? `Showing ${startIdx + 1}-${endIdx} of ${total} users` : 'Showing 0 users';
+            document.getElementById('tablePageNumber').textContent = `Page ${tablePage} of ${totalPages}`;
+            document.getElementById('btnPrevTablePage').disabled = (tablePage <= 1);
+            document.getElementById('btnNextTablePage').disabled = (tablePage >= totalPages);
+        }
+
+        function changeTablePage(delta) {
+            tablePage += delta;
+            if (tablePage < 1) tablePage = 1;
             renderReferredUsersTable();
         }
 
-        function renderReferredUsersTable() {
-            if (!currentDetailData || !currentDetailData.usersByLevel) return;
-            const users = currentDetailData.usersByLevel[`lvl${selectedLevel}`] || [];
-            const tbody = document.getElementById('referredUsersTableBody');
+        function filterReferredUsersTable() {
+            tablePage = 1;
+            renderReferredUsersTable();
+        }
 
-            if (users.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: var(--muted); padding: 20px; font-weight: 600;">No users found for Level ${selectedLevel}.</td></tr>`;
+        // Render popup modal users list (20 per page)
+        function renderModalUsersTable() {
+            if (!currentDetailData || !currentDetailData.usersByLevel) return;
+            const allUsers = currentDetailData.usersByLevel[`lvl${selectedLevel}`] || [];
+            const query = (document.getElementById('modalUserSearchInput')?.value || '').toLowerCase();
+
+            const filteredUsers = allUsers.filter(u => {
+                if (!query) return true;
+                return (u.name || '').toLowerCase().includes(query) ||
+                       (u.email || '').toLowerCase().includes(query) ||
+                       (u.userId || '').toLowerCase().includes(query);
+            });
+
+            const tbody = document.getElementById('modalUsersTableBody');
+            const total = filteredUsers.length;
+            const totalPages = Math.max(1, Math.ceil(total / modalPageSize));
+
+            if (modalLevelPage > totalPages) modalLevelPage = totalPages;
+
+            const startIdx = (modalLevelPage - 1) * modalPageSize;
+            const pageUsers = filteredUsers.slice(startIdx, startIdx + modalPageSize);
+
+            document.getElementById('modalTotalBadge').textContent = `${total} Users Total`;
+
+            if (pageUsers.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--muted); padding: 30px; font-weight: 600;">No users found.</td></tr>`;
+            } else {
+                tbody.innerHTML = pageUsers.map((u, i) => `
+                    <tr>
+                        <td style="font-weight: 800; color: #64748b;">${startIdx + i + 1}</td>
+                        <td>
+                            <div style="font-weight: 800; color: #0f172a;">${escapeHtml(u.name || 'User')}</div>
+                            <div style="font-size: 11px; color: var(--muted);">${escapeHtml(u.email || '')}</div>
+                        </td>
+                        <td style="font-size: 12px; font-weight: 700; color: #334155;">${u.userId}</td>
+                        <td style="font-size: 12px; color: var(--muted);">${u.createdAt ? new Date(u.createdAt).toLocaleDateString('en-IN') : '-'}</td>
+                        <td style="text-align: right; font-weight: 800; color: #16a34a;"><i class="fa-solid fa-coins" style="color: #d97706; margin-right: 3px;"></i> ${Number(u.coinsEarned || 0).toLocaleString('en-IN')}</td>
+                    </tr>
+                `).join('');
+            }
+
+            const endIdx = Math.min(startIdx + pageUsers.length, total);
+            document.getElementById('modalPageInfo').textContent = total > 0 ? `Showing ${startIdx + 1}-${endIdx} of ${total} users` : 'Showing 0 users';
+            document.getElementById('modalPageNumber').textContent = `Page ${modalLevelPage} of ${totalPages}`;
+            document.getElementById('btnModalPrev').disabled = (modalLevelPage <= 1);
+            document.getElementById('btnModalNext').disabled = (modalLevelPage >= totalPages);
+        }
+
+        function changeModalPage(delta) {
+            modalLevelPage += delta;
+            if (modalLevelPage < 1) modalLevelPage = 1;
+            renderModalUsersTable();
+        }
+
+        function filterModalUsers() {
+            modalLevelPage = 1;
+            renderModalUsersTable();
+        }
+
+        // PROFIT & LOSS REPORT
+        async function checkProfitLoss() {
+            const modal = document.getElementById('profitLossModal');
+            const container = document.getElementById('profitLossReportContent');
+            modal.classList.add('is-open');
+
+            container.innerHTML = `<div style="text-align: center; color: var(--muted); padding: 40px;"><i class="fa-solid fa-spinner fa-spin fa-2x" style="margin-bottom: 12px; color: #052e1f;"></i><br>Calculating Profit & Loss statement...</div>`;
+
+            try {
+                const app = getSelectedApp();
+                const start = document.getElementById('globalStartDate').value;
+                const end = document.getElementById('globalEndDate').value;
+                const preset = document.getElementById('globalPresetSelect').value;
+
+                const res = await fetch('/api/promoters/profit-loss', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        app,
+                        start: preset === 'lifetime' ? '' : start,
+                        end: preset === 'lifetime' ? '' : end,
+                        usdToInrRate: 95
+                    })
+                });
+
+                const json = await res.json();
+                if (!res.ok || !json.success) throw new Error(json.message || 'Failed to calculate P/L');
+
+                plCurrentData = json;
+                renderProfitLossHTML(json);
+            } catch (err) {
+                container.innerHTML = `<div style="text-align: center; color: #dc2626; padding: 30px; font-weight: 700;"><i class="fa-solid fa-triangle-exclamation fa-2x" style="margin-bottom: 10px;"></i><br>Error: ${err.message}</div>`;
+            }
+        }
+
+        function recalculatePLFromInput(rateVal) {
+            if (!plCurrentData) return;
+            const rate = parseFloat(rateVal) || 95;
+            plCurrentData.usdToInrRate = rate;
+
+            const grossUSD = plCurrentData.grossUSD || plCurrentData.earningsUsd || 0;
+            const grossINR = grossUSD * rate;
+            const invalidCut = grossINR * 0.30;
+            const postInvalid = grossINR - invalidCut;
+            const commissionCut = postInvalid * 0.10;
+            const netAppRevenue = postInvalid - commissionCut;
+            const promoterCost = plCurrentData.promoterCostInr || plCurrentData.totalCost || 0;
+            const userPayouts = plCurrentData.payoutsTotalInr || 0;
+            const netProfitLoss = netAppRevenue - promoterCost - userPayouts;
+
+            plCurrentData.grossINR = grossINR;
+            plCurrentData.invalidCutInr = invalidCut;
+            plCurrentData.commissionCutInr = commissionCut;
+            plCurrentData.netAppRevenueInr = netAppRevenue;
+            plCurrentData.netProfitLossInr = netProfitLoss;
+            plCurrentData.isProfitable = netProfitLoss >= 0;
+
+            renderProfitLossHTML(plCurrentData, false);
+        }
+
+        function renderProfitLossHTML(data, updateInputFocus = true) {
+            const container = document.getElementById('profitLossReportContent');
+            const isProfitable = data.netProfitLossInr >= 0;
+            const netProfitFormatted = Math.abs(data.netProfitLossInr).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            const signSymbol = data.netProfitLossInr >= 0 ? '+' : '-';
+
+            container.innerHTML = `
+                <div style="background: #ffffff; border-radius: 16px;">
+                    <!-- Report Header -->
+                    <div style="border-bottom: 1px solid #e2e8f0; padding-bottom: 16px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+                        <div>
+                            <div style="font-size: 11px; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px;">APPLICATION</div>
+                            <h2 style="margin: 2px 0 0 0; font-size: 20px; font-weight: 800; color: #052e1f;">${escapeHtml(data.appName || getSelectedApp())}</h2>
+                        </div>
+                        <div style="text-align: right;">
+                            <div style="font-size: 11px; font-weight: 800; color: #64748b; text-transform: uppercase;">SELECTED DATE RANGE</div>
+                            <span style="display: inline-block; margin-top: 4px; background: #f1f5f9; color: #0f172a; padding: 4px 12px; border-radius: 8px; font-size: 12px; font-weight: 800;">
+                                ${escapeHtml(data.dateRange || 'Lifetime')}
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Rate Setting Box -->
+                    <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px 16px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+                        <span style="font-size: 13px; font-weight: 700; color: #334155;">USD to INR Rate:</span>
+                        <div style="display: flex; align-items: center; gap: 6px;">
+                            <span style="font-weight: 800; color: #64748b;">$1 = ₹</span>
+                            <input type="number" id="usdInrRateInput" value="${data.usdToInrRate || 95}" step="0.5" min="1" oninput="recalculatePLFromInput(this.value)" style="width: 80px; padding: 6px 10px; border-radius: 8px; border: 1px solid #cbd5e1; font-weight: 800; font-size: 14px; text-align: center; background: white; color: #052e1f;">
+                        </div>
+                    </div>
+
+                    <!-- Financial Breakdown List -->
+                    <div style="border: 1px solid #e2e8f0; border-radius: 14px; overflow: hidden; margin-bottom: 20px;">
+                        <div class="pl-item-row">
+                            <span style="color: #334155;">Gross USD Earnings:</span>
+                            <span style="color: #0f172a; font-size: 14px;">$${Number(data.grossUSD || data.earningsUsd || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 4 })}</span>
+                        </div>
+                        <div class="pl-item-row">
+                            <span style="color: #334155;">Gross INR Revenue:</span>
+                            <span style="color: #16a34a; font-size: 14px;">₹${Number(data.grossINR || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                        </div>
+                        <div class="pl-item-row deduct">
+                            <span>Invalid Traffic Cut (30%):</span>
+                            <span>- ₹${Number(data.invalidCutInr || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                        </div>
+                        <div class="pl-item-row deduct">
+                            <span>Commission Fee (10%):</span>
+                            <span>- ₹${Number(data.commissionCutInr || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                        </div>
+                        <div class="pl-item-row highlight">
+                            <span>Net App Revenue (INR):</span>
+                            <span>₹${Number(data.netAppRevenueInr || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                        </div>
+                        <div class="pl-item-row deduct">
+                            <span>Total Promoter Cost (INR):</span>
+                            <span>- ₹${Number(data.promoterCostInr || data.totalCost || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                        </div>
+                        <div class="pl-item-row deduct">
+                            <span>Successful Payouts to Users (INR):</span>
+                            <span>- ₹${Number(data.payoutsTotalInr || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                        </div>
+                    </div>
+
+                    <!-- Net Return Badge & Large Amount -->
+                    <div style="background: ${isProfitable ? '#f0fdf4' : '#fef2f2'}; border: 2px solid ${isProfitable ? '#86efac' : '#fca5a5'}; border-radius: 16px; padding: 20px; text-align: center; margin-bottom: 24px;">
+                        <div style="display: inline-flex; align-items: center; gap: 6px; background: ${isProfitable ? '#dcfce7' : '#fee2e2'}; color: ${isProfitable ? '#166534' : '#991b1b'}; padding: 4px 14px; border-radius: 999px; font-size: 12px; font-weight: 800; margin-bottom: 8px;">
+                            ${isProfitable ? '🟢 Positive Return' : '🔴 Negative Return'}
+                        </div>
+                        <div style="font-size: 13px; font-weight: 800; color: ${isProfitable ? '#166534' : '#991b1b'}; text-transform: uppercase; letter-spacing: 0.05em;">
+                            ${isProfitable ? 'NET PROFIT' : 'NET LOSS'}
+                        </div>
+                        <div style="font-size: 32px; font-weight: 800; color: ${isProfitable ? '#15803d' : '#b91c1c'}; margin-top: 4px;">
+                            ${signSymbol}₹${netProfitFormatted}
+                        </div>
+                    </div>
+
+                    <!-- Earning Modes Breakdown -->
+                    <div style="border: 1px solid #e2e8f0; border-radius: 14px; padding: 16px; margin-bottom: 24px;">
+                        <div style="font-size: 12px; font-weight: 800; color: #052e1f; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px;">
+                            <i class="fa-solid fa-layer-group" style="margin-right: 4px;"></i> Earning Modes Breakdown (USD)
+                        </div>
+                        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;">
+                            <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 10px 14px;">
+                                <div style="font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase;">📺 ADS</div>
+                                <div style="font-size: 15px; font-weight: 800; color: #0f172a; margin-top: 2px;">$${Number(data.breakdown?.adsUsd || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 4 })}</div>
+                            </div>
+                            <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 10px 14px;">
+                                <div style="font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase;">🎯 OFFERWALLS</div>
+                                <div style="font-size: 15px; font-weight: 800; color: #0f172a; margin-top: 2px;">$${Number(data.breakdown?.offerwallUsd || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 4 })}</div>
+                            </div>
+                            <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 10px 14px;">
+                                <div style="font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase;">📖 READ & EARN</div>
+                                <div style="font-size: 15px; font-weight: 800; color: #0f172a; margin-top: 2px;">$${Number(data.breakdown?.readEarnUsd || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 4 })}</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- PDF & Action Bar -->
+                    <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px;">
+                        <button type="button" class="btn-preset" onclick="closeProfitLossModal()">Close</button>
+                        <button type="button" class="btn-action-primary" onclick="downloadProfitLossPDF()" style="background: #052e1f;">
+                            <i class="fa-solid fa-file-pdf"></i> Download PDF Report
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function downloadProfitLossPDF() {
+            const element = document.getElementById('profitLossReportContent');
+            if (!element) return;
+
+            const opt = {
+                margin:       10,
+                filename:     `Profit_Loss_Report_${getSelectedApp()}_${new Date().toISOString().split('T')[0]}.pdf`,
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2, useCORS: true },
+                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+
+            html2pdf().set(opt).from(element).save();
+        }
+
+        function closeProfitLossModal() {
+            document.getElementById('profitLossModal').classList.remove('is-open');
+        }
+
+        // ADD PROMOTER MODAL LOGIC
+        function openAddPromoterModal() {
+            document.getElementById('addSelectedUserId').value = '';
+            document.getElementById('addSearchInput').value = '';
+            document.getElementById('addChannelName').value = '';
+            document.getElementById('addPriceInInr').value = '';
+            document.getElementById('addPromoDate').value = new Date().toISOString().split('T')[0];
+            document.getElementById('addVideoLink').value = '';
+            document.getElementById('userSearchResults').style.display = 'none';
+            document.getElementById('addPromoterModal').classList.add('is-open');
+        }
+
+        function closeAddPromoterModal() {
+            document.getElementById('addPromoterModal').classList.remove('is-open');
+        }
+
+        let searchTimeout = null;
+        function searchUsersForPromoter(query) {
+            clearTimeout(searchTimeout);
+            const container = document.getElementById('userSearchResults');
+
+            if (!query || query.length < 2) {
+                container.style.display = 'none';
                 return;
             }
 
-            tbody.innerHTML = users.map(u => `
-                <tr>
-                    <td>
-                        <div style="font-weight: 800; color: #0f172a;">${escapeHtml(u.name || 'User')}</div>
-                        <div style="font-size: 11px; color: var(--muted);">${escapeHtml(u.email || '')}</div>
-                    </td>
-                    <td><span style="background: rgba(5, 46, 31, 0.08); color: #052e1f; padding: 2px 8px; border-radius: 6px; font-size: 11px; font-weight: 800;">Lvl ${selectedLevel}</span></td>
-                    <td style="font-size: 12px; color: var(--muted);">${u.createdAt ? new Date(u.createdAt).toLocaleDateString('en-IN') : '-'}</td>
-                    <td style="text-align: right; font-weight: 800; color: #16a34a;"><i class="fa-solid fa-coins" style="color: #d97706; margin-right: 3px;"></i> ${Number(u.coinsEarned || 0).toLocaleString('en-IN')}</td>
-                </tr>
-            `).join('');
+            searchTimeout = setTimeout(async () => {
+                try {
+                    const app = getSelectedApp();
+                    const res = await fetch(`/api/promoters/search-users?app=${encodeURIComponent(app)}&query=${encodeURIComponent(query)}`);
+                    const data = await res.json();
+
+                    if (!data.success || !data.users || data.users.length === 0) {
+                        container.innerHTML = `<div style="padding: 12px; font-size: 12px; color: var(--muted); text-align: center;">No users found matching "${escapeHtml(query)}"</div>`;
+                        container.style.display = 'block';
+                        return;
+                    }
+
+                    container.innerHTML = data.users.map(u => `
+                        <div onclick="selectUserForPromoter('${u.userId}', '${escapeHtml(u.name || '')}', '${escapeHtml(u.email || '')}')" style="padding: 10px 14px; border-bottom: 1px solid #f1f5f9; cursor: pointer; transition: background 0.2s;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='white'">
+                            <div style="font-weight: 800; font-size: 13px; color: #0f172a;">${escapeHtml(u.name || 'User')}</div>
+                            <div style="font-size: 11px; color: var(--muted);">${escapeHtml(u.email || '')} | UID: <span style="color:#052e1f; font-weight:700;">${u.userId}</span></div>
+                        </div>
+                    `).join('');
+                    container.style.display = 'block';
+                } catch (err) {
+                    console.error('Search error:', err);
+                }
+            }, 300);
         }
 
-        function filterReferredUsersTable() {
-            const q = document.getElementById('userSearchInput').value.toLowerCase();
-            const rows = document.querySelectorAll('#referredUsersTableBody tr');
-            rows.forEach(r => {
-                const text = r.textContent.toLowerCase();
-                r.style.display = text.includes(q) ? '' : 'none';
-            });
+        function selectUserForPromoter(userId, name, email) {
+            document.getElementById('addSelectedUserId').value = userId;
+            document.getElementById('addSearchInput').value = `${name} (${email || userId})`;
+            document.getElementById('userSearchResults').style.display = 'none';
         }
 
+        async function submitAddPromoter() {
+            const userId = document.getElementById('addSelectedUserId').value;
+            const channelName = document.getElementById('addChannelName').value.trim();
+            const priceInInr = Number(document.getElementById('addPriceInInr').value) || 0;
+            const promoDate = document.getElementById('addPromoDate').value;
+            const videoLink = document.getElementById('addVideoLink').value.trim();
+
+            if (!userId) {
+                alert('Please search and select a user first!');
+                return;
+            }
+
+            try {
+                const res = await fetch('/api/promoters/add', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        app: getSelectedApp(),
+                        userId,
+                        channelName,
+                        priceInInr,
+                        promoDate,
+                        videoLink
+                    })
+                });
+
+                const json = await res.json();
+                if (!res.ok || !json.success) throw new Error(json.message || 'Failed to add promoter');
+
+                closeAddPromoterModal();
+                loadPromotersList();
+                fetchCostSummary();
+                alert('Promoter added successfully!');
+            } catch (err) {
+                alert(err.message || 'Failed to add promoter');
+            }
+        }
+
+        // EDIT & REMOVE PROMOTER
         async function togglePayoutBlock() {
             if (!currentPromoterId || !currentDetailData) return;
             const isBlocked = currentDetailData.isBlocked;
@@ -1068,6 +1649,7 @@
                 document.getElementById('detailPlaceholder').style.display = 'block';
                 document.getElementById('detailContent').style.display = 'none';
                 loadPromotersList();
+                fetchCostSummary();
             } catch (err) {
                 alert(err.message || 'Failed to remove promoter');
             }
@@ -1110,164 +1692,50 @@
                 toggleEditMongoDetails(false);
                 loadPromoterDetail(currentPromoterId);
                 loadPromotersList();
+                fetchCostSummary();
             } catch (err) {
                 alert(err.message || 'Failed to update details');
             }
         }
 
-        async function fetchCostSummary() {
-            try {
-                const app = getSelectedApp();
-                const preset = document.getElementById('globalPresetSelect').value;
-                const start = document.getElementById('globalStartDate').value;
-                const end = document.getElementById('globalEndDate').value;
+        // PRESET DATE FILTER IN DETAIL CARD
+        function applyPreset(preset) {
+            document.querySelectorAll('.presets-row .btn-preset').forEach(b => {
+                if (b.getAttribute('data-preset') === preset) b.classList.add('active');
+                else b.classList.remove('active');
+            });
 
-                let url = `/api/promoters/cost-summary?app=${encodeURIComponent(app)}`;
-                if (preset !== 'lifetime' && start && end) {
-                    url += `&start=${encodeURIComponent(start)}&end=${encodeURIComponent(end)}`;
-                }
+            const today = new Date();
+            let start = '', end = '';
 
-                const res = await fetch(url);
-                const data = await res.json();
-                if (!res.ok || !data.success) return;
+            if (preset === 'today') {
+                start = end = today.toISOString().split('T')[0];
+            } else if (preset === 'yesterday') {
+                const yest = new Date(today);
+                yest.setDate(yest.getDate() - 1);
+                start = end = yest.toISOString().split('T')[0];
+            } else if (preset === 'last7') {
+                const d = new Date(today);
+                d.setDate(d.getDate() - 6);
+                start = d.toISOString().split('T')[0];
+                end = today.toISOString().split('T')[0];
+            } else if (preset === 'thismonth') {
+                start = getFirstDayOfMonth();
+                end = today.toISOString().split('T')[0];
+            }
 
-                document.getElementById('costToday').textContent = `₹${Number(data.costs?.today || 0).toLocaleString('en-IN')}`;
-                document.getElementById('costYesterday').textContent = `₹${Number(data.costs?.yesterday || 0).toLocaleString('en-IN')}`;
-                document.getElementById('costThisMonth').textContent = `₹${Number(data.costs?.thisMonth || 0).toLocaleString('en-IN')}`;
-                document.getElementById('costLastMonth').textContent = `₹${Number(data.costs?.lastMonth || 0).toLocaleString('en-IN')}`;
-                document.getElementById('costFiltered').textContent = `₹${Number(data.costs?.filtered || 0).toLocaleString('en-IN')}`;
-            } catch (err) {}
-        }
+            document.getElementById('filterStartDate').value = start;
+            document.getElementById('filterEndDate').value = end;
 
-        async function checkProfitLoss() {
-            const modal = document.getElementById('profitLossModal');
-            const container = document.getElementById('profitLossReportContent');
-            modal.classList.add('is-open');
-
-            container.innerHTML = `<div style="text-align: center; color: var(--muted); padding: 30px;">Calculating P/L statement...</div>`;
-
-            try {
-                const res = await fetch('/api/promoters/profit-loss', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        app: getSelectedApp(),
-                        start: document.getElementById('globalStartDate').value,
-                        end: document.getElementById('globalEndDate').value
-                    })
-                });
-
-                const json = await res.json();
-                if (!res.ok || !json.success) throw new Error(json.message || 'Failed to calculate P/L');
-
-                const netProfit = Number(json.netProfit || 0);
-                const isProfitable = netProfit >= 0;
-
-                container.innerHTML = `
-                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 24px;">
-                        <div style="background: #f8fafc; border: 1px solid var(--border); border-radius: 14px; padding: 16px;">
-                            <div style="font-size: 11px; color: var(--muted); font-weight: 700; text-transform: uppercase;">Total Revenue</div>
-                            <div style="font-size: 20px; font-weight: 800; color: #16a34a; margin-top: 4px;">₹${Number(json.totalRevenue || 0).toLocaleString('en-IN')}</div>
-                        </div>
-                        <div style="background: #f8fafc; border: 1px solid var(--border); border-radius: 14px; padding: 16px;">
-                            <div style="font-size: 11px; color: var(--muted); font-weight: 700; text-transform: uppercase;">Promoter Costs</div>
-                            <div style="font-size: 20px; font-weight: 800; color: #dc2626; margin-top: 4px;">₹${Number(json.totalCost || 0).toLocaleString('en-IN')}</div>
-                        </div>
-                        <div style="background: ${isProfitable ? '#f0fdf4' : '#fef2f2'}; border: 1px solid ${isProfitable ? '#bbf7d0' : '#fecaca'}; border-radius: 14px; padding: 16px;">
-                            <div style="font-size: 11px; color: ${isProfitable ? '#16a34a' : '#dc2626'}; font-weight: 700; text-transform: uppercase;">Net Profit / Loss</div>
-                            <div style="font-size: 20px; font-weight: 800; color: ${isProfitable ? '#16a34a' : '#dc2626'}; margin-top: 4px;">₹${netProfit.toLocaleString('en-IN')}</div>
-                        </div>
-                    </div>
-                `;
-            } catch (err) {
-                container.innerHTML = `<div style="text-align: center; color: #dc2626; padding: 30px; font-weight: 700;">Error: ${err.message}</div>`;
+            if (currentPromoterId) {
+                loadPromoterDetail(currentPromoterId);
             }
         }
 
-        function closeProfitLossModal() {
-            document.getElementById('profitLossModal').classList.remove('is-open');
-        }
-
-        function openAddPromoterModal() {
-            document.getElementById('addPromoterModal').classList.add('is-open');
-        }
-
-        function closeAddPromoterModal() {
-            document.getElementById('addPromoterModal').classList.remove('is-open');
-        }
-
-        let searchTimeout = null;
-        function searchUsersForPromoter(query) {
-            clearTimeout(searchTimeout);
-            const container = document.getElementById('userSearchResults');
-
-            if (!query || query.length < 2) {
-                container.style.display = 'none';
-                return;
-            }
-
-            searchTimeout = setTimeout(async () => {
-                try {
-                    const app = getSelectedApp();
-                    const res = await fetch(`/api/promoters/search-users?app=${encodeURIComponent(app)}&query=${encodeURIComponent(query)}`);
-                    const data = await res.json();
-
-                    if (!data.success || !data.users || data.users.length === 0) {
-                        container.innerHTML = `<div style="padding: 10px; font-size: 12px; color: var(--muted); text-align: center;">No users found</div>`;
-                        container.style.display = 'block';
-                        return;
-                    }
-
-                    container.innerHTML = data.users.map(u => `
-                        <div onclick="selectUserForPromoter('${u.userId}', '${escapeHtml(u.name || '')}', '${escapeHtml(u.email || '')}')" style="padding: 10px 14px; border-bottom: 1px solid #f1f5f9; cursor: pointer;">
-                            <div style="font-weight: 800; font-size: 13px; color: #0f172a;">${escapeHtml(u.name || 'User')}</div>
-                            <div style="font-size: 11px; color: var(--muted);">${escapeHtml(u.email || '')} | UID: ${u.userId}</div>
-                        </div>
-                    `).join('');
-                    container.style.display = 'block';
-                } catch (err) {}
-            }, 300);
-        }
-
-        function selectUserForPromoter(userId, name, email) {
-            document.getElementById('addSelectedUserId').value = userId;
-            document.getElementById('addSearchInput').value = `${name} (${email})`;
-            document.getElementById('userSearchResults').style.display = 'none';
-        }
-
-        async function submitAddPromoter() {
-            const userId = document.getElementById('addSelectedUserId').value;
-            const channelName = document.getElementById('addChannelName').value.trim();
-            const priceInInr = Number(document.getElementById('addPriceInInr').value) || 0;
-            const promoDate = document.getElementById('addPromoDate').value;
-            const videoLink = document.getElementById('addVideoLink').value.trim();
-
-            if (!userId) {
-                alert('Please search and select a user first!');
-                return;
-            }
-
-            try {
-                const res = await fetch('/api/promoters/add', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        app: getSelectedApp(),
-                        userId,
-                        channelName,
-                        priceInInr,
-                        promoDate,
-                        videoLink
-                    })
-                });
-
-                const json = await res.json();
-                if (!res.ok || !json.success) throw new Error(json.message || 'Failed to add promoter');
-
-                closeAddPromoterModal();
-                loadPromotersList();
-            } catch (err) {
-                alert(err.message || 'Failed to add promoter');
+        function applyCustomFilter() {
+            document.querySelectorAll('.presets-row .btn-preset').forEach(b => b.classList.remove('active'));
+            if (currentPromoterId) {
+                loadPromoterDetail(currentPromoterId);
             }
         }
 

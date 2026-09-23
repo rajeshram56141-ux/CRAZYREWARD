@@ -57,7 +57,7 @@ class LeaderboardBody extends HookConsumerWidget {
             // 2. Main Scrollable Content
             Positioned.fill(
               child: RefreshIndicator(
-                color: const Color(0xFFAB31DE),
+                color: const Color(0xFF26262B),
                 backgroundColor: Colors.white,
                 edgeOffset: topPadding + 60.h,
                 onRefresh: () async {
@@ -77,7 +77,7 @@ class LeaderboardBody extends HookConsumerWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      // Top Navigation Header: Back Button + Title
+                      // Top Navigation Header: Back Button & Title
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -92,42 +92,49 @@ class LeaderboardBody extends HookConsumerWidget {
                               alignment: Alignment.center,
                               decoration: BoxDecoration(
                                 color: Colors.white,
-                                borderRadius: BorderRadius.circular(15.r),
+                                borderRadius: BorderRadius.circular(14.r),
                                 border: Border.all(
-                                  color: const Color(0xFFF1F5F9),
+                                  color: const Color(0xFFE2E8F0),
                                   width: 1.2,
                                 ),
                                 boxShadow: [
                                   BoxShadow(
-                                    color: const Color(0xFFAB31DE).withValues(alpha: 0.08),
-                                    blurRadius: 10,
-                                    offset: const Offset(0, 3),
+                                    color: Colors.black.withValues(alpha: 0.04),
+                                    blurRadius: 8,
+                                    offset: const Offset(0, 2),
                                   ),
                                 ],
                               ),
                               child: Icon(
                                 Icons.arrow_back_rounded,
-                                color: const Color(0xFFAB31DE),
-                                size: 22.sp,
+                                color: const Color(0xFF26262B),
+                                size: 20.sp,
                               ),
                             ),
                           ),
+
+                          Text(
+                            'Leaderboard',
+                            style: GoogleFonts.kaushanScript(
+                              color: const Color(0xFF26262B),
+                              fontSize: 26.sp,
+                              fontWeight: FontWeight.w800,
+                              letterSpacing: 0.5,
+                            ),
+                          ),
+
+                          SizedBox(width: 40.w),
                         ],
                       ),
-
-                      SizedBox(height: 12.h),
-
-                      // Top Graphic Hero Banner (3D Trophy + Title)
-                      _buildTopHeroBanner(),
 
                       const ScreenBannerWidget(
                         screenKey: 'leaderboardScreen',
                         margin: EdgeInsets.only(top: 14.0, bottom: 2.0),
                       ),
 
-                      SizedBox(height: 14.h),
+                      SizedBox(height: 12.h),
 
-                      // Segmented Tab Switcher (Top Referrals vs Top Earners)
+                      // Segmented Tab Switcher (Top Earners vs Top Referrals)
                       _buildSegmentedTabBar(
                         selectedTab: selectedTab.value,
                         onTabChanged: (val) {
@@ -135,55 +142,147 @@ class LeaderboardBody extends HookConsumerWidget {
                         },
                       ),
 
-                      SizedBox(height: 20.h),
+                      SizedBox(height: 18.h),
 
                       // Active Leaderboard Data
                       activeDataAsync.when(
                         loading: () => const _LeaderboardShimmer(),
                         error: (_, __) => _buildErrorState(ref),
                         data: (data) {
-                          final topThree = data.take(3).toList();
-                          final remaining = data.length > 3 ? data.sublist(3) : <LeaderboardModel>[];
+                          if (isCoinsTab) {
+                            // Top Earners Tab: Shows 3D Arch Podium + Ranks 4 to 100
+                            final topThree = data.take(3).toList();
+                            final remaining = data.length > 3
+                                ? data.sublist(3)
+                                : <LeaderboardModel>[];
 
-                          return Column(
-                            children: [
-                              // Top 3 Winners Podium
-                              _buildTopThreePodium(topThree, !isCoinsTab),
+                            return Column(
+                              children: [
+                                // Top 3 Winners 3D Arch Podium (Using Ellipse 59, 60 & Group 28, 29, 30)
+                                _buildTopThreePodium(topThree, false),
 
-                              SizedBox(height: 14.h),
+                                SizedBox(height: 14.h),
 
-                              // Countdown Timer Pill ("11:59:59")
-                              _buildTimerRow(),
-
-                              SizedBox(height: 20.h),
-
-                              // Leaderboard Table Header
-                              _buildTableHeader(),
-
-                              SizedBox(height: 8.h),
-
-                              // Ranks 4 to 100 List
-                              if (remaining.isNotEmpty)
-                                ListView.separated(
-                                  shrinkWrap: true,
-                                  physics: const NeverScrollableScrollPhysics(),
-                                  padding: EdgeInsets.zero,
-                                  itemCount: remaining.length,
-                                  separatorBuilder: (_, __) => const Divider(
-                                    color: Color(0xFFF1F5F9),
-                                    height: 1,
-                                    thickness: 1,
+                                // Table Container Card (Timer + Table Header + Ranks 4-100)
+                                Container(
+                                  width: double.infinity,
+                                  padding: EdgeInsets.fromLTRB(14.w, 14.h, 14.w, 16.h),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(24.r),
+                                    border: Border.all(
+                                      color: const Color(0xFFE2E8F0),
+                                      width: 1.2,
+                                    ),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withValues(alpha: 0.04),
+                                        blurRadius: 12,
+                                        offset: const Offset(0, 4),
+                                      ),
+                                    ],
                                   ),
-                                  itemBuilder: (context, index) {
-                                    final rank = index + 4;
-                                    final item = remaining[index];
-                                    return _buildRankListItem(rank, item, !isCoinsTab);
-                                  },
-                                )
-                              else
-                                _buildEmptyState(!isCoinsTab),
-                            ],
-                          );
+                                  child: Column(
+                                    children: [
+                                      // Countdown Timer Pill ("11:59:59")
+                                      _buildTimerRow(),
+
+                                      SizedBox(height: 14.h),
+
+                                      // Leaderboard Table Header
+                                      _buildTableHeader(isReferralTab: false),
+
+                                      SizedBox(height: 8.h),
+
+                                      // Ranks 4 to 100 List
+                                      if (remaining.isNotEmpty)
+                                        ListView.separated(
+                                          shrinkWrap: true,
+                                          physics: const NeverScrollableScrollPhysics(),
+                                          padding: EdgeInsets.zero,
+                                          itemCount: remaining.length,
+                                          separatorBuilder: (_, __) => const Divider(
+                                            color: Color(0xFFF1F5F9),
+                                            height: 1,
+                                            thickness: 1,
+                                          ),
+                                          itemBuilder: (context, index) {
+                                            final rank = index + 4;
+                                            final item = remaining[index];
+                                            return _buildRankListItem(
+                                              rank: rank,
+                                              item: item,
+                                              isReferralTab: false,
+                                            );
+                                          },
+                                        )
+                                      else
+                                        _buildEmptyState(false),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            );
+                          } else {
+                            // Top Referrals Tab: Direct Clean List from Rank 1 to 100 (No Podium)
+                            return Container(
+                              width: double.infinity,
+                              padding: EdgeInsets.fromLTRB(14.w, 14.h, 14.w, 16.h),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(24.r),
+                                border: Border.all(
+                                  color: const Color(0xFFE2E8F0),
+                                  width: 1.2,
+                                ),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withValues(alpha: 0.04),
+                                    blurRadius: 12,
+                                    offset: const Offset(0, 4),
+                                  ),
+                                ],
+                              ),
+                              child: Column(
+                                children: [
+                                  // Countdown Timer Pill ("11:59:59")
+                                  _buildTimerRow(),
+
+                                  SizedBox(height: 14.h),
+
+                                  // Leaderboard Table Header
+                                  _buildTableHeader(isReferralTab: true),
+
+                                  SizedBox(height: 8.h),
+
+                                  // Full Ranks 1 to 100 List
+                                  if (data.isNotEmpty)
+                                    ListView.separated(
+                                      shrinkWrap: true,
+                                      physics: const NeverScrollableScrollPhysics(),
+                                      padding: EdgeInsets.zero,
+                                      itemCount: data.length,
+                                      separatorBuilder: (_, __) => const Divider(
+                                        color: Color(0xFFF1F5F9),
+                                        height: 1,
+                                        thickness: 1,
+                                      ),
+                                      itemBuilder: (context, index) {
+                                        final rank = index + 1;
+                                        final item = data[index];
+                                        return _buildRankListItem(
+                                          rank: rank,
+                                          item: item,
+                                          isReferralTab: true,
+                                        );
+                                      },
+                                    )
+                                  else
+                                    _buildEmptyState(true),
+                                ],
+                              ),
+                            );
+                          }
                         },
                       ),
                     ],
@@ -206,7 +305,8 @@ class LeaderboardBody extends HookConsumerWidget {
                     final idx = data.indexWhere((m) =>
                         (currentUid.isNotEmpty && m.userId == currentUid) ||
                         (currentUserName.isNotEmpty &&
-                            m.name.toLowerCase() == currentUserName.toLowerCase()));
+                            m.name.toLowerCase() ==
+                                currentUserName.toLowerCase()));
                     if (idx != -1) {
                       userRank = idx + 1;
                       userScore = isCoinsTab
@@ -216,7 +316,9 @@ class LeaderboardBody extends HookConsumerWidget {
                   }
 
                   if (userRank == 0 && currentUid.isNotEmpty) {
-                    final userModel = ref.watch(DashboardService.userDataProvider(currentUid)).value;
+                    final userModel = ref
+                        .watch(DashboardService.userDataProvider(currentUid))
+                        .value;
                     if (userModel != null) {
                       userScore = isCoinsTab ? userModel.coins.toInt() : 0;
                     }
@@ -242,70 +344,6 @@ class LeaderboardBody extends HookConsumerWidget {
   }
 
   // -------------------------------------------------------------
-  // TOP GRAPHIC HERO BANNER (3D TROPHY + TITLE)
-  // -------------------------------------------------------------
-  Widget _buildTopHeroBanner() {
-    return Column(
-      children: [
-        // Trophy Illustration Box
-        SizedBox(
-          height: 90.h,
-          child: Stack(
-            alignment: Alignment.center,
-            children: [
-              // Purple Wreath & Laurel Background Glow
-              Container(
-                width: 140.w,
-                height: 70.h,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: const Color(0xFFE39FFF).withValues(alpha: 0.20),
-                ),
-              ),
-              // Golden 3D Trophy Image / Icon
-              Image.asset(
-                'assets/icons/leader.png',
-                height: 100.h,
-                fit: BoxFit.contain,
-                errorBuilder: (_, __, ___) => Icon(
-                  Icons.emoji_events_rounded,
-                  color: const Color(0xFFFFB800),
-                  size: 70.sp,
-                ),
-              ),
-            ],
-          ),
-        ),
-
-        SizedBox(height: 6.h),
-
-        // Big Leaderboard Title
-        Text(
-          'Leaderboard',
-          style: GoogleFonts.outfit(
-            color: const Color(0xFF1E1B4B),
-            fontSize: 26.sp,
-            fontWeight: FontWeight.w900,
-            letterSpacing: -0.5,
-          ),
-        ),
-
-        SizedBox(height: 2.h),
-
-        // Tagline Subtitle
-        Text(
-          'Compete. Earn. Win Big!',
-          style: GoogleFonts.outfit(
-            color: const Color(0xFF64748B),
-            fontSize: 12.sp,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-      ],
-    );
-  }
-
-  // -------------------------------------------------------------
   // SEGMENTED TAB SWITCHER
   // -------------------------------------------------------------
   Widget _buildSegmentedTabBar({
@@ -316,10 +354,10 @@ class LeaderboardBody extends HookConsumerWidget {
       height: 48.h,
       padding: EdgeInsets.all(4.w),
       decoration: BoxDecoration(
-        color: const Color(0xFFFAF5FF),
+        color: const Color(0xFFF8FAFC),
         borderRadius: BorderRadius.circular(24.r),
         border: Border.all(
-          color: const Color(0xFFF3E8FF),
+          color: const Color(0xFFE2E8F0),
           width: 1.2,
         ),
       ),
@@ -341,7 +379,7 @@ class LeaderboardBody extends HookConsumerWidget {
             label: 'Top Referrals',
             iconWidget: (isSelected) => Icon(
               Icons.people_alt_rounded,
-              color: isSelected ? Colors.white : const Color(0xFF64748B),
+              color: isSelected ? const Color(0xFF16161A) : const Color(0xFF64748B),
               size: 17.sp,
             ),
             tabIndex: 1,
@@ -375,18 +413,27 @@ class LeaderboardBody extends HookConsumerWidget {
             gradient: isSelected
                 ? const LinearGradient(
                     colors: [
-                      Color(0xFFE39FFF),
-                      Color(0xFFAB31DE),
+                      Colors.white,
+                      Color(0xFFE5E7EB),
+                      Color(0xFFB0B5C2),
                     ],
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
                   )
                 : null,
             color: isSelected ? null : Colors.transparent,
             borderRadius: BorderRadius.circular(20.r),
+            border: isSelected
+                ? Border.all(
+                    color: const Color(0xFF9CA3AF),
+                    width: 1.0,
+                  )
+                : null,
             boxShadow: isSelected
                 ? [
                     BoxShadow(
-                      color: const Color(0xFFAB31DE).withValues(alpha: 0.3),
-                      blurRadius: 8,
+                      color: Colors.black.withValues(alpha: 0.08),
+                      blurRadius: 6,
                       offset: const Offset(0, 2),
                     ),
                   ]
@@ -403,10 +450,12 @@ class LeaderboardBody extends HookConsumerWidget {
               SizedBox(width: 6.w),
               Text(
                 label,
-                style: GoogleFonts.outfit(
-                  color: isSelected ? Colors.white : const Color(0xFF64748B),
+                style: GoogleFonts.poppins(
+                  color: isSelected
+                      ? const Color(0xFF16161A)
+                      : const Color(0xFF64748B),
                   fontSize: 13.sp,
-                  fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
+                  fontWeight: isSelected ? FontWeight.w700 : FontWeight.w600,
                 ),
               ),
             ],
@@ -424,7 +473,9 @@ class LeaderboardBody extends HookConsumerWidget {
       builder: (context) {
         final targetMs = SplashService.serverTime.leaderboardTimeLeft;
         final timeLeftMillis = useState<int>(
-          (targetMs - DateTime.now().millisecondsSinceEpoch).clamp(0, double.infinity).toInt(),
+          (targetMs - DateTime.now().millisecondsSinceEpoch)
+              .clamp(0, double.infinity)
+              .toInt(),
         );
 
         useEffect(() {
@@ -446,10 +497,10 @@ class LeaderboardBody extends HookConsumerWidget {
         return Container(
           padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 6.h),
           decoration: BoxDecoration(
-            color: const Color(0xFFFAF5FF),
+            color: const Color(0xFFF8FAFC),
             borderRadius: BorderRadius.circular(100.r),
             border: Border.all(
-              color: const Color(0xFFF3E8FF),
+              color: const Color(0xFFE2E8F0),
               width: 1.2,
             ),
           ),
@@ -458,16 +509,16 @@ class LeaderboardBody extends HookConsumerWidget {
             children: [
               Icon(
                 Icons.access_time_filled_rounded,
-                color: const Color(0xFFAB31DE),
+                color: const Color(0xFF26262B),
                 size: 15.sp,
               ),
               SizedBox(width: 6.w),
               Text(
                 timerString,
-                style: GoogleFonts.outfit(
-                  color: const Color(0xFF1E1B4B),
-                  fontSize: 13.5.sp,
-                  fontWeight: FontWeight.w800,
+                style: GoogleFonts.poppins(
+                  color: const Color(0xFF26262B),
+                  fontSize: 13.sp,
+                  fontWeight: FontWeight.w700,
                   letterSpacing: 0.4,
                 ),
               ),
@@ -479,241 +530,235 @@ class LeaderboardBody extends HookConsumerWidget {
   }
 
   // -------------------------------------------------------------
-  // TOP 3 WINNERS PODIUM (MATCHING UPLOADED REFERENCE DESIGN 1-TO-1)
+  // TOP 3 WINNERS 3D ARCH PODIUM (Matching Asset Reference 1-to-1)
   // -------------------------------------------------------------
-  Widget _buildTopThreePodium(List<LeaderboardModel> topThree, bool isReferralTab) {
+  Widget _buildTopThreePodium(
+      List<LeaderboardModel> topThree, bool isReferralTab) {
     final rank1 = topThree.isNotEmpty ? topThree[0] : null;
     final rank2 = topThree.length > 1 ? topThree[1] : null;
     final rank3 = topThree.length > 2 ? topThree[2] : null;
 
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.end,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        // Rank 2 (Left)
-        Expanded(
-          child: rank2 != null
-              ? _buildPodiumCard(
+    return SizedBox(
+      width: double.infinity,
+      child: Stack(
+        alignment: Alignment.topCenter,
+        clipBehavior: Clip.none,
+        children: [
+          // Background Arch 1 (Ellipse 59)
+          Positioned(
+            top: -10.h,
+            child: Image.asset(
+              'assets/Icons1/Ellipse 59.png',
+              width: 340.w,
+              fit: BoxFit.contain,
+              errorBuilder: (_, __, ___) => const SizedBox.shrink(),
+            ),
+          ),
+
+          // Background Arch 2 (Ellipse 60)
+          Positioned(
+            top: 15.h,
+            child: Image.asset(
+              'assets/Icons1/Ellipse 60.png',
+              width: 290.w,
+              fit: BoxFit.contain,
+              errorBuilder: (_, __, ___) => const SizedBox.shrink(),
+            ),
+          ),
+
+          // 3 Pillars Row (Group 30 [Rank 2], Group 29 [Rank 1], Group 28 [Rank 3])
+          Padding(
+            padding: EdgeInsets.only(top: 12.h, bottom: 6.h),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                // Rank 2 (Left - Group 30.png)
+                _buildPodiumPillar(
                   rank: 2,
                   user: rank2,
-                  avatarSize: 58.w,
-                  ringColor: const Color(0xFF94A3B8),
-                  badgeColor: const Color(0xFF94A3B8),
+                  pillarAsset: 'assets/Icons1/Group 30.png',
+                  pillarWidth: 86.w,
+                  pillarHeight: 124.h,
+                  avatarSize: 38.w,
+                  avatarTopOffset: 4.h,
                   isReferralTab: isReferralTab,
                   isCenter: false,
-                )
-              : const SizedBox.shrink(),
-        ),
+                ),
 
-        SizedBox(width: 8.w),
+                SizedBox(width: 8.w),
 
-        // Rank 1 (Center - Elevated & Golden Crown on Top)
-        Expanded(
-          child: rank1 != null
-              ? _buildPodiumCard(
+                // Rank 1 (Center - Elevated - Group 29.png)
+                _buildPodiumPillar(
                   rank: 1,
                   user: rank1,
-                  avatarSize: 66.w,
-                  ringColor: const Color(0xFFFFB800),
-                  badgeColor: const Color(0xFFFFB800),
+                  pillarAsset: 'assets/Icons1/Group 29.png',
+                  pillarWidth: 100.w,
+                  pillarHeight: 144.h,
+                  avatarSize: 44.w,
+                  avatarTopOffset: 4.h,
                   isReferralTab: isReferralTab,
                   isCenter: true,
-                )
-              : const SizedBox.shrink(),
-        ),
+                ),
 
-        SizedBox(width: 8.w),
+                SizedBox(width: 8.w),
 
-        // Rank 3 (Right)
-        Expanded(
-          child: rank3 != null
-              ? _buildPodiumCard(
+                // Rank 3 (Right - Group 28.png)
+                _buildPodiumPillar(
                   rank: 3,
                   user: rank3,
-                  avatarSize: 58.w,
-                  ringColor: const Color(0xFFD97706),
-                  badgeColor: const Color(0xFFD97706),
+                  pillarAsset: 'assets/Icons1/Group 28.png',
+                  pillarWidth: 86.w,
+                  pillarHeight: 124.h,
+                  avatarSize: 38.w,
+                  avatarTopOffset: 4.h,
                   isReferralTab: isReferralTab,
                   isCenter: false,
-                )
-              : const SizedBox.shrink(),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildPodiumCard({
-    required int rank,
-    required LeaderboardModel user,
-    required double avatarSize,
-    required Color ringColor,
-    required Color badgeColor,
-    required bool isReferralTab,
-    required bool isCenter,
-  }) {
-    final scoreStr = isReferralTab
-        ? '${user.totalReferrals}'
-        : '${user.totalCoins.toInt()}';
-
-    return Stack(
-      clipBehavior: Clip.none,
-      alignment: Alignment.topCenter,
-      children: [
-        // Golden Crown for Rank 1 (Matching snippet 1-to-1)
-        if (isCenter)
-          Positioned(
-            top: -18.h,
-            child: SizedBox(
-              width: 32.w,
-              height: 20.h,
-              child: const CustomPaint(
-                painter: _GoldenCrownPainter(),
-              ),
-            ),
-          ),
-
-        // Outer 3D Pink/Purple Base Container (Matching Demo Image 1-to-1)
-        Container(
-          margin: EdgeInsets.only(top: isCenter ? 10.h : 20.h),
-          padding: EdgeInsets.only(bottom: 6.h),
-          decoration: BoxDecoration(
-            color: const Color(0xFFC88BE2),
-            borderRadius: BorderRadius.circular(20.r),
-            boxShadow: [
-              BoxShadow(
-                color: const Color(0xFFAB31DE).withValues(alpha: isCenter ? 0.15 : 0.08),
-                blurRadius: isCenter ? 14 : 8,
-                offset: const Offset(0, 4),
-              ),
-            ],
-          ),
-          child: Container(
-            padding: EdgeInsets.fromLTRB(8.w, 12.h, 8.w, 12.h),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(20.r),
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                SizedBox(height: isCenter ? 4.h : 0),
-
-                // Avatar Circle with Ring & Overlapping Hexagon Badge
-                Stack(
-                  alignment: Alignment.bottomCenter,
-                  clipBehavior: Clip.none,
-                  children: [
-                    Container(
-                      width: avatarSize,
-                      height: avatarSize,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        border: Border.all(
-                          color: ringColor,
-                          width: 3.5,
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: ringColor.withValues(alpha: 0.40),
-                            blurRadius: 10,
-                            spreadRadius: 1,
-                          ),
-                        ],
-                      ),
-                      child: ClipOval(
-                        child: InternetImage(
-                          url: user.photoUrl,
-                          height: avatarSize,
-                          width: avatarSize,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    ),
-
-                    // Overlapping Vertical Hexagon Badge (Matching close-up snippet 1-to-1)
-                    Positioned(
-                      bottom: -11.h,
-                      child: _HexagonBadge(
-                        rank: rank,
-                        fillColor: rank == 1
-                            ? const Color(0xFFFFEA00)
-                            : (rank == 2 ? const Color(0xFF94A3B8) : const Color(0xFFD97706)),
-                        borderColor: rank == 1
-                            ? const Color(0xFFFFF59D)
-                            : (rank == 2 ? const Color(0xFFE2E8F0) : const Color(0xFFFDE68A)),
-                      ),
-                    ),
-                  ],
-                ),
-
-                SizedBox(height: 16.h),
-
-                // User Name
-                Text(
-                  user.name,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  textAlign: TextAlign.center,
-                  style: GoogleFonts.outfit(
-                    color: const Color(0xFF1E1B4B),
-                    fontSize: isCenter ? 13.5.sp : 12.sp,
-                    fontWeight: isCenter ? FontWeight.w800 : FontWeight.w700,
-                  ),
-                ),
-
-                SizedBox(height: 3.h),
-
-                // Score Count (Referrals / Coins)
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    if (isReferralTab) ...[
-                      Icon(
-                        Icons.people_alt_rounded,
-                        color: const Color(0xFFAB31DE),
-                        size: 13.sp,
-                      ),
-                      SizedBox(width: 4.w),
-                    ] else ...[
-                      Image.asset(
-                        'assets/icons/coin.png',
-                        width: 13.w,
-                        height: 13.w,
-                        fit: BoxFit.contain,
-                      ),
-                      SizedBox(width: 4.w),
-                    ],
-                    Text(
-                      scoreStr,
-                      style: GoogleFonts.outfit(
-                        color: const Color(0xFF64748B),
-                        fontSize: 11.5.sp,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ],
                 ),
               ],
             ),
           ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPodiumPillar({
+    required int rank,
+    required LeaderboardModel? user,
+    required String pillarAsset,
+    required double pillarWidth,
+    required double pillarHeight,
+    required double avatarSize,
+    required double avatarTopOffset,
+    required bool isReferralTab,
+    required bool isCenter,
+  }) {
+    if (user == null) {
+      return SizedBox(
+        width: pillarWidth,
+        height: pillarHeight,
+        child: Image.asset(
+          pillarAsset,
+          fit: BoxFit.contain,
+        ),
+      );
+    }
+
+    final scoreStr = isReferralTab
+        ? '${user.totalReferrals}'
+        : '${user.totalCoins.toInt()}';
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        // 3D Pillar with Avatar Overlay inside the top circle
+        SizedBox(
+          width: pillarWidth,
+          height: pillarHeight,
+          child: Stack(
+            alignment: Alignment.topCenter,
+            clipBehavior: Clip.none,
+            children: [
+              // 1. Pillar Graphic
+              Positioned.fill(
+                child: Image.asset(
+                  pillarAsset,
+                  fit: BoxFit.contain,
+                ),
+              ),
+
+              // 2. User Avatar perfectly positioned inside top ring
+              Positioned(
+                top: avatarTopOffset,
+                child: Container(
+                  width: avatarSize,
+                  height: avatarSize,
+                  decoration: const BoxDecoration(
+                    shape: BoxShape.circle,
+                  ),
+                  child: ClipOval(
+                    child: InternetImage(
+                      url: user.photoUrl,
+                      width: avatarSize,
+                      height: avatarSize,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+
+        SizedBox(height: 6.h),
+
+        // User Name
+        SizedBox(
+          width: pillarWidth + 10.w,
+          child: Text(
+            user.name,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            textAlign: TextAlign.center,
+            style: GoogleFonts.poppins(
+              color: const Color(0xFF26262B),
+              fontSize: isCenter ? 12.5.sp : 11.5.sp,
+              fontWeight: isCenter ? FontWeight.w700 : FontWeight.w600,
+            ),
+          ),
+        ),
+
+        SizedBox(height: 2.h),
+
+        // Score Row (Coins / Referrals)
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            if (isReferralTab) ...[
+              Icon(
+                Icons.people_alt_rounded,
+                color: const Color(0xFF26262B),
+                size: 12.sp,
+              ),
+              SizedBox(width: 3.w),
+            ] else ...[
+              Image.asset(
+                'assets/icons/coin.png',
+                width: 12.w,
+                height: 12.w,
+                fit: BoxFit.contain,
+              ),
+              SizedBox(width: 3.w),
+            ],
+            Text(
+              scoreStr,
+              style: GoogleFonts.poppins(
+                color: const Color(0xFF64748B),
+                fontSize: 11.sp,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ],
         ),
       ],
     );
   }
 
   // -------------------------------------------------------------
-  // TABLE HEADER ROW (Rank | User | Reward)
+  // TABLE HEADER ROW (Rank | User | Reward / Referrals)
   // -------------------------------------------------------------
-  Widget _buildTableHeader() {
+  Widget _buildTableHeader({required bool isReferralTab}) {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 4.h),
+      padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
       child: Row(
         children: [
           SizedBox(
             width: 44.w,
             child: Text(
               'Rank',
-              style: GoogleFonts.outfit(
+              style: GoogleFonts.poppins(
                 color: const Color(0xFF64748B),
                 fontSize: 12.sp,
                 fontWeight: FontWeight.w600,
@@ -723,7 +768,7 @@ class LeaderboardBody extends HookConsumerWidget {
           Expanded(
             child: Text(
               'User',
-              style: GoogleFonts.outfit(
+              style: GoogleFonts.poppins(
                 color: const Color(0xFF64748B),
                 fontSize: 12.sp,
                 fontWeight: FontWeight.w600,
@@ -731,9 +776,9 @@ class LeaderboardBody extends HookConsumerWidget {
             ),
           ),
           Text(
-            'Reward',
-            style: GoogleFonts.outfit(
-              color: const Color(0xFFAB31DE),
+            isReferralTab ? 'Referrals' : 'Reward',
+            style: GoogleFonts.poppins(
+              color: const Color(0xFF26262B),
               fontSize: 12.sp,
               fontWeight: FontWeight.w700,
             ),
@@ -744,50 +789,115 @@ class LeaderboardBody extends HookConsumerWidget {
   }
 
   // -------------------------------------------------------------
-  // RANK LIST ITEM (RANKS 4 TO 100)
+  // RANK LIST ITEM
   // -------------------------------------------------------------
-  Widget _buildRankListItem(int rank, LeaderboardModel item, bool isReferralTab) {
+  Widget _buildRankListItem({
+    required int rank,
+    required LeaderboardModel item,
+    required bool isReferralTab,
+  }) {
     int rewardCoins = 0;
-    if (rank == 4) {
-      rewardCoins = 100;
-    } else if (rank == 5) {
-      rewardCoins = 80;
-    } else if (rank == 6) {
-      rewardCoins = 60;
-    } else if (rank == 7) {
-      rewardCoins = 40;
-    } else if (rank == 8) {
-      rewardCoins = 20;
-    } else if (rank == 9) {
-      rewardCoins = 10;
+    if (!isReferralTab) {
+      if (rank == 4) {
+        rewardCoins = 100;
+      } else if (rank == 5) {
+        rewardCoins = 80;
+      } else if (rank == 6) {
+        rewardCoins = 60;
+      } else if (rank == 7) {
+        rewardCoins = 40;
+      } else if (rank == 8) {
+        rewardCoins = 20;
+      } else if (rank == 9) {
+        rewardCoins = 10;
+      } else {
+        rewardCoins = 0;
+      }
+    }
+
+    Widget rankBadge;
+    if (rank == 1) {
+      rankBadge = Container(
+        width: 26.w,
+        height: 26.w,
+        alignment: Alignment.center,
+        decoration: const BoxDecoration(
+          color: Color(0xFFFEF3C7),
+          shape: BoxShape.circle,
+        ),
+        child: Text(
+          '1',
+          style: GoogleFonts.poppins(
+            color: const Color(0xFFD97706),
+            fontSize: 12.sp,
+            fontWeight: FontWeight.w800,
+          ),
+        ),
+      );
+    } else if (rank == 2) {
+      rankBadge = Container(
+        width: 26.w,
+        height: 26.w,
+        alignment: Alignment.center,
+        decoration: const BoxDecoration(
+          color: Color(0xFFF1F5F9),
+          shape: BoxShape.circle,
+        ),
+        child: Text(
+          '2',
+          style: GoogleFonts.poppins(
+            color: const Color(0xFF475569),
+            fontSize: 12.sp,
+            fontWeight: FontWeight.w800,
+          ),
+        ),
+      );
+    } else if (rank == 3) {
+      rankBadge = Container(
+        width: 26.w,
+        height: 26.w,
+        alignment: Alignment.center,
+        decoration: const BoxDecoration(
+          color: Color(0xFFFFEDD5),
+          shape: BoxShape.circle,
+        ),
+        child: Text(
+          '3',
+          style: GoogleFonts.poppins(
+            color: const Color(0xFFC2410C),
+            fontSize: 12.sp,
+            fontWeight: FontWeight.w800,
+          ),
+        ),
+      );
     } else {
-      rewardCoins = 0;
+      rankBadge = Container(
+        width: 26.w,
+        height: 26.w,
+        alignment: Alignment.center,
+        decoration: const BoxDecoration(
+          color: Color(0xFFF1F5F9),
+          shape: BoxShape.circle,
+        ),
+        child: Text(
+          '$rank',
+          style: GoogleFonts.poppins(
+            color: const Color(0xFF26262B),
+            fontSize: 12.sp,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+      );
     }
 
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
+      padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 10.h),
       child: Row(
         children: [
           // Rank Badge Pill Circle
-          Container(
-            width: 26.w,
-            height: 26.w,
-            alignment: Alignment.center,
-            decoration: const BoxDecoration(
-              color: Color(0xFFFAF5FF),
-              shape: BoxShape.circle,
-            ),
-            child: Text(
-              '$rank',
-              style: GoogleFonts.outfit(
-                color: const Color(0xFFAB31DE),
-                fontSize: 12.sp,
-                fontWeight: FontWeight.w800,
-              ),
-            ),
-          ),
+          rankBadge,
 
-          SizedBox(width: 14.w),
+          SizedBox(width: 12.w),
 
           // User Avatar
           Container(
@@ -815,35 +925,56 @@ class LeaderboardBody extends HookConsumerWidget {
               item.name,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: GoogleFonts.outfit(
-                color: const Color(0xFF1E1B4B),
+              style: GoogleFonts.poppins(
+                color: const Color(0xFF26262B),
                 fontSize: 13.5.sp,
-                fontWeight: FontWeight.w700,
+                fontWeight: FontWeight.w600,
               ),
             ),
           ),
 
-          // Reward Coins Pill
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Image.asset(
-                'assets/icons/coin.png',
-                width: 14.w,
-                height: 14.w,
-                fit: BoxFit.contain,
-              ),
-              SizedBox(width: 4.w),
-              Text(
-                '$rewardCoins',
-                style: GoogleFonts.outfit(
-                  color: const Color(0xFF1E1B4B),
-                  fontSize: 12.5.sp,
-                  fontWeight: FontWeight.w800,
+          // Right Metric (Referrals Count or Reward Coins)
+          if (isReferralTab)
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  Icons.people_alt_rounded,
+                  color: const Color(0xFF26262B),
+                  size: 15.sp,
                 ),
-              ),
-            ],
-          ),
+                SizedBox(width: 4.w),
+                Text(
+                  '${item.totalReferrals}',
+                  style: GoogleFonts.poppins(
+                    color: const Color(0xFF26262B),
+                    fontSize: 13.sp,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ],
+            )
+          else
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Image.asset(
+                  'assets/icons/coin.png',
+                  width: 14.w,
+                  height: 14.w,
+                  fit: BoxFit.contain,
+                ),
+                SizedBox(width: 4.w),
+                Text(
+                  '$rewardCoins',
+                  style: GoogleFonts.poppins(
+                    color: const Color(0xFF26262B),
+                    fontSize: 13.sp,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ],
+            ),
         ],
       ),
     );
@@ -870,16 +1001,16 @@ class LeaderboardBody extends HookConsumerWidget {
       ),
       padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
       decoration: BoxDecoration(
-        color: const Color(0xFFFAF5FF),
-        borderRadius: BorderRadius.circular(22.r),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20.r),
         border: Border.all(
-          color: const Color(0xFFE9D5FF),
-          width: 1.5,
+          color: const Color(0xFFE2E8F0),
+          width: 1.2,
         ),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFFAB31DE).withValues(alpha: 0.12),
-            blurRadius: 12,
+            color: Colors.black.withValues(alpha: 0.08),
+            blurRadius: 16,
             offset: const Offset(0, 4),
           ),
         ],
@@ -889,10 +1020,10 @@ class LeaderboardBody extends HookConsumerWidget {
           // User Rank Pill Number
           Text(
             userRank > 0 ? '$userRank' : '-',
-            style: GoogleFonts.outfit(
-              color: const Color(0xFFAB31DE),
+            style: GoogleFonts.poppins(
+              color: const Color(0xFF26262B),
               fontSize: 22.sp,
-              fontWeight: FontWeight.w900,
+              fontWeight: FontWeight.w800,
             ),
           ),
 
@@ -905,7 +1036,7 @@ class LeaderboardBody extends HookConsumerWidget {
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               border: Border.all(
-                color: const Color(0xFFAB31DE),
+                color: const Color(0xFFE2E8F0),
                 width: 1.5,
               ),
             ),
@@ -929,15 +1060,15 @@ class LeaderboardBody extends HookConsumerWidget {
               children: [
                 Text(
                   'You',
-                  style: GoogleFonts.outfit(
-                    color: const Color(0xFFAB31DE),
+                  style: GoogleFonts.poppins(
+                    color: const Color(0xFF26262B),
                     fontSize: 15.sp,
-                    fontWeight: FontWeight.w800,
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
                 Text(
                   "Keep going, You're doing great!",
-                  style: GoogleFonts.outfit(
+                  style: GoogleFonts.poppins(
                     color: const Color(0xFF64748B),
                     fontSize: 10.5.sp,
                     fontWeight: FontWeight.w500,
@@ -947,37 +1078,54 @@ class LeaderboardBody extends HookConsumerWidget {
             ),
           ),
 
-          // User Score + Reward
+          // User Score + Metric Icon
           Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
                 '$score',
-                style: GoogleFonts.outfit(
-                  color: const Color(0xFFAB31DE),
+                style: GoogleFonts.poppins(
+                  color: const Color(0xFF26262B),
                   fontSize: 16.sp,
-                  fontWeight: FontWeight.w800,
+                  fontWeight: FontWeight.w700,
                 ),
               ),
               Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Image.asset(
-                    'assets/icons/coin.png',
-                    width: 13.w,
-                    height: 13.w,
-                    fit: BoxFit.contain,
-                  ),
-                  SizedBox(width: 3.w),
-                  Text(
-                    '0',
-                    style: GoogleFonts.outfit(
-                      color: const Color(0xFF1E1B4B),
-                      fontSize: 12.sp,
-                      fontWeight: FontWeight.w800,
+                  if (isReferralTab) ...[
+                    Icon(
+                      Icons.people_alt_rounded,
+                      color: const Color(0xFF64748B),
+                      size: 13.sp,
                     ),
-                  ),
+                    SizedBox(width: 3.w),
+                    Text(
+                      'Ref',
+                      style: GoogleFonts.poppins(
+                        color: const Color(0xFF64748B),
+                        fontSize: 12.sp,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ] else ...[
+                    Image.asset(
+                      'assets/icons/coin.png',
+                      width: 13.w,
+                      height: 13.w,
+                      fit: BoxFit.contain,
+                    ),
+                    SizedBox(width: 3.w),
+                    Text(
+                      '0',
+                      style: GoogleFonts.poppins(
+                        color: const Color(0xFF64748B),
+                        fontSize: 12.sp,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ],
                 ],
               ),
             ],
@@ -1000,8 +1148,8 @@ class LeaderboardBody extends HookConsumerWidget {
           SizedBox(height: 12.h),
           Text(
             'No Leaderboard Data Yet',
-            style: GoogleFonts.outfit(
-              color: const Color(0xFF1E1B4B),
+            style: GoogleFonts.poppins(
+              color: const Color(0xFF26262B),
               fontSize: 15.sp,
               fontWeight: FontWeight.w700,
             ),
@@ -1024,8 +1172,8 @@ class LeaderboardBody extends HookConsumerWidget {
           SizedBox(height: 12.h),
           Text(
             'Failed to load leaderboard',
-            style: GoogleFonts.outfit(
-              color: const Color(0xFF1E1B4B),
+            style: GoogleFonts.poppins(
+              color: const Color(0xFF26262B),
               fontSize: 14.sp,
               fontWeight: FontWeight.w700,
             ),
@@ -1072,144 +1220,20 @@ class _LeaderboardShimmer extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            _buildSkeletonBox(width: 95.w, height: 130.h, borderRadius: 20.r),
+            _buildSkeletonBox(width: 86.w, height: 124.h, borderRadius: 20.r),
             SizedBox(width: 10.w),
-            _buildSkeletonBox(width: 110.w, height: 150.h, borderRadius: 22.r),
+            _buildSkeletonBox(width: 100.w, height: 144.h, borderRadius: 22.r),
             SizedBox(width: 10.w),
-            _buildSkeletonBox(width: 95.w, height: 130.h, borderRadius: 20.r),
+            _buildSkeletonBox(width: 86.w, height: 124.h, borderRadius: 20.r),
           ],
         ),
         SizedBox(height: 20.h),
         for (int i = 0; i < 5; i++) ...[
           if (i > 0) SizedBox(height: 10.h),
-          _buildSkeletonBox(width: double.infinity, height: 50.h, borderRadius: 14.r),
+          _buildSkeletonBox(
+              width: double.infinity, height: 50.h, borderRadius: 14.r),
         ],
       ],
     );
   }
-}
-
-// -------------------------------------------------------------
-// GOLDEN CROWN PAINTER (MATCHING SNIPPET 1-TO-1)
-// -------------------------------------------------------------
-class _GoldenCrownPainter extends CustomPainter {
-  const _GoldenCrownPainter();
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..shader = const LinearGradient(
-        colors: [Color(0xFFFFE066), Color(0xFFFFB800), Color(0xFFD97706)],
-        begin: Alignment.topCenter,
-        end: Alignment.bottomCenter,
-      ).createShader(Rect.fromLTWH(0, 0, size.width, size.height))
-      ..style = PaintingStyle.fill;
-
-    final path = Path();
-    path.moveTo(0, size.height * 0.45);
-    path.lineTo(size.width * 0.2, size.height);
-    path.lineTo(size.width * 0.8, size.height);
-    path.lineTo(size.width, size.height * 0.45);
-    path.lineTo(size.width * 0.72, size.height * 0.65);
-    path.lineTo(size.width * 0.5, 0);
-    path.lineTo(size.width * 0.28, size.height * 0.65);
-    path.close();
-
-    canvas.drawPath(path, paint);
-
-    final ballPaint = Paint()
-      ..color = const Color(0xFFFFE066)
-      ..style = PaintingStyle.fill;
-    canvas.drawCircle(Offset(size.width * 0.5, 0), 2.5, ballPaint);
-    canvas.drawCircle(Offset(0, size.height * 0.45), 2.0, ballPaint);
-    canvas.drawCircle(Offset(size.width, size.height * 0.45), 2.0, ballPaint);
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
-}
-
-// -------------------------------------------------------------
-// HEXAGON BADGE WIDGET & PAINTER (MATCHING CLOSE-UP SNIPPET 1-TO-1)
-// -------------------------------------------------------------
-class _HexagonBadge extends StatelessWidget {
-  final int rank;
-  final Color fillColor;
-  final Color borderColor;
-
-  const _HexagonBadge({
-    required this.rank,
-    required this.fillColor,
-    required this.borderColor,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: 20.w,
-      height: 22.h,
-      child: CustomPaint(
-        painter: _HexagonPainter(
-          fillColor: fillColor,
-          borderColor: borderColor,
-        ),
-        child: Center(
-          child: Padding(
-            padding: EdgeInsets.only(bottom: 1.h),
-            child: Text(
-              '$rank',
-              style: GoogleFonts.outfit(
-                color: rank == 1 ? const Color(0xFF1B0B3B) : Colors.white,
-                fontSize: 10.5.sp,
-                fontWeight: FontWeight.w900,
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _HexagonPainter extends CustomPainter {
-  final Color fillColor;
-  final Color borderColor;
-
-  const _HexagonPainter({
-    required this.fillColor,
-    required this.borderColor,
-  });
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final w = size.width;
-    final h = size.height;
-
-    final path = Path()
-      ..moveTo(w * 0.5, 0)
-      ..lineTo(w, h * 0.25)
-      ..lineTo(w, h * 0.75)
-      ..lineTo(w * 0.5, h)
-      ..lineTo(0, h * 0.75)
-      ..lineTo(0, h * 0.25)
-      ..close();
-
-    final fillPaint = Paint()
-      ..color = fillColor
-      ..style = PaintingStyle.fill;
-
-    canvas.drawShadow(path, Colors.black.withValues(alpha: 0.3), 3, false);
-    canvas.drawPath(path, fillPaint);
-
-    final borderPaint = Paint()
-      ..color = borderColor
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 2.0;
-
-    canvas.drawPath(path, borderPaint);
-  }
-
-  @override
-  bool shouldRepaint(covariant _HexagonPainter oldDelegate) =>
-      oldDelegate.fillColor != fillColor || oldDelegate.borderColor != borderColor;
 }

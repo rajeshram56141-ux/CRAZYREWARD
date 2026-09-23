@@ -42,7 +42,7 @@ class TaskHistoryScreen extends HookConsumerWidget {
         systemNavigationBarIconBrightness: Brightness.dark,
       ),
       child: Scaffold(
-        backgroundColor: const Color(0xFFF8FAFC),
+        backgroundColor: Colors.white,
         body: SafeArea(
           child: Column(
             children: [
@@ -64,12 +64,12 @@ class TaskHistoryScreen extends HookConsumerWidget {
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(15.r),
                           border: Border.all(
-                            color: const Color(0xFFF1F5F9),
+                            color: const Color(0xFFE2E8F0),
                             width: 1.2,
                           ),
                           boxShadow: [
                             BoxShadow(
-                              color: const Color(0xFFAB31DE).withValues(alpha: 0.08),
+                              color: const Color(0xFF0F172A).withValues(alpha: 0.04),
                               blurRadius: 10,
                               offset: const Offset(0, 3),
                             ),
@@ -77,8 +77,8 @@ class TaskHistoryScreen extends HookConsumerWidget {
                         ),
                         child: Icon(
                           Icons.arrow_back_rounded,
-                          color: const Color(0xFFAB31DE),
-                          size: 22.sp,
+                          color: const Color(0xFF26262B),
+                          size: 20.sp,
                         ),
                       ),
                     ),
@@ -86,10 +86,10 @@ class TaskHistoryScreen extends HookConsumerWidget {
                       child: Text(
                         'Coin History',
                         textAlign: TextAlign.center,
-                        style: GoogleFonts.outfit(
-                          color: const Color(0xFF1E1B4B),
+                        style: GoogleFonts.poppins(
+                          color: const Color(0xFF26262B),
                           fontSize: 18.sp,
-                          fontWeight: FontWeight.w800,
+                          fontWeight: FontWeight.w700,
                         ),
                       ),
                     ),
@@ -98,10 +98,42 @@ class TaskHistoryScreen extends HookConsumerWidget {
                 ),
               ),
 
+              // Filter Chips Row
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 6.h),
+                child: Row(
+                  children: [
+                    _buildFilterChip(
+                      label: 'All Activity',
+                      icon: Icons.grid_view_rounded,
+                      type: _CoinFilterType.all,
+                      selected: selectedFilter.value,
+                      onTap: () => selectedFilter.value = _CoinFilterType.all,
+                    ),
+                    SizedBox(width: 8.w),
+                    _buildFilterChip(
+                      label: 'Earned (+)',
+                      icon: Icons.add_circle_outline_rounded,
+                      type: _CoinFilterType.earned,
+                      selected: selectedFilter.value,
+                      onTap: () => selectedFilter.value = _CoinFilterType.earned,
+                    ),
+                    SizedBox(width: 8.w),
+                    _buildFilterChip(
+                      label: 'Spent (-)',
+                      icon: Icons.remove_circle_outline_rounded,
+                      type: _CoinFilterType.spent,
+                      selected: selectedFilter.value,
+                      onTap: () => selectedFilter.value = _CoinFilterType.spent,
+                    ),
+                  ],
+                ),
+              ),
+
               // 2. Main Scrollable Body
               Expanded(
                 child: RefreshIndicator(
-                  color: const Color(0xFFAB31DE),
+                  color: const Color(0xFF26262B),
                   backgroundColor: Colors.white,
                   onRefresh: () async {
                     ref.invalidate(rewardHistoryProvider(userId));
@@ -177,7 +209,7 @@ class TaskHistoryScreen extends HookConsumerWidget {
                               child: Text(
                                 'error-subtitle'.tr(),
                                 textAlign: TextAlign.center,
-                                style: GoogleFonts.outfit(
+                                style: GoogleFonts.poppins(
                                   color: const Color(0xFFEF4444),
                                   fontSize: 14.sp,
                                   fontWeight: FontWeight.w700,
@@ -186,10 +218,80 @@ class TaskHistoryScreen extends HookConsumerWidget {
                             ),
                           ),
                           loading: () => const Center(
-                            child: LoadingInfoWidget(color: Color(0xFFAB31DE)),
+                            child: LoadingInfoWidget(color: Color(0xFF26262B)),
                           ),
                         ),
                   ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildFilterChip({
+    required String label,
+    required IconData icon,
+    required _CoinFilterType type,
+    required _CoinFilterType selected,
+    required VoidCallback onTap,
+  }) {
+    final isSelected = type == selected;
+
+    return Expanded(
+      child: GestureDetector(
+        onTap: () {
+          HapticFeedback.lightImpact();
+          onTap();
+        },
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 180),
+          height: 36.h,
+          decoration: BoxDecoration(
+            gradient: isSelected
+                ? const LinearGradient(
+                    colors: [
+                      Color(0xFF26262B),
+                      Color(0xFF16161A),
+                    ],
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                  )
+                : null,
+            color: isSelected ? null : Colors.white,
+            borderRadius: BorderRadius.circular(12.r),
+            border: Border.all(
+              color: isSelected ? const Color(0xFF2E2E36) : const Color(0xFFE2E8F0),
+              width: 1.2,
+            ),
+            boxShadow: isSelected
+                ? [
+                    BoxShadow(
+                      color: const Color(0xFF16161A).withValues(alpha: 0.2),
+                      blurRadius: 6,
+                      offset: const Offset(0, 2),
+                    ),
+                  ]
+                : null,
+          ),
+          alignment: Alignment.center,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                icon,
+                size: 13.sp,
+                color: isSelected ? Colors.white : const Color(0xFF64748B),
+              ),
+              SizedBox(width: 5.w),
+              Text(
+                label,
+                style: GoogleFonts.poppins(
+                  color: isSelected ? Colors.white : const Color(0xFF64748B),
+                  fontSize: 11.5.sp,
+                  fontWeight: isSelected ? FontWeight.w700 : FontWeight.w600,
                 ),
               ),
             ],
@@ -211,16 +313,16 @@ class TaskHistoryScreen extends HookConsumerWidget {
               width: 68.w,
               height: 68.w,
               decoration: BoxDecoration(
-                color: const Color(0xFFFAF5FF),
+                color: const Color(0xFFF8FAFC),
                 shape: BoxShape.circle,
                 border: Border.all(
-                  color: const Color(0xFFE9D5FF),
+                  color: const Color(0xFFE2E8F0),
                   width: 1.2,
                 ),
               ),
               child: Icon(
                 Icons.receipt_long_rounded,
-                color: const Color(0xFFAB31DE),
+                color: const Color(0xFF26262B),
                 size: 30.sp,
               ),
             ),
@@ -228,17 +330,17 @@ class TaskHistoryScreen extends HookConsumerWidget {
             Text(
               title,
               textAlign: TextAlign.center,
-              style: GoogleFonts.outfit(
-                color: const Color(0xFF1E1B4B),
+              style: GoogleFonts.poppins(
+                color: const Color(0xFF26262B),
                 fontSize: 16.sp,
-                fontWeight: FontWeight.w800,
+                fontWeight: FontWeight.w700,
               ),
             ),
             SizedBox(height: 5.h),
             Text(
               subtitle,
               textAlign: TextAlign.center,
-              style: GoogleFonts.outfit(
+              style: GoogleFonts.poppins(
                 color: const Color(0xFF64748B),
                 fontSize: 12.sp,
                 fontWeight: FontWeight.w500,
@@ -252,7 +354,7 @@ class TaskHistoryScreen extends HookConsumerWidget {
 }
 
 // -------------------------------------------------------------
-// COIN HISTORY ITEM CARD (EXECUTIVE CARD DESIGN)
+// COIN HISTORY ITEM CARD (LUXURY CARD DESIGN)
 // -------------------------------------------------------------
 class _CoinHistoryCard extends StatelessWidget {
   const _CoinHistoryCard({required this.history});
@@ -288,11 +390,11 @@ class _CoinHistoryCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(18.r),
         border: Border.all(
           color: const Color(0xFFE2E8F0),
-          width: 1,
+          width: 1.2,
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.02),
+            color: const Color(0xFF0F172A).withValues(alpha: 0.03),
             blurRadius: 10,
             offset: const Offset(0, 3),
           ),
@@ -334,8 +436,8 @@ class _CoinHistoryCard extends StatelessWidget {
                   history.title,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: GoogleFonts.outfit(
-                    color: const Color(0xFF1E1B4B),
+                  style: GoogleFonts.poppins(
+                    color: const Color(0xFF26262B),
                     fontSize: 14.sp,
                     fontWeight: FontWeight.w700,
                   ),
@@ -351,7 +453,7 @@ class _CoinHistoryCard extends StatelessWidget {
                     SizedBox(width: 4.w),
                     Text(
                       history.timestamp.formatTimestamp(),
-                      style: GoogleFonts.outfit(
+                      style: GoogleFonts.poppins(
                         color: const Color(0xFF64748B),
                         fontSize: 11.5.sp,
                         fontWeight: FontWeight.w500,
@@ -369,7 +471,7 @@ class _CoinHistoryCard extends StatelessWidget {
                         ),
                         child: Text(
                           statusLabel,
-                          style: GoogleFonts.outfit(
+                          style: GoogleFonts.poppins(
                             color: statusLabel == 'Successful'
                                 ? const Color(0xFF16A34A)
                                 : const Color(0xFF64748B),
@@ -392,7 +494,7 @@ class _CoinHistoryCard extends StatelessWidget {
             children: [
               Text(
                 '$amountPrefix${history.coins.formatBalance()}',
-                style: GoogleFonts.outfit(
+                style: GoogleFonts.poppins(
                   color: amountColor,
                   fontSize: 14.sp,
                   fontWeight: FontWeight.w800,

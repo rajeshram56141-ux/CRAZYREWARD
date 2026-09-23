@@ -145,23 +145,23 @@ class ReadTskScreen extends HookConsumerWidget {
                                 alignment: Alignment.center,
                                 decoration: BoxDecoration(
                                   color: Colors.white,
-                                  borderRadius: BorderRadius.circular(15.r),
+                                  borderRadius: BorderRadius.circular(14.r),
                                   border: Border.all(
-                                    color: const Color(0xFFF1F5F9),
+                                    color: const Color(0xFFE2E8F0),
                                     width: 1.2,
                                   ),
                                   boxShadow: [
                                     BoxShadow(
-                                      color: const Color(0xFFAB31DE).withValues(alpha: 0.08),
-                                      blurRadius: 10,
-                                      offset: const Offset(0, 3),
+                                      color: Colors.black.withValues(alpha: 0.04),
+                                      blurRadius: 8,
+                                      offset: const Offset(0, 2),
                                     ),
                                   ],
                                 ),
                                 child: Icon(
                                   Icons.arrow_back_rounded,
-                                  color: const Color(0xFFAB31DE),
-                                  size: 22.sp,
+                                  color: const Color(0xFF26262B),
+                                  size: 20.sp,
                                 ),
                               ),
                             ),
@@ -169,11 +169,11 @@ class ReadTskScreen extends HookConsumerWidget {
                             Expanded(
                               child: Text(
                                 'Read & Earn',
-                                style: GoogleFonts.outfit(
-                                  fontSize: 19.sp,
+                                style: GoogleFonts.kaushanScript(
+                                  fontSize: 28.sp,
                                   fontWeight: FontWeight.w800,
-                                  color: const Color(0xFF1E1B4B),
-                                  letterSpacing: -0.2,
+                                  color: const Color(0xFF26262B),
+                                  letterSpacing: 0.5,
                                 ),
                               ),
                             ),
@@ -195,26 +195,33 @@ class ReadTskScreen extends HookConsumerWidget {
                                   vertical: 7.h,
                                 ),
                                 decoration: BoxDecoration(
-                                  color: const Color(0xFFFAF5FF),
-                                  borderRadius: BorderRadius.circular(14.r),
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(12.r),
                                   border: Border.all(
-                                    color: const Color(0xFFE9D5FF),
-                                    width: 1,
+                                    color: const Color(0xFFE2E8F0),
+                                    width: 1.2,
                                   ),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withValues(alpha: 0.03),
+                                      blurRadius: 6,
+                                      offset: const Offset(0, 2),
+                                    ),
+                                  ],
                                 ),
                                 child: Row(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
                                     Icon(
                                       Icons.help_outline_rounded,
-                                      color: const Color(0xFFAB31DE),
+                                      color: const Color(0xFF26262B),
                                       size: 15.sp,
                                     ),
                                     SizedBox(width: 5.w),
                                     Text(
                                       'How To?',
-                                      style: GoogleFonts.outfit(
-                                        color: const Color(0xFFAB31DE),
+                                      style: GoogleFonts.poppins(
+                                        color: const Color(0xFF26262B),
                                         fontSize: 12.sp,
                                         fontWeight: FontWeight.w700,
                                       ),
@@ -226,7 +233,7 @@ class ReadTskScreen extends HookConsumerWidget {
                           ],
                         ),
 
-                        SizedBox(height: 18.h),
+                        SizedBox(height: 14.h),
 
                         // Screen Banner (Admin Configurable 700x200 with AD badge)
                         const ScreenBannerWidget(
@@ -279,20 +286,20 @@ class ReadTskScreen extends HookConsumerWidget {
                         Row(
                           children: [
                             Container(
-                              width: 3.5.w,
-                              height: 14.h,
+                              width: 4.w,
+                              height: 18.h,
                               decoration: BoxDecoration(
-                                color: const Color(0xFFAB31DE),
+                                color: const Color(0xFF26262B),
                                 borderRadius: BorderRadius.circular(2.r),
                               ),
                             ),
                             SizedBox(width: 8.w),
                             Text(
                               'Reading History',
-                              style: GoogleFonts.outfit(
-                                color: const Color(0xFF1E1B4B),
+                              style: GoogleFonts.poppins(
+                                color: const Color(0xFF26262B),
                                 fontSize: 16.sp,
-                                fontWeight: FontWeight.w800,
+                                fontWeight: FontWeight.w700,
                               ),
                             ),
                           ],
@@ -332,10 +339,10 @@ class ReadTskScreen extends HookConsumerWidget {
       width: double.infinity,
       padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 24.h),
       decoration: BoxDecoration(
-        color: const Color(0xFFFAF5FF),
-        borderRadius: BorderRadius.circular(20.r),
+        color: const Color(0xFFF8FAFC),
+        borderRadius: BorderRadius.circular(18.r),
         border: Border.all(
-          color: const Color(0xFFF3E8FF),
+          color: const Color(0xFFE2E8F0),
           width: 1.2,
         ),
       ),
@@ -343,27 +350,27 @@ class ReadTskScreen extends HookConsumerWidget {
         children: [
           Icon(
             Icons.menu_book_rounded,
-            color: const Color(0xFFAB31DE),
+            color: const Color(0xFF94A3B8),
             size: 36.sp,
           ),
           SizedBox(height: 10.h),
           Text(
             'No Reading Tasks Available Right Now',
             textAlign: TextAlign.center,
-            style: GoogleFonts.outfit(
+            style: GoogleFonts.poppins(
               color: const Color(0xFF1E1B4B),
               fontSize: 14.5.sp,
-              fontWeight: FontWeight.w800,
+              fontWeight: FontWeight.w700,
             ),
           ),
           SizedBox(height: 4.h),
           Text(
             'Check back in a little while for new articles to read & earn.',
             textAlign: TextAlign.center,
-            style: GoogleFonts.outfit(
+            style: GoogleFonts.poppins(
               color: const Color(0xFF64748B),
               fontSize: 12.sp,
-              fontWeight: FontWeight.w500,
+              fontWeight: FontWeight.w400,
             ),
           ),
         ],
@@ -379,16 +386,16 @@ class ReadTskScreen extends HookConsumerWidget {
   }) {
     return Container(
       decoration: BoxDecoration(
-        color: const Color(0xFFFAF5FF),
-        borderRadius: BorderRadius.circular(22.r),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20.r),
         border: Border.all(
-          color: const Color(0xFFF3E8FF),
+          color: const Color(0xFFE2E8F0),
           width: 1.2,
         ),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFFAB31DE).withValues(alpha: 0.08),
-            blurRadius: 14,
+            color: Colors.black.withValues(alpha: 0.04),
+            blurRadius: 12,
             offset: const Offset(0, 4),
           ),
         ],
@@ -405,16 +412,16 @@ class ReadTskScreen extends HookConsumerWidget {
                 width: 52.w,
                 height: 52.w,
                 decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(16.r),
+                  color: const Color(0xFFF8FAFC),
+                  borderRadius: BorderRadius.circular(14.r),
                   border: Border.all(
-                    color: const Color(0xFFE9D5FF),
-                    width: 1,
+                    color: const Color(0xFFE2E8F0),
+                    width: 1.2,
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: const Color(0xFFAB31DE).withValues(alpha: 0.08),
-                      blurRadius: 8,
+                      color: Colors.black.withValues(alpha: 0.03),
+                      blurRadius: 6,
                       offset: const Offset(0, 2),
                     ),
                   ],
@@ -422,13 +429,13 @@ class ReadTskScreen extends HookConsumerWidget {
                 alignment: Alignment.center,
                 child: Image.asset(
                   'assets/icons/reaadnowo.png',
-                  width: 38.w,
-                  height: 38.w,
+                  width: 36.w,
+                  height: 36.w,
                   fit: BoxFit.contain,
                   errorBuilder: (_, __, ___) => Icon(
                     Icons.auto_stories_rounded,
-                    color: const Color(0xFFAB31DE),
-                    size: 28.sp,
+                    color: const Color(0xFF26262B),
+                    size: 26.sp,
                   ),
                 ),
               ),
@@ -439,10 +446,10 @@ class ReadTskScreen extends HookConsumerWidget {
                   children: [
                     Text(
                       'Read Article',
-                      style: GoogleFonts.outfit(
+                      style: GoogleFonts.poppins(
                         color: const Color(0xFF1E1B4B),
                         fontSize: 15.sp,
-                        fontWeight: FontWeight.w800,
+                        fontWeight: FontWeight.w700,
                       ),
                     ),
                     SizedBox(height: 4.h),
@@ -452,38 +459,42 @@ class ReadTskScreen extends HookConsumerWidget {
                         Container(
                           padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
                           decoration: BoxDecoration(
-                            color: const Color(0xFFF3E8FF),
-                            borderRadius: BorderRadius.circular(10.r),
+                            color: const Color(0xFFF1F5F9),
+                            borderRadius: BorderRadius.circular(8.r),
+                            border: Border.all(
+                              color: const Color(0xFFE2E8F0),
+                              width: 1,
+                            ),
                           ),
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Icon(
                                 Icons.timer_outlined,
-                                color: const Color(0xFFAB31DE),
+                                color: const Color(0xFF64748B),
                                 size: 13.sp,
                               ),
                               SizedBox(width: 4.w),
                               Text(
                                 _formatDuration(offer.trackingTime),
-                                style: GoogleFonts.outfit(
-                                  color: const Color(0xFFAB31DE),
+                                style: GoogleFonts.poppins(
+                                  color: const Color(0xFF64748B),
                                   fontSize: 11.sp,
-                                  fontWeight: FontWeight.w700,
+                                  fontWeight: FontWeight.w600,
                                 ),
                               ),
                             ],
                           ),
                         ),
                         SizedBox(width: 8.w),
-                        // Coin Reward Pill
+                        // Dark Coin Badge (Matching Home Screen)
                         Container(
                           padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
                           decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(10.r),
+                            color: const Color(0xFF26262E),
+                            borderRadius: BorderRadius.circular(8.r),
                             border: Border.all(
-                              color: const Color(0xFFE9D5FF),
+                              color: const Color(0xFF383842),
                               width: 1,
                             ),
                           ),
@@ -492,17 +503,17 @@ class ReadTskScreen extends HookConsumerWidget {
                             children: [
                               Image.asset(
                                 'assets/icons/coin.png',
-                                width: 14.w,
-                                height: 14.w,
+                                width: 13.w,
+                                height: 13.w,
                                 fit: BoxFit.contain,
                               ),
                               SizedBox(width: 4.w),
                               Text(
                                 '+${offer.coins.formatCoins()}',
-                                style: GoogleFonts.outfit(
-                                  color: const Color(0xFFAB31DE),
-                                  fontSize: 11.5.sp,
-                                  fontWeight: FontWeight.w800,
+                                style: GoogleFonts.poppins(
+                                  color: Colors.white,
+                                  fontSize: 11.sp,
+                                  fontWeight: FontWeight.w700,
                                 ),
                               ),
                             ],
@@ -521,7 +532,7 @@ class ReadTskScreen extends HookConsumerWidget {
           // Divider Line
           Container(
             height: 1,
-            color: const Color(0xFFF3E8FF),
+            color: const Color(0xFFE2E8F0),
           ),
 
           SizedBox(height: 14.h),
@@ -529,10 +540,10 @@ class ReadTskScreen extends HookConsumerWidget {
           // 3-Step Guide Section
           Text(
             'How To Complete:',
-            style: GoogleFonts.outfit(
+            style: GoogleFonts.poppins(
               color: const Color(0xFF1E1B4B),
               fontSize: 13.sp,
-              fontWeight: FontWeight.w800,
+              fontWeight: FontWeight.w700,
             ),
           ),
           SizedBox(height: 8.h),
@@ -544,22 +555,32 @@ class ReadTskScreen extends HookConsumerWidget {
 
           SizedBox(height: 18.h),
 
-          // Vibrant Purple Gradient "Read Now" Action Button
+          // Silver Metallic "Read Now" Action Button
           GestureDetector(
             onTap: onReadTap,
             child: Container(
               width: double.infinity,
-              height: 50.h,
+              height: 48.h,
               decoration: BoxDecoration(
                 gradient: const LinearGradient(
-                  colors: [Color(0xFFE39FFF), Color(0xFFAB31DE)],
+                  colors: [
+                    Colors.white,
+                    Color(0xFFE5E7EB),
+                    Color(0xFFB0B5C2),
+                  ],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
                 ),
-                borderRadius: BorderRadius.circular(25.r),
+                borderRadius: BorderRadius.circular(14.r),
+                border: Border.all(
+                  color: const Color(0xFF9CA3AF),
+                  width: 1,
+                ),
                 boxShadow: [
                   BoxShadow(
-                    color: const Color(0xFFAB31DE).withValues(alpha: 0.35),
-                    blurRadius: 10,
-                    offset: const Offset(0, 4),
+                    color: Colors.black.withValues(alpha: 0.08),
+                    blurRadius: 8,
+                    offset: const Offset(0, 3),
                   ),
                 ],
               ),
@@ -568,16 +589,17 @@ class ReadTskScreen extends HookConsumerWidget {
                 children: [
                   Icon(
                     Icons.auto_stories_rounded,
-                    color: Colors.white,
+                    color: const Color(0xFF16161A),
                     size: 18.sp,
                   ),
                   SizedBox(width: 8.w),
                   Text(
                     'Read Now',
-                    style: GoogleFonts.outfit(
-                      color: Colors.white,
-                      fontSize: 16.sp,
+                    style: GoogleFonts.poppins(
+                      color: const Color(0xFF16161A),
+                      fontSize: 15.sp,
                       fontWeight: FontWeight.w800,
+                      letterSpacing: 0.3,
                     ),
                   ),
                 ],
@@ -597,20 +619,16 @@ class ReadTskScreen extends HookConsumerWidget {
           width: 18.w,
           height: 18.w,
           decoration: BoxDecoration(
-            color: const Color(0xFFF3E8FF),
+            color: const Color(0xFF26262B),
             shape: BoxShape.circle,
-            border: Border.all(
-              color: const Color(0xFFE9D5FF),
-              width: 1,
-            ),
           ),
           alignment: Alignment.center,
           child: Text(
             '$number',
-            style: GoogleFonts.outfit(
-              color: const Color(0xFFAB31DE),
+            style: GoogleFonts.poppins(
+              color: Colors.white,
               fontSize: 10.sp,
-              fontWeight: FontWeight.w800,
+              fontWeight: FontWeight.w700,
             ),
           ),
         ),
@@ -618,11 +636,11 @@ class ReadTskScreen extends HookConsumerWidget {
         Expanded(
           child: Text(
             text,
-            style: GoogleFonts.outfit(
+            style: GoogleFonts.poppins(
               color: const Color(0xFF475569),
               fontSize: 12.sp,
               height: 1.35,
-              fontWeight: FontWeight.w500,
+              fontWeight: FontWeight.w400,
             ),
           ),
         ),
@@ -638,7 +656,7 @@ class ReadTskScreen extends HookConsumerWidget {
         color: const Color(0xFFF8FAFC),
         borderRadius: BorderRadius.circular(16.r),
         border: Border.all(
-          color: const Color(0xFFF1F5F9),
+          color: const Color(0xFFE2E8F0),
           width: 1,
         ),
       ),
@@ -653,7 +671,7 @@ class ReadTskScreen extends HookConsumerWidget {
           SizedBox(height: 8.h),
           Text(
             'No Reading History Yet',
-            style: GoogleFonts.outfit(
+            style: GoogleFonts.poppins(
               color: const Color(0xFF1E1B4B),
               fontSize: 13.5.sp,
               fontWeight: FontWeight.w700,
@@ -663,10 +681,10 @@ class ReadTskScreen extends HookConsumerWidget {
           Text(
             'Complete your first read task to see your earning record here.',
             textAlign: TextAlign.center,
-            style: GoogleFonts.outfit(
+            style: GoogleFonts.poppins(
               color: const Color(0xFF64748B),
               fontSize: 11.5.sp,
-              fontWeight: FontWeight.w500,
+              fontWeight: FontWeight.w400,
             ),
           ),
         ],
@@ -717,12 +735,19 @@ class ReadTskScreen extends HookConsumerWidget {
         return Container(
           padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 10.h),
           decoration: BoxDecoration(
-            color: const Color(0xFFFAF5FF),
+            color: Colors.white,
             borderRadius: BorderRadius.circular(16.r),
             border: Border.all(
-              color: const Color(0xFFF3E8FF),
+              color: const Color(0xFFE2E8F0),
               width: 1,
             ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.02),
+                blurRadius: 6,
+                offset: const Offset(0, 2),
+              ),
+            ],
           ),
           child: Row(
             children: [
@@ -737,13 +762,13 @@ class ReadTskScreen extends HookConsumerWidget {
                     width: 38.w,
                     height: 38.w,
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: const Color(0xFFF8FAFC),
                       borderRadius: BorderRadius.circular(10.r),
                     ),
                     alignment: Alignment.center,
                     child: Icon(
                       Icons.auto_stories_rounded,
-                      color: const Color(0xFFAB31DE),
+                      color: const Color(0xFF26262B),
                       size: 20.sp,
                     ),
                   ),
@@ -756,7 +781,7 @@ class ReadTskScreen extends HookConsumerWidget {
                   children: [
                     Text(
                       'Read Completed',
-                      style: GoogleFonts.outfit(
+                      style: GoogleFonts.poppins(
                         color: const Color(0xFF1E1B4B),
                         fontSize: 13.5.sp,
                         fontWeight: FontWeight.w700,
@@ -765,10 +790,10 @@ class ReadTskScreen extends HookConsumerWidget {
                     SizedBox(height: 2.h),
                     Text(
                       '$maskedId • $timeStr',
-                      style: GoogleFonts.outfit(
+                      style: GoogleFonts.poppins(
                         color: const Color(0xFF64748B),
                         fontSize: 11.sp,
-                        fontWeight: FontWeight.w500,
+                        fontWeight: FontWeight.w400,
                       ),
                     ),
                   ],
@@ -778,7 +803,11 @@ class ReadTskScreen extends HookConsumerWidget {
                 padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
                 decoration: BoxDecoration(
                   color: const Color(0xFFDCFCE7),
-                  borderRadius: BorderRadius.circular(12.r),
+                  borderRadius: BorderRadius.circular(8.r),
+                  border: Border.all(
+                    color: const Color(0xFF86EFAC),
+                    width: 1,
+                  ),
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
@@ -791,11 +820,11 @@ class ReadTskScreen extends HookConsumerWidget {
                     ),
                     SizedBox(width: 4.w),
                     Text(
-                      '+${item.coins.formatCoins()}',
-                      style: GoogleFonts.outfit(
-                        color: const Color(0xFF16A34A),
+                      '+${item.coins.toInt().formatCoins()}',
+                      style: GoogleFonts.poppins(
+                        color: const Color(0xFF15803D),
                         fontSize: 11.5.sp,
-                        fontWeight: FontWeight.w800,
+                        fontWeight: FontWeight.w700,
                       ),
                     ),
                   ],
@@ -830,7 +859,7 @@ class ReadTskScreen extends HookConsumerWidget {
       if (context.mounted) {
         CustomStatusPopup.showSuccess(
           context: context,
-          title: '${offer.coins.formatCoins()} Coins Earned!',
+          title: '${offer.coins.toInt().formatCoins()} Coins Earned!',
           message: "You've successfully completed the reading task! Coins have been credited to your balance.",
         );
       }

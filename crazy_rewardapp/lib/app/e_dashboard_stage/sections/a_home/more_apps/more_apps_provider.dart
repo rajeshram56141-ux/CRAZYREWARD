@@ -4,9 +4,17 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../../b_splash_stage/splash_service.dart';
 import 'more_apps_model.dart';
 
+// Set to true whenever Firestore API is enabled in Firebase Console
+const bool _useFirestoreStream = false;
+
 final moreAppsStreamProvider = StreamProvider.autoDispose<List<MoreAppsModel>>((ref) async* {
   if (SplashService.moreApps.isNotEmpty) {
     yield SplashService.moreApps;
+  }
+
+  // If Firestore stream is disabled/off, yield backend data directly
+  if (!_useFirestoreStream) {
+    return;
   }
 
   final firestore = FirebaseFirestore.instance;

@@ -165,7 +165,7 @@ class RedeemRequest {
 typedef PaymentRequest = RedeemRequest;
 
 // ---------------------------------------------------------------------------
-// REDEEM POPUP (MODERN DARK CYBER VOUCHER MODAL)
+// REDEEM POPUP (DARK OBSIDIAN VOUCHER MODAL)
 // ---------------------------------------------------------------------------
 class RedeemPopup extends HookWidget {
   const RedeemPopup({
@@ -330,9 +330,9 @@ class RedeemPopup extends HookWidget {
               padding: EdgeInsets.only(left: 2.w, bottom: 6.h),
               child: Text(
                 getFieldLabel(key),
-                style: GoogleFonts.outfit(
-                  color: const Color(0xFF1E1B4B),
-                  fontSize: 12.sp,
+                style: GoogleFonts.poppins(
+                  color: const Color(0xFF26262B),
+                  fontSize: 11.5.sp,
                   fontWeight: FontWeight.w700,
                   letterSpacing: 0.5,
                 ),
@@ -359,7 +359,7 @@ class RedeemPopup extends HookWidget {
                           : null,
                       hint: Text(
                         getHintText(key),
-                        style: GoogleFonts.outfit(
+                        style: GoogleFonts.poppins(
                           color: const Color(0xFF94A3B8),
                           fontSize: 13.sp,
                           fontWeight: FontWeight.w400,
@@ -367,23 +367,23 @@ class RedeemPopup extends HookWidget {
                       ),
                       icon: const Icon(
                         Icons.arrow_drop_down_rounded,
-                        color: Color(0xFFAB31DE),
+                        color: Color(0xFF26262B),
                       ),
-                      style: GoogleFonts.outfit(
-                        color: const Color(0xFF1E1B4B),
+                      style: GoogleFonts.poppins(
+                        color: const Color(0xFF26262B),
                         fontSize: 14.sp,
                         fontWeight: FontWeight.w600,
                       ),
                       decoration: InputDecoration(
                         hintText: getHintText(key),
-                        hintStyle: GoogleFonts.outfit(
+                        hintStyle: GoogleFonts.poppins(
                           color: const Color(0xFF94A3B8),
                           fontSize: 13.sp,
                           fontWeight: FontWeight.w400,
                         ),
                         prefixIcon: Icon(
                           getPrefixIcon(key),
-                          color: const Color(0xFFAB31DE),
+                          color: const Color(0xFF26262B),
                           size: 20.sp,
                         ),
                         border: InputBorder.none,
@@ -391,7 +391,7 @@ class RedeemPopup extends HookWidget {
                           vertical: 10.h,
                           horizontal: 16.w,
                         ),
-                        errorStyle: GoogleFonts.outfit(
+                        errorStyle: GoogleFonts.poppins(
                           color: const Color(0xFFEF4444),
                           fontSize: 11.5.sp,
                           fontWeight: FontWeight.w500,
@@ -407,8 +407,8 @@ class RedeemPopup extends HookWidget {
                           value: opt,
                           child: Text(
                             opt,
-                            style: GoogleFonts.outfit(
-                              color: const Color(0xFF1E1B4B),
+                            style: GoogleFonts.poppins(
+                              color: const Color(0xFF26262B),
                               fontSize: 14.sp,
                               fontWeight: FontWeight.w500,
                             ),
@@ -425,22 +425,22 @@ class RedeemPopup extends HookWidget {
                   : TextFormField(
                       controller: controller,
                       keyboardType: getKeyboardType(key),
-                      cursorColor: const Color(0xFFAB31DE),
-                      style: GoogleFonts.outfit(
-                        color: const Color(0xFF1E1B4B),
+                      cursorColor: const Color(0xFF26262B),
+                      style: GoogleFonts.poppins(
+                        color: const Color(0xFF26262B),
                         fontSize: 14.sp,
                         fontWeight: FontWeight.w600,
                       ),
                       decoration: InputDecoration(
                         hintText: getHintText(key),
-                        hintStyle: GoogleFonts.outfit(
+                        hintStyle: GoogleFonts.poppins(
                           color: const Color(0xFF94A3B8),
                           fontSize: 13.sp,
                           fontWeight: FontWeight.w400,
                         ),
                         prefixIcon: Icon(
                           getPrefixIcon(key),
-                          color: const Color(0xFFAB31DE),
+                          color: const Color(0xFF26262B),
                           size: 20.sp,
                         ),
                         border: InputBorder.none,
@@ -448,7 +448,7 @@ class RedeemPopup extends HookWidget {
                           vertical: 14.h,
                           horizontal: 16.w,
                         ),
-                        errorStyle: GoogleFonts.outfit(
+                        errorStyle: GoogleFonts.poppins(
                           color: const Color(0xFFEF4444),
                           fontSize: 11.5.sp,
                           fontWeight: FontWeight.w500,
@@ -531,7 +531,7 @@ class RedeemPopup extends HookWidget {
 
                         SizedBox(height: 10.h),
 
-                        // Confirm Button
+                        // Confirm Button (Dark Obsidian)
                         _PopScaleButton(
                           onTap: isLoading.value
                               ? () {}
@@ -632,15 +632,17 @@ class RedeemPopup extends HookWidget {
                             decoration: BoxDecoration(
                               gradient: const LinearGradient(
                                 colors: [
-                                  Color(0xFFE39FFF),
-                                  Color(0xFFAB31DE),
+                                  Color(0xFF26262B),
+                                  Color(0xFF18181B),
                                 ],
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
                               ),
                               borderRadius: BorderRadius.circular(14.r),
                               boxShadow: [
                                 BoxShadow(
-                                  color: const Color(0xFFAB31DE).withValues(alpha: 0.3),
-                                  blurRadius: 12,
+                                  color: const Color(0xFF18181B).withValues(alpha: 0.25),
+                                  blurRadius: 10,
                                   offset: const Offset(0, 4),
                                 ),
                               ],
@@ -656,10 +658,10 @@ class RedeemPopup extends HookWidget {
                                   )
                                 : Text(
                                     'CONFIRM REDEEM',
-                                    style: GoogleFonts.outfit(
+                                    style: GoogleFonts.poppins(
                                       color: Colors.white,
-                                      fontSize: 15.sp,
-                                      fontWeight: FontWeight.w800,
+                                      fontSize: 14.5.sp,
+                                      fontWeight: FontWeight.w700,
                                       letterSpacing: 0.5,
                                     ),
                                   ),
@@ -734,10 +736,10 @@ class _VoucherReceiptCard extends StatelessWidget {
       width: double.infinity,
       padding: EdgeInsets.all(14.w),
       decoration: BoxDecoration(
-        color: const Color(0xFFFAF5FF),
+        color: const Color(0xFFF8FAFC),
         borderRadius: BorderRadius.circular(20.r),
         border: Border.all(
-          color: const Color(0xFFF1F5F9),
+          color: const Color(0xFFE2E8F0),
           width: 1.2,
         ),
       ),
@@ -752,9 +754,10 @@ class _VoucherReceiptCard extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(12.r),
+                  border: Border.all(color: const Color(0xFFE2E8F0), width: 1),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.05),
+                      color: Colors.black.withValues(alpha: 0.03),
                       blurRadius: 6,
                       offset: const Offset(0, 2),
                     ),
@@ -773,8 +776,8 @@ class _VoucherReceiptCard extends StatelessWidget {
                   children: [
                     Text(
                       paymentMethod.title,
-                      style: GoogleFonts.outfit(
-                        color: const Color(0xFF1E1B4B),
+                      style: GoogleFonts.poppins(
+                        color: const Color(0xFF26262B),
                         fontSize: 15.sp,
                         fontWeight: FontWeight.w700,
                       ),
@@ -783,7 +786,7 @@ class _VoucherReceiptCard extends StatelessWidget {
                       SizedBox(height: 2.h),
                       Text(
                         denomination.subtitle!,
-                        style: GoogleFonts.outfit(
+                        style: GoogleFonts.poppins(
                           color: const Color(0xFF64748B),
                           fontSize: 11.5.sp,
                           fontWeight: FontWeight.w500,
@@ -803,6 +806,10 @@ class _VoucherReceiptCard extends StatelessWidget {
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(14.r),
+              border: Border.all(
+                color: const Color(0xFFE2E8F0),
+                width: 1,
+              ),
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -812,7 +819,7 @@ class _VoucherReceiptCard extends StatelessWidget {
                   children: [
                     Text(
                       'YOU WILL GET',
-                      style: GoogleFonts.outfit(
+                      style: GoogleFonts.poppins(
                         color: const Color(0xFF94A3B8),
                         fontSize: 10.sp,
                         fontWeight: FontWeight.w700,
@@ -822,8 +829,8 @@ class _VoucherReceiptCard extends StatelessWidget {
                     SizedBox(height: 2.h),
                     Text(
                       '${paymentMethod.symbol}${denomination.amount}',
-                      style: GoogleFonts.outfit(
-                        color: const Color(0xFF1E1B4B),
+                      style: GoogleFonts.poppins(
+                        color: const Color(0xFF26262B),
                         fontSize: 20.sp,
                         fontWeight: FontWeight.w800,
                       ),
@@ -836,8 +843,12 @@ class _VoucherReceiptCard extends StatelessWidget {
                     vertical: 6.h,
                   ),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFF3E8FF),
+                    color: const Color(0xFFF8FAFC),
                     borderRadius: BorderRadius.circular(12.r),
+                    border: Border.all(
+                      color: const Color(0xFFE2E8F0),
+                      width: 1,
+                    ),
                   ),
                   child: Row(
                     children: [
@@ -849,9 +860,9 @@ class _VoucherReceiptCard extends StatelessWidget {
                       SizedBox(width: 6.w),
                       Text(
                         formattedCoins,
-                        style: GoogleFonts.outfit(
-                          color: const Color(0xFFAB31DE),
-                          fontSize: 14.sp,
+                        style: GoogleFonts.poppins(
+                          color: const Color(0xFF26262B),
+                          fontSize: 13.5.sp,
                           fontWeight: FontWeight.w700,
                         ),
                       ),
@@ -868,7 +879,7 @@ class _VoucherReceiptCard extends StatelessWidget {
 }
 
 // ---------------------------------------------------------------------------
-// INSUFFICIENT BALANCE BOTTOM SHEET (MODERN DARK WARNING MODAL)
+// INSUFFICIENT BALANCE BOTTOM SHEET (OBSIDIAN WARNING MODAL)
 // ---------------------------------------------------------------------------
 class _InsufficientBalanceSheet extends StatelessWidget {
   const _InsufficientBalanceSheet({
@@ -954,8 +965,8 @@ class _InsufficientBalanceSheet extends StatelessWidget {
                 children: [
                   // 1. Icon Aura
                   Container(
-                    width: 80.w,
-                    height: 80.w,
+                    width: 76.w,
+                    height: 76.w,
                     decoration: const BoxDecoration(
                       shape: BoxShape.circle,
                       color: Color(0xFFFEF2F2),
@@ -969,7 +980,7 @@ class _InsufficientBalanceSheet extends StatelessWidget {
                       child: Icon(
                         Icons.priority_high_rounded,
                         color: const Color(0xFFEF4444),
-                        size: 38.sp,
+                        size: 36.sp,
                       ),
                     ),
                   ),
@@ -979,9 +990,9 @@ class _InsufficientBalanceSheet extends StatelessWidget {
                   Text(
                     'Insufficient Coins',
                     textAlign: TextAlign.center,
-                    style: GoogleFonts.outfit(
-                      color: const Color(0xFF1E1B4B),
-                      fontSize: 20.sp,
+                    style: GoogleFonts.poppins(
+                      color: const Color(0xFF26262B),
+                      fontSize: 19.sp,
                       fontWeight: FontWeight.w700,
                       height: 1.2,
                     ),
@@ -992,9 +1003,9 @@ class _InsufficientBalanceSheet extends StatelessWidget {
                         ? 'You need $formattedMissing more coins to redeem this voucher. Play games or complete tasks to earn more!'
                         : message.tr(),
                     textAlign: TextAlign.center,
-                    style: GoogleFonts.outfit(
+                    style: GoogleFonts.poppins(
                       color: const Color(0xFF64748B),
-                      fontSize: 13.sp,
+                      fontSize: 12.5.sp,
                       fontWeight: FontWeight.w400,
                       height: 1.4,
                     ),
@@ -1007,10 +1018,10 @@ class _InsufficientBalanceSheet extends StatelessWidget {
                     width: double.infinity,
                     padding: EdgeInsets.all(14.w),
                     decoration: BoxDecoration(
-                      color: const Color(0xFFFAF5FF),
+                      color: const Color(0xFFF8FAFC),
                       borderRadius: BorderRadius.circular(16.r),
                       border: Border.all(
-                        color: const Color(0xFFF1F5F9),
+                        color: const Color(0xFFE2E8F0),
                         width: 1.2,
                       ),
                     ),
@@ -1023,6 +1034,7 @@ class _InsufficientBalanceSheet extends StatelessWidget {
                           decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(12.r),
+                            border: Border.all(color: const Color(0xFFE2E8F0), width: 1),
                           ),
                           child: InternetImage(
                             url: image,
@@ -1035,16 +1047,16 @@ class _InsufficientBalanceSheet extends StatelessWidget {
                           children: [
                             Text(
                               methodName,
-                              style: GoogleFonts.outfit(
-                                color: const Color(0xFF1E1B4B),
-                                fontSize: 15.sp,
+                              style: GoogleFonts.poppins(
+                                color: const Color(0xFF26262B),
+                                fontSize: 14.5.sp,
                                 fontWeight: FontWeight.w700,
                               ),
                             ),
                             Text(
                               '$symbol$amount',
-                              style: GoogleFonts.outfit(
-                                color: const Color(0xFFAB31DE),
+                              style: GoogleFonts.poppins(
+                                color: const Color(0xFF26262B),
                                 fontSize: 13.5.sp,
                                 fontWeight: FontWeight.w700,
                               ),
@@ -1058,8 +1070,12 @@ class _InsufficientBalanceSheet extends StatelessWidget {
                             vertical: 5.h,
                           ),
                           decoration: BoxDecoration(
-                            color: const Color(0xFFF3E8FF),
+                            color: Colors.white,
                             borderRadius: BorderRadius.circular(12.r),
+                            border: Border.all(
+                              color: const Color(0xFFE2E8F0),
+                              width: 1,
+                            ),
                           ),
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
@@ -1072,8 +1088,8 @@ class _InsufficientBalanceSheet extends StatelessWidget {
                               SizedBox(width: 5.w),
                               Text(
                                 formattedCoins,
-                                style: GoogleFonts.outfit(
-                                  color: const Color(0xFFAB31DE),
+                                style: GoogleFonts.poppins(
+                                  color: const Color(0xFF26262B),
                                   fontSize: 13.sp,
                                   fontWeight: FontWeight.w700,
                                 ),
@@ -1087,7 +1103,7 @@ class _InsufficientBalanceSheet extends StatelessWidget {
 
                   SizedBox(height: 20.h),
 
-                  // Button
+                  // Button (Dark Obsidian / Clean Red)
                   _PopScaleButton(
                     onTap: () => Navigator.pop(context),
                     child: Container(
@@ -1095,14 +1111,19 @@ class _InsufficientBalanceSheet extends StatelessWidget {
                       height: 46.h,
                       alignment: Alignment.center,
                       decoration: BoxDecoration(
-                        color: const Color(0xFFEF4444),
+                        gradient: const LinearGradient(
+                          colors: [
+                            Color(0xFF26262B),
+                            Color(0xFF18181B),
+                          ],
+                        ),
                         borderRadius: BorderRadius.circular(14.r),
                       ),
                       child: Text(
                         'GOT IT',
-                        style: GoogleFonts.outfit(
+                        style: GoogleFonts.poppins(
                           color: Colors.white,
-                          fontSize: 14.5.sp,
+                          fontSize: 14.sp,
                           fontWeight: FontWeight.w700,
                         ),
                       ),
@@ -1119,7 +1140,7 @@ class _InsufficientBalanceSheet extends StatelessWidget {
 }
 
 // ---------------------------------------------------------------------------
-// REDEEM RESULT VIEW (MATCHING USER SUCCESS POPUP MOCKUP)
+// REDEEM RESULT VIEW (DARK OBSIDIAN / SILVER SUCCESS POPUP)
 // ---------------------------------------------------------------------------
 class _RedeemResultView extends StatelessWidget {
   const _RedeemResultView({
@@ -1216,10 +1237,10 @@ class _RedeemResultView extends StatelessWidget {
           width: double.infinity,
           padding: EdgeInsets.all(14.w),
           decoration: BoxDecoration(
-            color: const Color(0xFFFAF5FF),
+            color: const Color(0xFFF8FAFC),
             borderRadius: BorderRadius.circular(16.r),
             border: Border.all(
-              color: const Color(0xFFF1F5F9),
+              color: const Color(0xFFE2E8F0),
               width: 1.2,
             ),
           ),
@@ -1237,9 +1258,10 @@ class _RedeemResultView extends StatelessWidget {
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(10.r),
+                      border: Border.all(color: const Color(0xFFE2E8F0), width: 1),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.06),
+                          color: Colors.black.withValues(alpha: 0.04),
                           blurRadius: 4,
                           offset: const Offset(0, 2),
                         ),
@@ -1252,7 +1274,7 @@ class _RedeemResultView extends StatelessWidget {
                           )
                         : Icon(
                             Icons.confirmation_number_rounded,
-                            color: const Color(0xFFAB31DE),
+                            color: const Color(0xFF26262B),
                             size: 16.sp,
                           ),
                   ),
@@ -1260,8 +1282,8 @@ class _RedeemResultView extends StatelessWidget {
                   Expanded(
                     child: Text(
                       paymentMethodTitle ?? 'Voucher Code',
-                      style: GoogleFonts.outfit(
-                        color: const Color(0xFF1E1B4B),
+                      style: GoogleFonts.poppins(
+                        color: const Color(0xFF26262B),
                         fontSize: 14.sp,
                         fontWeight: FontWeight.w700,
                       ),
@@ -1274,14 +1296,14 @@ class _RedeemResultView extends StatelessWidget {
                     children: [
                       Icon(
                         Icons.copy_rounded,
-                        color: const Color(0xFFAB31DE),
+                        color: const Color(0xFF26262B),
                         size: 14.sp,
                       ),
                       SizedBox(width: 4.w),
                       Text(
                         isGooglePlay ? 'Copy & Redeem' : 'Copy',
-                        style: GoogleFonts.outfit(
-                          color: const Color(0xFFAB31DE),
+                        style: GoogleFonts.poppins(
+                          color: const Color(0xFF26262B),
                           fontSize: 12.5.sp,
                           fontWeight: FontWeight.w700,
                         ),
@@ -1298,14 +1320,14 @@ class _RedeemResultView extends StatelessWidget {
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(12.r),
                   border: Border.all(
-                    color: const Color(0xFFAB31DE).withValues(alpha: 0.3),
+                    color: const Color(0xFFE2E8F0),
                     width: 1.2,
                   ),
                 ),
                 child: SelectableText(
                   cleanCode,
-                  style: GoogleFonts.outfit(
-                    color: const Color(0xFFAB31DE),
+                  style: GoogleFonts.poppins(
+                    color: const Color(0xFF26262B),
                     fontSize: 15.sp,
                     fontWeight: FontWeight.w800,
                     letterSpacing: 0.8,
@@ -1352,8 +1374,8 @@ class _RedeemResultView extends StatelessWidget {
       primaryButtonColor = const Color(0xFFD97706);
       centerIcon = Center(
         child: Container(
-          width: 80.w,
-          height: 80.w,
+          width: 76.w,
+          height: 76.w,
           decoration: const BoxDecoration(
             shape: BoxShape.circle,
             color: Color(0xFFFFFBEB),
@@ -1367,7 +1389,7 @@ class _RedeemResultView extends StatelessWidget {
             child: Icon(
               Icons.priority_high_rounded,
               color: const Color(0xFFD97706),
-              size: 38.sp,
+              size: 36.sp,
             ),
           ),
         ),
@@ -1381,7 +1403,7 @@ class _RedeemResultView extends StatelessWidget {
       title: mainTitle,
       message: popupMessage,
       centerIcon: centerIcon,
-      primaryButtonColor: primaryButtonColor,
+      primaryButtonColor: primaryButtonColor ?? const Color(0xFF26262B),
       customBody: customBody,
       primaryButtonText: primaryButtonText,
       onPrimaryTap: onPrimaryTap,
@@ -1562,7 +1584,7 @@ class _WithdrawAccountDetailsPopupState extends ConsumerState<_WithdrawAccountDe
         borderRadius: BorderRadius.circular(28.r),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF1E1B4B).withValues(alpha: 0.18),
+            color: const Color(0xFF0F172A).withValues(alpha: 0.14),
             blurRadius: 30,
             offset: const Offset(0, 10),
           ),
@@ -1588,12 +1610,12 @@ class _WithdrawAccountDetailsPopupState extends ConsumerState<_WithdrawAccountDe
                           height: 44.w,
                           decoration: BoxDecoration(
                             gradient: const LinearGradient(
-                              colors: [Color(0xFFE39FFF), Color(0xFFAB31DE)],
+                              colors: [Color(0xFF26262B), Color(0xFF18181B)],
                             ),
                             borderRadius: BorderRadius.circular(14.r),
                             boxShadow: [
                               BoxShadow(
-                                color: const Color(0xFFAB31DE).withValues(alpha: 0.3),
+                                color: const Color(0xFF18181B).withValues(alpha: 0.25),
                                 blurRadius: 10,
                                 offset: const Offset(0, 3),
                               ),
@@ -1612,16 +1634,16 @@ class _WithdrawAccountDetailsPopupState extends ConsumerState<_WithdrawAccountDe
                             children: [
                               Text(
                                 'Account Verification',
-                                style: GoogleFonts.outfit(
-                                  color: const Color(0xFF1E1B4B),
-                                  fontSize: 18.sp,
-                                  fontWeight: FontWeight.w800,
+                                style: GoogleFonts.poppins(
+                                  color: const Color(0xFF26262B),
+                                  fontSize: 17.sp,
+                                  fontWeight: FontWeight.w700,
                                 ),
                               ),
                               SizedBox(height: 2.h),
                               Text(
                                 'Required once to enable payouts',
-                                style: GoogleFonts.outfit(
+                                style: GoogleFonts.poppins(
                                   color: const Color(0xFF64748B),
                                   fontSize: 11.5.sp,
                                   fontWeight: FontWeight.w500,
@@ -1640,7 +1662,7 @@ class _WithdrawAccountDetailsPopupState extends ConsumerState<_WithdrawAccountDe
                     // 1. Full Name Label & Field
                     Text(
                       'FULL NAME',
-                      style: GoogleFonts.outfit(
+                      style: GoogleFonts.poppins(
                         color: const Color(0xFF64748B),
                         fontSize: 11.sp,
                         fontWeight: FontWeight.w700,
@@ -1651,36 +1673,36 @@ class _WithdrawAccountDetailsPopupState extends ConsumerState<_WithdrawAccountDe
                     TextFormField(
                       controller: _nameController,
                       textCapitalization: TextCapitalization.words,
-                      style: GoogleFonts.outfit(
-                        color: const Color(0xFF1E1B4B),
+                      style: GoogleFonts.poppins(
+                        color: const Color(0xFF26262B),
                         fontSize: 14.sp,
                         fontWeight: FontWeight.w600,
                       ),
                       decoration: InputDecoration(
                         hintText: 'Enter your full name',
-                        hintStyle: GoogleFonts.outfit(
+                        hintStyle: GoogleFonts.poppins(
                           color: const Color(0xFF94A3B8),
                           fontSize: 13.sp,
                         ),
                         prefixIcon: Icon(
                           Icons.person_outline_rounded,
-                          color: const Color(0xFFAB31DE),
+                          color: const Color(0xFF26262B),
                           size: 19.sp,
                         ),
                         filled: true,
-                        fillColor: const Color(0xFFFAF5FF),
+                        fillColor: const Color(0xFFF8FAFC),
                         contentPadding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(14.r),
-                          borderSide: const BorderSide(color: Color(0xFFE9D5FF), width: 1),
+                          borderSide: const BorderSide(color: Color(0xFFE2E8F0), width: 1),
                         ),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(14.r),
-                          borderSide: const BorderSide(color: Color(0xFFE9D5FF), width: 1),
+                          borderSide: const BorderSide(color: Color(0xFFE2E8F0), width: 1),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(14.r),
-                          borderSide: const BorderSide(color: Color(0xFFAB31DE), width: 1.5),
+                          borderSide: const BorderSide(color: Color(0xFF26262B), width: 1.5),
                         ),
                       ),
                       validator: (val) {
@@ -1695,7 +1717,7 @@ class _WithdrawAccountDetailsPopupState extends ConsumerState<_WithdrawAccountDe
                     // 2. Mobile Number Label & Field
                     Text(
                       'MOBILE NUMBER',
-                      style: GoogleFonts.outfit(
+                      style: GoogleFonts.poppins(
                         color: const Color(0xFF64748B),
                         fontSize: 11.sp,
                         fontWeight: FontWeight.w700,
@@ -1710,15 +1732,15 @@ class _WithdrawAccountDetailsPopupState extends ConsumerState<_WithdrawAccountDe
                         FilteringTextInputFormatter.digitsOnly,
                         LengthLimitingTextInputFormatter(10),
                       ],
-                      style: GoogleFonts.outfit(
-                        color: const Color(0xFF1E1B4B),
+                      style: GoogleFonts.poppins(
+                        color: const Color(0xFF26262B),
                         fontSize: 14.sp,
                         fontWeight: FontWeight.w600,
                         letterSpacing: 1.0,
                       ),
                       decoration: InputDecoration(
                         hintText: '10-digit mobile number',
-                        hintStyle: GoogleFonts.outfit(
+                        hintStyle: GoogleFonts.poppins(
                           color: const Color(0xFF94A3B8),
                           fontSize: 13.sp,
                           letterSpacing: 0,
@@ -1736,8 +1758,8 @@ class _WithdrawAccountDetailsPopupState extends ConsumerState<_WithdrawAccountDe
                             children: [
                               Text(
                                 '🇮🇳 +91',
-                                style: GoogleFonts.outfit(
-                                  color: const Color(0xFF1E1B4B),
+                                style: GoogleFonts.poppins(
+                                  color: const Color(0xFF26262B),
                                   fontSize: 13.5.sp,
                                   fontWeight: FontWeight.w700,
                                 ),
@@ -1746,19 +1768,19 @@ class _WithdrawAccountDetailsPopupState extends ConsumerState<_WithdrawAccountDe
                           ),
                         ),
                         filled: true,
-                        fillColor: const Color(0xFFFAF5FF),
+                        fillColor: const Color(0xFFF8FAFC),
                         contentPadding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(14.r),
-                          borderSide: const BorderSide(color: Color(0xFFE9D5FF), width: 1),
+                          borderSide: const BorderSide(color: Color(0xFFE2E8F0), width: 1),
                         ),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(14.r),
-                          borderSide: const BorderSide(color: Color(0xFFE9D5FF), width: 1),
+                          borderSide: const BorderSide(color: Color(0xFFE2E8F0), width: 1),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(14.r),
-                          borderSide: const BorderSide(color: Color(0xFFAB31DE), width: 1.5),
+                          borderSide: const BorderSide(color: Color(0xFF26262B), width: 1.5),
                         ),
                       ),
                       validator: (val) {
@@ -1775,7 +1797,7 @@ class _WithdrawAccountDetailsPopupState extends ConsumerState<_WithdrawAccountDe
                     // 3. Gender Label & Selector
                     Text(
                       'GENDER',
-                      style: GoogleFonts.outfit(
+                      style: GoogleFonts.poppins(
                         color: const Color(0xFF64748B),
                         fontSize: 11.sp,
                         fontWeight: FontWeight.w700,
@@ -1802,12 +1824,12 @@ class _WithdrawAccountDetailsPopupState extends ConsumerState<_WithdrawAccountDe
                         alignment: Alignment.center,
                         decoration: BoxDecoration(
                           gradient: const LinearGradient(
-                            colors: [Color(0xFFE39FFF), Color(0xFFAB31DE)],
+                            colors: [Color(0xFF26262B), Color(0xFF18181B)],
                           ),
                           borderRadius: BorderRadius.circular(14.r),
                           boxShadow: [
                             BoxShadow(
-                              color: const Color(0xFFAB31DE).withValues(alpha: 0.35),
+                              color: const Color(0xFF18181B).withValues(alpha: 0.25),
                               blurRadius: 10,
                               offset: const Offset(0, 4),
                             ),
@@ -1824,10 +1846,10 @@ class _WithdrawAccountDetailsPopupState extends ConsumerState<_WithdrawAccountDe
                               )
                             : Text(
                                 'SAVE & PROCEED TO REDEEM',
-                                style: GoogleFonts.outfit(
+                                style: GoogleFonts.poppins(
                                   color: Colors.white,
-                                  fontSize: 14.sp,
-                                  fontWeight: FontWeight.w800,
+                                  fontSize: 13.5.sp,
+                                  fontWeight: FontWeight.w700,
                                   letterSpacing: 0.4,
                                 ),
                               ),
@@ -1881,11 +1903,11 @@ class _WithdrawAccountDetailsPopupState extends ConsumerState<_WithdrawAccountDe
           duration: const Duration(milliseconds: 180),
           padding: EdgeInsets.symmetric(vertical: 10.h),
           decoration: BoxDecoration(
-            color: isSelected ? const Color(0xFFF3E8FF) : Colors.white,
+            color: isSelected ? const Color(0xFFF8FAFC) : Colors.white,
             borderRadius: BorderRadius.circular(12.r),
             border: Border.all(
-              color: isSelected ? const Color(0xFFAB31DE) : const Color(0xFFE2E8F0),
-              width: isSelected ? 1.5 : 1.0,
+              color: isSelected ? const Color(0xFF26262B) : const Color(0xFFE2E8F0),
+              width: isSelected ? 1.6 : 1.0,
             ),
           ),
           child: Row(
@@ -1894,15 +1916,15 @@ class _WithdrawAccountDetailsPopupState extends ConsumerState<_WithdrawAccountDe
               Icon(
                 icon,
                 size: 18.sp,
-                color: isSelected ? const Color(0xFFAB31DE) : const Color(0xFF64748B),
+                color: isSelected ? const Color(0xFF26262B) : const Color(0xFF64748B),
               ),
               SizedBox(width: 6.w),
               Text(
                 label,
-                style: GoogleFonts.outfit(
-                  color: isSelected ? const Color(0xFFAB31DE) : const Color(0xFF64748B),
+                style: GoogleFonts.poppins(
+                  color: isSelected ? const Color(0xFF26262B) : const Color(0xFF64748B),
                   fontSize: 13.sp,
-                  fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
+                  fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
                 ),
               ),
             ],

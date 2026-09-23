@@ -42,7 +42,6 @@ class _BattleRoomDetailsScreenState extends ConsumerState<BattleRoomDetailsScree
   String? _installedAppName;
   int _taskStartTimeMs = 0;
   int _usedSeconds = 0;
-  bool _isAdClicked = false;
   bool _isInstallAdWatched = false;
   bool _isTaskVerifying = false;
   bool _isFailedDialogShowing = false;
@@ -207,194 +206,176 @@ class _BattleRoomDetailsScreenState extends ConsumerState<BattleRoomDetailsScree
   }
 
   @override
-  void dispose() {
-    _usagePollingTimer?.cancel();
-    WidgetsBinding.instance.removeObserver(this);
-    super.dispose();
-  }
-
-  Future<void> _showTaskNotCompletedPopup({
-    String? tag = 'Oops!',
-    String title = 'Task Not Completed!',
-    String message = 'App not installed! Please install the app and open it to complete the task.',
-    String primaryButtonText = 'TRY AGAIN',
-    VoidCallback? onPrimaryTap,
-  }) async {
-    if (_isFailedDialogShowing) return;
-    _isFailedDialogShowing = true;
-
-    await Future.delayed(const Duration(milliseconds: 300));
-    if (!mounted) {
-      _isFailedDialogShowing = false;
-      return;
-    }
-
-    try {
-      await CustomStatusPopup.showFailed(
-        context: context,
-        tag: tag,
-        title: title,
-        message: message,
-        primaryButtonText: primaryButtonText,
-        onPrimaryTap: onPrimaryTap,
-      );
-    } catch (_) {
-    } finally {
-      _isFailedDialogShowing = false;
-    }
-  }
-
-  @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
-      if (_installedPackageName != null && _installedPackageName!.isNotEmpty) {
-        _updateUsageDuration();
-      } else if (_taskStartTimeMs > 0) {
-        _checkInstallStatus().then((_) {
-          if (_installedPackageName == null && mounted) {
-            if (_isInstallAdWatched || _isAdClicked) {
-              _isInstallAdWatched = false;
-              _isAdClicked = false;
-              _showTaskNotCompletedPopup();
-            }
-          }
-        });
+      if (_taskStartTimeMs > 0 && _installedPackageName != null && !_isTaskVerifying) {
+        _pollUsageOnce();
+      } else if (_taskStartTimeMs > 0 && _installedPackageName == null && _isInstallAdWatched) {
+        _checkInstallStatus();
       }
-    }
-  }
-
-  Future<void> _checkInstallStatus() async {
-    if (_taskStartTimeMs <= 0) {
-      final saved = getSavedBattleInstallTask(widget.userId);
-      _taskStartTimeMs = saved?['startTimeMs'] as int? ?? 0;
-    }
-    if (_taskStartTimeMs <= 0) return;
-
-    final recentPkg = await SuperOfferNativeManager.getRecentlyInstalledPackage(
-      _taskStartTimeMs - 5000,
-    );
-
-    if (recentPkg != null && recentPkg.isNotEmpty) {
-      _installedPackageName = recentPkg;
-      _isInstallAdWatched = false;
-      _isAdClicked = false;
-      _taskStartTimeMs = DateTime.now().millisecondsSinceEpoch;
-      _fetchAndSetAppName(recentPkg);
-      saveBattleInstallTask(widget.userId, {
-        'packageName': recentPkg,
-        'appName': _installedAppName,
-        'startTimeMs': _taskStartTimeMs,
-        'savedAt': _taskStartTimeMs,
-        'isInstalled': true,
-      });
-      _startUsagePolling();
-      if (mounted) setState(() {});
     }
   }
 
   void _startUsagePolling() {
     _usagePollingTimer?.cancel();
-    _updateUsageDuration();
-    _usagePollingTimer = Timer.periodic(const Duration(seconds: 1), (_) {
-      _updateUsageDuration();
+    _usagePollingTimer = Timer.periodic(const Duration(seconds: 2), (_) {
+      _pollUsageOnce();
     });
   }
 
-  Future<void> _updateUsageDuration() async {
-    if (!mounted) return;
-    if (_installedPackageName == null || _installedPackageName!.isEmpty || _taskStartTimeMs <= 0) return;
-
-    final isStillInstalled = await SuperOfferNativeManager.isAppInstalled(_installedPackageName!);
-    if (!isStillInstalled && mounted) {
-      clearSavedBattleInstallTask(widget.userId);
-      _usagePollingTimer?.cancel();
-      _installedPackageName = null;
-      _installedAppName = null;
-      _taskStartTimeMs = 0;
-      _usedSeconds = 0;
-      _isInstallAdWatched = false;
-      _isAdClicked = false;
-      setState(() {});
-      _showTaskNotCompletedPopup(
-        tag: 'Uninstalled!',
-        title: 'App Uninstalled',
-        message: 'You have uninstalled the task app before completing usage. Task has been reset.',
-        primaryButtonText: 'TRY AGAIN',
-      );
-      return;
-    }
-
-    final hasPerm = await SuperOfferNativeManager.checkUsagePermission();
-    if (hasPerm) {
-      final sec = await SuperOfferNativeManager.getAppUsageDuration(
-        _installedPackageName!,
-        _taskStartTimeMs,
-      );
-
-      if (sec > _usedSeconds && mounted) {
-        setState(() {
-          _usedSeconds = sec;
-        });
-      }
-
+  Future<void> _pollUsageOnce() async {
+    if (_installedPackageName == null || _taskStartTimeMs == 0 || _isTaskVerifying) return;
+    try {
       final config = BattleArenaService.instance.configData;
       final int targetSeconds = (config != null && config['installTaskUsageSeconds'] != null)
           ? (config['installTaskUsageSeconds'] as num).toInt()
-          : 300;
+          : 30;
 
-      if (_usedSeconds >= targetSeconds && !_isTaskVerifying) {
-        _completeInstallTaskSuccess();
+      final usedMs = await SuperOfferNativeManager.getAppUsageDuration(
+        _installedPackageName!,
+        _taskStartTimeMs,
+      );
+      final currentSec = (usedMs / 1000).floor();
+      if (mounted && currentSec != _usedSeconds) {
+        setState(() {
+          _usedSeconds = currentSec;
+        });
       }
-    }
+
+      if (currentSec >= targetSeconds && !_isTaskVerifying) {
+        _verifyAndCompleteInstallTask();
+      }
+    } catch (_) {}
   }
 
-  Future<void> _completeInstallTaskSuccess() async {
+  Future<void> _checkInstallStatus() async {
+    if (_isTaskVerifying) return;
+    try {
+      final pkg = await SuperOfferNativeManager.getRecentlyInstalledPackage(_taskStartTimeMs);
+      if (pkg != null && pkg.isNotEmpty && mounted) {
+        setState(() {
+          _installedPackageName = pkg;
+        });
+        _fetchAndSetAppName(pkg);
+        saveBattleInstallTask(widget.userId, {
+          'packageName': pkg,
+          'appName': _installedAppName ?? '',
+          'startTimeMs': _taskStartTimeMs,
+          'isInstalled': true,
+        });
+        _startUsagePolling();
+        CustomToast.showToast(
+          context,
+          msg: 'App detected! Open and use for 30s to unlock battle.',
+        );
+      }
+    } catch (_) {}
+  }
+
+  Future<void> _verifyAndCompleteInstallTask() async {
+    if (_isTaskVerifying) return;
     _isTaskVerifying = true;
     _usagePollingTimer?.cancel();
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => const Center(
+        child: GlowLightingSpinner(size: 32),
+      ),
+    );
+
     try {
       final res = await CloudFunctions.completeBattleInstallTask();
-      if (res['response'] == 'success' || res['success'] == true) {
-        ref.invalidate(DashboardService.userDataProvider(widget.userId));
-        LocalStorage.setFreeBattleAdPass(true);
+
+      if (mounted && Navigator.of(context).canPop()) {
+        Navigator.of(context).pop(); // dismiss loading
+      }
+
+      if (res['success'] == true && mounted) {
         clearSavedBattleInstallTask(widget.userId);
-        _installedPackageName = null;
-        _taskStartTimeMs = 0;
-        _usedSeconds = 0;
-        _isInstallAdWatched = false;
-        _isAdClicked = false;
-        if (mounted) {
-          setState(() {});
-          CustomToast.showToast(context, msg: '🎉 Install Task Completed! Free Battle Unlocked!');
-          CustomStatusPopup.showSuccess(
-            context: context,
-            tag: 'Congratulations',
-            title: 'Task Completed!',
-            message: 'App usage verified! Free Battle is now unlocked.',
-            primaryButtonText: 'JOIN NOW',
-          );
-        }
+        setState(() {
+          _installedPackageName = null;
+          _installedAppName = null;
+          _taskStartTimeMs = 0;
+          _usedSeconds = 0;
+          _isTaskVerifying = false;
+        });
+
+        ref.invalidate(DashboardService.userDataProvider(widget.userId));
+
+        CustomStatusPopup.show(
+          context: context,
+          type: StatusPopupType.success,
+          tag: 'Success',
+          title: 'Task Completed! 🎉',
+          message: 'Free Battle has been unlocked! You can now join the battle room.',
+          primaryButtonText: 'JOIN BATTLE',
+          onPrimaryTap: () {
+            Navigator.of(context).pop();
+          },
+        );
       } else {
+        _isTaskVerifying = false;
         if (mounted) {
           _showTaskNotCompletedPopup(
-            tag: 'Oops!',
-            title: 'Verification Failed',
-            message: res['message']?.toString() ?? 'Failed to complete install task. Please try again.',
-            primaryButtonText: 'TRY AGAIN',
+            message: res['message']?.toString() ?? 'Task verification failed. Please try again.',
           );
         }
       }
     } catch (_) {
-      if (mounted) {
-        _showTaskNotCompletedPopup(
-          tag: 'Oops!',
-          title: 'Verification Failed',
-          message: 'Failed to verify task. Please try opening the app again.',
-          primaryButtonText: 'OK',
-        );
-      }
-    } finally {
       _isTaskVerifying = false;
+      if (mounted && Navigator.of(context).canPop()) {
+        Navigator.of(context).pop();
+      }
+      if (mounted) {
+        _showTaskNotCompletedPopup();
+      }
     }
+  }
+
+  Future<void> _showTaskNotCompletedPopup({
+    String? tag,
+    String? title,
+    String? message,
+    String? primaryButtonText,
+  }) async {
+    if (_isFailedDialogShowing || !mounted) return;
+    _isFailedDialogShowing = true;
+
+    final config = BattleArenaService.instance.configData;
+    final int targetSeconds = (config != null && config['installTaskUsageSeconds'] != null)
+        ? (config['installTaskUsageSeconds'] as num).toInt()
+        : 30;
+
+    await CustomStatusPopup.showFailed(
+      context: context,
+      tag: tag ?? 'Task Incomplete',
+      title: title ?? 'Task Not Completed!',
+      message: message ??
+          'You need to click on the sponsored ad, install the app, and open it for at least $targetSeconds seconds to unlock Free Battles.',
+      primaryButtonText: primaryButtonText ?? 'TRY AGAIN',
+      onPrimaryTap: () {
+        Navigator.of(context).pop();
+        final userProfile = ref.read(DashboardService.userDataProvider(widget.userId)).value;
+        if (userProfile != null && context.mounted) {
+          _showInstallTaskSheet(
+            context,
+            userProfile.battleInstallTaskCompletedToday,
+            userProfile.battleInstallTaskNumber,
+          );
+        }
+      },
+    );
+
+    _isFailedDialogShowing = false;
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    _usagePollingTimer?.cancel();
+    super.dispose();
   }
 
   String _formatCoins(dynamic coins) {
@@ -496,7 +477,7 @@ class _BattleRoomDetailsScreenState extends ConsumerState<BattleRoomDetailsScree
           bottom: false,
           child: Column(
             children: [
-              // Top Navigation Header Bar
+              // Top Navigation Header Bar (Matching Home Screen & Hot Offers KaushanScript Header)
               Padding(
                 padding: EdgeInsets.fromLTRB(16.w, topPadding > 0 ? 6.h : 14.h, 16.w, 14.h),
                 child: Row(
@@ -519,7 +500,7 @@ class _BattleRoomDetailsScreenState extends ConsumerState<BattleRoomDetailsScree
                           ),
                           boxShadow: [
                             BoxShadow(
-                              color: const Color(0xFFAB31DE).withValues(alpha: 0.08),
+                              color: Colors.black.withValues(alpha: 0.04),
                               blurRadius: 10,
                               offset: const Offset(0, 3),
                             ),
@@ -527,21 +508,24 @@ class _BattleRoomDetailsScreenState extends ConsumerState<BattleRoomDetailsScree
                         ),
                         child: Icon(
                           Icons.arrow_back_rounded,
-                          color: const Color(0xFFAB31DE),
+                          color: const Color(0xFF26262B),
                           size: 22.sp,
                         ),
                       ),
                     ),
-                    SizedBox(width: 12.w),
-                    Text(
-                      'Battle Details',
-                      style: GoogleFonts.outfit(
-                        color: const Color(0xFF1E1B4B),
-                        fontSize: 18.5.sp,
-                        fontWeight: FontWeight.w900,
-                        letterSpacing: -0.2,
+                    Expanded(
+                      child: Text(
+                        'Battle Details',
+                        textAlign: TextAlign.center,
+                        style: GoogleFonts.kaushanScript(
+                          color: const Color(0xFF26262B),
+                          fontSize: 26.sp,
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: 0.5,
+                        ),
                       ),
                     ),
+                    SizedBox(width: 40.w), // Balanced spacer
                   ],
                 ),
               ),
@@ -551,7 +535,8 @@ class _BattleRoomDetailsScreenState extends ConsumerState<BattleRoomDetailsScree
                 child: LayoutBuilder(
                   builder: (context, constraints) {
                     return RefreshIndicator(
-                      color: const Color(0xFFAB31DE),
+                      color: const Color(0xFF26262B),
+                      backgroundColor: Colors.white,
                       onRefresh: _fetchFreshRoomData,
                       child: SingleChildScrollView(
                         physics: const AlwaysScrollableScrollPhysics(
@@ -563,7 +548,7 @@ class _BattleRoomDetailsScreenState extends ConsumerState<BattleRoomDetailsScree
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              // Room Title Highlight Card
+                              // Room Title Highlight Card (Luxury White & Silver border)
                               Container(
                                 width: double.infinity,
                                 padding: EdgeInsets.all(16.r),
@@ -571,12 +556,12 @@ class _BattleRoomDetailsScreenState extends ConsumerState<BattleRoomDetailsScree
                                   color: Colors.white,
                                   borderRadius: BorderRadius.circular(18.r),
                                   border: Border.all(
-                                    color: const Color(0xFFF1F5F9),
+                                    color: const Color(0xFFE2E8F0),
                                     width: 1.2,
                                   ),
                                   boxShadow: [
                                     BoxShadow(
-                                      color: const Color(0xFFAB31DE).withValues(alpha: 0.06),
+                                      color: Colors.black.withValues(alpha: 0.03),
                                       blurRadius: 12,
                                       offset: const Offset(0, 4),
                                     ),
@@ -587,10 +572,10 @@ class _BattleRoomDetailsScreenState extends ConsumerState<BattleRoomDetailsScree
                                     Text(
                                       matchData['title']?.toString() ?? 'Battle Clash',
                                       textAlign: TextAlign.center,
-                                      style: GoogleFonts.outfit(
-                                        fontSize: 18.sp,
-                                        color: const Color(0xFF1E1B4B),
-                                        fontWeight: FontWeight.w900,
+                                      style: GoogleFonts.poppins(
+                                        fontSize: 17.5.sp,
+                                        color: const Color(0xFF26262B),
+                                        fontWeight: FontWeight.w700,
                                         letterSpacing: -0.2,
                                       ),
                                     ),
@@ -604,10 +589,11 @@ class _BattleRoomDetailsScreenState extends ConsumerState<BattleRoomDetailsScree
                                                   ? rawData['description'].toString().trim()
                                                   : 'Review rules, entry requirements & rewards below',
                                       textAlign: TextAlign.center,
-                                      style: GoogleFonts.outfit(
+                                      style: GoogleFonts.poppins(
                                         color: const Color(0xFF64748B),
                                         fontSize: 12.sp,
-                                        fontWeight: FontWeight.w500,
+                                        fontWeight: FontWeight.w400,
+                                        height: 1.35,
                                       ),
                                     ),
                                   ],
@@ -616,14 +602,14 @@ class _BattleRoomDetailsScreenState extends ConsumerState<BattleRoomDetailsScree
 
                               SizedBox(height: 16.h),
 
-                              // Category Tab Switcher (PRIZE POOL vs TERMS)
+                              // Category Tab Switcher (PRIZE POOL vs TERMS - Dark Obsidian Active State)
                               Container(
                                 padding: EdgeInsets.all(4.r),
                                 decoration: BoxDecoration(
-                                  color: const Color(0xFFFAF5FF),
+                                  color: const Color(0xFFF8FAFC),
                                   borderRadius: BorderRadius.circular(16.r),
                                   border: Border.all(
-                                    color: const Color(0xFFF3E8FF),
+                                    color: const Color(0xFFE2E8F0),
                                     width: 1.2,
                                   ),
                                 ),
@@ -671,7 +657,7 @@ class _BattleRoomDetailsScreenState extends ConsumerState<BattleRoomDetailsScree
   }
 
   // ------------------------------------------------------------------
-  // Tab Switcher Button
+  // Tab Switcher Button (Luxury Dark Obsidian Styling)
   // ------------------------------------------------------------------
   Widget _buildTabButton({
     required String label,
@@ -693,7 +679,9 @@ class _BattleRoomDetailsScreenState extends ConsumerState<BattleRoomDetailsScree
           decoration: BoxDecoration(
             gradient: isSelected
                 ? const LinearGradient(
-                    colors: [Color(0xFFE39FFF), Color(0xFFAB31DE)],
+                    colors: [Color(0xFF26262B), Color(0xFF18181B)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
                   )
                 : null,
             color: isSelected ? null : Colors.transparent,
@@ -701,7 +689,7 @@ class _BattleRoomDetailsScreenState extends ConsumerState<BattleRoomDetailsScree
             boxShadow: isSelected
                 ? [
                     BoxShadow(
-                      color: const Color(0xFFAB31DE).withValues(alpha: 0.25),
+                      color: const Color(0xFF26262B).withValues(alpha: 0.25),
                       blurRadius: 8,
                       offset: const Offset(0, 2),
                     ),
@@ -719,10 +707,10 @@ class _BattleRoomDetailsScreenState extends ConsumerState<BattleRoomDetailsScree
               SizedBox(width: 6.w),
               Text(
                 label,
-                style: GoogleFonts.outfit(
+                style: GoogleFonts.poppins(
                   color: isSelected ? Colors.white : const Color(0xFF64748B),
-                  fontSize: 12.5.sp,
-                  fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
+                  fontSize: 12.sp,
+                  fontWeight: isSelected ? FontWeight.w700 : FontWeight.w600,
                   letterSpacing: 0.3,
                 ),
               ),
@@ -766,12 +754,12 @@ class _BattleRoomDetailsScreenState extends ConsumerState<BattleRoomDetailsScree
               color: Colors.white,
               borderRadius: BorderRadius.circular(18.r),
               border: Border.all(
-                color: const Color(0xFFF1F5F9),
+                color: const Color(0xFFE2E8F0),
                 width: 1.2,
               ),
               boxShadow: [
                 BoxShadow(
-                  color: const Color(0xFFAB31DE).withValues(alpha: 0.06),
+                  color: Colors.black.withValues(alpha: 0.03),
                   blurRadius: 10,
                   offset: const Offset(0, 3),
                 ),
@@ -785,17 +773,17 @@ class _BattleRoomDetailsScreenState extends ConsumerState<BattleRoomDetailsScree
                   fit: BoxFit.contain,
                   errorBuilder: (_, __, ___) => Icon(
                     Icons.emoji_events_rounded,
-                    color: const Color(0xFFAB31DE),
+                    color: const Color(0xFF26262B),
                     size: 32.sp,
                   ),
                 ),
                 SizedBox(height: 12.h),
                 Text(
                   'FREE BATTLE CLASH',
-                  style: GoogleFonts.outfit(
-                    color: const Color(0xFF1E1B4B),
+                  style: GoogleFonts.poppins(
+                    color: const Color(0xFF26262B),
                     fontSize: 16.sp,
-                    fontWeight: FontWeight.w900,
+                    fontWeight: FontWeight.w700,
                     letterSpacing: 0.5,
                   ),
                 ),
@@ -805,10 +793,10 @@ class _BattleRoomDetailsScreenState extends ConsumerState<BattleRoomDetailsScree
                       ? 'Win ${_formatCoins(effectiveNetPrize)} Coins on match victory + climb the Leaderboard to win huge prizes!'
                       : 'Compete against opponents, improve your speed index, and rank up on the Leaderboard to win real rewards!',
                   textAlign: TextAlign.center,
-                  style: GoogleFonts.outfit(
+                  style: GoogleFonts.poppins(
                     color: const Color(0xFF64748B),
                     fontSize: 12.sp,
-                    fontWeight: FontWeight.w500,
+                    fontWeight: FontWeight.w400,
                     height: 1.4,
                   ),
                 ),
@@ -816,10 +804,10 @@ class _BattleRoomDetailsScreenState extends ConsumerState<BattleRoomDetailsScree
                 Container(
                   padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFFAF5FF),
+                    color: const Color(0xFFF8FAFC),
                     borderRadius: BorderRadius.circular(12.r),
                     border: Border.all(
-                      color: const Color(0xFFF3E8FF),
+                      color: const Color(0xFFE2E8F0),
                       width: 1.0,
                     ),
                   ),
@@ -828,29 +816,29 @@ class _BattleRoomDetailsScreenState extends ConsumerState<BattleRoomDetailsScree
                     children: [
                       Row(
                         children: [
-                          Icon(Icons.timer_outlined, color: const Color(0xFFAB31DE), size: 15.sp),
+                          Icon(Icons.timer_outlined, color: const Color(0xFF26262B), size: 15.sp),
                           SizedBox(width: 6.w),
                           Text(
                             '${durationSec}s duration',
-                            style: GoogleFonts.outfit(
-                              color: const Color(0xFF1E1B4B),
+                            style: GoogleFonts.poppins(
+                              color: const Color(0xFF26262B),
                               fontSize: 12.sp,
-                              fontWeight: FontWeight.w800,
+                              fontWeight: FontWeight.w700,
                             ),
                           ),
                         ],
                       ),
-                      Container(height: 14.h, width: 1, color: const Color(0xFFE9D5FF)),
+                      Container(height: 14.h, width: 1, color: const Color(0xFFE2E8F0)),
                       Row(
                         children: [
-                          Icon(Icons.group_outlined, color: const Color(0xFFAB31DE), size: 15.sp),
+                          Icon(Icons.group_outlined, color: const Color(0xFF26262B), size: 15.sp),
                           SizedBox(width: 6.w),
                           Text(
                             '$capacity players room',
-                            style: GoogleFonts.outfit(
-                              color: const Color(0xFF1E1B4B),
+                            style: GoogleFonts.poppins(
+                              color: const Color(0xFF26262B),
                               fontSize: 12.sp,
-                              fontWeight: FontWeight.w800,
+                              fontWeight: FontWeight.w700,
                             ),
                           ),
                         ],
@@ -880,12 +868,12 @@ class _BattleRoomDetailsScreenState extends ConsumerState<BattleRoomDetailsScree
             color: Colors.white,
             borderRadius: BorderRadius.circular(18.r),
             border: Border.all(
-              color: const Color(0xFFF1F5F9),
+              color: const Color(0xFFE2E8F0),
               width: 1.2,
             ),
             boxShadow: [
               BoxShadow(
-                color: const Color(0xFFAB31DE).withValues(alpha: 0.06),
+                color: Colors.black.withValues(alpha: 0.03),
                 blurRadius: 10,
                 offset: const Offset(0, 3),
               ),
@@ -900,10 +888,10 @@ class _BattleRoomDetailsScreenState extends ConsumerState<BattleRoomDetailsScree
                   children: [
                     Text(
                       'ENTRY FEE',
-                      style: GoogleFonts.outfit(
+                      style: GoogleFonts.poppins(
                         color: const Color(0xFF64748B),
                         fontSize: 9.5.sp,
-                        fontWeight: FontWeight.w700,
+                        fontWeight: FontWeight.w600,
                         letterSpacing: 0.5,
                       ),
                     ),
@@ -919,10 +907,10 @@ class _BattleRoomDetailsScreenState extends ConsumerState<BattleRoomDetailsScree
                         SizedBox(width: 5.w),
                         Text(
                           entryFee > 0 ? _formatCoins(entryFee) : 'FREE',
-                          style: GoogleFonts.outfit(
-                            color: const Color(0xFF1E1B4B),
-                            fontSize: 18.sp,
-                            fontWeight: FontWeight.w900,
+                          style: GoogleFonts.poppins(
+                            color: const Color(0xFF26262B),
+                            fontSize: 17.sp,
+                            fontWeight: FontWeight.w700,
                           ),
                         ),
                       ],
@@ -944,10 +932,10 @@ class _BattleRoomDetailsScreenState extends ConsumerState<BattleRoomDetailsScree
                   children: [
                     Text(
                       'TIME CLASH',
-                      style: GoogleFonts.outfit(
+                      style: GoogleFonts.poppins(
                         color: const Color(0xFF64748B),
                         fontSize: 9.5.sp,
-                        fontWeight: FontWeight.w700,
+                        fontWeight: FontWeight.w600,
                         letterSpacing: 0.5,
                       ),
                     ),
@@ -955,24 +943,24 @@ class _BattleRoomDetailsScreenState extends ConsumerState<BattleRoomDetailsScree
                     Container(
                       padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
                       decoration: BoxDecoration(
-                        color: const Color(0xFFFAF5FF),
+                        color: const Color(0xFFF8FAFC),
                         borderRadius: BorderRadius.circular(10.r),
                         border: Border.all(
-                          color: const Color(0xFFF3E8FF),
+                          color: const Color(0xFFE2E8F0),
                           width: 1.0,
                         ),
                       ),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Icon(Icons.bolt_rounded, color: const Color(0xFFAB31DE), size: 15.sp),
+                          Icon(Icons.bolt_rounded, color: const Color(0xFF26262B), size: 15.sp),
                           SizedBox(width: 3.w),
                           Text(
                             '${durationSec}s',
-                            style: GoogleFonts.outfit(
-                              color: const Color(0xFF1E1B4B),
+                            style: GoogleFonts.poppins(
+                              color: const Color(0xFF26262B),
                               fontSize: 13.sp,
-                              fontWeight: FontWeight.w900,
+                              fontWeight: FontWeight.w700,
                             ),
                           ),
                         ],
@@ -995,10 +983,10 @@ class _BattleRoomDetailsScreenState extends ConsumerState<BattleRoomDetailsScree
                   children: [
                     Text(
                       'PRIZE POOL',
-                      style: GoogleFonts.outfit(
+                      style: GoogleFonts.poppins(
                         color: const Color(0xFF64748B),
                         fontSize: 9.5.sp,
-                        fontWeight: FontWeight.w700,
+                        fontWeight: FontWeight.w600,
                         letterSpacing: 0.5,
                       ),
                     ),
@@ -1014,10 +1002,10 @@ class _BattleRoomDetailsScreenState extends ConsumerState<BattleRoomDetailsScree
                         SizedBox(width: 5.w),
                         Text(
                           _formatCoins(netPrize),
-                          style: GoogleFonts.outfit(
-                            color: const Color(0xFF1E1B4B),
-                            fontSize: 18.sp,
-                            fontWeight: FontWeight.w900,
+                          style: GoogleFonts.poppins(
+                            color: const Color(0xFF26262B),
+                            fontSize: 17.sp,
+                            fontWeight: FontWeight.w700,
                           ),
                         ),
                       ],
@@ -1052,24 +1040,24 @@ class _BattleRoomDetailsScreenState extends ConsumerState<BattleRoomDetailsScree
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
       decoration: BoxDecoration(
-        color: const Color(0xFFFAF5FF),
+        color: const Color(0xFFF8FAFC),
         borderRadius: BorderRadius.circular(14.r),
         border: Border.all(
-          color: const Color(0xFFF3E8FF),
+          color: const Color(0xFFE2E8F0),
           width: 1.0,
         ),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(icon, color: const Color(0xFFAB31DE), size: 16.sp),
+          Icon(icon, color: const Color(0xFF26262B), size: 16.sp),
           SizedBox(width: 8.w),
           Text(
             label,
-            style: GoogleFonts.outfit(
-              color: const Color(0xFF1E1B4B),
+            style: GoogleFonts.poppins(
+              color: const Color(0xFF26262B),
               fontSize: 13.sp,
-              fontWeight: FontWeight.w800,
+              fontWeight: FontWeight.w700,
             ),
           ),
         ],
@@ -1120,10 +1108,10 @@ class _BattleRoomDetailsScreenState extends ConsumerState<BattleRoomDetailsScree
       children: [
         Text(
           'RANK DISTRIBUTION',
-          style: GoogleFonts.outfit(
+          style: GoogleFonts.poppins(
             fontSize: 11.sp,
-            color: const Color(0xFFAB31DE),
-            fontWeight: FontWeight.w800,
+            color: const Color(0xFF26262B),
+            fontWeight: FontWeight.w700,
             letterSpacing: 0.8,
           ),
         ),
@@ -1143,12 +1131,12 @@ class _BattleRoomDetailsScreenState extends ConsumerState<BattleRoomDetailsScree
               color: Colors.white,
               borderRadius: BorderRadius.circular(14.r),
               border: Border.all(
-                color: const Color(0xFFF1F5F9),
+                color: const Color(0xFFE2E8F0),
                 width: 1.2,
               ),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.03),
+                  color: Colors.black.withValues(alpha: 0.02),
                   blurRadius: 8,
                   offset: const Offset(0, 2),
                 ),
@@ -1169,10 +1157,10 @@ class _BattleRoomDetailsScreenState extends ConsumerState<BattleRoomDetailsScree
                     SizedBox(width: 8.w),
                     Text(
                       'Rank $rank',
-                      style: GoogleFonts.outfit(
-                        color: const Color(0xFF1E1B4B),
+                      style: GoogleFonts.poppins(
+                        color: const Color(0xFF26262B),
                         fontSize: 13.5.sp,
-                        fontWeight: FontWeight.w800,
+                        fontWeight: FontWeight.w700,
                       ),
                     ),
                   ],
@@ -1180,10 +1168,10 @@ class _BattleRoomDetailsScreenState extends ConsumerState<BattleRoomDetailsScree
                 Container(
                   padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 3.5.h),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFFAF5FF),
+                    color: const Color(0xFFF8FAFC),
                     borderRadius: BorderRadius.circular(8.r),
                     border: Border.all(
-                      color: const Color(0xFFF3E8FF),
+                      color: const Color(0xFFE2E8F0),
                       width: 1.0,
                     ),
                   ),
@@ -1199,10 +1187,10 @@ class _BattleRoomDetailsScreenState extends ConsumerState<BattleRoomDetailsScree
                       SizedBox(width: 4.w),
                       Text(
                         '+${_formatCoins(coins)}',
-                        style: GoogleFonts.outfit(
-                          color: const Color(0xFF1E1B4B),
+                        style: GoogleFonts.poppins(
+                          color: const Color(0xFF26262B),
                           fontSize: 12.sp,
-                          fontWeight: FontWeight.w900,
+                          fontWeight: FontWeight.w700,
                         ),
                       ),
                     ],
@@ -1234,12 +1222,12 @@ class _BattleRoomDetailsScreenState extends ConsumerState<BattleRoomDetailsScree
               color: Colors.white,
               borderRadius: BorderRadius.circular(16.r),
               border: Border.all(
-                color: const Color(0xFFF1F5F9),
+                color: const Color(0xFFE2E8F0),
                 width: 1.2,
               ),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.03),
+                  color: Colors.black.withValues(alpha: 0.02),
                   blurRadius: 8,
                   offset: const Offset(0, 2),
                 ),
@@ -1250,20 +1238,20 @@ class _BattleRoomDetailsScreenState extends ConsumerState<BattleRoomDetailsScree
               children: [
                 Text(
                   titleStr,
-                  style: GoogleFonts.outfit(
-                    color: const Color(0xFF1E1B4B),
-                    fontWeight: FontWeight.w800,
+                  style: GoogleFonts.poppins(
+                    color: const Color(0xFF26262B),
+                    fontWeight: FontWeight.w700,
                     fontSize: 13.5.sp,
                   ),
                 ),
                 SizedBox(height: 4.h),
                 Text(
                   descStr,
-                  style: GoogleFonts.outfit(
+                  style: GoogleFonts.poppins(
                     color: const Color(0xFF64748B),
                     fontSize: 12.sp,
                     height: 1.4,
-                    fontWeight: FontWeight.w500,
+                    fontWeight: FontWeight.w400,
                   ),
                 ),
               ],
@@ -1275,7 +1263,7 @@ class _BattleRoomDetailsScreenState extends ConsumerState<BattleRoomDetailsScree
   }
 
   // ------------------------------------------------------------------
-  // Bottom Action Button (Exact 3D Tapered Style)
+  // Bottom Action Button (Dark Obsidian Pill Style)
   // ------------------------------------------------------------------
   Widget _buildBottomButton(BuildContext context, String roomId, String roomTitle, Map<String, dynamic> matchDetails) {
     final rawData = matchDetails['raw'] is Map ? (matchDetails['raw'] as Map) : matchDetails;
@@ -1649,12 +1637,12 @@ class _BattleRoomDetailsScreenState extends ConsumerState<BattleRoomDetailsScree
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(16.r),
                   border: Border.all(
-                    color: const Color(0xFFE9D5FF),
+                    color: const Color(0xFFE2E8F0),
                     width: 1.5,
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: const Color(0xFFAB31DE).withValues(alpha: 0.12),
+                      color: Colors.black.withValues(alpha: 0.04),
                       blurRadius: 14,
                       offset: const Offset(0, 3),
                     ),
@@ -1672,12 +1660,12 @@ class _BattleRoomDetailsScreenState extends ConsumerState<BattleRoomDetailsScree
                           height: 36.w,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            color: const Color(0xFFFAF5FF),
-                            border: Border.all(color: const Color(0xFFE9D5FF), width: 1),
+                            color: const Color(0xFFF8FAFC),
+                            border: Border.all(color: const Color(0xFFE2E8F0), width: 1),
                           ),
                           child: Icon(
                             Icons.hourglass_top_rounded,
-                            color: const Color(0xFFAB31DE),
+                            color: const Color(0xFF26262B),
                             size: 18.sp,
                           ),
                         ),
@@ -1691,10 +1679,10 @@ class _BattleRoomDetailsScreenState extends ConsumerState<BattleRoomDetailsScree
                                 appDisplayName,
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
-                                style: GoogleFonts.outfit(
+                                style: GoogleFonts.poppins(
                                   fontSize: 13.sp,
-                                  fontWeight: FontWeight.w900,
-                                  color: const Color(0xFF1E1B4B),
+                                  fontWeight: FontWeight.w700,
+                                  color: const Color(0xFF26262B),
                                 ),
                               ),
                               SizedBox(height: 2.h),
@@ -1702,9 +1690,9 @@ class _BattleRoomDetailsScreenState extends ConsumerState<BattleRoomDetailsScree
                                 'Use app for $targetSeconds sec to unlock',
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
-                                style: GoogleFonts.outfit(
+                                style: GoogleFonts.poppins(
                                   fontSize: 11.sp,
-                                  fontWeight: FontWeight.w600,
+                                  fontWeight: FontWeight.w500,
                                   color: const Color(0xFF64748B),
                                   height: 1.2,
                                 ),
@@ -1716,16 +1704,16 @@ class _BattleRoomDetailsScreenState extends ConsumerState<BattleRoomDetailsScree
                         Container(
                           padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
                           decoration: BoxDecoration(
-                            color: const Color(0xFFFAF5FF),
+                            color: const Color(0xFFF8FAFC),
                             borderRadius: BorderRadius.circular(8.r),
-                            border: Border.all(color: const Color(0xFFE9D5FF), width: 1),
+                            border: Border.all(color: const Color(0xFFE2E8F0), width: 1),
                           ),
                           child: Text(
                             '${_usedSeconds}s / ${targetSeconds}s',
-                            style: GoogleFonts.outfit(
+                            style: GoogleFonts.poppins(
                               fontSize: 11.5.sp,
-                              fontWeight: FontWeight.w800,
-                              color: const Color(0xFFAB31DE),
+                              fontWeight: FontWeight.w700,
+                              color: const Color(0xFF26262B),
                             ),
                           ),
                         ),
@@ -1748,7 +1736,7 @@ class _BattleRoomDetailsScreenState extends ConsumerState<BattleRoomDetailsScree
                         child: Container(
                           decoration: BoxDecoration(
                             gradient: const LinearGradient(
-                              colors: [Color(0xFFE39FFF), Color(0xFFAB31DE)],
+                              colors: [Color(0xFF26262B), Color(0xFF18181B)],
                             ),
                             borderRadius: BorderRadius.circular(4.r),
                           ),
@@ -1782,10 +1770,10 @@ class _BattleRoomDetailsScreenState extends ConsumerState<BattleRoomDetailsScree
                           Expanded(
                             child: Text(
                               'Warning: Open, Signup & explore (if app) OR play 2-3 levels (if game). Do not uninstall for 24 hrs, otherwise reward cancelled & account banned.',
-                              style: GoogleFonts.outfit(
+                              style: GoogleFonts.poppins(
                                 color: const Color(0xFFB45309),
                                 fontSize: 10.sp,
-                                fontWeight: FontWeight.w700,
+                                fontWeight: FontWeight.w600,
                                 height: 1.3,
                               ),
                             ),
@@ -1811,12 +1799,12 @@ class _BattleRoomDetailsScreenState extends ConsumerState<BattleRoomDetailsScree
                           gradient: const LinearGradient(
                             begin: Alignment.topCenter,
                             end: Alignment.bottomCenter,
-                            colors: [Color(0xFFE39FFF), Color(0xFFAB31DE)],
+                            colors: [Color(0xFF26262B), Color(0xFF18181B)],
                           ),
                           borderRadius: BorderRadius.circular(12.r),
                           boxShadow: [
                             BoxShadow(
-                              color: const Color(0xFFAB31DE).withValues(alpha: 0.26),
+                              color: const Color(0xFF26262B).withValues(alpha: 0.25),
                               blurRadius: 6,
                               offset: const Offset(0, 2),
                             ),
@@ -1829,10 +1817,10 @@ class _BattleRoomDetailsScreenState extends ConsumerState<BattleRoomDetailsScree
                             SizedBox(width: 6.w),
                             Text(
                               'OPEN',
-                              style: GoogleFonts.outfit(
+                              style: GoogleFonts.poppins(
                                 color: Colors.white,
-                                fontSize: 14.sp,
-                                fontWeight: FontWeight.w900,
+                                fontSize: 13.5.sp,
+                                fontWeight: FontWeight.w700,
                                 letterSpacing: 0.6,
                               ),
                             ),
@@ -1858,8 +1846,8 @@ class _BattleRoomDetailsScreenState extends ConsumerState<BattleRoomDetailsScree
               decoration: BoxDecoration(
                 gradient: const LinearGradient(
                   colors: [
-                    Color(0xFFE39FFF),
-                    Color(0xFFAB31DE),
+                    Color(0xFF26262B),
+                    Color(0xFF18181B),
                   ],
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
@@ -1867,7 +1855,7 @@ class _BattleRoomDetailsScreenState extends ConsumerState<BattleRoomDetailsScree
                 borderRadius: BorderRadius.circular(16.r),
                 boxShadow: [
                   BoxShadow(
-                    color: const Color(0xFFAB31DE).withValues(alpha: 0.32),
+                    color: const Color(0xFF26262B).withValues(alpha: 0.32),
                     blurRadius: 10,
                     offset: const Offset(0, 4),
                   ),
@@ -1898,10 +1886,10 @@ class _BattleRoomDetailsScreenState extends ConsumerState<BattleRoomDetailsScree
                       showWatchAdForFree
                           ? 'WATCH AD TO JOIN'
                           : (isFreeRoom ? 'JOIN FREE BATTLE' : 'JOIN BATTLE NOW'),
-                      style: GoogleFonts.outfit(
+                      style: GoogleFonts.poppins(
                         color: Colors.white,
-                        fontSize: 15.5.sp,
-                        fontWeight: FontWeight.w900,
+                        fontSize: 15.sp,
+                        fontWeight: FontWeight.w700,
                         letterSpacing: 0.3,
                       ),
                     ),
@@ -1941,10 +1929,10 @@ class _BattleRoomDetailsScreenState extends ConsumerState<BattleRoomDetailsScree
                       alignment: Alignment.center,
                       child: Text(
                         'AD',
-                        style: GoogleFonts.outfit(
+                        style: GoogleFonts.poppins(
                           color: Colors.black,
                           fontSize: 8.5.sp,
-                          fontWeight: FontWeight.w900,
+                          fontWeight: FontWeight.w800,
                           height: 1.0,
                         ),
                       ),
@@ -1970,10 +1958,10 @@ class _BattleRoomDetailsScreenState extends ConsumerState<BattleRoomDetailsScree
       margin: EdgeInsets.only(bottom: 8.h),
       padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 9.h),
       decoration: BoxDecoration(
-        color: const Color(0xFFFAF5FF),
+        color: const Color(0xFFF8FAFC),
         borderRadius: BorderRadius.circular(12.r),
         border: Border.all(
-          color: const Color(0xFFF3E8FF),
+          color: const Color(0xFFE2E8F0),
           width: 1,
         ),
       ),
@@ -1985,16 +1973,16 @@ class _BattleRoomDetailsScreenState extends ConsumerState<BattleRoomDetailsScree
             decoration: const BoxDecoration(
               shape: BoxShape.circle,
               gradient: LinearGradient(
-                colors: [Color(0xFFE39FFF), Color(0xFFAB31DE)],
+                colors: [Color(0xFF26262B), Color(0xFF18181B)],
               ),
             ),
             alignment: Alignment.center,
             child: Text(
               index,
-              style: GoogleFonts.outfit(
+              style: GoogleFonts.poppins(
                 color: Colors.white,
                 fontSize: 11.5.sp,
-                fontWeight: FontWeight.w900,
+                fontWeight: FontWeight.w700,
               ),
             ),
           ),
@@ -2002,10 +1990,10 @@ class _BattleRoomDetailsScreenState extends ConsumerState<BattleRoomDetailsScree
           Expanded(
             child: Text(
               text,
-              style: GoogleFonts.outfit(
-                color: const Color(0xFF1E1B4B),
+              style: GoogleFonts.poppins(
+                color: const Color(0xFF26262B),
                 fontSize: 12.sp,
-                fontWeight: FontWeight.w600,
+                fontWeight: FontWeight.w500,
                 height: 1.3,
               ),
             ),
@@ -2057,17 +2045,17 @@ class _BattleRoomDetailsScreenState extends ConsumerState<BattleRoomDetailsScree
                   SizedBox(height: 16.h),
                   Icon(
                     Icons.download_for_offline_rounded,
-                    color: const Color(0xFFAB31DE),
+                    color: const Color(0xFF26262B),
                     size: 42.sp,
                   ),
                   SizedBox(height: 8.h),
                   Text(
                     'Unlock Free Battles: Install Task Required',
                     textAlign: TextAlign.center,
-                    style: GoogleFonts.outfit(
-                      fontWeight: FontWeight.w900,
-                      color: const Color(0xFF1E1B4B),
-                      fontSize: 16.sp,
+                    style: GoogleFonts.poppins(
+                      fontWeight: FontWeight.w700,
+                      color: const Color(0xFF26262B),
+                      fontSize: 15.5.sp,
                     ),
                   ),
                   SizedBox(height: 16.h),
@@ -2102,7 +2090,7 @@ class _BattleRoomDetailsScreenState extends ConsumerState<BattleRoomDetailsScree
                         Expanded(
                           child: RichText(
                             text: TextSpan(
-                              style: GoogleFonts.outfit(
+                              style: GoogleFonts.poppins(
                                 color: const Color(0xFF92400E),
                                 fontSize: 11.sp,
                                 height: 1.35,
@@ -2110,8 +2098,8 @@ class _BattleRoomDetailsScreenState extends ConsumerState<BattleRoomDetailsScree
                               children: [
                                 TextSpan(
                                   text: 'Important Warning:\n',
-                                  style: GoogleFonts.outfit(
-                                    fontWeight: FontWeight.w800,
+                                  style: GoogleFonts.poppins(
+                                    fontWeight: FontWeight.w700,
                                     color: const Color(0xFFB45309),
                                   ),
                                 ),
@@ -2143,9 +2131,9 @@ class _BattleRoomDetailsScreenState extends ConsumerState<BattleRoomDetailsScree
                           ),
                           child: Text(
                             'CANCEL',
-                            style: GoogleFonts.outfit(
+                            style: GoogleFonts.poppins(
                               color: const Color(0xFF64748B),
-                              fontWeight: FontWeight.w800,
+                              fontWeight: FontWeight.w700,
                               fontSize: 13.sp,
                             ),
                           ),
@@ -2176,7 +2164,6 @@ class _BattleRoomDetailsScreenState extends ConsumerState<BattleRoomDetailsScree
                                   _installSheetContext = sheetContext;
                                   _taskStartTimeMs = DateTime.now().millisecondsSinceEpoch;
                                   _usedSeconds = 0;
-                                  _isAdClicked = false;
                                   saveBattleInstallTask(widget.userId, {
                                     'startTimeMs': _taskStartTimeMs,
                                     'savedAt': _taskStartTimeMs,
@@ -2187,9 +2174,7 @@ class _BattleRoomDetailsScreenState extends ConsumerState<BattleRoomDetailsScree
                                   await AdManager().showRewardedAd(
                                     context: context,
                                     onReward: () async {},
-                                    onAdClicked: () async {
-                                      _isAdClicked = true;
-                                    },
+                                    onAdClicked: () async {},
                                     onAdClosed: (_) async {
                                       if (_installSheetContext != null && _installSheetContext!.mounted) {
                                         Navigator.pop(_installSheetContext!);
@@ -2220,7 +2205,7 @@ class _BattleRoomDetailsScreenState extends ConsumerState<BattleRoomDetailsScree
                                 },
                           style: ElevatedButton.styleFrom(
                             padding: EdgeInsets.symmetric(vertical: 13.h),
-                            backgroundColor: const Color(0xFFAB31DE),
+                            backgroundColor: const Color(0xFF26262B),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12.r),
                             ),
@@ -2233,9 +2218,9 @@ class _BattleRoomDetailsScreenState extends ConsumerState<BattleRoomDetailsScree
                                 )
                               : Text(
                                   'START TASK NOW',
-                                  style: GoogleFonts.outfit(
+                                  style: GoogleFonts.poppins(
                                     color: Colors.white,
-                                    fontWeight: FontWeight.w900,
+                                    fontWeight: FontWeight.w700,
                                     fontSize: 13.sp,
                                   ),
                                 ),
@@ -2296,14 +2281,14 @@ class _BattleRoomDetailsScreenState extends ConsumerState<BattleRoomDetailsScree
                   height: 64.w,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: const Color(0xFFFAF5FF),
+                    color: const Color(0xFFF8FAFC),
                     border: Border.all(
-                      color: const Color(0xFFE9D5FF),
+                      color: const Color(0xFFE2E8F0),
                       width: 1.5,
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: const Color(0xFFAB31DE).withValues(alpha: 0.15),
+                        color: Colors.black.withValues(alpha: 0.04),
                         blurRadius: 16,
                         offset: const Offset(0, 4),
                       ),
@@ -2318,7 +2303,7 @@ class _BattleRoomDetailsScreenState extends ConsumerState<BattleRoomDetailsScree
                         gradient: LinearGradient(
                           begin: Alignment.topCenter,
                           end: Alignment.bottomCenter,
-                          colors: [Color(0xFFE39FFF), Color(0xFFAB31DE)],
+                          colors: [Color(0xFF26262B), Color(0xFF18181B)],
                         ),
                       ),
                       child: Icon(
@@ -2335,10 +2320,10 @@ class _BattleRoomDetailsScreenState extends ConsumerState<BattleRoomDetailsScree
                 Text(
                   'Daily Free Limit Reached!',
                   textAlign: TextAlign.center,
-                  style: GoogleFonts.outfit(
-                    fontSize: 18.sp,
-                    fontWeight: FontWeight.w900,
-                    color: const Color(0xFF1E1B4B),
+                  style: GoogleFonts.poppins(
+                    fontSize: 17.sp,
+                    fontWeight: FontWeight.w700,
+                    color: const Color(0xFF26262B),
                   ),
                 ),
                 SizedBox(height: 8.h),
@@ -2349,9 +2334,9 @@ class _BattleRoomDetailsScreenState extends ConsumerState<BattleRoomDetailsScree
                   child: Text(
                     'You have completed all your free battles for today. Please check back tomorrow!',
                     textAlign: TextAlign.center,
-                    style: GoogleFonts.outfit(
-                      fontSize: 13.sp,
-                      fontWeight: FontWeight.w500,
+                    style: GoogleFonts.poppins(
+                      fontSize: 12.5.sp,
+                      fontWeight: FontWeight.w400,
                       color: const Color(0xFF64748B),
                       height: 1.4,
                     ),
@@ -2364,10 +2349,10 @@ class _BattleRoomDetailsScreenState extends ConsumerState<BattleRoomDetailsScree
                   width: double.infinity,
                   padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFFAF5FF),
+                    color: const Color(0xFFF8FAFC),
                     borderRadius: BorderRadius.circular(14.r),
                     border: Border.all(
-                      color: const Color(0xFFF3E8FF),
+                      color: const Color(0xFFE2E8F0),
                       width: 1,
                     ),
                   ),
@@ -2376,12 +2361,12 @@ class _BattleRoomDetailsScreenState extends ConsumerState<BattleRoomDetailsScree
                       Container(
                         padding: EdgeInsets.all(8.w),
                         decoration: BoxDecoration(
-                          color: const Color(0xFFAB31DE).withValues(alpha: 0.12),
+                          color: const Color(0xFF26262B).withValues(alpha: 0.08),
                           borderRadius: BorderRadius.circular(10.r),
                         ),
                         child: Icon(
                           Icons.tips_and_updates_rounded,
-                          color: const Color(0xFFAB31DE),
+                          color: const Color(0xFF26262B),
                           size: 20.sp,
                         ),
                       ),
@@ -2392,18 +2377,18 @@ class _BattleRoomDetailsScreenState extends ConsumerState<BattleRoomDetailsScree
                           children: [
                             Text(
                               'Want to keep playing?',
-                              style: GoogleFonts.outfit(
+                              style: GoogleFonts.poppins(
                                 fontSize: 13.sp,
-                                fontWeight: FontWeight.w800,
-                                color: const Color(0xFF1E1B4B),
+                                fontWeight: FontWeight.w700,
+                                color: const Color(0xFF26262B),
                               ),
                             ),
                             SizedBox(height: 2.h),
                             Text(
                               'Join Coin Battle Rooms with entry coins to win bigger rewards and top the leaderboard!',
-                              style: GoogleFonts.outfit(
+                              style: GoogleFonts.poppins(
                                 fontSize: 11.5.sp,
-                                fontWeight: FontWeight.w500,
+                                fontWeight: FontWeight.w400,
                                 color: const Color(0xFF64748B),
                                 height: 1.3,
                               ),
@@ -2434,9 +2419,9 @@ class _BattleRoomDetailsScreenState extends ConsumerState<BattleRoomDetailsScree
                         ),
                         child: Text(
                           'CLOSE',
-                          style: GoogleFonts.outfit(
+                          style: GoogleFonts.poppins(
                             color: const Color(0xFF64748B),
-                            fontWeight: FontWeight.w800,
+                            fontWeight: FontWeight.w700,
                             fontSize: 13.sp,
                           ),
                         ),
@@ -2456,12 +2441,12 @@ class _BattleRoomDetailsScreenState extends ConsumerState<BattleRoomDetailsScree
                             gradient: const LinearGradient(
                               begin: Alignment.topCenter,
                               end: Alignment.bottomCenter,
-                              colors: [Color(0xFFE39FFF), Color(0xFFAB31DE)],
+                              colors: [Color(0xFF26262B), Color(0xFF18181B)],
                             ),
                             borderRadius: BorderRadius.circular(14.r),
                             boxShadow: [
                               BoxShadow(
-                                color: const Color(0xFFAB31DE).withValues(alpha: 0.3),
+                                color: const Color(0xFF26262B).withValues(alpha: 0.3),
                                 blurRadius: 8,
                                 offset: const Offset(0, 3),
                               ),
@@ -2470,9 +2455,9 @@ class _BattleRoomDetailsScreenState extends ConsumerState<BattleRoomDetailsScree
                           alignment: Alignment.center,
                           child: Text(
                             'EXPLORE ROOMS',
-                            style: GoogleFonts.outfit(
+                            style: GoogleFonts.poppins(
                               color: Colors.white,
-                              fontWeight: FontWeight.w900,
+                              fontWeight: FontWeight.w700,
                               fontSize: 13.sp,
                               letterSpacing: 0.3,
                             ),
@@ -2530,15 +2515,15 @@ class _BattleRoomDetailsScreenState extends ConsumerState<BattleRoomDetailsScree
               children: [
                 Text(
                   'Room Entry Fee',
-                  style: GoogleFonts.outfit(
+                  style: GoogleFonts.poppins(
                     fontSize: 12.5.sp,
                     color: const Color(0xFF64748B),
-                    fontWeight: FontWeight.w600,
+                    fontWeight: FontWeight.w500,
                   ),
                 ),
                 Text(
                   '$entryFee Coins',
-                  style: GoogleFonts.outfit(
+                  style: GoogleFonts.poppins(
                     fontSize: 12.5.sp,
                     color: allowedBonusPercent > 0 ? const Color(0xFF94A3B8) : const Color(0xFF1E293B),
                     fontWeight: FontWeight.w700,
@@ -2563,20 +2548,20 @@ class _BattleRoomDetailsScreenState extends ConsumerState<BattleRoomDetailsScree
                       allowedBonusPercent > 0
                           ? 'Bonus Coins Used ($allowedBonusPercent%)'
                           : 'Bonus Coins Used (0%)',
-                      style: GoogleFonts.outfit(
+                      style: GoogleFonts.poppins(
                         fontSize: 12.5.sp,
                         color: allowedBonusPercent > 0 ? const Color(0xFF16A34A) : const Color(0xFF94A3B8),
-                        fontWeight: FontWeight.w700,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
                   ],
                 ),
                 Text(
                   allowedBonusPercent > 0 ? '-$usableBonus Coins' : '0 Coins',
-                  style: GoogleFonts.outfit(
+                  style: GoogleFonts.poppins(
                     fontSize: 12.5.sp,
                     color: allowedBonusPercent > 0 ? const Color(0xFF16A34A) : const Color(0xFF94A3B8),
-                    fontWeight: FontWeight.w800,
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
               ],
@@ -2598,10 +2583,10 @@ class _BattleRoomDetailsScreenState extends ConsumerState<BattleRoomDetailsScree
                     Expanded(
                       child: Text(
                         'You need $missingEarned more Earned Coins to join this room.',
-                        style: GoogleFonts.outfit(
+                        style: GoogleFonts.poppins(
                           fontSize: 11.5.sp,
                           color: const Color(0xFFDC2626),
-                          fontWeight: FontWeight.w700,
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
                     ),
@@ -2613,11 +2598,11 @@ class _BattleRoomDetailsScreenState extends ConsumerState<BattleRoomDetailsScree
         ),
       ),
       primaryButtonText: 'COLLECT COINS',
-      primaryButtonColor: const Color(0xFFAB31DE),
+      primaryButtonColor: const Color(0xFF26262B),
       primaryButtonGradient: const LinearGradient(
         begin: Alignment.topCenter,
         end: Alignment.bottomCenter,
-        colors: [Color(0xFFE39FFF), Color(0xFFAB31DE)],
+        colors: [Color(0xFF26262B), Color(0xFF18181B)],
       ),
       onPrimaryTap: () {
         Navigator.of(context).popUntil((route) => route.isFirst);

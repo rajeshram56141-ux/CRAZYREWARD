@@ -242,45 +242,46 @@ class DailyCheckInPopup extends HookConsumerWidget {
                       // Top Navigation Header
                       Row(
                         children: [
-                          GestureDetector(
+                          InkWell(
                             onTap: () {
                               HapticFeedback.lightImpact();
                               Navigator.pop(context);
                             },
+                            borderRadius: BorderRadius.circular(14.r),
                             child: Container(
                               width: 40.w,
                               height: 40.w,
                               alignment: Alignment.center,
                               decoration: BoxDecoration(
                                 color: Colors.white,
-                                borderRadius: BorderRadius.circular(15.r),
+                                borderRadius: BorderRadius.circular(14.r),
                                 border: Border.all(
-                                  color: const Color(0xFFF1F5F9),
+                                  color: const Color(0xFFE2E8F0),
                                   width: 1.2,
                                 ),
                                 boxShadow: [
                                   BoxShadow(
-                                    color: const Color(0xFFAB31DE).withValues(alpha: 0.08),
-                                    blurRadius: 10,
-                                    offset: const Offset(0, 3),
+                                    color: Colors.black.withValues(alpha: 0.04),
+                                    blurRadius: 8,
+                                    offset: const Offset(0, 2),
                                   ),
                                 ],
                               ),
                               child: Icon(
                                 Icons.arrow_back_rounded,
-                                color: const Color(0xFFAB31DE),
-                                size: 22.sp,
+                                color: const Color(0xFF26262B),
+                                size: 20.sp,
                               ),
                             ),
                           ),
                           SizedBox(width: 12.w),
                           Text(
-                            'Daily Streak',
-                            style: GoogleFonts.outfit(
-                              color: const Color(0xFF1E1B4B),
-                              fontSize: 18.5.sp,
+                            'Daily Check In',
+                            style: GoogleFonts.kaushanScript(
+                              color: const Color(0xFF26262B),
+                              fontSize: 24.sp,
                               fontWeight: FontWeight.w800,
-                              letterSpacing: -0.2,
+                              letterSpacing: 0.5,
                             ),
                           ),
                         ],
@@ -288,24 +289,19 @@ class DailyCheckInPopup extends HookConsumerWidget {
 
                       SizedBox(height: 20.h),
 
-                      // Executive Streak Hero Card
+                      // Executive Streak Hero Card (with assets/Icons1/Rectangle 13.png background)
                       Container(
                         width: double.infinity,
                         padding: EdgeInsets.all(20.r),
                         decoration: BoxDecoration(
-                          gradient: const LinearGradient(
-                            colors: [Color(0xFFFAF5FF), Color(0xFFFFFFFF)],
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
+                          image: const DecorationImage(
+                            image: AssetImage('assets/Icons1/Rectangle 13.png'),
+                            fit: BoxFit.fill,
                           ),
-                          borderRadius: BorderRadius.circular(22.r),
-                          border: Border.all(
-                            color: const Color(0xFFF1F5F9),
-                            width: 1.2,
-                          ),
+                          borderRadius: BorderRadius.circular(20.r),
                           boxShadow: [
                             BoxShadow(
-                              color: const Color(0xFFAB31DE).withValues(alpha: 0.08),
+                              color: Colors.black.withValues(alpha: 0.08),
                               blurRadius: 14,
                               offset: const Offset(0, 4),
                             ),
@@ -315,32 +311,32 @@ class DailyCheckInPopup extends HookConsumerWidget {
                           children: [
                             // Flame Icon Container
                             Container(
-                              width: 54.w,
-                              height: 54.w,
+                              width: 52.w,
+                              height: 52.w,
                               alignment: Alignment.center,
                               decoration: BoxDecoration(
-                                color: const Color(0xFFFAF5FF),
-                                borderRadius: BorderRadius.circular(18.r),
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(16.r),
                                 border: Border.all(
-                                  color: const Color(0xFFF3E8FF),
-                                  width: 1.5,
+                                  color: const Color(0xFFE2E8F0),
+                                  width: 1.2,
                                 ),
                                 boxShadow: [
                                   BoxShadow(
-                                    color: const Color(0xFFAB31DE).withValues(alpha: 0.12),
-                                    blurRadius: 10,
-                                    offset: const Offset(0, 4),
+                                    color: Colors.black.withValues(alpha: 0.06),
+                                    blurRadius: 8,
+                                    offset: const Offset(0, 2),
                                   ),
                                 ],
                               ),
                               child: Image.asset(
                                 'assets/icons/fire (2).png',
-                                width: 32.w,
-                                height: 32.w,
+                                width: 30.w,
+                                height: 30.w,
                                 fit: BoxFit.contain,
                                 errorBuilder: (_, __, ___) => Text(
                                   '🔥',
-                                  style: TextStyle(fontSize: 28.sp),
+                                  style: TextStyle(fontSize: 26.sp),
                                 ),
                               ),
                             ),
@@ -351,11 +347,10 @@ class DailyCheckInPopup extends HookConsumerWidget {
                             Text(
                               '$safeStreak Day Streak!',
                               textAlign: TextAlign.center,
-                              style: GoogleFonts.outfit(
-                                color: const Color(0xFF1E1B4B),
-                                fontSize: 22.sp,
+                              style: GoogleFonts.poppins(
+                                color: Colors.white,
+                                fontSize: 20.sp,
                                 fontWeight: FontWeight.w800,
-                                letterSpacing: -0.2,
                               ),
                             ),
 
@@ -365,9 +360,9 @@ class DailyCheckInPopup extends HookConsumerWidget {
                             Text(
                               'Check in every day to claim your bonus coin rewards!',
                               textAlign: TextAlign.center,
-                              style: GoogleFonts.outfit(
-                                color: const Color(0xFF64748B),
-                                fontSize: 12.5.sp,
+                              style: GoogleFonts.poppins(
+                                color: const Color(0xFFE2E8F0),
+                                fontSize: 12.sp,
                                 fontWeight: FontWeight.w500,
                               ),
                             ),
@@ -378,19 +373,31 @@ class DailyCheckInPopup extends HookConsumerWidget {
                       SizedBox(height: 22.h),
 
                       // Section Heading: 7-Day Rewards
-                      Text(
-                        '7-Day Streak Rewards',
-                        style: GoogleFonts.outfit(
-                          color: const Color(0xFF1E1B4B),
-                          fontSize: 15.5.sp,
-                          fontWeight: FontWeight.w800,
-                          letterSpacing: -0.2,
-                        ),
+                      Row(
+                        children: [
+                          Container(
+                            width: 4.w,
+                            height: 18.h,
+                            decoration: BoxDecoration(
+                              color: const Color(0xFF26262B),
+                              borderRadius: BorderRadius.circular(2.r),
+                            ),
+                          ),
+                          SizedBox(width: 8.w),
+                          Text(
+                            '7-Day Streak Rewards',
+                            style: GoogleFonts.poppins(
+                              color: const Color(0xFF26262B),
+                              fontSize: 15.sp,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ],
                       ),
 
-                      SizedBox(height: 12.h),
+                      SizedBox(height: 14.h),
 
-                      // 7-DAY VERTICAL LIST FORMAT MATCHING SCREENSHOT!
+                      // 7-DAY VERTICAL LIST FORMAT
                       Column(
                         children: List.generate(7, (index) {
                           final int dayNum = index + 1;
@@ -416,7 +423,7 @@ class DailyCheckInPopup extends HookConsumerWidget {
               ),
             ),
 
-            // 3. Full-Screen Loading Overlay While Claiming (Just clean centered spinner)
+            // 3. Full-Screen Loading Overlay While Claiming
             if (isClaiming.value)
               Positioned.fill(
                 child: Container(
@@ -438,8 +445,8 @@ class DailyCheckInPopup extends HookConsumerWidget {
                       ],
                     ),
                     child: const CircularProgressIndicator(
-                      strokeWidth: 3.2,
-                      valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFA855F7)),
+                      strokeWidth: 3.0,
+                      valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF26262B)),
                     ),
                   ),
                 ),
@@ -451,7 +458,7 @@ class DailyCheckInPopup extends HookConsumerWidget {
   }
 
   // ---------------------------------------------------------------------------
-  // VERTICAL 7-DAY LIST ITEM ROW (EXACT MATCH FOR SCREENSHOT)
+  // VERTICAL 7-DAY LIST ITEM ROW
   // ---------------------------------------------------------------------------
   Widget _buildVerticalDayRow({
     required BuildContext context,
@@ -463,36 +470,68 @@ class DailyCheckInPopup extends HookConsumerWidget {
     required bool isClaiming,
     required VoidCallback onClaimTap,
   }) {
-    return Padding(
-      padding: EdgeInsets.symmetric(vertical: 12.h),
+    return Container(
+      margin: EdgeInsets.only(bottom: 10.h),
+      padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16.r),
+        border: Border.all(
+          color: isToday && canClaim
+              ? const Color(0xFF26262B)
+              : const Color(0xFFE2E8F0),
+          width: isToday && canClaim ? 1.4 : 1.2,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.03),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
       child: Row(
         children: [
-          // 1. Left TV AD Icon (matching screenshot)
-          const _TvAdIconWidget(size: 40),
+          // 1. Left TV AD Icon
+          const _TvAdIconWidget(size: 38),
 
-          SizedBox(width: 16.w),
+          SizedBox(width: 14.w),
 
-          // 2. Middle Coin Icon + Reward Coins
+          // 2. Middle Coin Icon + Reward Coins + Day info
           Expanded(
-            child: Row(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Image.asset(
-                  'assets/icons/coin.png',
-                  width: 22.w,
-                  height: 22.w,
-                  fit: BoxFit.contain,
-                  errorBuilder: (_, __, ___) => Image.asset(
-                    'assets/icons/coin.png',
-                    width: 22.w,
-                  ),
+                Row(
+                  children: [
+                    Image.asset(
+                      'assets/icons/coin.png',
+                      width: 18.w,
+                      height: 18.w,
+                      fit: BoxFit.contain,
+                      errorBuilder: (_, __, ___) => Image.asset(
+                        'assets/icons/coin.png',
+                        width: 18.w,
+                      ),
+                    ),
+                    SizedBox(width: 6.w),
+                    Text(
+                      '+$dayCoins Coins',
+                      style: GoogleFonts.poppins(
+                        color: const Color(0xFF26262B),
+                        fontSize: 14.5.sp,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ],
                 ),
-                SizedBox(width: 8.w),
+                SizedBox(height: 2.h),
                 Text(
-                  '+$dayCoins',
-                  style: GoogleFonts.outfit(
-                    color: const Color(0xFF1F2937),
-                    fontSize: 17.5.sp,
-                    fontWeight: FontWeight.w600,
+                  'Day $dayNum Reward',
+                  style: GoogleFonts.poppins(
+                    color: const Color(0xFF94A3B8),
+                    fontSize: 11.sp,
+                    fontWeight: FontWeight.w500,
                   ),
                 ),
               ],
@@ -503,38 +542,52 @@ class DailyCheckInPopup extends HookConsumerWidget {
           if (done)
             // Completed Status
             Container(
-              width: 110.w,
-              height: 38.h,
+              padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 7.h),
               alignment: Alignment.center,
               decoration: BoxDecoration(
-                color: const Color(0xFFDCFCE7),
-                borderRadius: BorderRadius.circular(12.r),
+                color: const Color(0xFFF0FDF4),
+                borderRadius: BorderRadius.circular(10.r),
+                border: Border.all(
+                  color: const Color(0xFFBBF7D0),
+                  width: 1.0,
+                ),
               ),
               child: Text(
                 'Claimed ✓',
-                style: GoogleFonts.outfit(
-                  color: const Color(0xFF15803D),
-                  fontSize: 13.5.sp,
-                  fontWeight: FontWeight.w600,
+                style: GoogleFonts.poppins(
+                  color: const Color(0xFF16A34A),
+                  fontSize: 12.sp,
+                  fontWeight: FontWeight.w700,
                 ),
               ),
             )
           else if (isToday && canClaim)
-            // Active Watch Ad Button
+            // Active Watch Ad Metallic Silver Button
             GestureDetector(
               onTap: onClaimTap,
               child: Container(
-                width: 110.w,
-                height: 38.h,
+                padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 7.h),
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
-                  color: const Color(0xFFA855F7), // Purple Pill Button
-                  borderRadius: BorderRadius.circular(12.r),
+                  gradient: const LinearGradient(
+                    colors: [
+                      Colors.white,
+                      Color(0xFFE5E7EB),
+                      Color(0xFFB0B5C2),
+                    ],
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                  ),
+                  borderRadius: BorderRadius.circular(10.r),
+                  border: Border.all(
+                    color: const Color(0xFF9CA3AF),
+                    width: 1.0,
+                  ),
                   boxShadow: [
                     BoxShadow(
-                      color: const Color(0xFFA855F7).withValues(alpha: 0.3),
+                      color: Colors.black.withValues(alpha: 0.08),
                       blurRadius: 6,
-                      offset: const Offset(0, 3),
+                      offset: const Offset(0, 2),
                     ),
                   ],
                 ),
@@ -544,36 +597,61 @@ class DailyCheckInPopup extends HookConsumerWidget {
                         height: 16,
                         child: CircularProgressIndicator(
                           strokeWidth: 2.0,
-                          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                          valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF16161A)),
                         ),
                       )
-                    : Text(
-                        'Watch Ad',
-                        style: GoogleFonts.outfit(
-                          color: Colors.white,
-                          fontSize: 13.5.sp,
-                          fontWeight: FontWeight.w600,
-                        ),
+                    : Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            Icons.play_arrow_rounded,
+                            size: 16.sp,
+                            color: const Color(0xFF16161A),
+                          ),
+                          SizedBox(width: 4.w),
+                          Text(
+                            'Watch Ad',
+                            style: GoogleFonts.poppins(
+                              color: const Color(0xFF16161A),
+                              fontSize: 12.5.sp,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ],
                       ),
               ),
             )
           else
             // Locked Status
             Container(
-              width: 110.w,
-              height: 38.h,
+              padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 7.h),
               alignment: Alignment.center,
               decoration: BoxDecoration(
-                color: const Color(0xFFD1D5DB), // Grey Pill Button
-                borderRadius: BorderRadius.circular(12.r),
-              ),
-              child: Text(
-                'Locked',
-                style: GoogleFonts.outfit(
-                  color: Colors.white,
-                  fontSize: 13.5.sp,
-                  fontWeight: FontWeight.w600,
+                color: const Color(0xFFF1F5F9),
+                borderRadius: BorderRadius.circular(10.r),
+                border: Border.all(
+                  color: const Color(0xFFE2E8F0),
+                  width: 1.0,
                 ),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    Icons.lock_outline_rounded,
+                    size: 13.sp,
+                    color: const Color(0xFF94A3B8),
+                  ),
+                  SizedBox(width: 4.w),
+                  Text(
+                    'Locked',
+                    style: GoogleFonts.poppins(
+                      color: const Color(0xFF94A3B8),
+                      fontSize: 12.sp,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
               ),
             ),
         ],
@@ -609,9 +687,9 @@ class _TvAdIconPainter extends CustomPainter {
 
     // Paint for TV Outline & Antenna
     final tvPaint = Paint()
-      ..color = const Color(0xFFE5D0FA) // Soft light lavender outline
+      ..color = const Color(0xFFCBD5E1) // Clean slate outline
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 2.0
+      ..strokeWidth = 1.8
       ..strokeCap = StrokeCap.round
       ..strokeJoin = StrokeJoin.round;
 
@@ -639,9 +717,9 @@ class _TvAdIconPainter extends CustomPainter {
     final textPainter = TextPainter(
       text: TextSpan(
         text: 'AD',
-        style: GoogleFonts.outfit(
-          color: const Color(0xFF9333EA), // Bold purple
-          fontSize: (size.width * 0.34).sp,
+        style: GoogleFonts.poppins(
+          color: const Color(0xFF26262B), // Bold executive dark
+          fontSize: (size.width * 0.32).sp,
           fontWeight: FontWeight.w900,
           letterSpacing: -0.2,
         ),

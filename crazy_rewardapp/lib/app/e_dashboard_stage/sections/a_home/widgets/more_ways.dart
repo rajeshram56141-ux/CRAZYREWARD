@@ -1,4 +1,3 @@
-// ignore_for_file: unused_element_parameter
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -25,346 +24,317 @@ class MoreWaysSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool hideRead = SplashService.isScreenHidden('readAndEarn') || SplashService.isScreenHidden('readTask');
+    const double cardWidth = 148.0;
+    final double cardWidthScaled = cardWidth.w;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Section Header: "More Ways to Earn" matching Offer Partners & Top Recommended style
+        // Section Header: "Special For You"
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 16.w),
           child: Row(
             children: [
-              ShaderMask(
-                shaderCallback: (bounds) => const LinearGradient(
-                  colors: [
-                    Color(0xFFE39FFF),
-                    Color(0xFFAB31DE),
-                  ],
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                ).createShader(bounds),
-                child: Icon(
-                  Icons.auto_awesome_rounded,
-                  color: Colors.white,
-                  size: 24.sp,
+              Container(
+                width: 4.w,
+                height: 18.h,
+                decoration: BoxDecoration(
+                  color: const Color(0xFF1E1B4B),
+                  borderRadius: BorderRadius.circular(2.r),
                 ),
               ),
               SizedBox(width: 8.w),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'More Ways',
-                    maxLines: 1,
-                    softWrap: false,
-                    style: GoogleFonts.poppins(
-                      color: const Color(0xFF1E1B4B),
-                      fontSize: 16.5.sp,
-                      fontWeight: FontWeight.w700,
-                      letterSpacing: 0.2,
-                    ),
-                  ),
-                  SizedBox(height: 3.h),
-                  Container(
-                    width: 120.w,
-                    height: 2.h,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(1.r),
-                      gradient: const LinearGradient(
-                        colors: [
-                          Color(0xFFAB31DE),
-                          Color(0xFFE39FFF),
-                          Colors.transparent,
-                        ],
-                        begin: Alignment.centerLeft,
-                        end: Alignment.centerRight,
-                        stops: [0.0, 0.6, 1.0],
-                      ),
-                    ),
-                  ),
-                ],
+              Text(
+                'Special For You',
+                style: GoogleFonts.kaushanScript(
+                  color: const Color(0xFF26262B),
+                  fontSize: 22.sp,
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: 0.5,
+                ),
               ),
             ],
           ),
         ),
 
-        SizedBox(height: 14.h),
+        SizedBox(height: 12.h),
 
-        // Vertical List of Horizontal Banner Cards matching Demo Image
-        Padding(
+        // Horizontal Scrollable Row (Cards fit properly without clipping)
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          physics: const BouncingScrollPhysics(),
           padding: EdgeInsets.symmetric(horizontal: 16.w),
-          child: Column(
+          child: Row(
             children: [
-              // 1. Quick Reads (Read Task)
-              if (!hideRead) ...[
-                _buildListItemCard(
-                  context: context,
-                  title: 'Read Articles',
-                  subtitle: 'Read articles & earn coins',
-                  iconPath: 'assets/icons/reaadnowo.png',
-                  fallbackIcon: Icons.menu_book_rounded,
-                  themeColor: const Color(0xFF0EA5E9), // Soft Sky Blue
+              // 1. Refer & Earn
+              _SpecialCard(
+                width: cardWidthScaled,
+                title: 'Refer & Earn',
+                subtitle: 'Win upto 500',
+                iconPath: 'assets/Icons1/pngtree-d-blue-shield-with-check-mark-in-orange-circle-icon-security-png-image_16822296 1.png',
+                iconWidth: 40.w,
+                iconHeight: 40.w,
+                onTap: () {
+                  HapticFeedback.lightImpact();
+                  currentIndex.value = 1; // Switches to Refer / Invite Tab
+                },
+              ),
+
+              SizedBox(width: 10.w),
+
+              // 2. Leaderboard
+              _SpecialCard(
+                width: cardWidthScaled,
+                title: 'Leaderboard',
+                subtitle: 'Win upto 500',
+                iconPath: 'assets/Icons1/image 39.png',
+                iconWidth: 42.w,
+                iconHeight: 38.h,
+                onTap: () {
+                  HapticFeedback.lightImpact();
+                  currentIndex.value = 4; // Switches to Leaderboard (Rank) Tab
+                },
+              ),
+
+              // 4. Promo Code
+              if (!SplashService.isScreenHidden('promoCode')) ...[
+                SizedBox(width: 10.w),
+                _SpecialCard(
+                  width: cardWidthScaled,
+                  title: 'Promo Code',
+                  subtitle: 'Win upto 500',
+                  iconPath: 'assets/icons/somthiwnt.png',
+                  iconData: Icons.confirmation_number_rounded,
+                  iconWidth: 38.w,
+                  iconHeight: 38.w,
                   onTap: () {
                     HapticFeedback.lightImpact();
-                    if (!SplashService.isScreenEnabled('readTask') && !SplashService.isScreenEnabled('readAndEarn')) {
+                    if (!SplashService.isScreenEnabled('promoCode')) {
                       CustomStatusPopup.showComingSoon(
                         context: context,
-                        title: 'Read Articles Coming Soon!',
-                        message: 'Read Articles feature is currently under active development and will be available very soon.',
+                        title: 'Promo Code Coming Soon!',
+                        message: 'Promo Code feature is currently under active development and will be available very soon.',
+                      );
+                      return;
+                    }
+                    AutoRouter.of(context).push(const PromoCodeScreenRoute());
+                  },
+                ),
+              ],
+
+              // 5. Giveaway
+              if (!SplashService.isScreenHidden('giveaway')) ...[
+                SizedBox(width: 10.w),
+                _SpecialCard(
+                  width: cardWidthScaled,
+                  title: 'Giveaway',
+                  subtitle: 'Win upto 500',
+                  iconPath: 'assets/icons/trophy-cup.png',
+                  iconData: Icons.card_giftcard_rounded,
+                  iconWidth: 38.w,
+                  iconHeight: 38.w,
+                  onTap: () {
+                    HapticFeedback.lightImpact();
+                    if (!SplashService.isScreenEnabled('giveaway')) {
+                      CustomStatusPopup.showComingSoon(
+                        context: context,
+                        title: 'Giveaway Coming Soon!',
+                        message: 'Giveaway feature is currently under active development and will be available very soon.',
                       );
                       return;
                     }
                     AutoRouter.of(context).push(
-                      ReadTskScreenRoute(
+                      GiveawayScreenRoute(
                         userId: userId,
                       ),
                     );
                   },
                 ),
-                SizedBox(height: 8.h),
               ],
-
-              // 3. Invite Friends
-              _buildListItemCard(
-                context: context,
-                title: 'Invite Friends',
-                subtitle: 'Invite your friends & earn coins per referral!',
-                iconPath: 'assets/icons/invite.png',
-                fallbackIcon: Icons.group_add_rounded,
-                themeColor: const Color(0xFF10B981), // Soft Emerald Green
-                onTap: () {
-                  HapticFeedback.lightImpact();
-                  currentIndex.value = 1;
-                },
-              ),
             ],
           ),
         ),
       ],
     );
   }
+}
 
-  // 1-to-1 Replica Card Layout from Reference Image
-  Widget _buildListItemCard({
-    required BuildContext context,
-    required String title,
-    required String subtitle,
-    required String iconPath,
-    required IconData fallbackIcon,
-    required Color themeColor,
-    required VoidCallback onTap,
-  }) {
+class _SpecialCard extends StatelessWidget {
+  const _SpecialCard({
+    required this.width,
+    required this.title,
+    required this.subtitle,
+    this.iconPath,
+    this.iconData,
+    this.iconWidth,
+    this.iconHeight,
+    required this.onTap,
+  });
+
+  final double width;
+
+  final String title;
+  final String subtitle;
+  final String? iconPath;
+  final IconData? iconData;
+  final double? iconWidth;
+  final double? iconHeight;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
     return _PopScaleButton(
-      scaleDown: 0.97,
+      scaleDown: 0.95,
       onTap: onTap,
       child: Container(
-        height: 76.h,
-        width: double.infinity,
+        width: width,
+        height: 72.h,
+        padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: const Color(0xFFFFF5BD),
           borderRadius: BorderRadius.circular(18.r),
-          border: Border.all(
-            color: const Color(0xFFF1F5F9),
-            width: 1.2,
-          ),
           boxShadow: [
             BoxShadow(
-              color: const Color(0xFF0F172A).withValues(alpha: 0.04),
-              blurRadius: 14,
+              color: Colors.black.withValues(alpha: 0.04),
+              blurRadius: 8,
               offset: const Offset(0, 3),
             ),
           ],
         ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(18.r),
-          child: Stack(
-            children: [
-              // 1. Right Side Soft Dome Gradient Backdrop
-              Positioned(
-                right: 0,
-                top: 0,
-                bottom: 0,
-                width: 110.w,
-                child: Container(
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [
-                        themeColor.withValues(alpha: 0.14),
-                        themeColor.withValues(alpha: 0.03),
-                      ],
-                      begin: Alignment.centerLeft,
-                      end: Alignment.centerRight,
-                    ),
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(45.r),
-                      bottomLeft: Radius.circular(45.r),
-                      topRight: Radius.circular(18.r),
-                      bottomRight: Radius.circular(18.r),
-                    ),
-                  ),
-                ),
+        child: Row(
+          children: [
+            if (iconPath != null)
+              Image.asset(
+                iconPath!,
+                width: iconWidth ?? 46.w,
+                height: iconHeight ?? 46.w,
+                fit: BoxFit.contain,
+                errorBuilder: (_, __, ___) => iconData != null
+                    ? Icon(
+                        iconData,
+                        color: const Color(0xFFD97706),
+                        size: 32.sp,
+                      )
+                    : const SizedBox.shrink(),
+              )
+            else if (iconData != null)
+              Icon(
+                iconData,
+                color: const Color(0xFFD97706),
+                size: 32.sp,
               ),
-
-              // 2. Right Side 3D Graphic Artwork
-              Positioned(
-                right: 2.w,
-                top: 2.h,
-                bottom: 2.h,
-                width: 80.w,
-                child: Center(
-                  child: Image.asset(
-                    iconPath,
-                    fit: BoxFit.contain,
-                    errorBuilder: (_, __, ___) => Icon(
-                      fallbackIcon,
-                      color: themeColor,
-                      size: 34.sp,
-                    ),
-                  ),
-                ),
-              ),
-
-              // 3. Foreground Content Row (Left Icon Box + Text Column + Circular Arrow Button)
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
-                child: Row(
-                  children: [
-                    // Left Soft Rounded Square Icon Container
-                    Container(
-                      width: 44.w,
-                      height: 44.w,
-                      padding: EdgeInsets.all(7.w),
-                      decoration: BoxDecoration(
-                        color: themeColor.withValues(alpha: 0.10),
-                        borderRadius: BorderRadius.circular(12.r),
+            SizedBox(width: 6.w),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  FittedBox(
+                    fit: BoxFit.scaleDown,
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      title,
+                      maxLines: 1,
+                      style: GoogleFonts.poppins(
+                        color: Colors.black,
+                        fontSize: 13.5.sp,
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: -0.2,
+                        height: 1.15,
                       ),
-                      child: Center(
-                        child: Image.asset(
-                          iconPath,
+                    ),
+                  ),
+                  SizedBox(height: 3.h),
+                  FittedBox(
+                    fit: BoxFit.scaleDown,
+                    alignment: Alignment.centerLeft,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          subtitle,
+                          maxLines: 1,
+                          style: GoogleFonts.poppins(
+                            color: const Color(0xFF1F2937),
+                            fontSize: 9.5.sp,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        SizedBox(width: 3.w),
+                        Image.asset(
+                          'assets/icons/coin.png',
+                          width: 11.w,
+                          height: 11.w,
                           fit: BoxFit.contain,
-                          errorBuilder: (_, __, ___) => Icon(
-                            fallbackIcon,
-                            color: themeColor,
-                            size: 26.sp,
+                          errorBuilder: (_, __, ___) => const Icon(
+                            Icons.monetization_on,
+                            color: Color(0xFFFBBF24),
+                            size: 9,
                           ),
                         ),
-                      ),
+                      ],
                     ),
-                    SizedBox(width: 12.w),
-
-                    // Middle Text Column: Title & Subtitle
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            title,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: GoogleFonts.poppins(
-                              color: const Color(0xFF1E1B4B),
-                              fontSize: 13.5.sp,
-                              fontWeight: FontWeight.w600,
-                              letterSpacing: 0.1,
-                            ),
-                          ),
-                          SizedBox(height: 2.h),
-                          Text(
-                            subtitle,
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                            style: GoogleFonts.poppins(
-                              color: const Color(0xFF64748B),
-                              fontSize: 9.5.sp,
-                              fontWeight: FontWeight.w400,
-                              height: 1.22,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-
-                    // Circular Arrow Action Button
-                    Container(
-                      width: 36.w,
-                      height: 36.w,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Colors.white,
-                        border: Border.all(
-                          color: themeColor.withValues(alpha: 0.20),
-                          width: 1.2,
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: themeColor.withValues(alpha: 0.10),
-                            blurRadius: 8,
-                            offset: const Offset(0, 3),
-                          ),
-                        ],
-                      ),
-                      child: Center(
-                        child: Icon(
-                          Icons.arrow_forward_rounded,
-                          color: themeColor,
-                          size: 18.sp,
-                        ),
-                      ),
-                    ),
-                    SizedBox(width: 54.w), // Space for right dome artwork so button sits right at front of dome
-                  ],
-                ),
+                  ),
+                ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
   }
 }
 
-// Backward compatibility alias
-typedef MoreWaysToEarnRewardsSection = MoreWaysSection;
-
 class _PopScaleButton extends StatefulWidget {
-  const _PopScaleButton({
-    required this.onTap,
-    required this.child,
-    this.scaleDown = 0.94,
-  });
-
-  final VoidCallback onTap;
   final Widget child;
+  final VoidCallback onTap;
   final double scaleDown;
+
+  const _PopScaleButton({
+    required this.child,
+    required this.onTap,
+    this.scaleDown = 0.95,
+  });
 
   @override
   State<_PopScaleButton> createState() => _PopScaleButtonState();
 }
 
-class _PopScaleButtonState extends State<_PopScaleButton> {
-  bool _isPressed = false;
+class _PopScaleButtonState extends State<_PopScaleButton>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _scaleAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 100),
+    );
+    _scaleAnimation = Tween<double>(begin: 1.0, end: widget.scaleDown).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
-      onTapDown: (_) {
-        setState(() => _isPressed = true);
-        HapticFeedback.lightImpact();
-      },
+      onTapDown: (_) => _controller.forward(),
       onTapUp: (_) {
-        setState(() => _isPressed = false);
+        _controller.reverse();
         widget.onTap();
       },
-      onTapCancel: () {
-        setState(() => _isPressed = false);
-      },
-      child: AnimatedScale(
-        scale: _isPressed ? widget.scaleDown : 1.0,
-        duration: const Duration(milliseconds: 120),
-        curve: Curves.easeInOutBack,
+      onTapCancel: () => _controller.reverse(),
+      child: ScaleTransition(
+        scale: _scaleAnimation,
         child: widget.child,
       ),
     );

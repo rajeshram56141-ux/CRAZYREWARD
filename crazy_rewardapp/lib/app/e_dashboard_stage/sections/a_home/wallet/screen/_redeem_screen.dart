@@ -39,7 +39,7 @@ class RedeemScreen extends HookConsumerWidget {
   final String country;
   final bool isGuest;
 
-  // Helper method to format coin balance exactly like mockup (e.g. 12,426.00)
+  // Helper method to format coin balance (e.g. 12,426.00)
   String _formatBalance(double coins) {
     final String basic = coins.toStringAsFixed(2);
     final List<String> parts = basic.split('.');
@@ -85,7 +85,7 @@ class RedeemScreen extends HookConsumerWidget {
         backgroundColor: Colors.white,
         body: Stack(
           children: [
-            // 1. Solid White Background (Matching Home Screen)
+            // 1. Solid Canvas Background
             Positioned.fill(
               child: Container(
                 color: Colors.white,
@@ -95,7 +95,7 @@ class RedeemScreen extends HookConsumerWidget {
             // 2. Main Scrollable Content
             Positioned.fill(
               child: RefreshIndicator(
-                color: const Color(0xFFAB31DE),
+                color: const Color(0xFF26262B),
                 backgroundColor: Colors.white,
                 onRefresh: () async {
                   HapticFeedback.lightImpact();
@@ -109,516 +109,514 @@ class RedeemScreen extends HookConsumerWidget {
                     parent: BouncingScrollPhysics(),
                   ),
                   child: Column(
-                  children: [
-                    // Header Bar (Back button + Title + History Pill)
-                    Padding(
-                      padding: EdgeInsets.fromLTRB(16.w, topPadding + 8.h, 16.w, 14.h),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            children: [
-                              GestureDetector(
-                                onTap: () => AutoRouter.of(context).maybePop(),
-                                child: Container(
-                                  width: 40.w,
-                                  height: 40.w,
-                                  alignment: Alignment.center,
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(15.r),
-                                    border: Border.all(
-                                      color: const Color(0xFFF1F5F9),
-                                      width: 1.2,
-                                    ),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: const Color(0xFFAB31DE).withValues(alpha: 0.08),
-                                        blurRadius: 10,
-                                        offset: const Offset(0, 3),
+                    children: [
+                      // Header Bar (Back button + Greeting + Conversion Pill)
+                      Padding(
+                        padding: EdgeInsets.fromLTRB(16.w, topPadding + 8.h, 16.w, 14.h),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                GestureDetector(
+                                  onTap: () => AutoRouter.of(context).maybePop(),
+                                  child: Container(
+                                    width: 40.w,
+                                    height: 40.w,
+                                    alignment: Alignment.center,
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(15.r),
+                                      border: Border.all(
+                                        color: const Color(0xFFE2E8F0),
+                                        width: 1.2,
                                       ),
-                                    ],
-                                  ),
-                                  child: Icon(
-                                    Icons.arrow_back_rounded,
-                                    color: const Color(0xFFAB31DE),
-                                    size: 22.sp,
-                                  ),
-                                ),
-                              ),
-                              SizedBox(width: 12.w),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Text(
-                                    'Hi 👋',
-                                    style: GoogleFonts.outfit(
-                                      color: const Color(0xFF94A3B8),
-                                      fontSize: 12.sp,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                  SizedBox(height: 1.h),
-                                  Text(
-                                    userName,
-                                    style: GoogleFonts.outfit(
-                                      color: const Color(0xFF1E1B4B),
-                                      fontSize: 18.sp,
-                                      fontWeight: FontWeight.w700,
-                                      letterSpacing: -0.2,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                          if (SplashService.showCoinConversionRate && SplashService.coinConversionRate > 0)
-                            Container(
-                              padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.5.h),
-                              decoration: BoxDecoration(
-                                color: const Color(0xFFECFDF5),
-                                borderRadius: BorderRadius.circular(10.r),
-                                border: Border.all(color: const Color(0xFFA7F3D0), width: 1),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: const Color(0xFF059669).withValues(alpha: 0.08),
-                                    blurRadius: 6,
-                                    offset: const Offset(0, 2),
-                                  ),
-                                ],
-                              ),
-                              child: Text(
-                                '≈ ₹${(availableCoins / SplashService.coinConversionRate).toStringAsFixed(2)}',
-                                style: GoogleFonts.outfit(
-                                  color: const Color(0xFF059669),
-                                  fontSize: 14.sp,
-                                  fontWeight: FontWeight.w800,
-                                  letterSpacing: -0.2,
-                                ),
-                              ),
-                            ),
-                        ],
-                      ),
-                    ),
-
-                    SizedBox(height: 6.h),
-
-                    // 3. Premium Modern Executive Wallet Balance Card (Matching Home Screen BalanceCard style 1-to-1)
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 16.w),
-                      child: Container(
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(24.r),
-                          border: Border.all(color: const Color(0xFFF1F5F9), width: 1.2),
-                          boxShadow: [
-                            BoxShadow(
-                              color: const Color(0xFF0F172A).withValues(alpha: 0.04),
-                              blurRadius: 18,
-                              offset: const Offset(0, 6),
-                            ),
-                            BoxShadow(
-                              color: const Color(0xFFAB31DE).withValues(alpha: 0.05),
-                              blurRadius: 12,
-                              offset: const Offset(0, 8),
-                            ),
-                          ],
-                        ),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(24.r),
-                          child: Stack(
-                            children: [
-                              // Right Soft Purple Dome Backdrop Patti
-                              Positioned(
-                                right: 0,
-                                top: 0,
-                                bottom: 0,
-                                width: 130.w,
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    gradient: LinearGradient(
-                                      colors: [
-                                        const Color(0xFFFAF5FF).withValues(alpha: 0.0),
-                                        const Color(0xFFFAF5FF).withValues(alpha: 0.6),
-                                        const Color(0xFFF3E8FF),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: const Color(0xFF0F172A).withValues(alpha: 0.04),
+                                          blurRadius: 10,
+                                          offset: const Offset(0, 3),
+                                        ),
                                       ],
-                                      begin: Alignment.topCenter,
-                                      end: Alignment.bottomCenter,
-                                      stops: const [0.0, 0.25, 1.0],
                                     ),
-                                    borderRadius: BorderRadius.only(
-                                      topLeft: Radius.circular(60.r),
-                                      bottomLeft: Radius.circular(60.r),
-                                      topRight: Radius.circular(24.r),
-                                      bottomRight: Radius.circular(24.r),
+                                    child: Icon(
+                                      Icons.arrow_back_rounded,
+                                      color: const Color(0xFF26262B),
+                                      size: 20.sp,
                                     ),
                                   ),
                                 ),
-                              ),
-
-                              // Right Mascot Image Artwork
-                              Positioned(
-                                right: 6.w,
-                                top: 6.h,
-                                bottom: 6.h,
-                                width: 115.w,
-                                child: Center(
-                                  child: Image.asset(
-                                    'assets/icons/panda 4.png',
-                                    fit: BoxFit.contain,
-                                  ),
-                                ),
-                              ),
-
-                              // Content
-                              Padding(
-                                padding: EdgeInsets.all(18.w),
-                                child: Column(
+                                SizedBox(width: 12.w),
+                                Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisSize: MainAxisSize.min,
                                   children: [
-                                    // Available Balance Tag
-                                    Row(
-                                      children: [
-                                        Container(
-                                          width: 8.w,
-                                          height: 8.w,
-                                          decoration: const BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            color: Color(0xFFAB31DE),
-                                          ),
-                                        ),
-                                        SizedBox(width: 7.w),
-                                        Text(
-                                          'Available Balance',
-                                          style: GoogleFonts.outfit(
-                                            color: const Color(0xFF64748B),
-                                            fontSize: 12.5.sp,
-                                            fontWeight: FontWeight.w600,
-                                            letterSpacing: 0.2,
-                                          ),
-                                        ),
-                                      ],
+                                    Text(
+                                      'Hi 👋',
+                                      style: GoogleFonts.poppins(
+                                        color: const Color(0xFF64748B),
+                                        fontSize: 12.sp,
+                                        fontWeight: FontWeight.w500,
+                                      ),
                                     ),
-
-                                    SizedBox(height: 8.h),
-
-                                    // Coin Balance Display
-                                    Row(
-                                      crossAxisAlignment: CrossAxisAlignment.center,
-                                      children: [
-                                        Image.asset(
-                                          'assets/icons/coin.png',
-                                          height: 30.w,
-                                          width: 30.w,
-                                          fit: BoxFit.contain,
-                                        ),
-                                        SizedBox(width: 8.w),
-                                        Expanded(
-                                          child: Text(
-                                            _formatBalance(availableCoins.toDouble()),
-                                            style: GoogleFonts.outfit(
-                                              color: const Color(0xFF1E1B4B),
-                                              fontSize: 26.sp,
-                                              fontWeight: FontWeight.w900,
-                                              letterSpacing: -0.5,
-                                            ),
-                                            maxLines: 1,
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-
-                                    SizedBox(height: 10.h),
-
-                                    // History Pill Button (Left aligned below coin balance, away from Panda artwork)
-                                    GestureDetector(
-                                      onTap: () {
-                                        HapticFeedback.lightImpact();
-                                        AutoRouter.of(context).push(
-                                          RedeemHistoryScreenRoute(
-                                            userId: userId,
-                                          ),
-                                        );
-                                      },
-                                      child: Container(
-                                        padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
-                                        decoration: BoxDecoration(
-                                          gradient: const LinearGradient(
-                                            colors: [
-                                              Color(0xFFE39FFF),
-                                              Color(0xFFAB31DE),
-                                            ],
-                                            begin: Alignment.topCenter,
-                                            end: Alignment.bottomCenter,
-                                          ),
-                                          borderRadius: BorderRadius.circular(12.r),
-                                          boxShadow: [
-                                            BoxShadow(
-                                              color: const Color(0xFFAB31DE).withValues(alpha: 0.22),
-                                              blurRadius: 6,
-                                              offset: const Offset(0, 2),
-                                            ),
-                                          ],
-                                        ),
-                                        child: Row(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            Icon(
-                                              Icons.history_rounded,
-                                              color: Colors.white,
-                                              size: 13.sp,
-                                            ),
-                                            SizedBox(width: 5.w),
-                                            Text(
-                                              'History',
-                                              style: GoogleFonts.outfit(
-                                                color: Colors.white,
-                                                fontSize: 11.5.sp,
-                                                fontWeight: FontWeight.w700,
-                                              ),
-                                            ),
-                                            SizedBox(width: 3.w),
-                                            Icon(
-                                              Icons.arrow_forward_ios_rounded,
-                                              color: Colors.white,
-                                              size: 9.sp,
-                                            ),
-                                          ],
-                                        ),
+                                    SizedBox(height: 1.h),
+                                    Text(
+                                      userName,
+                                      style: GoogleFonts.poppins(
+                                        color: const Color(0xFF26262B),
+                                        fontSize: 18.sp,
+                                        fontWeight: FontWeight.w700,
+                                        letterSpacing: -0.2,
                                       ),
                                     ),
                                   ],
                                 ),
+                              ],
+                            ),
+                            if (SplashService.showCoinConversionRate && SplashService.coinConversionRate > 0)
+                              Container(
+                                padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.5.h),
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFFECFDF5),
+                                  borderRadius: BorderRadius.circular(10.r),
+                                  border: Border.all(color: const Color(0xFFA7F3D0), width: 1),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: const Color(0xFF059669).withValues(alpha: 0.08),
+                                      blurRadius: 6,
+                                      offset: const Offset(0, 2),
+                                    ),
+                                  ],
+                                ),
+                                child: Text(
+                                  '≈ ₹${(availableCoins / SplashService.coinConversionRate).toStringAsFixed(2)}',
+                                  style: GoogleFonts.poppins(
+                                    color: const Color(0xFF059669),
+                                    fontSize: 14.sp,
+                                    fontWeight: FontWeight.w700,
+                                    letterSpacing: -0.2,
+                                  ),
+                                ),
+                              ),
+                          ],
+                        ),
+                      ),
+
+                      SizedBox(height: 6.h),
+
+                      // 3. Premium Modern Executive Wallet Balance Card
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 16.w),
+                        child: Container(
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(24.r),
+                            border: Border.all(color: const Color(0xFFE2E8F0), width: 1.2),
+                            boxShadow: [
+                              BoxShadow(
+                                color: const Color(0xFF0F172A).withValues(alpha: 0.04),
+                                blurRadius: 18,
+                                offset: const Offset(0, 6),
                               ),
                             ],
                           ),
-                        ),
-                      ),
-                    ),
-
-                    SizedBox(height: 22.h),
-
-                    if (SplashService.showCoinConversionRate && SplashService.coinConversionRate > 0)
-                      Padding(
-                        padding: EdgeInsets.only(bottom: 12.h, left: 16.w, right: 16.w),
-                        child: Container(
-                          width: double.infinity,
-                          padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 8.h),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFFFAF5FF),
-                            borderRadius: BorderRadius.circular(12.r),
-                            border: Border.all(color: const Color(0xFFE9D5FF), width: 1),
-                          ),
-                          child: Center(
-                            child: Text(
-                              '₹ 1.00 = ${SplashService.coinConversionRate} Coins',
-                              style: GoogleFonts.outfit(
-                                fontSize: 12.5.sp,
-                                fontWeight: FontWeight.w700,
-                                color: const Color(0xFF7E22CE),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-
-                    SizedBox(height: 10.h),
-
-                    // Screen Banner (Admin Configurable 700x200 with AD badge)
-                    const ScreenBannerWidget(
-                      screenKey: 'redeemScreen',
-                      margin: EdgeInsets.only(bottom: 14, left: 16, right: 16),
-                    ),
-
-                    // 4. Dynamic Redeem Sections (All Methods & Denominations displayed directly)
-                    catalogAsync.when(
-                      data: (List<WalletMethod> methods) {
-                        if (methods.isEmpty) {
-                          return Center(
-                            child: Padding(
-                              padding: EdgeInsets.only(top: 40.h),
-                              child: Text(
-                                'No redeem methods available',
-                                style: GoogleFonts.outfit(
-                                  color: const Color(0xFF94A3B8),
-                                  fontSize: 13.sp,
-                                  fontWeight: FontWeight.w500,
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(24.r),
+                            child: Stack(
+                              children: [
+                                // Right Backdrop Dome
+                                Positioned(
+                                  right: 0,
+                                  top: 0,
+                                  bottom: 0,
+                                  width: 130.w,
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      gradient: LinearGradient(
+                                        colors: [
+                                          const Color(0xFFF8FAFC).withValues(alpha: 0.0),
+                                          const Color(0xFFF8FAFC).withValues(alpha: 0.8),
+                                          const Color(0xFFF1F5F9),
+                                        ],
+                                        begin: Alignment.topCenter,
+                                        end: Alignment.bottomCenter,
+                                        stops: const [0.0, 0.25, 1.0],
+                                      ),
+                                      borderRadius: BorderRadius.only(
+                                        topLeft: Radius.circular(60.r),
+                                        bottomLeft: Radius.circular(60.r),
+                                        topRight: Radius.circular(24.r),
+                                        bottomRight: Radius.circular(24.r),
+                                      ),
+                                    ),
+                                  ),
                                 ),
-                              ),
-                            ),
-                          );
-                        }
 
-                        // Check if after hiding denominations, there are any visible methods
-                        final List<({WalletMethod method, List<WalletDenomination> visibleDenoms})> visibleMethodsList = [];
-                        for (final method in methods) {
-                          final visibleDenoms = hideConfig.filterDenominations(
-                            originalList: method.denominations,
-                            userCoins: availableCoins.toDouble(),
-                            userRedeemCount: userRedeemCount,
-                          );
-                          if (visibleDenoms.isNotEmpty) {
-                            visibleMethodsList.add((method: method, visibleDenoms: visibleDenoms));
-                          }
-                        }
-
-                        if (visibleMethodsList.isEmpty) {
-                          return Center(
-                            child: Padding(
-                              padding: EdgeInsets.only(top: 40.h),
-                              child: Text(
-                                'No redeem methods available',
-                                style: GoogleFonts.outfit(
-                                  color: const Color(0xFF94A3B8),
-                                  fontSize: 13.sp,
-                                  fontWeight: FontWeight.w500,
+                                // Right Mascot Artwork
+                                Positioned(
+                                  right: 6.w,
+                                  top: 6.h,
+                                  bottom: 6.h,
+                                  width: 115.w,
+                                  child: Center(
+                                    child: Image.asset(
+                                      'assets/icons/panda 4.png',
+                                      fit: BoxFit.contain,
+                                    ),
+                                  ),
                                 ),
-                              ),
-                            ),
-                          );
-                        }
 
-                        return Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: visibleMethodsList.map((entry) {
-                            final method = entry.method;
-                            final visibleDenoms = entry.visibleDenoms;
+                                // Content
+                                Padding(
+                                  padding: EdgeInsets.all(18.w),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      // Available Balance Tag
+                                      Row(
+                                        children: [
+                                          Container(
+                                            width: 8.w,
+                                            height: 8.w,
+                                            decoration: const BoxDecoration(
+                                              shape: BoxShape.circle,
+                                              color: Color(0xFF26262B),
+                                            ),
+                                          ),
+                                          SizedBox(width: 7.w),
+                                          Text(
+                                            'Available Balance',
+                                            style: GoogleFonts.poppins(
+                                              color: const Color(0xFF64748B),
+                                              fontSize: 12.5.sp,
+                                              fontWeight: FontWeight.w600,
+                                              letterSpacing: 0.2,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
 
-                            return Padding(
-                              padding: EdgeInsets.only(bottom: 22.h),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  // Section Header: "Redeem As [Method Title]"
-                                  Padding(
-                                    padding: EdgeInsets.symmetric(horizontal: 16.w),
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Row(
-                                          children: [
-                                            ShaderMask(
-                                              shaderCallback: (bounds) => const LinearGradient(
-                                                colors: [
-                                                  Color(0xFFE39FFF),
-                                                  Color(0xFFAB31DE),
-                                                ],
-                                                begin: Alignment.topCenter,
-                                                end: Alignment.bottomCenter,
-                                              ).createShader(bounds),
-                                              child: Icon(
-                                                Icons.confirmation_number_rounded,
-                                                color: Colors.white,
-                                                size: 22.sp,
+                                      SizedBox(height: 8.h),
+
+                                      // Coin Balance Display
+                                      Row(
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        children: [
+                                          Image.asset(
+                                            'assets/icons/coin.png',
+                                            height: 30.w,
+                                            width: 30.w,
+                                            fit: BoxFit.contain,
+                                          ),
+                                          SizedBox(width: 8.w),
+                                          Expanded(
+                                            child: Text(
+                                              _formatBalance(availableCoins.toDouble()),
+                                              style: GoogleFonts.poppins(
+                                                color: const Color(0xFF26262B),
+                                                fontSize: 24.sp,
+                                                fontWeight: FontWeight.w800,
+                                                letterSpacing: -0.5,
                                               ),
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
                                             ),
-                                            SizedBox(width: 8.w),
-                                            RichText(
-                                              text: TextSpan(
-                                                text: 'Redeem As ',
-                                                style: GoogleFonts.outfit(
-                                                  color: const Color(0xFF1E1B4B),
-                                                  fontSize: 16.5.sp,
-                                                  fontWeight: FontWeight.w700,
-                                                  letterSpacing: -0.2,
-                                                ),
-                                                children: [
-                                                  TextSpan(
-                                                    text: method.title,
-                                                    style: GoogleFonts.outfit(
-                                                      color: const Color(0xFFAB31DE),
-                                                      fontSize: 16.5.sp,
-                                                      fontWeight: FontWeight.w800,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
+                                          ),
+                                        ],
+                                      ),
+
+                                      SizedBox(height: 10.h),
+
+                                      // History Pill Button (Dark Obsidian Theme)
+                                      GestureDetector(
+                                        onTap: () {
+                                          HapticFeedback.lightImpact();
+                                          AutoRouter.of(context).push(
+                                            RedeemHistoryScreenRoute(
+                                              userId: userId,
                                             ),
-                                          ],
-                                        ),
-                                        SizedBox(height: 6.h),
-                                        Container(
-                                          width: 36.w,
-                                          height: 2.h,
+                                          );
+                                        },
+                                        child: Container(
+                                          padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 6.h),
                                           decoration: BoxDecoration(
                                             gradient: const LinearGradient(
                                               colors: [
-                                                Color(0xFFAB31DE),
-                                                Colors.transparent,
+                                                Color(0xFF26262B),
+                                                Color(0xFF18181B),
                                               ],
+                                              begin: Alignment.topCenter,
+                                              end: Alignment.bottomCenter,
                                             ),
-                                            borderRadius: BorderRadius.circular(1.r),
+                                            borderRadius: BorderRadius.circular(12.r),
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: const Color(0xFF18181B).withValues(alpha: 0.2),
+                                                blurRadius: 6,
+                                                offset: const Offset(0, 2),
+                                              ),
+                                            ],
+                                          ),
+                                          child: Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Icon(
+                                                Icons.history_rounded,
+                                                color: Colors.white,
+                                                size: 13.sp,
+                                              ),
+                                              SizedBox(width: 5.w),
+                                              Text(
+                                                'History',
+                                                style: GoogleFonts.poppins(
+                                                  color: Colors.white,
+                                                  fontSize: 11.5.sp,
+                                                  fontWeight: FontWeight.w700,
+                                                ),
+                                              ),
+                                              SizedBox(width: 3.w),
+                                              Icon(
+                                                Icons.arrow_forward_ios_rounded,
+                                                color: Colors.white,
+                                                size: 9.sp,
+                                              ),
+                                            ],
                                           ),
                                         ),
-                                      ],
-                                    ),
+                                      ),
+                                    ],
                                   ),
-
-                                  SizedBox(height: 14.h),
-
-                                  // Denominations List for this method
-                                  SizedBox(
-                                    height: 124.h,
-                                    child: ListView.separated(
-                                      scrollDirection: Axis.horizontal,
-                                      physics: const BouncingScrollPhysics(),
-                                      padding: EdgeInsets.symmetric(horizontal: 16.w),
-                                      itemCount: visibleDenoms.length,
-                                      separatorBuilder: (context, index) => SizedBox(width: 12.w),
-                                      itemBuilder: (context, dIndex) {
-                                        final denomination = visibleDenoms[dIndex];
-                                        return _buildInlineDenominationCard(
-                                          context: context,
-                                          method: method,
-                                          denomination: denomination,
-                                          availableCoins: availableCoins,
-                                          userId: userId,
-                                          isGuest: isGuest,
-                                        );
-                                      },
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            );
-                          }).toList(),
-                        );
-                      },
-                      error: (_, __) => Center(
-                        child: Text(
-                          'error-subtitle'.tr(),
-                          textAlign: TextAlign.center,
-                          style: GoogleFonts.outfit(
-                            color: Colors.redAccent,
-                            fontSize: 13.sp,
-                            fontWeight: FontWeight.w600,
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ),
-                      loading: () => const Center(
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(vertical: 40),
-                          child: GlowLightingSpinner(size: 32),
+
+                      SizedBox(height: 16.h),
+
+                      if (SplashService.showCoinConversionRate && SplashService.coinConversionRate > 0)
+                        Padding(
+                          padding: EdgeInsets.only(bottom: 12.h, left: 16.w, right: 16.w),
+                          child: Container(
+                            width: double.infinity,
+                            padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 9.h),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFF8FAFC),
+                              borderRadius: BorderRadius.circular(12.r),
+                              border: Border.all(color: const Color(0xFFE2E8F0), width: 1.2),
+                            ),
+                            child: Center(
+                              child: Text(
+                                '₹ 1.00 = ${SplashService.coinConversionRate} Coins',
+                                style: GoogleFonts.poppins(
+                                  fontSize: 12.5.sp,
+                                  fontWeight: FontWeight.w700,
+                                  color: const Color(0xFF26262B),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+
+                      SizedBox(height: 6.h),
+
+                      // Screen Banner (Admin Configurable 700x200 with AD badge)
+                      const ScreenBannerWidget(
+                        screenKey: 'redeemScreen',
+                        margin: EdgeInsets.only(bottom: 14, left: 16, right: 16),
+                      ),
+
+                      // 4. Dynamic Redeem Sections (All Methods & Denominations displayed directly)
+                      catalogAsync.when(
+                        data: (List<WalletMethod> methods) {
+                          if (methods.isEmpty) {
+                            return Center(
+                              child: Padding(
+                                padding: EdgeInsets.only(top: 40.h),
+                                child: Text(
+                                  'No redeem methods available',
+                                  style: GoogleFonts.poppins(
+                                    color: const Color(0xFF94A3B8),
+                                    fontSize: 13.sp,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ),
+                            );
+                          }
+
+                          // Check if after hiding denominations, there are any visible methods
+                          final List<({WalletMethod method, List<WalletDenomination> visibleDenoms})> visibleMethodsList = [];
+                          for (final method in methods) {
+                            final visibleDenoms = hideConfig.filterDenominations(
+                              originalList: method.denominations,
+                              userCoins: availableCoins.toDouble(),
+                              userRedeemCount: userRedeemCount,
+                            );
+                            if (visibleDenoms.isNotEmpty) {
+                              visibleMethodsList.add((method: method, visibleDenoms: visibleDenoms));
+                            }
+                          }
+
+                          if (visibleMethodsList.isEmpty) {
+                            return Center(
+                              child: Padding(
+                                padding: EdgeInsets.only(top: 40.h),
+                                child: Text(
+                                  'No redeem methods available',
+                                  style: GoogleFonts.poppins(
+                                    color: const Color(0xFF94A3B8),
+                                    fontSize: 13.sp,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ),
+                            );
+                          }
+
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: visibleMethodsList.map((entry) {
+                              final method = entry.method;
+                              final visibleDenoms = entry.visibleDenoms;
+
+                              return Padding(
+                                padding: EdgeInsets.only(bottom: 22.h),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    // Section Header: "Redeem As [Method Title]"
+                                    Padding(
+                                      padding: EdgeInsets.symmetric(horizontal: 16.w),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Row(
+                                            children: [
+                                              Container(
+                                                width: 28.w,
+                                                height: 28.w,
+                                                decoration: BoxDecoration(
+                                                  color: const Color(0xFFF1F5F9),
+                                                  borderRadius: BorderRadius.circular(8.r),
+                                                  border: Border.all(
+                                                    color: const Color(0xFFE2E8F0),
+                                                    width: 1,
+                                                  ),
+                                                ),
+                                                alignment: Alignment.center,
+                                                child: Icon(
+                                                  Icons.confirmation_number_rounded,
+                                                  color: const Color(0xFF26262B),
+                                                  size: 16.sp,
+                                                ),
+                                              ),
+                                              SizedBox(width: 10.w),
+                                              RichText(
+                                                text: TextSpan(
+                                                  text: 'Redeem As ',
+                                                  style: GoogleFonts.poppins(
+                                                    color: const Color(0xFF64748B),
+                                                    fontSize: 15.5.sp,
+                                                    fontWeight: FontWeight.w600,
+                                                    letterSpacing: -0.2,
+                                                  ),
+                                                  children: [
+                                                    TextSpan(
+                                                      text: method.title,
+                                                      style: GoogleFonts.poppins(
+                                                        color: const Color(0xFF26262B),
+                                                        fontSize: 15.5.sp,
+                                                        fontWeight: FontWeight.w800,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          SizedBox(height: 6.h),
+                                          Container(
+                                            width: 36.w,
+                                            height: 2.5.h,
+                                            decoration: BoxDecoration(
+                                              gradient: const LinearGradient(
+                                                colors: [
+                                                  Color(0xFF26262B),
+                                                  Colors.transparent,
+                                                ],
+                                              ),
+                                              borderRadius: BorderRadius.circular(1.r),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+
+                                    SizedBox(height: 14.h),
+
+                                    // Denominations List for this method
+                                    SizedBox(
+                                      height: 124.h,
+                                      child: ListView.separated(
+                                        scrollDirection: Axis.horizontal,
+                                        physics: const BouncingScrollPhysics(),
+                                        padding: EdgeInsets.symmetric(horizontal: 16.w),
+                                        itemCount: visibleDenoms.length,
+                                        separatorBuilder: (context, index) => SizedBox(width: 12.w),
+                                        itemBuilder: (context, dIndex) {
+                                          final denomination = visibleDenoms[dIndex];
+                                          return _buildInlineDenominationCard(
+                                            context: context,
+                                            method: method,
+                                            denomination: denomination,
+                                            availableCoins: availableCoins,
+                                            userId: userId,
+                                            isGuest: isGuest,
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            }).toList(),
+                          );
+                        },
+                        error: (_, __) => Center(
+                          child: Text(
+                            'error-subtitle'.tr(),
+                            textAlign: TextAlign.center,
+                            style: GoogleFonts.poppins(
+                              color: Colors.redAccent,
+                              fontSize: 13.sp,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                        loading: () => const Center(
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(vertical: 40),
+                            child: GlowLightingSpinner(size: 32),
+                          ),
                         ),
                       ),
-                    ),
 
-                    SizedBox(height: 40.h),
-                  ],
+                      SizedBox(height: 40.h),
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
-        ],
+          ],
         ),
       ),
     );
   }
 
-  // Denomination Voucher Card UI matching Home Screen Card System
+  // Denomination Voucher Card UI
   Widget _buildInlineDenominationCard({
     required BuildContext context,
     required WalletMethod method,
@@ -668,7 +666,7 @@ class RedeemScreen extends HookConsumerWidget {
               border: Border.all(
                 color: denomination.isOutOfStock
                     ? const Color(0xFFFCA5A5)
-                    : (isLocked ? const Color(0xFFF1F5F9) : const Color(0xFFE39FFF).withValues(alpha: 0.5)),
+                    : (isLocked ? const Color(0xFFF1F5F9) : const Color(0xFFE2E8F0)),
                 width: 1.2,
               ),
               boxShadow: [
@@ -676,8 +674,8 @@ class RedeemScreen extends HookConsumerWidget {
                   color: denomination.isOutOfStock
                       ? const Color(0xFFEF4444).withValues(alpha: 0.08)
                       : (isLocked
-                          ? const Color(0xFF0F172A).withValues(alpha: 0.03)
-                          : const Color(0xFFAB31DE).withValues(alpha: 0.12)),
+                          ? const Color(0xFF0F172A).withValues(alpha: 0.02)
+                          : const Color(0xFF0F172A).withValues(alpha: 0.05)),
                   blurRadius: 10,
                   offset: const Offset(0, 4),
                 ),
@@ -700,7 +698,7 @@ class RedeemScreen extends HookConsumerWidget {
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             color: const Color(0xFFF8FAFC),
-                            border: Border.all(color: const Color(0xFFF1F5F9), width: 1),
+                            border: Border.all(color: const Color(0xFFE2E8F0), width: 1),
                           ),
                           child: InternetImage(
                             url: method.image,
@@ -711,9 +709,9 @@ class RedeemScreen extends HookConsumerWidget {
                         Expanded(
                           child: Text(
                             amountText,
-                            style: GoogleFonts.outfit(
-                              color: const Color(0xFF1E1B4B),
-                              fontSize: 17.5.sp,
+                            style: GoogleFonts.poppins(
+                              color: const Color(0xFF26262B),
+                              fontSize: 16.5.sp,
                               fontWeight: FontWeight.w800,
                               letterSpacing: -0.2,
                             ),
@@ -729,7 +727,7 @@ class RedeemScreen extends HookConsumerWidget {
                         alignment: Alignment.centerLeft,
                         child: Text(
                           denomination.subtitle!,
-                          style: GoogleFonts.outfit(
+                          style: GoogleFonts.poppins(
                             color: const Color(0xFF64748B),
                             fontSize: 10.5.sp,
                             fontWeight: FontWeight.w600,
@@ -747,7 +745,7 @@ class RedeemScreen extends HookConsumerWidget {
                       color: const Color(0xFFF1F5F9),
                     ),
 
-                    // Bottom Row: If Out of Stock -> Show "OUT OF STOCK" replacing coin and arrow!
+                    // Bottom Row: If Out of Stock -> Show "OUT OF STOCK"
                     if (denomination.isOutOfStock) ...[
                       Container(
                         width: double.infinity,
@@ -772,7 +770,7 @@ class RedeemScreen extends HookConsumerWidget {
                             SizedBox(width: 4.w),
                             Text(
                               'OUT OF STOCK',
-                              style: GoogleFonts.outfit(
+                              style: GoogleFonts.poppins(
                                 color: const Color(0xFFDC2626),
                                 fontSize: 9.5.sp,
                                 fontWeight: FontWeight.w800,
@@ -791,10 +789,10 @@ class RedeemScreen extends HookConsumerWidget {
                           Container(
                             padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 3.5.h),
                             decoration: BoxDecoration(
-                              color: const Color(0xFFFAF5FF),
+                              color: const Color(0xFFF8FAFC),
                               borderRadius: BorderRadius.circular(10.r),
                               border: Border.all(
-                                color: const Color(0xFFE39FFF).withValues(alpha: 0.35),
+                                color: const Color(0xFFE2E8F0),
                                 width: 1,
                               ),
                             ),
@@ -810,12 +808,12 @@ class RedeemScreen extends HookConsumerWidget {
                                 Flexible(
                                   child: Text(
                                     formattedCoins,
-                                    style: GoogleFonts.outfit(
+                                    style: GoogleFonts.poppins(
                                       color: isLocked
                                           ? const Color(0xFF94A3B8)
-                                          : const Color(0xFFAB31DE),
+                                          : const Color(0xFF26262B),
                                       fontSize: 10.5.sp,
-                                      fontWeight: FontWeight.w800,
+                                      fontWeight: FontWeight.w700,
                                     ),
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
@@ -825,7 +823,7 @@ class RedeemScreen extends HookConsumerWidget {
                             ),
                           ),
 
-                          // Action arrow circle
+                          // Action arrow circle (Dark Obsidian)
                           Container(
                             width: 22.w,
                             height: 22.w,
@@ -835,7 +833,7 @@ class RedeemScreen extends HookConsumerWidget {
                               gradient: LinearGradient(
                                 colors: isLocked
                                     ? [const Color(0xFFCBD5E1), const Color(0xFF94A3B8)]
-                                    : [const Color(0xFFE39FFF), const Color(0xFFAB31DE)],
+                                    : [const Color(0xFF26262B), const Color(0xFF16161A)],
                                 begin: Alignment.topCenter,
                                 end: Alignment.bottomCenter,
                               ),
@@ -843,7 +841,7 @@ class RedeemScreen extends HookConsumerWidget {
                                 BoxShadow(
                                   color: isLocked
                                       ? Colors.transparent
-                                      : const Color(0xFFAB31DE).withValues(alpha: 0.35),
+                                      : const Color(0xFF16161A).withValues(alpha: 0.2),
                                   blurRadius: 4,
                                   offset: const Offset(0, 2),
                                 ),
@@ -867,17 +865,13 @@ class RedeemScreen extends HookConsumerWidget {
       },
     );
   }
-
-
-
-
 }
 
 // Backward compatibility alias
 typedef WalletScreen = RedeemScreen;
 
 // ---------------------------------------------------------------------------
-// FULLSCREEN DENOMINATIONS SCREEN WITH HOME SCREEN DESIGN SYSTEM
+// FULLSCREEN DENOMINATIONS SCREEN WITH OBSIDIAN DESIGN SYSTEM
 // ---------------------------------------------------------------------------
 class RedeemDenominationsScreen extends ConsumerWidget {
   final WalletMethod method;
@@ -943,12 +937,12 @@ class RedeemDenominationsScreen extends ConsumerWidget {
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(15.r),
                             border: Border.all(
-                              color: const Color(0xFFF1F5F9),
+                              color: const Color(0xFFE2E8F0),
                               width: 1.2,
                             ),
                             boxShadow: [
                               BoxShadow(
-                                color: const Color(0xFFAB31DE).withValues(alpha: 0.08),
+                                color: const Color(0xFF0F172A).withValues(alpha: 0.04),
                                 blurRadius: 10,
                                 offset: const Offset(0, 3),
                               ),
@@ -956,8 +950,8 @@ class RedeemDenominationsScreen extends ConsumerWidget {
                           ),
                           child: Icon(
                             Icons.arrow_back_rounded,
-                            color: const Color(0xFFAB31DE),
-                            size: 22.sp,
+                            color: const Color(0xFF26262B),
+                            size: 20.sp,
                           ),
                         ),
                       ),
@@ -966,11 +960,11 @@ class RedeemDenominationsScreen extends ConsumerWidget {
                       Container(
                         padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
                         decoration: BoxDecoration(
-                          color: const Color(0xFFFAF5FF),
+                          color: const Color(0xFFF8FAFC),
                           borderRadius: BorderRadius.circular(20.r),
                           border: Border.all(
-                            color: const Color(0xFFE39FFF).withValues(alpha: 0.4),
-                            width: 1.0,
+                            color: const Color(0xFFE2E8F0),
+                            width: 1.2,
                           ),
                         ),
                         child: Row(
@@ -983,10 +977,10 @@ class RedeemDenominationsScreen extends ConsumerWidget {
                             SizedBox(width: 6.w),
                             Text(
                               formattedBalance,
-                              style: GoogleFonts.outfit(
-                                color: const Color(0xFFAB31DE),
+                              style: GoogleFonts.poppins(
+                                color: const Color(0xFF26262B),
                                 fontSize: 12.5.sp,
-                                fontWeight: FontWeight.w800,
+                                fontWeight: FontWeight.w700,
                               ),
                             ),
                           ],
@@ -1015,12 +1009,12 @@ class RedeemDenominationsScreen extends ConsumerWidget {
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(22.r),
                             border: Border.all(
-                              color: const Color(0xFFF1F5F9),
+                              color: const Color(0xFFE2E8F0),
                               width: 1.2,
                             ),
                             boxShadow: [
                               BoxShadow(
-                                color: const Color(0xFFAB31DE).withValues(alpha: 0.15),
+                                color: const Color(0xFF0F172A).withValues(alpha: 0.06),
                                 blurRadius: 16,
                                 offset: const Offset(0, 4),
                               ),
@@ -1040,10 +1034,10 @@ class RedeemDenominationsScreen extends ConsumerWidget {
                         // Title Text
                         Text(
                           'Redeem ${method.title}',
-                          style: GoogleFonts.outfit(
-                            color: const Color(0xFF1E1B4B),
+                          style: GoogleFonts.poppins(
+                            color: const Color(0xFF26262B),
                             fontSize: 20.sp,
-                            fontWeight: FontWeight.w800,
+                            fontWeight: FontWeight.w700,
                             letterSpacing: -0.2,
                           ),
                         ),
@@ -1127,7 +1121,7 @@ class RedeemDenominationsScreen extends ConsumerWidget {
               border: Border.all(
                 color: denomination.isOutOfStock
                     ? const Color(0xFFFCA5A5)
-                    : (isLocked ? const Color(0xFFF1F5F9) : const Color(0xFFE39FFF).withValues(alpha: 0.5)),
+                    : (isLocked ? const Color(0xFFF1F5F9) : const Color(0xFFE2E8F0)),
                 width: 1.2,
               ),
               boxShadow: [
@@ -1135,8 +1129,8 @@ class RedeemDenominationsScreen extends ConsumerWidget {
                   color: denomination.isOutOfStock
                       ? const Color(0xFFEF4444).withValues(alpha: 0.08)
                       : (isLocked
-                          ? const Color(0xFF0F172A).withValues(alpha: 0.03)
-                          : const Color(0xFFAB31DE).withValues(alpha: 0.12)),
+                          ? const Color(0xFF0F172A).withValues(alpha: 0.02)
+                          : const Color(0xFF0F172A).withValues(alpha: 0.05)),
                   blurRadius: 12,
                   offset: const Offset(0, 4),
                 ),
@@ -1157,16 +1151,16 @@ class RedeemDenominationsScreen extends ConsumerWidget {
                           Container(
                             width: 48.w,
                             height: 48.w,
-                            decoration: BoxDecoration(
+                            decoration: const BoxDecoration(
                               shape: BoxShape.circle,
-                              color: const Color(0xFFFAF5FF),
+                              color: Color(0xFFF8FAFC),
                             ),
                           ),
                           Text(
                             amountText,
-                            style: GoogleFonts.outfit(
-                              color: const Color(0xFF1E1B4B),
-                              fontSize: 20.sp,
+                            style: GoogleFonts.poppins(
+                              color: const Color(0xFF26262B),
+                              fontSize: 19.sp,
                               fontWeight: FontWeight.w800,
                             ),
                           ),
@@ -1176,7 +1170,7 @@ class RedeemDenominationsScreen extends ConsumerWidget {
                         SizedBox(height: 4.h),
                         Text(
                           denomination.subtitle!,
-                          style: GoogleFonts.outfit(
+                          style: GoogleFonts.poppins(
                             color: const Color(0xFF64748B),
                             fontSize: 10.5.sp,
                             fontWeight: FontWeight.w600,
@@ -1215,7 +1209,7 @@ class RedeemDenominationsScreen extends ConsumerWidget {
                         SizedBox(width: 5.w),
                         Text(
                           'OUT OF STOCK',
-                          style: GoogleFonts.outfit(
+                          style: GoogleFonts.poppins(
                             color: const Color(0xFFDC2626),
                             fontSize: 11.5.sp,
                             fontWeight: FontWeight.w800,
@@ -1238,10 +1232,10 @@ class RedeemDenominationsScreen extends ConsumerWidget {
                       SizedBox(width: 5.w),
                       Text(
                         formattedCoins,
-                        style: GoogleFonts.outfit(
-                          color: isLocked ? const Color(0xFF94A3B8) : const Color(0xFFAB31DE),
+                        style: GoogleFonts.poppins(
+                          color: isLocked ? const Color(0xFF94A3B8) : const Color(0xFF26262B),
                           fontSize: 12.sp,
-                          fontWeight: FontWeight.w800,
+                          fontWeight: FontWeight.w700,
                         ),
                       ),
                     ],
@@ -1280,7 +1274,7 @@ class RedeemDenominationsScreen extends ConsumerWidget {
 // Backward compatibility alias
 typedef WalletDenominationsScreen = RedeemDenominationsScreen;
 
-// Interactive 3D Purple Redeem Button
+// Interactive Dark Obsidian Redeem Button
 class _DenominationRedeemButton extends StatefulWidget {
   final VoidCallback onTap;
 
@@ -1321,8 +1315,8 @@ class _DenominationRedeemButtonState extends State<_DenominationRedeemButton> {
           decoration: BoxDecoration(
             gradient: const LinearGradient(
               colors: [
-                Color(0xFFE39FFF),
-                Color(0xFFAB31DE),
+                Color(0xFF26262B),
+                Color(0xFF18181B),
               ],
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
@@ -1330,8 +1324,8 @@ class _DenominationRedeemButtonState extends State<_DenominationRedeemButton> {
             borderRadius: BorderRadius.circular(12.r),
             boxShadow: [
               BoxShadow(
-                color: const Color(0xFFAB31DE).withValues(
-                  alpha: _isPressed ? 0.20 : 0.40,
+                color: const Color(0xFF18181B).withValues(
+                  alpha: _isPressed ? 0.15 : 0.30,
                 ),
                 blurRadius: _isPressed ? 4 : 8,
                 offset: Offset(0, _isPressed ? 1 : 3),
@@ -1340,9 +1334,9 @@ class _DenominationRedeemButtonState extends State<_DenominationRedeemButton> {
           ),
           child: Text(
             'REDEEM',
-            style: GoogleFonts.outfit(
+            style: GoogleFonts.poppins(
               fontSize: 11.5.sp,
-              fontWeight: FontWeight.w800,
+              fontWeight: FontWeight.w700,
               color: Colors.white,
               letterSpacing: 0.6,
             ),

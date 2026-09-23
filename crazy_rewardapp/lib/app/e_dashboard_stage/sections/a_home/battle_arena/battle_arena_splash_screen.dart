@@ -123,8 +123,8 @@ class _BattleArenaSplashScreenState extends State<BattleArenaSplashScreen>
 
                     // Floating App Logo / Battle Icon with Concentric Purple Pulse Rings (Fixed size to prevent layout shifting)
                     SizedBox(
-                      width: 155.w,
-                      height: 155.w,
+                      width: 165.w,
+                      height: 165.w,
                       child: AnimatedBuilder(
                         animation: _floatAnimation,
                         builder: (context, child) {
@@ -139,8 +139,8 @@ class _BattleArenaSplashScreenState extends State<BattleArenaSplashScreen>
                                   builder: (context, child) {
                                     final val = _pulseController.value;
                                     return Container(
-                                      width: 100.w + (val * 48.w),
-                                      height: 100.w + (val * 48.w),
+                                      width: 105.w + (val * 50.w),
+                                      height: 105.w + (val * 50.w),
                                       decoration: BoxDecoration(
                                         shape: BoxShape.circle,
                                         border: Border.all(
@@ -157,8 +157,8 @@ class _BattleArenaSplashScreenState extends State<BattleArenaSplashScreen>
                                   builder: (context, child) {
                                     final val = (_pulseController.value + 0.5) % 1.0;
                                     return Container(
-                                      width: 100.w + (val * 48.w),
-                                      height: 100.w + (val * 48.w),
+                                      width: 105.w + (val * 50.w),
+                                      height: 105.w + (val * 50.w),
                                       decoration: BoxDecoration(
                                         shape: BoxShape.circle,
                                         border: Border.all(
@@ -171,8 +171,8 @@ class _BattleArenaSplashScreenState extends State<BattleArenaSplashScreen>
                                 ),
                                 // Battle Icon Container with violet glow
                                 Container(
-                                  width: 100.w,
-                                  height: 100.w,
+                                  width: 105.w,
+                                  height: 105.w,
                                   decoration: BoxDecoration(
                                     gradient: const LinearGradient(
                                       colors: [
@@ -183,20 +183,20 @@ class _BattleArenaSplashScreenState extends State<BattleArenaSplashScreen>
                                       begin: Alignment.topLeft,
                                       end: Alignment.bottomRight,
                                     ),
-                                    borderRadius: BorderRadius.circular(24.r),
+                                    borderRadius: BorderRadius.circular(26.r),
                                     border: Border.all(
                                       color: const Color(0xFFAB31DE).withValues(alpha: 0.5),
                                       width: 1.5,
                                     ),
                                     boxShadow: [
                                       BoxShadow(
-                                        color: const Color(0xFFAB31DE).withValues(alpha: 0.3),
-                                        blurRadius: 15,
+                                        color: const Color(0xFFAB31DE).withValues(alpha: 0.35),
+                                        blurRadius: 18,
                                         spreadRadius: 2,
                                       ),
                                     ],
                                   ),
-                                  padding: EdgeInsets.all(16.r),
+                                  padding: EdgeInsets.all(14.r),
                                   child: child,
                                 ),
                               ],
@@ -204,37 +204,40 @@ class _BattleArenaSplashScreenState extends State<BattleArenaSplashScreen>
                           );
                         },
                         child: Image.asset(
-                          'assets/icons/battle.png',
+                          'assets/Icons1/battle-3d-icon-png-download-11623292 3.png',
                           fit: BoxFit.contain,
                           errorBuilder: (_, __, ___) => Image.asset(
-                            'assets/icons/battle game.png',
+                            'assets/icons/battle.png',
                             fit: BoxFit.contain,
-                            errorBuilder: (_, __, ___) => Icon(
-                              Icons.sports_esports_rounded,
-                              color: const Color(0xFFAB31DE),
-                              size: 48.sp,
+                            errorBuilder: (_, __, ___) => Image.asset(
+                              'assets/icons/battle game.png',
+                              fit: BoxFit.contain,
+                              errorBuilder: (_, __, ___) => Icon(
+                                Icons.sports_esports_rounded,
+                                color: const Color(0xFFAB31DE),
+                                size: 48.sp,
+                              ),
                             ),
                           ),
                         ),
                       ),
                     ),
 
-                    SizedBox(height: 24.h),
+                    SizedBox(height: 20.h),
 
-                    // App Title (Battle Panda)
+                    // App Title (Battle Quiz) in App's signature cursive style (Black)
                     Text(
-                      'Battle Panda',
+                      'Battle Quiz',
                       textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontFamily: 'Neogen',
-                        color: const Color(0xFFAB31DE),
-                        fontSize: 28.sp,
+                      style: GoogleFonts.kaushanScript(
+                        color: Colors.black,
+                        fontSize: 36.sp,
                         fontWeight: FontWeight.w800,
-                        letterSpacing: 0.2,
+                        letterSpacing: 0.5,
                       ),
                     ),
 
-                    SizedBox(height: 6.h),
+                    SizedBox(height: 4.h),
 
                     // App Subtitle Tagline
                     Text(
@@ -242,9 +245,9 @@ class _BattleArenaSplashScreenState extends State<BattleArenaSplashScreen>
                       textAlign: TextAlign.center,
                       style: GoogleFonts.poppins(
                         color: const Color(0xFFA78BFA),
-                        fontSize: 12.sp,
+                        fontSize: 11.5.sp,
                         fontWeight: FontWeight.w600,
-                        letterSpacing: 1.6,
+                        letterSpacing: 1.8,
                       ),
                     ),
 
@@ -306,9 +309,9 @@ class _BattleArenaSplashScreenState extends State<BattleArenaSplashScreen>
                         Text(
                           'LOADING... ${(_progress * 100).toInt()}%',
                           style: GoogleFonts.poppins(
-                            color: const Color(0xFFA78BFA).withValues(alpha: 0.8),
+                            color: Colors.black,
                             fontSize: 10.sp,
-                            fontWeight: FontWeight.w600,
+                            fontWeight: FontWeight.w700,
                             letterSpacing: 2.5,
                           ),
                         ),

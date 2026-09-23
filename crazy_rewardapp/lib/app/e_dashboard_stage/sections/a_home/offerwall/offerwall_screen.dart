@@ -263,7 +263,7 @@ class OfferwallScreen extends HookConsumerWidget {
             Positioned.fill(
               child: Column(
                 children: [
-                  // Executive Top Header Bar
+                  // Executive Top Header Bar (Kaushan Header, Back Button, Dark How To? Button)
                   Padding(
                     padding: EdgeInsets.fromLTRB(
                       16.w,
@@ -273,6 +273,7 @@ class OfferwallScreen extends HookConsumerWidget {
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         // Left: Executive Back Arrow + Screen Title
                         Row(
@@ -288,23 +289,23 @@ class OfferwallScreen extends HookConsumerWidget {
                                 alignment: Alignment.center,
                                 decoration: BoxDecoration(
                                   color: Colors.white,
-                                  borderRadius: BorderRadius.circular(15.r),
+                                  borderRadius: BorderRadius.circular(14.r),
                                   border: Border.all(
-                                    color: const Color(0xFFF1F5F9),
+                                    color: const Color(0xFFE2E8F0),
                                     width: 1.2,
                                   ),
                                   boxShadow: [
                                     BoxShadow(
-                                      color: const Color(0xFFAB31DE).withValues(alpha: 0.08),
-                                      blurRadius: 10,
-                                      offset: const Offset(0, 3),
+                                      color: Colors.black.withValues(alpha: 0.04),
+                                      blurRadius: 8,
+                                      offset: const Offset(0, 2),
                                     ),
                                   ],
                                 ),
                                 child: Icon(
                                   Icons.arrow_back_rounded,
-                                  color: const Color(0xFFAB31DE),
-                                  size: 22.sp,
+                                  color: const Color(0xFF26262B),
+                                  size: 20.sp,
                                 ),
                               ),
                             ),
@@ -312,11 +313,11 @@ class OfferwallScreen extends HookConsumerWidget {
 
                             Text(
                               screenTitle,
-                              style: GoogleFonts.outfit(
-                                color: const Color(0xFF1E1B4B),
-                                fontSize: 18.5.sp,
+                              style: GoogleFonts.kaushanScript(
+                                color: const Color(0xFF26262B),
+                                fontSize: 26.sp,
                                 fontWeight: FontWeight.w800,
-                                letterSpacing: -0.2,
+                                letterSpacing: 0.5,
                               ),
                             ),
                           ],
@@ -339,16 +340,12 @@ class OfferwallScreen extends HookConsumerWidget {
                               vertical: 6.5.h,
                             ),
                             decoration: BoxDecoration(
-                              color: const Color(0xFFFAF5FF),
-                              borderRadius: BorderRadius.circular(16.r),
-                              border: Border.all(
-                                color: const Color(0xFFE39FFF).withValues(alpha: 0.6),
-                                width: 1,
-                              ),
+                              color: const Color(0xFF26262B),
+                              borderRadius: BorderRadius.circular(14.r),
                               boxShadow: [
                                 BoxShadow(
-                                  color: const Color(0xFFAB31DE).withValues(alpha: 0.06),
-                                  blurRadius: 8,
+                                  color: Colors.black.withValues(alpha: 0.12),
+                                  blurRadius: 6,
                                   offset: const Offset(0, 2),
                                 ),
                               ],
@@ -358,16 +355,16 @@ class OfferwallScreen extends HookConsumerWidget {
                               children: [
                                 Icon(
                                   Icons.help_outline_rounded,
-                                  color: const Color(0xFFAB31DE),
+                                  color: Colors.white,
                                   size: 14.sp,
                                 ),
                                 SizedBox(width: 5.w),
                                 Text(
                                   'How To?',
-                                  style: GoogleFonts.outfit(
-                                    color: const Color(0xFFAB31DE),
-                                    fontSize: 12.sp,
-                                    fontWeight: FontWeight.w700,
+                                  style: GoogleFonts.poppins(
+                                    color: Colors.white,
+                                    fontSize: 11.5.sp,
+                                    fontWeight: FontWeight.w600,
                                   ),
                                 ),
                               ],
@@ -512,18 +509,13 @@ class OfferwallExecutiveCard extends HookWidget {
             color: Colors.white,
             borderRadius: BorderRadius.circular(18.r),
             border: Border.all(
-              color: const Color(0xFFF1F5F9),
+              color: const Color(0xFFE2E8F0),
               width: 1.2,
             ),
             boxShadow: [
               BoxShadow(
-                color: const Color(0xFF0F172A).withValues(alpha: 0.04),
+                color: Colors.black.withValues(alpha: 0.04),
                 blurRadius: 10,
-                offset: const Offset(0, 3),
-              ),
-              BoxShadow(
-                color: palette.accentArrowColor.withValues(alpha: 0.05),
-                blurRadius: 6,
                 offset: const Offset(0, 2),
               ),
             ],
@@ -686,12 +678,11 @@ class OfferwallExecutiveCard extends HookWidget {
                                     displayName,
                                     maxLines: 2,
                                     overflow: TextOverflow.ellipsis,
-                                    style: GoogleFonts.outfit(
+                                    style: GoogleFonts.poppins(
                                       color: isLocked ? const Color(0xFF94A3B8) : const Color(0xFF1E1B4B),
                                       fontSize: 12.sp,
-                                      fontWeight: FontWeight.w800,
+                                      fontWeight: FontWeight.w700,
                                       height: 1.15,
-                                      letterSpacing: -0.2,
                                     ),
                                   ),
                                   SizedBox(height: 2.h),
@@ -699,7 +690,7 @@ class OfferwallExecutiveCard extends HookWidget {
                                     subtitle,
                                     maxLines: 2,
                                     overflow: TextOverflow.ellipsis,
-                                    style: GoogleFonts.outfit(
+                                    style: GoogleFonts.poppins(
                                       color: const Color(0xFF64748B),
                                       fontSize: 9.5.sp,
                                       fontWeight: FontWeight.w400,
@@ -713,22 +704,30 @@ class OfferwallExecutiveCard extends HookWidget {
                         ],
                       ),
 
-                      // Bottom Row: Arrow Circle Button
+                      // Bottom Row: Metallic Circular Button
                       Container(
-                        width: 24.w,
-                        height: 24.w,
+                        width: 26.w,
+                        height: 26.w,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: Colors.white,
+                          gradient: const LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: [
+                              Colors.white,
+                              Color(0xFFE5E7EB),
+                              Color(0xFFB0B5C2),
+                            ],
+                          ),
                           border: Border.all(
                             color: offerwall.enabled
-                                ? palette.outerGlowColor
-                                : const Color(0xFFE2E8F0),
+                                ? const Color(0xFF9CA3AF)
+                                : const Color(0xFFCBD5E1),
                             width: 1,
                           ),
                           boxShadow: [
                             BoxShadow(
-                              color: palette.accentArrowColor.withValues(alpha: 0.12),
+                              color: Colors.black.withValues(alpha: 0.08),
                               blurRadius: 4,
                               offset: const Offset(0, 1.5),
                             ),
@@ -739,7 +738,9 @@ class OfferwallExecutiveCard extends HookWidget {
                             offerwall.enabled
                                 ? Icons.arrow_forward_rounded
                                 : Icons.lock_rounded,
-                            color: offerwall.enabled ? palette.accentArrowColor : const Color(0xFF94A3B8),
+                            color: offerwall.enabled
+                                ? const Color(0xFF16161A)
+                                : const Color(0xFF94A3B8),
                             size: 13.sp,
                           ),
                         ),

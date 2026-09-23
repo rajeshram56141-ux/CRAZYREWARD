@@ -294,12 +294,12 @@ class HowToUseScreen extends StatelessWidget {
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(15.r),
                           border: Border.all(
-                            color: const Color(0xFFF1F5F9),
+                            color: const Color(0xFFE2E8F0),
                             width: 1.2,
                           ),
                           boxShadow: [
                             BoxShadow(
-                              color: const Color(0xFFAB31DE).withValues(alpha: 0.08),
+                              color: const Color(0xFF0F172A).withValues(alpha: 0.04),
                               blurRadius: 10,
                               offset: const Offset(0, 3),
                             ),
@@ -307,8 +307,8 @@ class HowToUseScreen extends StatelessWidget {
                         ),
                         child: Icon(
                           Icons.arrow_back_rounded,
-                          color: const Color(0xFFAB31DE),
-                          size: 22.sp,
+                          color: const Color(0xFF26262B),
+                          size: 20.sp,
                         ),
                       ),
                     ),
@@ -316,10 +316,10 @@ class HowToUseScreen extends StatelessWidget {
                       child: Text(
                         'How To Use',
                         textAlign: TextAlign.center,
-                        style: GoogleFonts.outfit(
-                          color: const Color(0xFF1E1B4B),
+                        style: GoogleFonts.poppins(
+                          color: const Color(0xFF26262B),
                           fontSize: 18.sp,
-                          fontWeight: FontWeight.w800,
+                          fontWeight: FontWeight.w700,
                         ),
                       ),
                     ),
@@ -365,7 +365,7 @@ class HowToUseScreen extends StatelessWidget {
 }
 
 // -------------------------------------------------------------
-// TUTORIAL EXPANSION CARD ITEM
+// TUTORIAL EXPANSION CARD ITEM (DARK OBSIDIAN & CLEAN WHITE)
 // -------------------------------------------------------------
 class _TutorialCard extends StatelessWidget {
   const _TutorialCard({required this.tutorial});
@@ -384,7 +384,7 @@ class _TutorialCard extends StatelessWidget {
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.03),
+            color: const Color(0xFF0F172A).withValues(alpha: 0.03),
             blurRadius: 10,
             offset: const Offset(0, 3),
           ),
@@ -400,25 +400,25 @@ class _TutorialCard extends StatelessWidget {
             width: 44.w,
             height: 44.w,
             decoration: BoxDecoration(
-              color: const Color(0xFFFAF5FF),
+              color: const Color(0xFFF8FAFC),
               shape: BoxShape.circle,
               border: Border.all(
-                color: const Color(0xFFE9D5FF),
+                color: const Color(0xFFE2E8F0),
                 width: 1,
               ),
             ),
             alignment: Alignment.center,
             child: Icon(
               tutorial['icon'] as IconData,
-              color: const Color(0xFFAB31DE),
+              color: const Color(0xFF26262B),
               size: 22.sp,
             ),
           ),
           title: Text(
             tutorial['title'] as String,
-            style: GoogleFonts.outfit(
-              color: const Color(0xFF1E1B4B),
-              fontWeight: FontWeight.w800,
+            style: GoogleFonts.poppins(
+              color: const Color(0xFF26262B),
+              fontWeight: FontWeight.w700,
               fontSize: 15.sp,
             ),
           ),
@@ -426,14 +426,14 @@ class _TutorialCard extends StatelessWidget {
             padding: EdgeInsets.only(top: 2.h),
             child: Text(
               tutorial['desc'] as String,
-              style: GoogleFonts.outfit(
+              style: GoogleFonts.poppins(
                 color: const Color(0xFF64748B),
                 fontSize: 12.sp,
-                fontWeight: FontWeight.w500,
+                fontWeight: FontWeight.w400,
               ),
             ),
           ),
-          iconColor: const Color(0xFFAB31DE),
+          iconColor: const Color(0xFF26262B),
           collapsedIconColor: const Color(0xFF94A3B8),
           childrenPadding: EdgeInsets.fromLTRB(14.w, 0, 14.w, 14.h),
           children: [
@@ -441,14 +441,14 @@ class _TutorialCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Divider(
-                  color: const Color(0xFFE2E8F0),
+                  color: const Color(0xFFF1F5F9),
                   height: 16.h,
                 ),
                 Text(
                   'Step-by-Step Guide:',
-                  style: GoogleFonts.outfit(
-                    color: const Color(0xFFAB31DE),
-                    fontWeight: FontWeight.w800,
+                  style: GoogleFonts.poppins(
+                    color: const Color(0xFF26262B),
+                    fontWeight: FontWeight.w700,
                     fontSize: 13.sp,
                   ),
                 ),
@@ -464,20 +464,20 @@ class _TutorialCard extends StatelessWidget {
                           width: 20.w,
                           height: 20.w,
                           decoration: BoxDecoration(
-                            color: const Color(0xFFFAF5FF),
+                            color: const Color(0xFFF1F5F9),
                             shape: BoxShape.circle,
                             border: Border.all(
-                              color: const Color(0xFFE9D5FF),
+                              color: const Color(0xFFE2E8F0),
                               width: 1,
                             ),
                           ),
                           alignment: Alignment.center,
                           child: Text(
                             '$idx',
-                            style: GoogleFonts.outfit(
+                            style: GoogleFonts.poppins(
                               fontSize: 10.sp,
-                              fontWeight: FontWeight.w800,
-                              color: const Color(0xFFAB31DE),
+                              fontWeight: FontWeight.w700,
+                              color: const Color(0xFF26262B),
                             ),
                           ),
                         ),
@@ -485,9 +485,9 @@ class _TutorialCard extends StatelessWidget {
                         Expanded(
                           child: Text(
                             step,
-                            style: GoogleFonts.outfit(
+                            style: GoogleFonts.poppins(
                               fontSize: 12.5.sp,
-                              color: const Color(0xFF1E1B4B),
+                              color: const Color(0xFF26262B),
                               fontWeight: FontWeight.w500,
                               height: 1.35,
                             ),
@@ -499,7 +499,7 @@ class _TutorialCard extends StatelessWidget {
                 }),
                 SizedBox(height: 14.h),
 
-                // Executive Gradient "Watch Video Tutorial" Button
+                // Dark Obsidian Gradient "Watch Video Tutorial" Button
                 GestureDetector(
                   onTap: () {
                     HapticFeedback.lightImpact();
@@ -515,14 +515,14 @@ class _TutorialCard extends StatelessWidget {
                     width: double.infinity,
                     decoration: BoxDecoration(
                       gradient: const LinearGradient(
-                        colors: [Color(0xFFE39FFF), Color(0xFFAB31DE)],
+                        colors: [Color(0xFF26262B), Color(0xFF18181B)],
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                       ),
                       borderRadius: BorderRadius.circular(14.r),
                       boxShadow: [
                         BoxShadow(
-                          color: const Color(0xFFAB31DE).withValues(alpha: 0.3),
+                          color: const Color(0xFF18181B).withValues(alpha: 0.25),
                           blurRadius: 8,
                           offset: const Offset(0, 3),
                         ),
@@ -540,10 +540,10 @@ class _TutorialCard extends StatelessWidget {
                           SizedBox(width: 8.w),
                           Text(
                             'Watch Video Tutorial',
-                            style: GoogleFonts.outfit(
+                            style: GoogleFonts.poppins(
                               color: Colors.white,
                               fontSize: 13.5.sp,
-                              fontWeight: FontWeight.w800,
+                              fontWeight: FontWeight.w700,
                               letterSpacing: 0.3,
                             ),
                           ),

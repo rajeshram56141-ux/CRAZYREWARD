@@ -54,7 +54,7 @@ class RedeemHistoryDetailsScreen extends StatelessWidget {
         backgroundColor: Colors.white,
         body: Stack(
           children: [
-            // 1. Solid White Background (Matching Home & Redeem Screen)
+            // 1. Solid Canvas Background
             Positioned.fill(
               child: Container(
                 color: Colors.white,
@@ -80,12 +80,12 @@ class RedeemHistoryDetailsScreen extends StatelessWidget {
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(15.r),
                               border: Border.all(
-                                color: const Color(0xFFF1F5F9),
+                                color: const Color(0xFFE2E8F0),
                                 width: 1.2,
                               ),
                               boxShadow: [
                                 BoxShadow(
-                                  color: const Color(0xFFAB31DE).withValues(alpha: 0.08),
+                                  color: const Color(0xFF0F172A).withValues(alpha: 0.04),
                                   blurRadius: 10,
                                   offset: const Offset(0, 3),
                                 ),
@@ -93,16 +93,16 @@ class RedeemHistoryDetailsScreen extends StatelessWidget {
                             ),
                             child: Icon(
                               Icons.arrow_back_rounded,
-                              color: const Color(0xFFAB31DE),
-                              size: 22.sp,
+                              color: const Color(0xFF26262B),
+                              size: 20.sp,
                             ),
                           ),
                         ),
                         SizedBox(width: 14.w),
                         Text(
                           'Details',
-                          style: GoogleFonts.outfit(
-                            color: const Color(0xFF1E1B4B),
+                          style: GoogleFonts.poppins(
+                            color: const Color(0xFF26262B),
                             fontSize: 18.5.sp,
                             fontWeight: FontWeight.w700,
                             letterSpacing: -0.2,
@@ -120,22 +120,22 @@ class RedeemHistoryDetailsScreen extends StatelessWidget {
                         children: [
                           SizedBox(height: 12.h),
 
-                          // Top Icon Orb Aura (Matching Modern Pure White Executive Style)
+                          // Top Icon Orb Aura (Matching Dark Obsidian & Luxury White Style)
                           Container(
-                            width: 80.w,
-                            height: 80.w,
+                            width: 82.w,
+                            height: 82.w,
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              color: const Color(0xFFFAF5FF),
+                              color: const Color(0xFFF8FAFC),
                               border: Border.all(
-                                color: const Color(0xFFF3E8FF),
+                                color: const Color(0xFFE2E8F0),
                                 width: 2,
                               ),
                               boxShadow: [
                                 BoxShadow(
-                                  color: const Color(0xFFAB31DE).withValues(alpha: 0.10),
-                                  blurRadius: 16,
-                                  offset: const Offset(0, 4),
+                                  color: const Color(0xFF0F172A).withValues(alpha: 0.08),
+                                  blurRadius: 18,
+                                  offset: const Offset(0, 5),
                                 ),
                               ],
                             ),
@@ -161,10 +161,10 @@ class RedeemHistoryDetailsScreen extends StatelessWidget {
                           Text(
                             history.title.toUpperCase(),
                             textAlign: TextAlign.center,
-                            style: GoogleFonts.outfit(
-                              color: const Color(0xFF1E1B4B),
+                            style: GoogleFonts.poppins(
+                              color: const Color(0xFF26262B),
                               fontWeight: FontWeight.w800,
-                              fontSize: 19.sp,
+                              fontSize: 18.sp,
                               letterSpacing: 0.3,
                             ),
                           ),
@@ -179,7 +179,7 @@ class RedeemHistoryDetailsScreen extends StatelessWidget {
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(24.r),
                               border: Border.all(
-                                color: const Color(0xFFF1F5F9),
+                                color: const Color(0xFFE2E8F0),
                                 width: 1.2,
                               ),
                               boxShadow: [
@@ -188,11 +188,6 @@ class RedeemHistoryDetailsScreen extends StatelessWidget {
                                   blurRadius: 18,
                                   offset: const Offset(0, 6),
                                 ),
-                                BoxShadow(
-                                  color: const Color(0xFFAB31DE).withValues(alpha: 0.04),
-                                  blurRadius: 10,
-                                  offset: const Offset(0, 4),
-                                ),
                               ],
                             ),
                             child: Column(
@@ -200,10 +195,10 @@ class RedeemHistoryDetailsScreen extends StatelessWidget {
                               children: [
                                 Text(
                                   'Transaction Overview',
-                                  style: GoogleFonts.outfit(
-                                    color: const Color(0xFF1E1B4B),
+                                  style: GoogleFonts.poppins(
+                                    color: const Color(0xFF26262B),
                                     fontWeight: FontWeight.w700,
-                                    fontSize: 15.5.sp,
+                                    fontSize: 15.sp,
                                   ),
                                 ),
                                 SizedBox(height: 12.h),
@@ -224,7 +219,7 @@ class RedeemHistoryDetailsScreen extends StatelessWidget {
                                   context,
                                   'amount',
                                   '${history.symbol}${history.amount}',
-                                  color: const Color(0xFF1E1B4B),
+                                  color: const Color(0xFF26262B),
                                 ),
 
                                 // Status Row
@@ -235,9 +230,9 @@ class RedeemHistoryDetailsScreen extends StatelessWidget {
                                     children: [
                                       Text(
                                         '${'status'.tr()} :',
-                                        style: GoogleFonts.outfit(
+                                        style: GoogleFonts.poppins(
                                           color: const Color(0xFF64748B),
-                                          fontSize: 13.5.sp,
+                                          fontSize: 13.sp,
                                           fontWeight: FontWeight.w500,
                                         ),
                                       ),
@@ -258,7 +253,7 @@ class RedeemHistoryDetailsScreen extends StatelessWidget {
                                             SizedBox(width: 4.w),
                                             Text(
                                               statusLabel,
-                                              style: GoogleFonts.outfit(
+                                              style: GoogleFonts.poppins(
                                                 color: statusFg,
                                                 fontSize: 11.5.sp,
                                                 fontWeight: FontWeight.w700,
@@ -280,12 +275,12 @@ class RedeemHistoryDetailsScreen extends StatelessWidget {
                                   history.methodDetails.toWidgetFromMap(
                                     context,
                                     labelColor: const Color(0xFF64748B),
-                                    valueColor: const Color(0xFF1E1B4B),
-                                    iconColor: const Color(0xFFAB31DE),
+                                    valueColor: const Color(0xFF26262B),
+                                    iconColor: const Color(0xFF26262B),
                                   ),
                                 ],
 
-                                // Rejection / Failure Reason Box (Matching Executive Red Styling)
+                                // Rejection / Failure Reason Box
                                 if (history.status == PayoutStatus.failed && history.failureReason.isNotEmpty) ...[
                                   SizedBox(height: 10.h),
                                   Container(
@@ -312,9 +307,9 @@ class RedeemHistoryDetailsScreen extends StatelessWidget {
                                             SizedBox(width: 8.w),
                                             Text(
                                               'Rejection / Failure Reason',
-                                              style: GoogleFonts.outfit(
+                                              style: GoogleFonts.poppins(
                                                 color: const Color(0xFF991B1B),
-                                                fontSize: 13.5.sp,
+                                                fontSize: 13.sp,
                                                 fontWeight: FontWeight.w700,
                                               ),
                                             ),
@@ -323,9 +318,9 @@ class RedeemHistoryDetailsScreen extends StatelessWidget {
                                         SizedBox(height: 6.h),
                                         Text(
                                           history.failureReason,
-                                          style: GoogleFonts.outfit(
+                                          style: GoogleFonts.poppins(
                                             color: const Color(0xFFB91C1C),
-                                            fontSize: 12.5.sp,
+                                            fontSize: 12.sp,
                                             fontWeight: FontWeight.w500,
                                             height: 1.35,
                                           ),
@@ -335,19 +330,33 @@ class RedeemHistoryDetailsScreen extends StatelessWidget {
                                   ),
                                 ],
 
-                                // Voucher Code Box (Matching Luxury Voucher Design System 1-to-1)
+                                // Voucher Code Box (Dark Obsidian & Chrome Voucher Card)
                                 if (hasCode) ...[
-                                  SizedBox(height: 10.h),
+                                  SizedBox(height: 12.h),
                                   Container(
                                     width: double.infinity,
-                                    padding: EdgeInsets.all(14.w),
+                                    padding: EdgeInsets.all(16.w),
                                     decoration: BoxDecoration(
-                                      color: const Color(0xFFFAF5FF),
+                                      gradient: const LinearGradient(
+                                        colors: [
+                                          Color(0xFF222226),
+                                          Color(0xFF131316),
+                                        ],
+                                        begin: Alignment.topLeft,
+                                        end: Alignment.bottomRight,
+                                      ),
                                       borderRadius: BorderRadius.circular(18.r),
                                       border: Border.all(
-                                        color: const Color(0xFFAB31DE).withValues(alpha: 0.28),
+                                        color: const Color(0xFF2E2E36),
                                         width: 1.2,
                                       ),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black.withValues(alpha: 0.2),
+                                          blurRadius: 14,
+                                          offset: const Offset(0, 4),
+                                        ),
+                                      ],
                                     ),
                                     child: Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -355,14 +364,14 @@ class RedeemHistoryDetailsScreen extends StatelessWidget {
                                         Row(
                                           children: [
                                             Container(
-                                              width: 26.w,
-                                              height: 26.w,
+                                              width: 28.w,
+                                              height: 28.w,
                                               padding: EdgeInsets.all(4.w),
                                               decoration: BoxDecoration(
-                                                color: Colors.white,
+                                                color: const Color(0xFF2A2A30),
                                                 borderRadius: BorderRadius.circular(8.r),
                                                 border: Border.all(
-                                                  color: const Color(0xFFAB31DE).withValues(alpha: 0.2),
+                                                  color: const Color(0xFF3E3E48),
                                                   width: 1,
                                                 ),
                                               ),
@@ -371,29 +380,29 @@ class RedeemHistoryDetailsScreen extends StatelessWidget {
                                                   : Icon(
                                                       Icons.card_giftcard_rounded,
                                                       size: 14.sp,
-                                                      color: const Color(0xFFAB31DE),
+                                                      color: Colors.white,
                                                     ),
                                             ),
                                             SizedBox(width: 8.w),
                                             Text(
                                               isGooglePlay ? 'Google Play Gift Code' : 'Voucher Code',
-                                              style: GoogleFonts.outfit(
-                                                color: const Color(0xFF1E1B4B),
+                                              style: GoogleFonts.poppins(
+                                                color: Colors.white,
                                                 fontSize: 13.sp,
                                                 fontWeight: FontWeight.w700,
                                               ),
                                             ),
                                           ],
                                         ),
-                                        SizedBox(height: 10.h),
+                                        SizedBox(height: 12.h),
                                         Container(
                                           width: double.infinity,
-                                          padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 11.h),
+                                          padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 10.h),
                                           decoration: BoxDecoration(
-                                            color: Colors.white,
+                                            color: const Color(0xFF18181C),
                                             borderRadius: BorderRadius.circular(12.r),
                                             border: Border.all(
-                                              color: const Color(0xFFE2E8F0),
+                                              color: const Color(0xFF2E2E36),
                                               width: 1,
                                             ),
                                           ),
@@ -403,10 +412,10 @@ class RedeemHistoryDetailsScreen extends StatelessWidget {
                                               Expanded(
                                                 child: Text(
                                                   cleanCode,
-                                                  style: GoogleFonts.outfit(
-                                                    color: const Color(0xFFAB31DE),
-                                                    fontSize: 16.sp,
-                                                    fontWeight: FontWeight.w800,
+                                                  style: GoogleFonts.poppins(
+                                                    color: Colors.white,
+                                                    fontSize: 15.sp,
+                                                    fontWeight: FontWeight.w700,
                                                     letterSpacing: 1.0,
                                                   ),
                                                   maxLines: 1,
@@ -435,9 +444,17 @@ class RedeemHistoryDetailsScreen extends StatelessWidget {
                                                   }
                                                 },
                                                 child: Container(
-                                                  padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
+                                                  padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
                                                   decoration: BoxDecoration(
-                                                    color: const Color(0xFFAB31DE),
+                                                    gradient: const LinearGradient(
+                                                      colors: [
+                                                        Colors.white,
+                                                        Color(0xFFE5E7EB),
+                                                        Color(0xFFB0B5C2),
+                                                      ],
+                                                      begin: Alignment.topLeft,
+                                                      end: Alignment.bottomRight,
+                                                    ),
                                                     borderRadius: BorderRadius.circular(8.r),
                                                   ),
                                                   child: Row(
@@ -445,15 +462,15 @@ class RedeemHistoryDetailsScreen extends StatelessWidget {
                                                     children: [
                                                       Icon(
                                                         Icons.copy_rounded,
-                                                        color: Colors.white,
+                                                        color: const Color(0xFF16161A),
                                                         size: 12.sp,
                                                       ),
                                                       SizedBox(width: 4.w),
                                                       Text(
                                                         'COPY',
-                                                        style: GoogleFonts.outfit(
-                                                          color: Colors.white,
-                                                          fontSize: 11.5.sp,
+                                                        style: GoogleFonts.poppins(
+                                                          color: const Color(0xFF16161A),
+                                                          fontSize: 11.sp,
                                                           fontWeight: FontWeight.w800,
                                                         ),
                                                       ),
@@ -478,7 +495,7 @@ class RedeemHistoryDetailsScreen extends StatelessWidget {
                     ),
                   ),
 
-                  // Bottom Action Button
+                  // Bottom Action Button (Dark Obsidian Theme)
                   Padding(
                     padding: EdgeInsets.fromLTRB(16.w, 6.h, 16.w, topPadding > 0 ? 20.h : 16.h),
                     child: GestureDetector(
@@ -490,8 +507,8 @@ class RedeemHistoryDetailsScreen extends StatelessWidget {
                         decoration: BoxDecoration(
                           gradient: const LinearGradient(
                             colors: [
-                              Color(0xFFE39FFF),
-                              Color(0xFFAB31DE),
+                              Color(0xFF26262B),
+                              Color(0xFF18181B),
                             ],
                             begin: Alignment.topCenter,
                             end: Alignment.bottomCenter,
@@ -499,7 +516,7 @@ class RedeemHistoryDetailsScreen extends StatelessWidget {
                           borderRadius: BorderRadius.circular(16.r),
                           boxShadow: [
                             BoxShadow(
-                              color: const Color(0xFFAB31DE).withValues(alpha: 0.28),
+                              color: const Color(0xFF18181B).withValues(alpha: 0.25),
                               blurRadius: 10,
                               offset: const Offset(0, 4),
                             ),
@@ -507,9 +524,9 @@ class RedeemHistoryDetailsScreen extends StatelessWidget {
                         ),
                         child: Text(
                           'GO BACK',
-                          style: GoogleFonts.outfit(
+                          style: GoogleFonts.poppins(
                             color: Colors.white,
-                            fontSize: 14.5.sp,
+                            fontSize: 14.sp,
                             fontWeight: FontWeight.w700,
                             letterSpacing: 0.5,
                           ),
@@ -540,9 +557,9 @@ class RedeemHistoryDetailsScreen extends StatelessWidget {
         children: [
           Text(
             '${label.tr()} :',
-            style: GoogleFonts.outfit(
+            style: GoogleFonts.poppins(
               color: const Color(0xFF64748B),
-              fontSize: 13.5.sp,
+              fontSize: 13.sp,
               fontWeight: FontWeight.w500,
             ),
           ),
@@ -550,10 +567,10 @@ class RedeemHistoryDetailsScreen extends StatelessWidget {
           Expanded(
             child: Text(
               value,
-              style: GoogleFonts.outfit(
-                color: color ?? const Color(0xFF1E1B4B),
+              style: GoogleFonts.poppins(
+                color: color ?? const Color(0xFF26262B),
                 fontWeight: FontWeight.w700,
-                fontSize: 13.5.sp,
+                fontSize: 13.sp,
               ),
               textAlign: TextAlign.end,
             ),

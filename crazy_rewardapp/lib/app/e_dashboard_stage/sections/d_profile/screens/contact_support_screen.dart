@@ -96,12 +96,12 @@ class ContactSupportScreen extends HookWidget {
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(15.r),
                           border: Border.all(
-                            color: const Color(0xFFF1F5F9),
+                            color: const Color(0xFFE2E8F0),
                             width: 1.2,
                           ),
                           boxShadow: [
                             BoxShadow(
-                              color: const Color(0xFFAB31DE).withValues(alpha: 0.08),
+                              color: const Color(0xFF0F172A).withValues(alpha: 0.04),
                               blurRadius: 10,
                               offset: const Offset(0, 3),
                             ),
@@ -109,8 +109,8 @@ class ContactSupportScreen extends HookWidget {
                         ),
                         child: Icon(
                           Icons.arrow_back_rounded,
-                          color: const Color(0xFFAB31DE),
-                          size: 22.sp,
+                          color: const Color(0xFF26262B),
+                          size: 20.sp,
                         ),
                       ),
                     ),
@@ -118,10 +118,10 @@ class ContactSupportScreen extends HookWidget {
                       child: Text(
                         activeTab.value == 1 ? 'Support History' : 'Contact Support',
                         textAlign: TextAlign.center,
-                        style: GoogleFonts.outfit(
-                          color: const Color(0xFF1E1B4B),
+                        style: GoogleFonts.poppins(
+                          color: const Color(0xFF26262B),
                           fontSize: 18.sp,
-                          fontWeight: FontWeight.w800,
+                          fontWeight: FontWeight.w700,
                         ),
                       ),
                     ),
@@ -141,15 +141,25 @@ class ContactSupportScreen extends HookWidget {
                         height: 40.w,
                         alignment: Alignment.center,
                         decoration: BoxDecoration(
-                          color: activeTab.value == 1 ? const Color(0xFFF3E8FF) : Colors.white,
+                          gradient: activeTab.value == 1
+                              ? const LinearGradient(
+                                  colors: [
+                                    Color(0xFF26262B),
+                                    Color(0xFF16161A),
+                                  ],
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
+                                )
+                              : null,
+                          color: activeTab.value == 1 ? null : Colors.white,
                           borderRadius: BorderRadius.circular(15.r),
                           border: Border.all(
-                            color: activeTab.value == 1 ? const Color(0xFFAB31DE) : const Color(0xFFF1F5F9),
+                            color: activeTab.value == 1 ? const Color(0xFF2E2E36) : const Color(0xFFE2E8F0),
                             width: 1.2,
                           ),
                           boxShadow: [
                             BoxShadow(
-                              color: const Color(0xFFAB31DE).withValues(alpha: 0.08),
+                              color: const Color(0xFF0F172A).withValues(alpha: 0.04),
                               blurRadius: 10,
                               offset: const Offset(0, 3),
                             ),
@@ -157,8 +167,8 @@ class ContactSupportScreen extends HookWidget {
                         ),
                         child: Icon(
                           activeTab.value == 1 ? Icons.edit_note_rounded : Icons.history_rounded,
-                          color: const Color(0xFFAB31DE),
-                          size: 22.sp,
+                          color: activeTab.value == 1 ? Colors.white : const Color(0xFF26262B),
+                          size: 20.sp,
                         ),
                       ),
                     ),
@@ -166,7 +176,7 @@ class ContactSupportScreen extends HookWidget {
                 ),
               ),
 
-              SizedBox(height: 10.h),
+              SizedBox(height: 6.h),
 
               // 3. Tab Views
               Expanded(
@@ -229,15 +239,15 @@ class ContactSupportScreen extends HookWidget {
         child: Container(
           padding: EdgeInsets.all(18.w),
           decoration: BoxDecoration(
-            color: const Color(0xFFFAF5FF),
+            color: const Color(0xFFF8FAFC),
             borderRadius: BorderRadius.circular(22.r),
             border: Border.all(
-              color: const Color(0xFFE9D5FF),
+              color: const Color(0xFFE2E8F0),
               width: 1.2,
             ),
             boxShadow: [
               BoxShadow(
-                color: const Color(0xFFAB31DE).withValues(alpha: 0.05),
+                color: const Color(0xFF0F172A).withValues(alpha: 0.03),
                 blurRadius: 10,
                 offset: const Offset(0, 3),
               ),
@@ -253,13 +263,13 @@ class ContactSupportScreen extends HookWidget {
                     width: 44.w,
                     height: 44.w,
                     decoration: const BoxDecoration(
-                      color: Color(0xFFF3E8FF),
+                      color: Color(0xFFF1F5F9),
                       shape: BoxShape.circle,
                     ),
                     alignment: Alignment.center,
                     child: Icon(
                       Icons.headset_mic_rounded,
-                      color: const Color(0xFFAB31DE),
+                      color: const Color(0xFF26262B),
                       size: 22.sp,
                     ),
                   ),
@@ -270,16 +280,16 @@ class ContactSupportScreen extends HookWidget {
                       children: [
                         Text(
                           'Support Ticket Form',
-                          style: GoogleFonts.outfit(
+                          style: GoogleFonts.poppins(
                             fontSize: 16.sp,
-                            fontWeight: FontWeight.w800,
-                            color: const Color(0xFF1E1B4B),
+                            fontWeight: FontWeight.w700,
+                            color: const Color(0xFF26262B),
                           ),
                         ),
                         SizedBox(height: 2.h),
                         Text(
                           'Fill details to reach our support team',
-                          style: GoogleFonts.outfit(
+                          style: GoogleFonts.poppins(
                             fontSize: 12.sp,
                             color: const Color(0xFF64748B),
                             fontWeight: FontWeight.w500,
@@ -302,7 +312,7 @@ class ContactSupportScreen extends HookWidget {
                   borderRadius: BorderRadius.circular(14.r),
                   border: Border.all(
                     color: const Color(0xFFE2E8F0),
-                    width: 1,
+                    width: 1.2,
                   ),
                 ),
                 child: DropdownButtonHideUnderline(
@@ -311,13 +321,13 @@ class ContactSupportScreen extends HookWidget {
                     isExpanded: true,
                     icon: const Icon(
                       Icons.keyboard_arrow_down_rounded,
-                      color: Color(0xFFAB31DE),
+                      color: Color(0xFF26262B),
                     ),
                     dropdownColor: Colors.white,
-                    style: GoogleFonts.outfit(
-                      color: const Color(0xFF1E1B4B),
+                    style: GoogleFonts.poppins(
+                      color: const Color(0xFF26262B),
                       fontSize: 13.5.sp,
-                      fontWeight: FontWeight.w700,
+                      fontWeight: FontWeight.w600,
                     ),
                     onChanged: (String? val) {
                       if (val != null) {
@@ -329,8 +339,8 @@ class ContactSupportScreen extends HookWidget {
                         value: cat,
                         child: Text(
                           cat,
-                          style: GoogleFonts.outfit(
-                            color: const Color(0xFF1E1B4B),
+                          style: GoogleFonts.poppins(
+                            color: const Color(0xFF26262B),
                             fontSize: 13.5.sp,
                             fontWeight: FontWeight.w600,
                           ),
@@ -347,21 +357,21 @@ class ContactSupportScreen extends HookWidget {
               _buildInputLabel('Subject'),
               TextFormField(
                 controller: subjectCon,
-                style: GoogleFonts.outfit(
-                  color: const Color(0xFF1E1B4B),
+                style: GoogleFonts.poppins(
+                  color: const Color(0xFF26262B),
                   fontSize: 13.5.sp,
                   fontWeight: FontWeight.w600,
                 ),
                 decoration: InputDecoration(
                   hintText: 'Enter brief subject here',
-                  hintStyle: GoogleFonts.outfit(
+                  hintStyle: GoogleFonts.poppins(
                     color: const Color(0xFF94A3B8),
                     fontSize: 13.sp,
                     fontWeight: FontWeight.w400,
                   ),
                   prefixIcon: Icon(
                     Icons.subject_rounded,
-                    color: const Color(0xFFAB31DE),
+                    color: const Color(0xFF26262B),
                     size: 18.sp,
                   ),
                   fillColor: Colors.white,
@@ -378,7 +388,7 @@ class ContactSupportScreen extends HookWidget {
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(14.r),
                     borderSide: const BorderSide(
-                      color: Color(0xFFAB31DE),
+                      color: Color(0xFF26262B),
                       width: 1.5,
                     ),
                   ),
@@ -393,14 +403,14 @@ class ContactSupportScreen extends HookWidget {
               TextFormField(
                 controller: messageCon,
                 maxLines: 4,
-                style: GoogleFonts.outfit(
-                  color: const Color(0xFF1E1B4B),
+                style: GoogleFonts.poppins(
+                  color: const Color(0xFF26262B),
                   fontSize: 13.5.sp,
                   fontWeight: FontWeight.w600,
                 ),
                 decoration: InputDecoration(
                   hintText: 'Please describe the issue you are facing in detail...',
-                  hintStyle: GoogleFonts.outfit(
+                  hintStyle: GoogleFonts.poppins(
                     color: const Color(0xFF94A3B8),
                     fontSize: 12.5.sp,
                     fontWeight: FontWeight.w400,
@@ -419,7 +429,7 @@ class ContactSupportScreen extends HookWidget {
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(14.r),
                     borderSide: const BorderSide(
-                      color: Color(0xFFAB31DE),
+                      color: Color(0xFF26262B),
                       width: 1.5,
                     ),
                   ),
@@ -458,7 +468,7 @@ class ContactSupportScreen extends HookWidget {
                           borderRadius: BorderRadius.circular(14.r),
                           border: Border.all(
                             color: const Color(0xFFE2E8F0),
-                            width: 1,
+                            width: 1.2,
                           ),
                         ),
                         child: Row(
@@ -467,13 +477,13 @@ class ContactSupportScreen extends HookWidget {
                               width: 32.w,
                               height: 32.w,
                               decoration: const BoxDecoration(
-                                color: Color(0xFFF3E8FF),
+                                color: Color(0xFFF1F5F9),
                                 shape: BoxShape.circle,
                               ),
                               alignment: Alignment.center,
                               child: Icon(
                                 Icons.add_photo_alternate_rounded,
-                                color: const Color(0xFFAB31DE),
+                                color: const Color(0xFF26262B),
                                 size: 18.sp,
                               ),
                             ),
@@ -481,9 +491,9 @@ class ContactSupportScreen extends HookWidget {
                             Expanded(
                               child: Text(
                                 'Tap to choose image from gallery',
-                                style: GoogleFonts.outfit(
+                                style: GoogleFonts.poppins(
                                   color: const Color(0xFF64748B),
-                                  fontSize: 13.sp,
+                                  fontSize: 12.5.sp,
                                   fontWeight: FontWeight.w500,
                                 ),
                               ),
@@ -535,7 +545,7 @@ class ContactSupportScreen extends HookWidget {
 
               SizedBox(height: 22.h),
 
-              // 6. Submit Button
+              // 6. Submit Button (Dark Obsidian Theme)
               GestureDetector(
                 onTap: isSubmitting.value
                     ? null
@@ -590,14 +600,14 @@ class ContactSupportScreen extends HookWidget {
                   width: double.infinity,
                   decoration: BoxDecoration(
                     gradient: const LinearGradient(
-                      colors: [Color(0xFFE39FFF), Color(0xFFAB31DE)],
+                      colors: [Color(0xFF26262B), Color(0xFF18181B)],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                     ),
                     borderRadius: BorderRadius.circular(16.r),
                     boxShadow: [
                       BoxShadow(
-                        color: const Color(0xFFAB31DE).withValues(alpha: 0.3),
+                        color: const Color(0xFF18181B).withValues(alpha: 0.25),
                         blurRadius: 10,
                         offset: const Offset(0, 4),
                       ),
@@ -617,10 +627,10 @@ class ContactSupportScreen extends HookWidget {
                               SizedBox(width: 8.w),
                               Text(
                                 'SUBMIT TICKET',
-                                style: GoogleFonts.outfit(
+                                style: GoogleFonts.poppins(
                                   color: Colors.white,
-                                  fontSize: 14.5.sp,
-                                  fontWeight: FontWeight.w800,
+                                  fontSize: 14.sp,
+                                  fontWeight: FontWeight.w700,
                                   letterSpacing: 0.5,
                                 ),
                               ),
@@ -647,11 +657,11 @@ class ContactSupportScreen extends HookWidget {
   }) {
     return RefreshIndicator(
       onRefresh: loadTickets,
-      color: const Color(0xFFAB31DE),
+      color: const Color(0xFF26262B),
       backgroundColor: Colors.white,
       child: isLoadingHistory.value
           ? const Center(
-              child: LoadingInfoWidget(color: Color(0xFFAB31DE)),
+              child: LoadingInfoWidget(color: Color(0xFF26262B)),
             )
           : tickets.value.isEmpty
               ? ListView(
@@ -665,32 +675,32 @@ class ContactSupportScreen extends HookWidget {
                             width: 68.w,
                             height: 68.w,
                             decoration: BoxDecoration(
-                              color: const Color(0xFFFAF5FF),
+                              color: const Color(0xFFF8FAFC),
                               shape: BoxShape.circle,
                               border: Border.all(
-                                color: const Color(0xFFE9D5FF),
+                                color: const Color(0xFFE2E8F0),
                                 width: 1.2,
                               ),
                             ),
                             child: Icon(
                               Icons.support_agent_rounded,
                               size: 30.sp,
-                              color: const Color(0xFFAB31DE),
+                              color: const Color(0xFF26262B),
                             ),
                           ),
                           SizedBox(height: 14.h),
                           Text(
                             'No Support Tickets Yet',
-                            style: GoogleFonts.outfit(
+                            style: GoogleFonts.poppins(
                               fontSize: 16.sp,
-                              fontWeight: FontWeight.w800,
-                              color: const Color(0xFF1E1B4B),
+                              fontWeight: FontWeight.w700,
+                              color: const Color(0xFF26262B),
                             ),
                           ),
                           SizedBox(height: 5.h),
                           Text(
                             'Your support requests & responses will appear here.',
-                            style: GoogleFonts.outfit(
+                            style: GoogleFonts.poppins(
                               fontSize: 12.sp,
                               color: const Color(0xFF64748B),
                               fontWeight: FontWeight.w500,
@@ -741,11 +751,11 @@ class ContactSupportScreen extends HookWidget {
                         borderRadius: BorderRadius.circular(18.r),
                         border: Border.all(
                           color: const Color(0xFFE2E8F0),
-                          width: 1,
+                          width: 1.2,
                         ),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.02),
+                            color: const Color(0xFF0F172A).withValues(alpha: 0.03),
                             blurRadius: 10,
                             offset: const Offset(0, 3),
                           ),
@@ -760,10 +770,10 @@ class ContactSupportScreen extends HookWidget {
                               Expanded(
                                 child: Text(
                                   subject,
-                                  style: GoogleFonts.outfit(
+                                  style: GoogleFonts.poppins(
                                     fontSize: 14.5.sp,
-                                    fontWeight: FontWeight.w800,
-                                    color: const Color(0xFF1E1B4B),
+                                    fontWeight: FontWeight.w700,
+                                    color: const Color(0xFF26262B),
                                   ),
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
@@ -781,9 +791,9 @@ class ContactSupportScreen extends HookWidget {
                                 ),
                                 child: Text(
                                   status.toUpperCase().replaceAll('_', ' '),
-                                  style: GoogleFonts.outfit(
+                                  style: GoogleFonts.poppins(
                                     fontSize: 9.5.sp,
-                                    fontWeight: FontWeight.w800,
+                                    fontWeight: FontWeight.w700,
                                     color: statusColor,
                                     letterSpacing: 0.3,
                                   ),
@@ -794,7 +804,7 @@ class ContactSupportScreen extends HookWidget {
                           SizedBox(height: 6.h),
                           Text(
                             message,
-                            style: GoogleFonts.outfit(
+                            style: GoogleFonts.poppins(
                               fontSize: 12.5.sp,
                               color: const Color(0xFF475569),
                               height: 1.35,
@@ -807,10 +817,10 @@ class ContactSupportScreen extends HookWidget {
                               width: double.infinity,
                               padding: EdgeInsets.all(12.w),
                               decoration: BoxDecoration(
-                                color: const Color(0xFFFAF5FF),
+                                color: const Color(0xFFF8FAFC),
                                 borderRadius: BorderRadius.circular(14.r),
                                 border: Border.all(
-                                  color: const Color(0xFFE9D5FF),
+                                  color: const Color(0xFFE2E8F0),
                                   width: 1.0,
                                 ),
                               ),
@@ -821,16 +831,16 @@ class ContactSupportScreen extends HookWidget {
                                     children: [
                                       Icon(
                                         Icons.verified_user_rounded,
-                                        color: const Color(0xFFAB31DE),
+                                        color: const Color(0xFF26262B),
                                         size: 15.sp,
                                       ),
                                       SizedBox(width: 6.w),
                                       Text(
                                         'Support Team Response:',
-                                        style: GoogleFonts.outfit(
+                                        style: GoogleFonts.poppins(
                                           fontSize: 12.sp,
-                                          fontWeight: FontWeight.w800,
-                                          color: const Color(0xFFAB31DE),
+                                          fontWeight: FontWeight.w700,
+                                          color: const Color(0xFF26262B),
                                         ),
                                       ),
                                     ],
@@ -838,9 +848,9 @@ class ContactSupportScreen extends HookWidget {
                                   SizedBox(height: 4.h),
                                   Text(
                                     adminReply,
-                                    style: GoogleFonts.outfit(
+                                    style: GoogleFonts.poppins(
                                       fontSize: 12.5.sp,
-                                      color: const Color(0xFF1E1B4B),
+                                      color: const Color(0xFF26262B),
                                       height: 1.35,
                                       fontWeight: FontWeight.w500,
                                     ),
@@ -862,10 +872,10 @@ class ContactSupportScreen extends HookWidget {
       padding: EdgeInsets.only(bottom: 6.h),
       child: Text(
         label,
-        style: GoogleFonts.outfit(
+        style: GoogleFonts.poppins(
           fontSize: 12.sp,
-          fontWeight: FontWeight.w700,
-          color: const Color(0xFF1E1B4B),
+          fontWeight: FontWeight.w600,
+          color: const Color(0xFF26262B),
         ),
       ),
     );

@@ -91,12 +91,12 @@ class ServicesScreen extends HookWidget {
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(15.r),
                           border: Border.all(
-                            color: const Color(0xFFF1F5F9),
+                            color: const Color(0xFFE2E8F0),
                             width: 1.2,
                           ),
                           boxShadow: [
                             BoxShadow(
-                              color: const Color(0xFFAB31DE).withValues(alpha: 0.08),
+                              color: const Color(0xFF0F172A).withValues(alpha: 0.04),
                               blurRadius: 10,
                               offset: const Offset(0, 3),
                             ),
@@ -104,8 +104,8 @@ class ServicesScreen extends HookWidget {
                         ),
                         child: Icon(
                           Icons.arrow_back_rounded,
-                          color: const Color(0xFFAB31DE),
-                          size: 22.sp,
+                          color: const Color(0xFF26262B),
+                          size: 20.sp,
                         ),
                       ),
                     ),
@@ -113,10 +113,10 @@ class ServicesScreen extends HookWidget {
                       child: Text(
                         activeTab.value == 1 ? 'Request History' : 'Service Requests',
                         textAlign: TextAlign.center,
-                        style: GoogleFonts.outfit(
-                          color: const Color(0xFF1E1B4B),
+                        style: GoogleFonts.poppins(
+                          color: const Color(0xFF26262B),
                           fontSize: 18.sp,
-                          fontWeight: FontWeight.w800,
+                          fontWeight: FontWeight.w700,
                         ),
                       ),
                     ),
@@ -136,15 +136,25 @@ class ServicesScreen extends HookWidget {
                         height: 40.w,
                         alignment: Alignment.center,
                         decoration: BoxDecoration(
-                          color: activeTab.value == 1 ? const Color(0xFFF3E8FF) : Colors.white,
+                          gradient: activeTab.value == 1
+                              ? const LinearGradient(
+                                  colors: [
+                                    Color(0xFF26262B),
+                                    Color(0xFF16161A),
+                                  ],
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
+                                )
+                              : null,
+                          color: activeTab.value == 1 ? null : Colors.white,
                           borderRadius: BorderRadius.circular(15.r),
                           border: Border.all(
-                            color: activeTab.value == 1 ? const Color(0xFFAB31DE) : const Color(0xFFF1F5F9),
+                            color: activeTab.value == 1 ? const Color(0xFF2E2E36) : const Color(0xFFE2E8F0),
                             width: 1.2,
                           ),
                           boxShadow: [
                             BoxShadow(
-                              color: const Color(0xFFAB31DE).withValues(alpha: 0.08),
+                              color: const Color(0xFF0F172A).withValues(alpha: 0.04),
                               blurRadius: 10,
                               offset: const Offset(0, 3),
                             ),
@@ -152,8 +162,8 @@ class ServicesScreen extends HookWidget {
                         ),
                         child: Icon(
                           activeTab.value == 1 ? Icons.add_task_rounded : Icons.history_rounded,
-                          color: const Color(0xFFAB31DE),
-                          size: 22.sp,
+                          color: activeTab.value == 1 ? Colors.white : const Color(0xFF26262B),
+                          size: 20.sp,
                         ),
                       ),
                     ),
@@ -161,7 +171,7 @@ class ServicesScreen extends HookWidget {
                 ),
               ),
 
-              SizedBox(height: 10.h),
+              SizedBox(height: 6.h),
 
               // 3. Tab Content Views
               Expanded(
@@ -235,10 +245,10 @@ class ServicesScreen extends HookWidget {
             // 1. Service Type Cards
             Text(
               'Choose Service Type',
-              style: GoogleFonts.outfit(
+              style: GoogleFonts.poppins(
                 fontSize: 14.sp,
-                fontWeight: FontWeight.w800,
-                color: const Color(0xFF1E1B4B),
+                fontWeight: FontWeight.w700,
+                color: const Color(0xFF26262B),
               ),
             ),
             SizedBox(height: 10.h),
@@ -279,15 +289,15 @@ class ServicesScreen extends HookWidget {
             Container(
               padding: EdgeInsets.all(18.w),
               decoration: BoxDecoration(
-                color: const Color(0xFFFAF5FF),
+                color: const Color(0xFFF8FAFC),
                 borderRadius: BorderRadius.circular(22.r),
                 border: Border.all(
-                  color: const Color(0xFFE9D5FF),
+                  color: const Color(0xFFE2E8F0),
                   width: 1.2,
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: const Color(0xFFAB31DE).withValues(alpha: 0.05),
+                    color: const Color(0xFF0F172A).withValues(alpha: 0.03),
                     blurRadius: 10,
                     offset: const Offset(0, 3),
                   ),
@@ -303,13 +313,13 @@ class ServicesScreen extends HookWidget {
                         width: 44.w,
                         height: 44.w,
                         decoration: const BoxDecoration(
-                          color: Color(0xFFF3E8FF),
+                          color: Color(0xFFF1F5F9),
                           shape: BoxShape.circle,
                         ),
                         alignment: Alignment.center,
                         child: Icon(
                           Icons.miscellaneous_services_rounded,
-                          color: const Color(0xFFAB31DE),
+                          color: const Color(0xFF26262B),
                           size: 22.sp,
                         ),
                       ),
@@ -320,16 +330,16 @@ class ServicesScreen extends HookWidget {
                           children: [
                             Text(
                               'Request Details',
-                              style: GoogleFonts.outfit(
+                              style: GoogleFonts.poppins(
                                 fontSize: 16.sp,
-                                fontWeight: FontWeight.w800,
-                                color: const Color(0xFF1E1B4B),
+                                fontWeight: FontWeight.w700,
+                                color: const Color(0xFF26262B),
                               ),
                             ),
                             SizedBox(height: 2.h),
                             Text(
                               'Fill requirements for promotion or development',
-                              style: GoogleFonts.outfit(
+                              style: GoogleFonts.poppins(
                                 fontSize: 12.sp,
                                 color: const Color(0xFF64748B),
                                 fontWeight: FontWeight.w500,
@@ -348,14 +358,14 @@ class ServicesScreen extends HookWidget {
                   TextFormField(
                     controller: phoneCon,
                     keyboardType: TextInputType.phone,
-                    style: GoogleFonts.outfit(
-                      color: const Color(0xFF1E1B4B),
+                    style: GoogleFonts.poppins(
+                      color: const Color(0xFF26262B),
                       fontSize: 13.5.sp,
                       fontWeight: FontWeight.w600,
                     ),
                     decoration: InputDecoration(
                       hintText: 'Enter mobile number',
-                      hintStyle: GoogleFonts.outfit(
+                      hintStyle: GoogleFonts.poppins(
                         color: const Color(0xFF94A3B8),
                         fontSize: 13.sp,
                         fontWeight: FontWeight.w400,
@@ -372,10 +382,10 @@ class ServicesScreen extends HookWidget {
                               ),
                               child: CountryPickerDialog(
                                 titlePadding: const EdgeInsets.all(12),
-                                searchCursorColor: const Color(0xFFAB31DE),
+                                searchCursorColor: const Color(0xFF26262B),
                                 searchInputDecoration: InputDecoration(
                                   hintText: 'Search country...',
-                                  hintStyle: GoogleFonts.outfit(color: const Color(0xFF94A3B8)),
+                                  hintStyle: GoogleFonts.poppins(color: const Color(0xFF94A3B8)),
                                   filled: true,
                                   fillColor: const Color(0xFFF8FAFC),
                                   border: OutlineInputBorder(
@@ -395,8 +405,8 @@ class ServicesScreen extends HookWidget {
                                     SizedBox(width: 8.w),
                                     Text(
                                       '+${country.phoneCode}',
-                                      style: GoogleFonts.outfit(
-                                        color: const Color(0xFF1E1B4B),
+                                      style: GoogleFonts.poppins(
+                                        color: const Color(0xFF26262B),
                                         fontWeight: FontWeight.w600,
                                       ),
                                     ),
@@ -405,7 +415,7 @@ class ServicesScreen extends HookWidget {
                                       child: Text(
                                         country.name,
                                         overflow: TextOverflow.ellipsis,
-                                        style: GoogleFonts.outfit(color: const Color(0xFF64748B)),
+                                        style: GoogleFonts.poppins(color: const Color(0xFF64748B)),
                                       ),
                                     ),
                                   ],
@@ -422,15 +432,15 @@ class ServicesScreen extends HookWidget {
                             SizedBox(width: 6.w),
                             Text(
                               '+${selectedCountry.value.phoneCode}',
-                              style: GoogleFonts.outfit(
-                                color: const Color(0xFF1E1B4B),
+                              style: GoogleFonts.poppins(
+                                color: const Color(0xFF26262B),
                                 fontWeight: FontWeight.w700,
                                 fontSize: 13.sp,
                               ),
                             ),
                             const Icon(
                               Icons.arrow_drop_down_rounded,
-                              color: Color(0xFFAB31DE),
+                              color: Color(0xFF26262B),
                             ),
                             SizedBox(width: 6.w),
                           ],
@@ -450,7 +460,7 @@ class ServicesScreen extends HookWidget {
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(14.r),
                         borderSide: const BorderSide(
-                          color: Color(0xFFAB31DE),
+                          color: Color(0xFF26262B),
                           width: 1.5,
                         ),
                       ),
@@ -469,21 +479,21 @@ class ServicesScreen extends HookWidget {
                   TextFormField(
                     controller: budgetCon,
                     keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                    style: GoogleFonts.outfit(
-                      color: const Color(0xFF1E1B4B),
+                    style: GoogleFonts.poppins(
+                      color: const Color(0xFF26262B),
                       fontSize: 13.5.sp,
                       fontWeight: FontWeight.w600,
                     ),
                     decoration: InputDecoration(
                       hintText: 'Enter budget amount',
-                      hintStyle: GoogleFonts.outfit(
+                      hintStyle: GoogleFonts.poppins(
                         color: const Color(0xFF94A3B8),
                         fontSize: 13.sp,
                         fontWeight: FontWeight.w400,
                       ),
                       prefixIcon: Icon(
                         Icons.currency_rupee_rounded,
-                        color: const Color(0xFFAB31DE),
+                        color: const Color(0xFF26262B),
                         size: 18.sp,
                       ),
                       fillColor: Colors.white,
@@ -500,7 +510,7 @@ class ServicesScreen extends HookWidget {
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(14.r),
                         borderSide: const BorderSide(
-                          color: Color(0xFFAB31DE),
+                          color: Color(0xFF26262B),
                           width: 1.5,
                         ),
                       ),
@@ -522,7 +532,7 @@ class ServicesScreen extends HookWidget {
                         borderRadius: BorderRadius.circular(14.r),
                         border: Border.all(
                           color: const Color(0xFFE2E8F0),
-                          width: 1,
+                          width: 1.2,
                         ),
                       ),
                       child: DropdownButtonHideUnderline(
@@ -531,13 +541,13 @@ class ServicesScreen extends HookWidget {
                           isExpanded: true,
                           icon: const Icon(
                             Icons.keyboard_arrow_down_rounded,
-                            color: Color(0xFFAB31DE),
+                            color: Color(0xFF26262B),
                           ),
                           dropdownColor: Colors.white,
-                          style: GoogleFonts.outfit(
-                            color: const Color(0xFF1E1B4B),
+                          style: GoogleFonts.poppins(
+                            color: const Color(0xFF26262B),
                             fontSize: 13.5.sp,
-                            fontWeight: FontWeight.w700,
+                            fontWeight: FontWeight.w600,
                           ),
                           onChanged: (String? val) {
                             if (val != null) {
@@ -571,21 +581,21 @@ class ServicesScreen extends HookWidget {
                   ),
                   TextFormField(
                     controller: titleCon,
-                    style: GoogleFonts.outfit(
-                      color: const Color(0xFF1E1B4B),
+                    style: GoogleFonts.poppins(
+                      color: const Color(0xFF26262B),
                       fontSize: 13.5.sp,
                       fontWeight: FontWeight.w600,
                     ),
                     decoration: InputDecoration(
                       hintText: 'Enter title here',
-                      hintStyle: GoogleFonts.outfit(
+                      hintStyle: GoogleFonts.poppins(
                         color: const Color(0xFF94A3B8),
                         fontSize: 13.sp,
                         fontWeight: FontWeight.w400,
                       ),
                       prefixIcon: Icon(
                         Icons.title_rounded,
-                        color: const Color(0xFFAB31DE),
+                        color: const Color(0xFF26262B),
                         size: 18.sp,
                       ),
                       fillColor: Colors.white,
@@ -602,7 +612,7 @@ class ServicesScreen extends HookWidget {
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(14.r),
                         borderSide: const BorderSide(
-                          color: Color(0xFFAB31DE),
+                          color: Color(0xFF26262B),
                           width: 1.5,
                         ),
                       ),
@@ -621,21 +631,21 @@ class ServicesScreen extends HookWidget {
                   TextFormField(
                     controller: linkCon,
                     keyboardType: TextInputType.url,
-                    style: GoogleFonts.outfit(
-                      color: const Color(0xFF1E1B4B),
+                    style: GoogleFonts.poppins(
+                      color: const Color(0xFF26262B),
                       fontSize: 13.5.sp,
                       fontWeight: FontWeight.w600,
                     ),
                     decoration: InputDecoration(
                       hintText: 'https://...',
-                      hintStyle: GoogleFonts.outfit(
+                      hintStyle: GoogleFonts.poppins(
                         color: const Color(0xFF94A3B8),
                         fontSize: 13.sp,
                         fontWeight: FontWeight.w400,
                       ),
                       prefixIcon: Icon(
                         Icons.link_rounded,
-                        color: const Color(0xFFAB31DE),
+                        color: const Color(0xFF26262B),
                         size: 18.sp,
                       ),
                       fillColor: Colors.white,
@@ -652,7 +662,7 @@ class ServicesScreen extends HookWidget {
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(14.r),
                         borderSide: const BorderSide(
-                          color: Color(0xFFAB31DE),
+                          color: Color(0xFF26262B),
                           width: 1.5,
                         ),
                       ),
@@ -685,14 +695,14 @@ class ServicesScreen extends HookWidget {
                   TextFormField(
                     controller: descCon,
                     maxLines: 4,
-                    style: GoogleFonts.outfit(
-                      color: const Color(0xFF1E1B4B),
+                    style: GoogleFonts.poppins(
+                      color: const Color(0xFF26262B),
                       fontSize: 13.5.sp,
                       fontWeight: FontWeight.w600,
                     ),
                     decoration: InputDecoration(
                       hintText: 'Describe your project requirements, target audience, budget, or other instructions here...',
-                      hintStyle: GoogleFonts.outfit(
+                      hintStyle: GoogleFonts.poppins(
                         color: const Color(0xFF94A3B8),
                         fontSize: 12.5.sp,
                         fontWeight: FontWeight.w400,
@@ -711,7 +721,7 @@ class ServicesScreen extends HookWidget {
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(14.r),
                         borderSide: const BorderSide(
-                          color: Color(0xFFAB31DE),
+                          color: Color(0xFF26262B),
                           width: 1.5,
                         ),
                       ),
@@ -721,7 +731,7 @@ class ServicesScreen extends HookWidget {
 
                   SizedBox(height: 22.h),
 
-                  // Submit Button
+                  // Submit Button (Dark Obsidian Theme)
                   GestureDetector(
                     onTap: isSubmitting.value
                         ? null
@@ -785,14 +795,14 @@ class ServicesScreen extends HookWidget {
                       width: double.infinity,
                       decoration: BoxDecoration(
                         gradient: const LinearGradient(
-                          colors: [Color(0xFFE39FFF), Color(0xFFAB31DE)],
+                          colors: [Color(0xFF26262B), Color(0xFF18181B)],
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
                         ),
                         borderRadius: BorderRadius.circular(16.r),
                         boxShadow: [
                           BoxShadow(
-                            color: const Color(0xFFAB31DE).withValues(alpha: 0.3),
+                            color: const Color(0xFF18181B).withValues(alpha: 0.25),
                             blurRadius: 10,
                             offset: const Offset(0, 4),
                           ),
@@ -812,10 +822,10 @@ class ServicesScreen extends HookWidget {
                                   SizedBox(width: 8.w),
                                   Text(
                                     'SUBMIT REQUEST',
-                                    style: GoogleFonts.outfit(
+                                    style: GoogleFonts.poppins(
                                       color: Colors.white,
                                       fontSize: 14.sp,
-                                      fontWeight: FontWeight.w800,
+                                      fontWeight: FontWeight.w700,
                                       letterSpacing: 0.5,
                                     ),
                                   ),
@@ -844,7 +854,7 @@ class ServicesScreen extends HookWidget {
   }) {
     return RefreshIndicator(
       onRefresh: loadHistory,
-      color: const Color(0xFFAB31DE),
+      color: const Color(0xFF26262B),
       backgroundColor: Colors.white,
       child: isLoadingHistory.value
           ? const Center(
@@ -862,32 +872,32 @@ class ServicesScreen extends HookWidget {
                             width: 68.w,
                             height: 68.w,
                             decoration: BoxDecoration(
-                              color: const Color(0xFFFAF5FF),
+                              color: const Color(0xFFF8FAFC),
                               shape: BoxShape.circle,
                               border: Border.all(
-                                color: const Color(0xFFE9D5FF),
+                                color: const Color(0xFFE2E8F0),
                                 width: 1.2,
                               ),
                             ),
                             child: Icon(
                               Icons.history_toggle_off_rounded,
                               size: 30.sp,
-                              color: const Color(0xFFAB31DE),
+                              color: const Color(0xFF26262B),
                             ),
                           ),
                           SizedBox(height: 14.h),
                           Text(
                             'No Promotion Requests Yet',
-                            style: GoogleFonts.outfit(
+                            style: GoogleFonts.poppins(
                               fontSize: 16.sp,
-                              fontWeight: FontWeight.w800,
-                              color: const Color(0xFF1E1B4B),
+                              fontWeight: FontWeight.w700,
+                              color: const Color(0xFF26262B),
                             ),
                           ),
                           SizedBox(height: 5.h),
                           Text(
                             'Your requested services will appear here.',
-                            style: GoogleFonts.outfit(
+                            style: GoogleFonts.poppins(
                               fontSize: 12.5.sp,
                               color: const Color(0xFF64748B),
                               fontWeight: FontWeight.w500,
@@ -950,7 +960,7 @@ class ServicesScreen extends HookWidget {
                         ),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.03),
+                            color: const Color(0xFF0F172A).withValues(alpha: 0.03),
                             blurRadius: 10,
                             offset: const Offset(0, 3),
                           ),
@@ -965,19 +975,19 @@ class ServicesScreen extends HookWidget {
                               Container(
                                 padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
                                 decoration: BoxDecoration(
-                                  color: const Color(0xFFFAF5FF),
+                                  color: const Color(0xFFF1F5F9),
                                   borderRadius: BorderRadius.circular(8.r),
                                   border: Border.all(
-                                    color: const Color(0xFFE9D5FF),
+                                    color: const Color(0xFFE2E8F0),
                                     width: 1,
                                   ),
                                 ),
                                 child: Text(
                                   displayType,
-                                  style: GoogleFonts.outfit(
+                                  style: GoogleFonts.poppins(
                                     fontSize: 11.sp,
                                     fontWeight: FontWeight.w700,
-                                    color: const Color(0xFFAB31DE),
+                                    color: const Color(0xFF26262B),
                                   ),
                                 ),
                               ),
@@ -989,9 +999,9 @@ class ServicesScreen extends HookWidget {
                                 ),
                                 child: Text(
                                   status.toUpperCase(),
-                                  style: GoogleFonts.outfit(
+                                  style: GoogleFonts.poppins(
                                     fontSize: 10.sp,
-                                    fontWeight: FontWeight.w800,
+                                    fontWeight: FontWeight.w700,
                                     color: statusText,
                                     letterSpacing: 0.3,
                                   ),
@@ -1002,17 +1012,17 @@ class ServicesScreen extends HookWidget {
                           SizedBox(height: 10.h),
                           Text(
                             title,
-                            style: GoogleFonts.outfit(
+                            style: GoogleFonts.poppins(
                               fontSize: 15.sp,
-                              fontWeight: FontWeight.w800,
-                              color: const Color(0xFF1E1B4B),
+                              fontWeight: FontWeight.w700,
+                              color: const Color(0xFF26262B),
                             ),
                           ),
                           if (req['description'] != null && req['description'].toString().isNotEmpty) ...[
                             SizedBox(height: 4.h),
                             Text(
                               req['description'].toString(),
-                              style: GoogleFonts.outfit(
+                              style: GoogleFonts.poppins(
                                 fontSize: 12.5.sp,
                                 color: const Color(0xFF64748B),
                                 height: 1.35,
@@ -1028,10 +1038,10 @@ class ServicesScreen extends HookWidget {
                               width: double.infinity,
                               padding: EdgeInsets.all(12.w),
                               decoration: BoxDecoration(
-                                color: const Color(0xFFFAF5FF),
+                                color: const Color(0xFFF8FAFC),
                                 borderRadius: BorderRadius.circular(14.r),
                                 border: Border.all(
-                                  color: const Color(0xFFE9D5FF),
+                                  color: const Color(0xFFE2E8F0),
                                   width: 1.0,
                                 ),
                               ),
@@ -1042,16 +1052,16 @@ class ServicesScreen extends HookWidget {
                                     children: [
                                       Icon(
                                         Icons.verified_user_rounded,
-                                        color: const Color(0xFFAB31DE),
+                                        color: const Color(0xFF26262B),
                                         size: 15.sp,
                                       ),
                                       SizedBox(width: 6.w),
                                       Text(
                                         'Admin Response:',
-                                        style: GoogleFonts.outfit(
+                                        style: GoogleFonts.poppins(
                                           fontSize: 12.sp,
-                                          fontWeight: FontWeight.w800,
-                                          color: const Color(0xFFAB31DE),
+                                          fontWeight: FontWeight.w700,
+                                          color: const Color(0xFF26262B),
                                         ),
                                       ),
                                     ],
@@ -1059,9 +1069,9 @@ class ServicesScreen extends HookWidget {
                                   SizedBox(height: 4.h),
                                   Text(
                                     adminReply,
-                                    style: GoogleFonts.outfit(
+                                    style: GoogleFonts.poppins(
                                       fontSize: 12.5.sp,
-                                      color: const Color(0xFF1E1B4B),
+                                      color: const Color(0xFF26262B),
                                       height: 1.35,
                                       fontWeight: FontWeight.w500,
                                     ),
@@ -1083,10 +1093,10 @@ class ServicesScreen extends HookWidget {
       padding: EdgeInsets.only(bottom: 6.h),
       child: Text(
         label,
-        style: GoogleFonts.outfit(
+        style: GoogleFonts.poppins(
           fontSize: 12.sp,
-          fontWeight: FontWeight.w700,
-          color: const Color(0xFF1E1B4B),
+          fontWeight: FontWeight.w600,
+          color: const Color(0xFF26262B),
         ),
       ),
     );
@@ -1094,7 +1104,7 @@ class ServicesScreen extends HookWidget {
 }
 
 // -------------------------------------------------------------
-// SERVICE TYPE SELECTOR CARD
+// SERVICE TYPE SELECTOR CARD (DARK OBSIDIAN THEME)
 // -------------------------------------------------------------
 class _TypeCard extends HookWidget {
   const _TypeCard({
@@ -1120,23 +1130,23 @@ class _TypeCard extends HookWidget {
         width: double.infinity,
         clipBehavior: Clip.antiAlias,
         decoration: BoxDecoration(
-          color: isSelected ? const Color(0xFFFAF5FF) : Colors.white,
+          color: isSelected ? const Color(0xFFF8FAFC) : Colors.white,
           borderRadius: BorderRadius.circular(16.r),
           border: Border.all(
-            color: isSelected ? const Color(0xFFAB31DE) : const Color(0xFFE2E8F0),
-            width: isSelected ? 1.8 : 1.0,
+            color: isSelected ? const Color(0xFF26262B) : const Color(0xFFE2E8F0),
+            width: isSelected ? 1.6 : 1.0,
           ),
           boxShadow: isSelected
               ? [
                   BoxShadow(
-                    color: const Color(0xFFAB31DE).withValues(alpha: 0.16),
-                    blurRadius: 12,
-                    offset: const Offset(0, 4),
+                    color: const Color(0xFF16161A).withValues(alpha: 0.1),
+                    blurRadius: 10,
+                    offset: const Offset(0, 3),
                   ),
                 ]
               : [
                   BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.03),
+                    color: const Color(0xFF0F172A).withValues(alpha: 0.02),
                     blurRadius: 6,
                     offset: const Offset(0, 2),
                   ),
@@ -1149,14 +1159,7 @@ class _TypeCard extends HookWidget {
             Container(
               height: 3.5.h,
               width: double.infinity,
-              decoration: BoxDecoration(
-                gradient: isSelected
-                    ? const LinearGradient(
-                        colors: [Color(0xFFE39FFF), Color(0xFFAB31DE)],
-                      )
-                    : null,
-                color: isSelected ? null : Colors.transparent,
-              ),
+              color: isSelected ? const Color(0xFF26262B) : Colors.transparent,
             ),
             Padding(
               padding: EdgeInsets.fromLTRB(6.w, 10.h, 6.w, 12.h),
@@ -1169,7 +1172,7 @@ class _TypeCard extends HookWidget {
                     decoration: BoxDecoration(
                       gradient: isSelected
                           ? const LinearGradient(
-                              colors: [Color(0xFFE39FFF), Color(0xFFAB31DE)],
+                              colors: [Color(0xFF26262B), Color(0xFF16161A)],
                               begin: Alignment.topLeft,
                               end: Alignment.bottomRight,
                             )
@@ -1179,7 +1182,7 @@ class _TypeCard extends HookWidget {
                       boxShadow: isSelected
                           ? [
                               BoxShadow(
-                                color: const Color(0xFFAB31DE).withValues(alpha: 0.3),
+                                color: const Color(0xFF16161A).withValues(alpha: 0.2),
                                 blurRadius: 6,
                                 offset: const Offset(0, 2),
                               ),
@@ -1197,10 +1200,10 @@ class _TypeCard extends HookWidget {
                   Text(
                     label,
                     textAlign: TextAlign.center,
-                    style: GoogleFonts.outfit(
+                    style: GoogleFonts.poppins(
                       fontSize: 11.5.sp,
-                      fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
-                      color: isSelected ? const Color(0xFF1E1B4B) : const Color(0xFF64748B),
+                      fontWeight: isSelected ? FontWeight.w700 : FontWeight.w600,
+                      color: isSelected ? const Color(0xFF26262B) : const Color(0xFF64748B),
                     ),
                   ),
                 ],
