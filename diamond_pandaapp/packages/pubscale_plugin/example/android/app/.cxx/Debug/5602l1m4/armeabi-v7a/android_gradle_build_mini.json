@@ -1,0 +1,20 @@
+{
+  "buildFiles": [
+    "/Users/sudeep/Downloads/flutter/packages/flutter_tools/gradle/src/main/groovy/CMakeLists.txt"
+  ],
+  "cleanCommandsComponents": [
+    [
+      "/Users/sudeep/Library/Android/sdk/cmake/3.22.1/bin/ninja",
+      "-C",
+      "/Users/sudeep/Documents/Projects/pubscale_plugin/example/android/app/.cxx/Debug/5602l1m4/armeabi-v7a",
+      "clean"
+    ]
+  ],
+  "buildTargetsCommandComponents": [
+    "/Users/sudeep/Library/Android/sdk/cmake/3.22.1/bin/ninja",
+    "-C",
+    "/Users/sudeep/Documents/Projects/pubscale_plugin/example/android/app/.cxx/Debug/5602l1m4/armeabi-v7a",
+    "{LIST_OF_TARGETS_TO_BUILD}"
+  ],
+  "libraries": {}
+}

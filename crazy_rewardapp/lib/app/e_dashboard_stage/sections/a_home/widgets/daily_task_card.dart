@@ -14,6 +14,24 @@ import '../../../../../widgets/common/internet_image.dart';
 import '../../../../../widgets/common/shimmer_tag.dart';
 import '../daily_task/daily_task_model.dart';
 
+final _defaultFeaturedOffer = DailyTaskModel(
+  offerId: 'hot_offers_default',
+  offerName: 'Daily Tasks',
+  offerDescription: const ['Complete quick daily tasks and earn instant coin rewards!'],
+  offerDisclaimer: const [],
+  imagePath: '',
+  bannerPath: '',
+  offerType: 'DailyTask',
+  offerCategory: 'Featured',
+  coins: 500,
+  redirectionUrl: '',
+  trackingTime: 0,
+  reelFormat: false,
+  timestamp: DateTime.now(),
+  color: const Color(0xFF6366F1),
+  subDescription: 'Complete tasks to earn coins',
+);
+
 class HomeDailyTaskSection extends HookConsumerWidget {
   const HomeDailyTaskSection({
     super.key,
@@ -31,18 +49,14 @@ class HomeDailyTaskSection extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final loadingId = useState<String?>(null);
-    final featuredOffer = offers.isNotEmpty ? offers.first : null;
-
-    if (featuredOffer == null) {
-      return const SizedBox();
-    }
+    final featuredOffer = offers.isNotEmpty ? offers.first : _defaultFeaturedOffer;
 
     return Padding(
       padding: EdgeInsets.only(top: 0.h, bottom: 0.h),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          // 1. Header (Centered "Hot Offers" in cursive script style)
+          // 1. Header (Centered "Hot Offers" in modern bold Outfit style)
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 16.w),
             child: GestureDetector(
@@ -86,16 +100,26 @@ class HomeDailyTaskSection extends HookConsumerWidget {
                     isLoading: loadingId.value == featuredOffer.offerId,
                     onTap: () async {
                       HapticFeedback.lightImpact();
-                      await AutoRouter.of(context).push(
-                        DailyTaskDetailsScreenRoute(
-                          item: featuredOffer,
-                          cardColor: featuredOffer.color,
-                          userId: userId,
-                          email: email,
-                          country: country,
-                          heroTag: 'task_card_home_${featuredOffer.offerId}_0',
-                        ),
-                      );
+                      if (featuredOffer.offerId == 'hot_offers_default') {
+                        AutoRouter.of(context).push(
+                          DailyTaskScreenRoute(
+                            userId: userId,
+                            email: email,
+                            country: country,
+                          ),
+                        );
+                      } else {
+                        await AutoRouter.of(context).push(
+                          DailyTaskDetailsScreenRoute(
+                            item: featuredOffer,
+                            cardColor: featuredOffer.color,
+                            userId: userId,
+                            email: email,
+                            country: country,
+                            heroTag: 'task_card_home_${featuredOffer.offerId}_0',
+                          ),
+                        );
+                      }
                     },
                   ),
                 ),

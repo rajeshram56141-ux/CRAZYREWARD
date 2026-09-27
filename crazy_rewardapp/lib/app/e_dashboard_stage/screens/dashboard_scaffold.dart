@@ -88,6 +88,8 @@ class DashboardScaffold extends HookConsumerWidget {
         statusBarColor: Colors.transparent,
         statusBarIconBrightness: Brightness.dark,
         statusBarBrightness: Brightness.light,
+        systemNavigationBarColor: Color(0xFFF1F5F9),
+        systemNavigationBarIconBrightness: Brightness.dark,
       ),
       child: PopScope(
         canPop: false,
@@ -96,10 +98,10 @@ class DashboardScaffold extends HookConsumerWidget {
             : CustomStatusPopup.showAppExit(context: context),
         child: Container(
           width: double.infinity,
-          color: Colors.white,
+          color: const Color(0xFFF1F5F9),
           child: Scaffold(
             extendBody: true,
-            backgroundColor: Colors.white,
+            backgroundColor: const Color(0xFFF1F5F9),
             appBar: null,
           body: NotificationListener<UserScrollNotification>(
             onNotification: (notification) {

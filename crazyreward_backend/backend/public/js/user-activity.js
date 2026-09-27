@@ -119,6 +119,8 @@ const USER_DETAILS_FIELDS = [
     { key: 'name', label: 'Name', editable: true, type: 'text' },
     { key: 'photoUrl', label: 'Photo URL', editable: true, type: 'text' },
     { key: 'referralCode', label: 'Referral Code', editable: false, type: 'text' },
+    { key: 'referredBy', label: 'Referred By', editable: false, type: 'text' },
+    { key: 'referred', label: 'Referred (Is Referred)', editable: true, type: 'boolean' },
     { key: 'socialFollowed', label: 'Social Followed', editable: false, type: 'number' },
     { key: 'source', label: 'Source', editable: true, type: 'text' },
     { key: 'streak', label: 'Streak', editable: true, type: 'number' },
@@ -435,6 +437,9 @@ function renderUserDetail(data) {
     document.getElementById('ua-user-email').textContent = user.email || 'No email';
     document.getElementById('ua-user-id').textContent = user.userId || '-';
     document.getElementById('ua-referral-code').textContent = user.referralCode || '-';
+    if (document.getElementById('ua-referred-by')) {
+        document.getElementById('ua-referred-by').textContent = user.referredBy || 'None';
+    }
 
     // Status chips
     const statusChip = document.getElementById('ua-status-chip');
@@ -467,6 +472,9 @@ function renderUserDetail(data) {
     document.getElementById('ua-profile-email').textContent = user.email || '-';
     document.getElementById('ua-profile-userid').textContent = user.userId || '-';
     document.getElementById('ua-profile-referral').textContent = user.referralCode || '-';
+    if (document.getElementById('ua-profile-referred-by')) {
+        document.getElementById('ua-profile-referred-by').textContent = user.referredBy || 'None';
+    }
 
     // Render user details table
     renderUserDetailsTable(user);

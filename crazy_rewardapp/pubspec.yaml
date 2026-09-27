@@ -85,16 +85,16 @@ dev_dependencies:
 flutter_launcher_icons:
   android: "ic_launcher"
   ios: false
-  image_path: "assets/icons/DIAMONDPANDA_LOGO.png"
+  image_path: "assets/icons/app_launcher_bg.png"
   min_sdk_android: 21
-  adaptive_icon_background: "#101010"
-  adaptive_icon_foreground: "assets/icons/DIAMONDPANDA_LOGO.png"
+  adaptive_icon_background: "#FFFFFF"
+  adaptive_icon_foreground: "assets/icons/adaptive_foreground.png"
 
 flutter_native_splash:
   color: "#FFFFFF"
-  image: assets/icons/LOGO_SPLASHS.png
+  image: assets/icons/crazy_reward_logo.png
   color_dark: "#FFFFFF"
-  image_dark: assets/icons/LOGO_SPLASHS.png
+  image_dark: assets/icons/crazy_reward_logo.png
   android: true
   web: false
 

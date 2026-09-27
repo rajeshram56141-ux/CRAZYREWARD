@@ -1,3 +1,4 @@
+ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
 class SuperOfferNativeManager {
@@ -9,6 +10,7 @@ class SuperOfferNativeManager {
       final bool result = await _channel.invokeMethod<bool>('isAppInstalled', {'packageName': packageName}) ?? false;
       return result;
     } catch (e) {
+      debugPrint('Error checking app install: $e');
       return false;
     }
   }
@@ -19,6 +21,7 @@ class SuperOfferNativeManager {
       final bool result = await _channel.invokeMethod<bool>('launchApp', {'packageName': packageName}) ?? false;
       return result;
     } catch (e) {
+      debugPrint('Error launching app: $e');
       return false;
     }
   }
@@ -28,6 +31,7 @@ class SuperOfferNativeManager {
       final String? result = await _channel.invokeMethod<String?>('getRecentlyInstalledPackage', {'startTimeMs': startTimeMs});
       return result;
     } catch (e) {
+      debugPrint('Error getting recently installed package: $e');
       return null;
     }
   }
@@ -37,6 +41,7 @@ class SuperOfferNativeManager {
       final bool result = await _channel.invokeMethod<bool>('checkUsagePermission') ?? false;
       return result;
     } catch (e) {
+      debugPrint('Error checking usage permission: $e');
       return false;
     }
   }
@@ -45,7 +50,7 @@ class SuperOfferNativeManager {
     try {
       await _channel.invokeMethod('openUsageSettings');
     } catch (e) {
-      // ignore error
+      debugPrint('Error opening usage settings: $e');
     }
   }
 
@@ -58,6 +63,7 @@ class SuperOfferNativeManager {
       }) ?? 0;
       return result;
     } catch (e) {
+      debugPrint('Error getting app usage duration: $e');
       return 0;
     }
   }
@@ -68,6 +74,7 @@ class SuperOfferNativeManager {
       final String? result = await _channel.invokeMethod<String?>('getAppName', {'packageName': packageName});
       return result;
     } catch (e) {
+      debugPrint('Error getting app name: $e');
       return null;
     }
   }
@@ -78,6 +85,7 @@ class SuperOfferNativeManager {
       final int result = await _channel.invokeMethod<int>('getInstallTime', {'packageName': packageName}) ?? 0;
       return result;
     } catch (e) {
+      debugPrint('Error getting install time: $e');
       return 0;
     }
   }

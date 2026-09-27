@@ -103,10 +103,9 @@ class MoreWaysSection extends StatelessWidget {
                   width: cardWidthScaled,
                   title: 'Promo Code',
                   subtitle: 'Win upto 500',
-                  iconPath: 'assets/icons/somthiwnt.png',
-                  iconData: Icons.confirmation_number_rounded,
-                  iconWidth: 38.w,
-                  iconHeight: 38.w,
+                  iconPath: 'assets/Icons1/icons8-voucher-64.png',
+                  iconWidth: 42.w,
+                  iconHeight: 42.w,
                   onTap: () {
                     HapticFeedback.lightImpact();
                     if (!SplashService.isScreenEnabled('promoCode')) {

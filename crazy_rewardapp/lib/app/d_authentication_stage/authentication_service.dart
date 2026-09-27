@@ -30,23 +30,31 @@ class AuthenticationService {
     if (!accepted) return;
 
     try {
-      await _googleSignIn.initialize();
-      // Sign out first to ensure clean state
-      await _googleSignIn.signOut();
+      try {
+        await _googleSignIn.initialize();
+      } catch (e) {
+        debugPrint('GoogleSignIn initialize warning: $e');
+      }
+
+      try {
+        // Sign out first to ensure clean state
+        await _googleSignIn.signOut();
+      } catch (_) {}
 
       GoogleSignInAccount? account;
       try {
         account = await _googleSignIn.authenticate();
-      } catch (_) {
+      } catch (e) {
+        debugPrint('GoogleSignIn.authenticate error: $e');
         account = null;
       }
 
       if (account == null) {
-        // User cancelled or error
+        debugPrint('Google sign in: user cancelled or account is null');
         return;
       }
 
-      final GoogleSignInAuthentication googleAuth = await account.authentication;
+      final GoogleSignInAuthentication googleAuth = account.authentication;
       final String? idToken = googleAuth.idToken;
 
       if (idToken == null) {
@@ -204,8 +212,8 @@ class AuthenticationService {
         if (!context.mounted) return;
         CustomToast.showToast(context);
       }
-    } catch (e) {
-       // debugPrint(e.toString());
+    } catch (e, stack) {
+      debugPrint('Google Sign-in Exception: $e\n$stack');
       if (!context.mounted) return;
       CustomToast.showToast(context);
     }
@@ -257,8 +265,8 @@ class AuthenticationService {
       if (context.mounted) {
         AutoRouter.of(context).replace(DashboardScreenRoute(userId: user.uid));
       }
-    } catch (e) {
-       // debugPrint(e.toString());
+    } catch (e, stack) {
+      debugPrint('Anonymous Sign-In Exception: $e\n$stack');
       if (!context.mounted) return;
       CustomToast.showToast(context);
     }
@@ -274,14 +282,22 @@ class AuthenticationService {
         return;
       }
 
-      await _googleSignIn.initialize();
-      // Sign out first to ensure clean state
-      await _googleSignIn.signOut();
+      try {
+        await _googleSignIn.initialize();
+      } catch (e) {
+        debugPrint('GoogleSignIn initialize warning: $e');
+      }
+
+      try {
+        // Sign out first to ensure clean state
+        await _googleSignIn.signOut();
+      } catch (_) {}
 
       GoogleSignInAccount? account;
       try {
         account = await _googleSignIn.authenticate();
-      } catch (_) {
+      } catch (e) {
+        debugPrint('GoogleSignIn.authenticate error: $e');
         account = null;
       }
 
@@ -290,7 +306,7 @@ class AuthenticationService {
         return;
       }
 
-      final GoogleSignInAuthentication googleAuth = await account.authentication;
+      final GoogleSignInAuthentication googleAuth = account.authentication;
       final String? idToken = googleAuth.idToken;
 
       if (idToken == null) {

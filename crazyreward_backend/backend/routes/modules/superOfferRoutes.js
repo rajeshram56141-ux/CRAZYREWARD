@@ -235,8 +235,8 @@ router.post(['/super-offer-verify', '/verify'], cryptoMiddleware, async (req, re
 
         const activeMethod = superOfferConfig.activeMethod || (
             (!superOfferConfig.superOfferVerificationEnabled && !installTask) ? 1 :
-            (!superOfferConfig.superOfferVerificationEnabled && installTask) ? 2 :
-            (superOfferConfig.superOfferVerificationEnabled && !superOfferConfig.screenshotVerificationEnabled) ? 3 : 4
+                (!superOfferConfig.superOfferVerificationEnabled && installTask) ? 2 :
+                    (superOfferConfig.superOfferVerificationEnabled && !superOfferConfig.screenshotVerificationEnabled) ? 3 : 4
         );
 
         return res.status(200).json({
@@ -327,10 +327,16 @@ router.post(['/', '/reward/super-offer', '/claim-super-offer', '/claim', '/super
             : (appDataDoc && appDataDoc.superOfferConfig ? appDataDoc.superOfferConfig : {});
 
         // 🛡️ Security Fix: Calculate Authoritative Server-Side Coins and Gems (Never trust client body)
-        const configuredInstallCoins = Number(superOfferConfig.coins || superOfferConfig.installCoins || 0);
-        const coinsToAdd = configuredInstallCoins > 0 ? configuredInstallCoins : (Number(coins) > 0 ? Math.min(Number(coins), 100) : 0);
-        const configuredGemsRequired = Number(superOfferConfig.gemsRequired !== undefined ? superOfferConfig.gemsRequired : gemsRequired);
-        const gemsToDeduct = Math.max(0, configuredGemsRequired);
+        const configuredReward = Number(superOfferConfig.reward || superOfferConfig.coins || superOfferConfig.installCoins || 0);
+        const coinsToAdd = configuredReward > 0 ? configuredReward : Math.max(0, Number(coins) || 0);
+
+        // If offer is already unlocked (user already spent gems during unlock) or client sends gemsRequired == 0, gemsToDeduct MUST be 0!
+        const isAlreadyUnlocked = user.isSuperOfferUnlocked === true;
+        let gemsToDeduct = 0;
+        if (!isAlreadyUnlocked && req.body?.gemsRequired !== 0 && req.body?.gemsRequired !== '0') {
+            const configuredGemsRequired = Number(superOfferConfig.gemsRequired !== undefined ? superOfferConfig.gemsRequired : (gemsRequired || 0));
+            gemsToDeduct = Math.max(0, configuredGemsRequired);
+        }
 
         const limitType = user.superOfferAssignType || superOfferConfig.limitType || 'hours';
         const defaultDailyLimit = parseNumberOrRange(superOfferConfig.superOfferDailyLimit || superOfferConfig.dailyLimit) || 1;
@@ -362,6 +368,7 @@ router.post(['/', '/reward/super-offer', '/claim-super-offer', '/claim', '/super
 
         user.coins = (user.coins || 0) + coinsToAdd;
         user.totalCoins = (user.totalCoins || 0) + coinsToAdd;
+        user.completedSuperOffers = (Number(user.completedSuperOffers) || 0) + 1;
 
         // In Method 4 (screenshot verification enabled), DO NOT trigger cooldown or daily limit on Step 1 Install!
         // Cooldown and daily limit must trigger only when screenshot proof is uploaded in /submit-screenshot.
@@ -465,7 +472,7 @@ router.post(['/', '/reward/super-offer', '/claim-super-offer', '/claim', '/super
                     await cacheService.del('so_user_' + normalizedUid);
                     await cacheService.del('user_data_' + normalizedUid);
                 }
-            } catch (_) {}
+            } catch (_) { }
         } catch (soErr) {
             console.error('⚠️ Failed to auto-log SuperOfferHistory in claim:', soErr.message);
         }
@@ -474,7 +481,7 @@ router.post(['/', '/reward/super-offer', '/claim-super-offer', '/claim', '/super
         try {
             const { trackDailyChallengeProgress } = require('./dailyChallengeApiRoutes');
             trackDailyChallengeProgress(userId, 'super_offer', 1);
-        } catch (_) {}
+        } catch (_) { }
 
         // 🤝 Referral Commission & Joinee Bonus Trigger
         try {
@@ -554,12 +561,14 @@ router.post('/log-activity', cryptoMiddleware, async (req, res) => {
 
         if (status === 'uninstalled' || status === 'removed') {
             await User.updateOne(
-                { $or: [
-                    { userId: String(userId).trim() },
-                    { email: String(userId).trim() },
-                    { gmail: String(userId).trim() },
-                    { firebaseUid: String(userId).trim() }
-                ] },
+                {
+                    $or: [
+                        { userId: String(userId).trim() },
+                        { email: String(userId).trim() },
+                        { gmail: String(userId).trim() },
+                        { firebaseUid: String(userId).trim() }
+                    ]
+                },
                 { $set: { isSuperOfferUnlocked: false, superOfferUnlockedAt: null } }
             );
 
@@ -698,7 +707,7 @@ router.post('/submit-screenshot', cryptoMiddleware, async (req, res) => {
                 await cacheService.del('so_user_' + String(userId).trim());
                 await cacheService.del('user_data_' + String(userId).trim());
             }
-        } catch (_) {}
+        } catch (_) { }
 
         // Auto-approve logic if enabled
         try {
@@ -767,7 +776,7 @@ router.post('/submit-screenshot', cryptoMiddleware, async (req, res) => {
                                     await cacheService.del('so_user_' + String(user.userId).trim());
                                     await cacheService.del('user_data_' + String(user.userId).trim());
                                 }
-                            } catch (_) {}
+                            } catch (_) { }
 
                             // Send Notification
                             try {
@@ -1249,7 +1258,7 @@ router.post('/claim-usage-step', cryptoMiddleware, async (req, res) => {
                 await cacheService.del('so_user_' + normalizedUid);
                 await cacheService.del('user_data_' + normalizedUid);
             }
-        } catch (_) {}
+        } catch (_) { }
 
         return res.json({
             success: true,

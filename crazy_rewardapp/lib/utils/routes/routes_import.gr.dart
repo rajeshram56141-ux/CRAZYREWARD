@@ -34,7 +34,7 @@ import 'package:crazyreward/app/e_dashboard_stage/sections/a_home/daily_task/dai
     as _i39;
 import 'package:crazyreward/app/e_dashboard_stage/sections/a_home/daily_task/daily_task_screen.dart'
     as _i10;
-import 'package:crazyreward/app/e_dashboard_stage/sections/a_home/diamond_catch/diamond_catch_screen.dart'
+import 'package:crazyreward/app/e_dashboard_stage/sections/a_home/Crazy_racing/crazy_racing_screen.dart'
     as _i12;
 import 'package:crazyreward/app/e_dashboard_stage/sections/a_home/giveaway/giveaway_details_screen.dart'
     as _i15;
@@ -775,6 +775,9 @@ class DiamondCatchScreenRoute
     },
   );
 }
+
+typedef CrazyRacingScreenRoute = DiamondCatchScreenRoute;
+typedef CrazyRacingScreenRouteArgs = DiamondCatchScreenRouteArgs;
 
 class DiamondCatchScreenRouteArgs {
   const DiamondCatchScreenRouteArgs({

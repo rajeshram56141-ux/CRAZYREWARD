@@ -458,10 +458,16 @@ class ProfileBody extends HookConsumerWidget {
                                               width: 1,
                                             ),
                                           ),
-                                          child: Icon(
-                                            Icons.confirmation_number_rounded,
-                                            color: Colors.white,
-                                            size: 19.sp,
+                                          child: Image.asset(
+                                            'assets/Icons1/icons8-voucher-64.png',
+                                            width: 20.w,
+                                            height: 20.w,
+                                            fit: BoxFit.contain,
+                                            errorBuilder: (_, __, ___) => Icon(
+                                              Icons.confirmation_number_rounded,
+                                              color: Colors.white,
+                                              size: 19.sp,
+                                            ),
                                           ),
                                         ),
                                         SizedBox(width: 8.w),
@@ -578,8 +584,8 @@ class ProfileBody extends HookConsumerWidget {
                                                 borderColor: Colors.transparent,
                                               )
                                             : Image.asset(
-                                                'assets/icons/DIAMONDPANDA_LOGO.png',
-                                                fit: BoxFit.cover,
+                                                'assets/icons/crazy_reward_logo.png',
+                                                fit: BoxFit.contain,
                                                 errorBuilder: (_, __, ___) => Container(
                                                   color: const Color(0xFF1E1B2E),
                                                   child: Icon(

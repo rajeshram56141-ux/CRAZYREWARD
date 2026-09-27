@@ -75,8 +75,9 @@ class DailyCheckInPopup extends HookConsumerWidget {
     final bool canClaim = !isClaimedLocal.value;
 
     useEffect(() {
-      if (canClaim && SplashService.streakConfig.rewardedAds) {
+      if (canClaim) {
         AdManager().preloadRewarded();
+        AdManager().preloadInterstitial();
       }
       return null;
     }, const []);
@@ -87,129 +88,79 @@ class DailyCheckInPopup extends HookConsumerWidget {
       HapticFeedback.lightImpact();
       isClaiming.value = true;
 
+      bool hasClaimed = false;
+      Future<void> executeClaim() async {
+        if (hasClaimed) return;
+        hasClaimed = true;
+
+        try {
+          await CloudFunctions.streakReward();
+          isClaimedLocal.value = true;
+          ref.invalidate(DashboardService.userDataProvider(userId));
+          if (context.mounted) {
+            isClaiming.value = false;
+            CustomStatusPopup.showSuccess(
+              context: context,
+              tag: 'Daily Streak',
+              title: '+$todayCoins Coins',
+              message:
+                  'Congratulations! You have claimed Day ${(currentIdx + 1)} streak reward of $todayCoins coins.',
+              primaryButtonText: 'AWESOME! 🎉',
+              onPrimaryTap: () => Navigator.pop(context),
+            );
+          }
+        } catch (e) {
+          if (context.mounted) {
+            isClaiming.value = false;
+            CustomStatusPopup.showFailed(
+              context: context,
+              tag: 'Oops!',
+              title: 'Claim Error',
+              message:
+                  'Something went wrong while claiming your streak reward. Please try again.',
+              primaryButtonText: 'CLOSE',
+              onPrimaryTap: () => Navigator.pop(context),
+            );
+          }
+        }
+      }
+
       try {
         if (SplashService.streakConfig.rewardedAds) {
-          bool rewardEarned = false;
           await AdManager().showRewardedAd(
             context: context,
             onReward: () async {
-              rewardEarned = true;
+              await executeClaim();
             },
             onAdClicked: () async {},
             onAdClosed: (bool earned) async {
-              if (earned || rewardEarned) {
-                try {
-                  await CloudFunctions.streakReward();
-                  isClaimedLocal.value = true;
-                  ref.invalidate(DashboardService.userDataProvider(userId));
-                  if (context.mounted) {
-                    isClaiming.value = false;
-                    CustomStatusPopup.showSuccess(
-                      context: context,
-                      tag: 'Daily Streak',
-                      title: '+$todayCoins Coins',
-                      message:
-                          'Congratulations! You have claimed Day ${(currentIdx + 1)} streak reward of $todayCoins coins.',
-                      primaryButtonText: 'AWESOME! 🎉',
-                      onPrimaryTap: () => Navigator.pop(context),
-                    );
-                  }
-                } catch (e) {
-                  if (context.mounted) {
-                    isClaiming.value = false;
-                    CustomStatusPopup.showFailed(
-                      context: context,
-                      tag: 'Oops!',
-                      title: 'Claim Error',
-                      message:
-                          'Something went wrong while claiming your streak reward. Please try again.',
-                      primaryButtonText: 'CLOSE',
-                      onPrimaryTap: () => Navigator.pop(context),
-                    );
-                  }
-                }
-              } else {
-                isClaiming.value = false;
-              }
+              await executeClaim();
             },
-            onAdFailed: () {
-              isClaiming.value = false;
-              if (context.mounted) {
-                CustomStatusPopup.showFailed(
-                  context: context,
-                  tag: 'Ad Unavailable',
-                  title: 'Claim Failed',
-                  message:
-                      'Ad is currently unavailable. Please try again in a few moments.',
-                  primaryButtonText: 'TRY AGAIN 🔄',
-                  onPrimaryTap: () => Navigator.pop(context),
-                );
-              }
+            onAdFailed: () async {
+              // High-priority automatic fallback: show Interstitial Ad if Rewarded Video is buffering / fails
+              await AdManager().showInterstitialAd(
+                onClosed: () async {
+                  await executeClaim();
+                },
+                onAdFailed: () async {
+                  // If both fail, safely execute claim
+                  await executeClaim();
+                },
+              );
             },
           );
         } else {
           await AdManager().showInterstitialAd(
             onClosed: () async {
-              try {
-                await CloudFunctions.streakReward();
-                isClaimedLocal.value = true;
-                ref.invalidate(DashboardService.userDataProvider(userId));
-                if (context.mounted) {
-                  isClaiming.value = false;
-                  CustomStatusPopup.showSuccess(
-                    context: context,
-                    tag: 'Daily Streak',
-                    title: '+$todayCoins Coins',
-                    message:
-                        'Congratulations! You have claimed Day ${(currentIdx + 1)} streak reward of $todayCoins coins.',
-                    primaryButtonText: 'AWESOME! 🎉',
-                    onPrimaryTap: () => Navigator.pop(context),
-                  );
-                }
-              } catch (e) {
-                if (context.mounted) {
-                  isClaiming.value = false;
-                  CustomStatusPopup.showFailed(
-                    context: context,
-                    tag: 'Oops!',
-                    title: 'Claim Error',
-                    message:
-                        'Something went wrong while claiming your streak reward. Please try again.',
-                    primaryButtonText: 'CLOSE',
-                    onPrimaryTap: () => Navigator.pop(context),
-                  );
-                }
-              }
+              await executeClaim();
             },
-            onAdFailed: () {
-              isClaiming.value = false;
-              if (context.mounted) {
-                CustomStatusPopup.showFailed(
-                  context: context,
-                  tag: 'Ad Unavailable',
-                  title: 'Claim Failed',
-                  message:
-                      'Ad is currently unavailable. Please try again in a few moments.',
-                  primaryButtonText: 'TRY AGAIN 🔄',
-                  onPrimaryTap: () => Navigator.pop(context),
-                );
-              }
+            onAdFailed: () async {
+              await executeClaim();
             },
           );
         }
       } catch (e) {
-        isClaiming.value = false;
-        if (context.mounted) {
-          CustomStatusPopup.showFailed(
-            context: context,
-            tag: 'Oops!',
-            title: 'Claim Error',
-            message:
-                'Something went wrong while claiming your streak reward. Please try again.',
-            primaryButtonText: 'CLOSE',
-            onPrimaryTap: () => Navigator.pop(context),
-          );
-        }
+        await executeClaim();
       }
     }
 

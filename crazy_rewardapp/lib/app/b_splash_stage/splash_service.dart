@@ -97,6 +97,18 @@ class SplashService {
     if (key == 'readAndEarn' && screenSettings.containsKey('readTask')) {
       return getScreenStatus('readTask');
     }
+    if (key == 'dailyTasks' && screenSettings.containsKey('dailyTask')) {
+      return getScreenStatus('dailyTask');
+    }
+    if (key == 'dailyTask' && screenSettings.containsKey('dailyTasks')) {
+      return getScreenStatus('dailyTasks');
+    }
+    if ((key == 'dailyTasks' || key == 'dailyTask') && screenSettings.containsKey('hotOffers')) {
+      return getScreenStatus('hotOffers');
+    }
+    if ((key == 'dailyTasks' || key == 'dailyTask') && screenSettings.containsKey('hot_offers')) {
+      return getScreenStatus('hot_offers');
+    }
     if (key == 'diamondCatch' && screenSettings.containsKey('diamond_catch')) {
       return getScreenStatus('diamond_catch');
     }

@@ -6478,8 +6478,19 @@ router.get('/super-offer', adminAuth, checkPermission('superOffer', 'dailyTasks'
         const appDataDoc = await AppData.findOne({ key: 'appData' }).lean();
         const superOfferConfig = appDataDoc?.config?.superOfferConfig || {};
 
+        let pendingCount = await ScreenshotProof.countDocuments({
+            $or: [
+                { offerId: { $regex: 'super_offer', $options: 'i' } },
+                { eventName: { $regex: 'super offer', $options: 'i' } },
+                { offerName: { $regex: 'super offer', $options: 'i' } },
+                { appName: { $regex: 'super offer', $options: 'i' } }
+            ],
+            status: { $regex: '^pending', $options: 'i' }
+        });
+
         res.render('super-offer/manage', {
             config: superOfferConfig,
+            pendingCount: pendingCount || 0,
             activePage: 'super-offer',
             photo: req.admin && req.admin.username ? req.admin.username.charAt(0).toUpperCase() : 'A',
             admin: req.admin
@@ -6499,14 +6510,15 @@ router.get('/admin/super-offer/pending-proofs', adminAuth, async (req, res) => {
 
         const query = {
             $or: [
-                { offerId: { $regex: '^super_offer_', $options: 'i' } },
-                { eventName: 'Super Offer Screenshot' },
-                { offerName: { $regex: 'Super Offer', $options: 'i' } }
+                { offerId: { $regex: 'super_offer', $options: 'i' } },
+                { eventName: { $regex: 'super offer', $options: 'i' } },
+                { offerName: { $regex: 'super offer', $options: 'i' } },
+                { appName: { $regex: 'super offer', $options: 'i' } }
             ]
         };
 
         if (status && status !== 'all') {
-            query.status = status;
+            query.status = { $regex: `^${status}`, $options: 'i' };
         }
 
         if (search) {
@@ -6522,10 +6534,46 @@ router.get('/admin/super-offer/pending-proofs', adminAuth, async (req, res) => {
         }
 
         const proofs = await ScreenshotProof.find(query).sort({ createdAt: -1 }).limit(200).lean();
-        return res.json({ success: true, proofs });
+        let pendingCount = await ScreenshotProof.countDocuments({
+            $or: [
+                { offerId: { $regex: 'super_offer', $options: 'i' } },
+                { eventName: { $regex: 'super offer', $options: 'i' } },
+                { offerName: { $regex: 'super offer', $options: 'i' } },
+                { appName: { $regex: 'super offer', $options: 'i' } }
+            ],
+            status: { $regex: '^pending', $options: 'i' }
+        });
+
+        // Ensure pendingCount is at least the number of pending proofs found in query
+        const localPendingCount = proofs.filter(p => !p.status || String(p.status).toLowerCase().startsWith('pending')).length;
+        if (localPendingCount > pendingCount) {
+            pendingCount = localPendingCount;
+        }
+
+        return res.json({ success: true, proofs, pendingCount });
     } catch (err) {
         console.error('🔥 Error fetching super offer pending proofs:', err);
         return res.status(500).json({ success: false, message: 'Server error' });
+    }
+});
+
+// GET SUPER OFFER PENDING COUNT
+router.get('/admin/super-offer/pending-count', adminAuth, async (req, res) => {
+    try {
+        await connectMongo();
+        let pendingCount = await ScreenshotProof.countDocuments({
+            $or: [
+                { offerId: { $regex: 'super_offer', $options: 'i' } },
+                { eventName: { $regex: 'super offer', $options: 'i' } },
+                { offerName: { $regex: 'super offer', $options: 'i' } },
+                { appName: { $regex: 'super offer', $options: 'i' } }
+            ],
+            status: { $regex: '^pending', $options: 'i' }
+        });
+        return res.json({ success: true, pendingCount: pendingCount || 0 });
+    } catch (err) {
+        console.error('🔥 Error fetching super offer pending count:', err);
+        return res.json({ success: false, pendingCount: 0 });
     }
 });
 
@@ -7905,11 +7953,12 @@ router.post('/api/admin/clear-user-coins', adminAuth, checkPermission('appConfig
     }
 });
 
-// API: GET DATA OF USER FOR PAYOUT VALIDATION
-router.get('/get-user-data', adminAuth, checkPermission('users'), async (req, res) => {
+// API: GET / POST DATA OF USER FOR USER ACTIVITY & PAYOUT VALIDATION
+router.all(['/get-user-data', '/admin/user-activity/details', '/user-activity/details'], adminAuth, checkPermission('users'), async (req, res) => {
     try {
-        const { userId, email, referCode, startDate, endDate } = req.query;
-        const app = String(req.query?.app || '').trim();
+        const mergedParams = { ...req.query, ...req.body };
+        const { userId, email, referCode, startDate, endDate } = mergedParams;
+        const app = String(mergedParams.app || '').trim();
 
         if (!userId && !email && !referCode) {
             return res.status(400).json({
@@ -7970,6 +8019,28 @@ router.get('/get-user-data', adminAuth, checkPermission('users'), async (req, re
         const resolvedUserId = user.userId;
         const userData = user;
 
+        // ------------------ RESOLVE REFERRER DETAILS ------------------
+        let resolvedReferredBy = userData.referredBy || '';
+        if (userData.referredBy) {
+            try {
+                const referrerUser = await User.findOne({
+                    $or: [
+                        { referralCode: userData.referredBy },
+                        { referralCode: String(userData.referredBy).toUpperCase() },
+                        { userId: userData.referredBy },
+                        { firebaseUid: userData.referredBy }
+                    ]
+                }).select('displayName name referralCode userId').lean();
+                if (referrerUser) {
+                    const rName = referrerUser.displayName || referrerUser.name || 'User';
+                    const rCode = referrerUser.referralCode || referrerUser.userId || userData.referredBy;
+                    resolvedReferredBy = `${rName} (${rCode})`;
+                }
+            } catch (refErr) {
+                console.error('⚠️ Error resolving referrer info:', refErr);
+            }
+        }
+
         // ------------------ BASIC USER DATA ------------------
         const userName = userData.name || 'Unknown User';
         const photoUrl = userData.photoUrl || '';
@@ -8007,17 +8078,83 @@ router.get('/get-user-data', adminAuth, checkPermission('users'), async (req, re
             ];
         }
 
-        const [payoutsMongo, rewardsMongo, totalReferredUsers, superOfferHistory] = await Promise.all([
+        // Build conditions to find referred users by referral code & userId / upline
+        const refConditions = [];
+        if (userRefCode) {
+            refConditions.push({ referredBy: userRefCode });
+            refConditions.push({ referredBy: userRefCode.toUpperCase() });
+            refConditions.push({ referredBy: userRefCode.toLowerCase() });
+        }
+        if (resolvedUserId) {
+            refConditions.push({ referredBy: resolvedUserId });
+            refConditions.push({ upline: resolvedUserId });
+        }
+
+        const [payoutsMongo, rewardsMongo, referredUsersList, superOfferHistory] = await Promise.all([
             PayoutHistory.find(mongoUserQuery).sort({ timestamp: -1, createdAt: -1 }).lean(),
             RewardHistory.find(mongoUserQuery).sort({ timestamp: -1, createdAt: -1 }).lean(),
-            userRefCode ? User.countDocuments({ referredBy: userRefCode }) : Promise.resolve(0),
+            refConditions.length > 0
+                ? User.find({ $or: refConditions })
+                    .select('userId displayName name email coins firstLogin createdAt referredBy upline')
+                    .sort({ firstLogin: -1, createdAt: -1 })
+                    .lean()
+                : Promise.resolve([]),
             SuperOfferHistory.find({ $or: [{ userId: { $in: uidList } }, { userEmail: { $in: uidList } }] }).sort({ createdAt: -1 }).lean()
         ]);
 
+        const inviteHistory = [];
+        let level1Count = 0;
+        let level2Count = 0;
+        let level3Count = 0;
+
+        for (const ru of referredUsersList) {
+            let level = 1;
+            if (Array.isArray(ru.upline)) {
+                const idx = ru.upline.indexOf(resolvedUserId);
+                if (idx === 1) level = 2;
+                else if (idx >= 2) level = 3;
+            }
+
+            if (level === 1) level1Count++;
+            else if (level === 2) level2Count++;
+            else if (level === 3) level3Count++;
+
+            inviteHistory.push({
+                userId: ru.userId,
+                email: ru.email || ru.displayName || ru.name || ru.userId,
+                displayName: ru.displayName || ru.name || 'User',
+                coins: ru.coins || 0,
+                level: level,
+                timestamp: toIsoDate(ru.firstLogin || ru.createdAt),
+                createdAt: toIsoDate(ru.createdAt),
+                firstLogin: toIsoDate(ru.firstLogin)
+            });
+        }
+
+        // Calculate total referral coins earned from reward logs
+        let referralCoinsEarned = 0;
+        for (const rw of rewardsMongo) {
+            const prov = String(rw.provider || '').toLowerCase();
+            if (prov.includes('referral') || prov.includes('invite')) {
+                referralCoinsEarned += Number(rw.coins) || 0;
+            }
+        }
+
+        const totalReferralCount = referredUsersList.length;
+
         const referralStats = {
             referralCode: userRefCode,
-            referred: userData.referredBy || userData.referred || '',
-            totalReferredUsers: totalReferredUsers || 0,
+            referred: resolvedReferredBy || userData.referredBy || '',
+            totalCount: totalReferralCount,
+            totalReferredUsers: totalReferralCount,
+            totalCoins: referralCoinsEarned,
+            level1Count: level1Count,
+            level1Coins: referralCoinsEarned,
+            level2Count: level2Count,
+            level2Coins: 0,
+            level3Count: level3Count,
+            level3Coins: 0,
+            inviteHistory: inviteHistory
         };
 
         const payoutHistory = payoutsMongo.map(data => {
@@ -8239,7 +8376,8 @@ router.get('/get-user-data', adminAuth, checkPermission('users'), async (req, re
 
                 // Referral
                 referralCode: userData.referralCode || userData.referCode || '',
-                referred: userData.referred || '',
+                referredBy: resolvedReferredBy || userData.referredBy || '',
+                referred: userData.referred !== undefined ? Boolean(userData.referred) : Boolean(userData.referredBy),
 
                 // Status
                 blocked: !!userData.isBlocked || !!userData.blocked,

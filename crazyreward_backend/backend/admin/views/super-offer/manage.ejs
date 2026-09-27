@@ -1230,6 +1230,25 @@
             }
         }
 
+        function updatePendingBadge(count) {
+            const badge = document.getElementById('badgePendingCount');
+            if (badge) {
+                badge.innerText = (count !== undefined && count !== null) ? count : 0;
+            }
+        }
+
+        async function fetchPendingProofsCount() {
+            try {
+                const res = await fetch('/admin/super-offer/pending-count');
+                const data = await res.json();
+                if (data.success && data.pendingCount !== undefined) {
+                    updatePendingBadge(data.pendingCount);
+                }
+            } catch (err) {
+                console.error('Error fetching pending proof count:', err);
+            }
+        }
+
         async function fetchPendingProofs() {
             const searchInput = document.getElementById('proofSearchInput');
             const statusFilter = document.getElementById('proofStatusFilter');
@@ -1242,6 +1261,16 @@
             try {
                 const res = await fetch(`/admin/super-offer/pending-proofs?search=${encodeURIComponent(search)}&status=${encodeURIComponent(status)}`);
                 const data = await res.json();
+
+                if (data.success && Array.isArray(data.proofs)) {
+                    const localPending = data.proofs.filter(p => !p.status || String(p.status).toLowerCase().startsWith('pending')).length;
+                    const finalCount = (data.pendingCount !== undefined && data.pendingCount > localPending)
+                        ? data.pendingCount
+                        : ((status === 'pending' && !search) ? data.proofs.length : localPending);
+                    updatePendingBadge(finalCount);
+                } else if (data.pendingCount !== undefined) {
+                    updatePendingBadge(data.pendingCount);
+                }
 
                 if (data.success && data.proofs && data.proofs.length > 0) {
                     tbody.innerHTML = data.proofs.map(p => {
@@ -1361,6 +1390,7 @@
         document.addEventListener('DOMContentLoaded', () => {
             renderUsageSteps();
             toggleAutoApproveFields();
+            fetchPendingProofsCount();
         });
     </script>
     <script src="/js/admin.js"></script>

@@ -59,345 +59,442 @@ class AuthenticationScreen extends HookWidget {
           statusBarColor: Colors.transparent,
           statusBarIconBrightness: Brightness.dark,
           statusBarBrightness: Brightness.light,
+          systemNavigationBarColor: Color(0xFFF1F5F9),
+          systemNavigationBarIconBrightness: Brightness.dark,
         ),
         child: Scaffold(
-          backgroundColor: Colors.black,
+          backgroundColor: const Color(0xFFF1F5F9),
           resizeToAvoidBottomInset: true,
           body: SizedBox(
             width: screenSize.width,
             height: screenSize.height,
             child: Stack(
               children: [
-                // 1. App Wallpaper Background (Fixed Fullscreen)
+                // 1. Ambient Pastel Glow Blobs for depth
                 Positioned(
-                  left: 0,
-                  top: 0,
-                  width: screenSize.width,
-                  height: screenSize.height,
-                  child: Image.asset(
-                    'assets/icons/Splash (2).png',
-                    fit: BoxFit.cover,
+                  top: -60.h,
+                  right: -40.w,
+                  child: Container(
+                    width: 220.w,
+                    height: 220.w,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: const Color(0xFF9333EA).withValues(alpha: 0.08),
+                    ),
+                  ),
+                ),
+                Positioned(
+                  bottom: 60.h,
+                  left: -50.w,
+                  child: Container(
+                    width: 200.w,
+                    height: 200.w,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: const Color(0xFF8B5CF6).withValues(alpha: 0.07),
+                    ),
                   ),
                 ),
 
-
-                // 3. Main Login Content
+                // 2. Main Login Content
                 Positioned.fill(
                   child: SafeArea(
-                  child: Center(
-                    child: SingleChildScrollView(
-                      physics: const BouncingScrollPhysics(),
-                      padding: EdgeInsets.symmetric(vertical: 16.h),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          // Top Hero Section: App Logo + Welcome Text + Subtitle
-                          Padding(
-                            padding: EdgeInsets.only(left: 24.w, right: 0.w),
-                            child: const _AuthSingleHeroSection(),
-                          ),
+                    child: Center(
+                      child: SingleChildScrollView(
+                        physics: const BouncingScrollPhysics(),
+                        padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 12.h),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SizedBox(height: 8.h),
 
-                          SizedBox(height: 24.h),
+                            // Top Hero Section: 3D App Logo + Branding
+                            const _AuthSingleHeroSection(),
 
-                          // Authentication Header
-                          Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 24.w),
-                            child: Row(
-                              children: [
-                                Container(
-                                  width: 6.w,
-                                  height: 20.h,
-                                  decoration: const BoxDecoration(
-                                    color: Colors.black,
-                                  ),
+                            SizedBox(height: 28.h),
+
+                            // Elevated Auth Card Container
+                            Container(
+                              width: double.infinity,
+                              padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 22.h),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(24.r),
+                                border: Border.all(
+                                  color: const Color(0xFFE2E8F0),
+                                  width: 1.2,
                                 ),
-                                SizedBox(width: 8.w),
-                                Text(
-                                  'Authentication',
-                                  style: GoogleFonts.poppins(
-                                    fontSize: 16.sp,
-                                    fontWeight: FontWeight.w700,
-                                    color: Colors.black,
-                                    letterSpacing: 0.2,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: const Color(0xFF0F172A).withValues(alpha: 0.06),
+                                    blurRadius: 20,
+                                    offset: const Offset(0, 8),
                                   ),
-                                ),
-                              ],
-                            ),
-                          ),
-
-                          SizedBox(height: 16.h),
-
-                          // Login Buttons Column
-                          Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 24.w),
-                            child: Column(
-                              children: [
-                              // 1. Google Login (Signature Daily Task Claim-Style Button)
-                              Center(
-                                child: GestureDetector(
-                                  onTapDown: (_) {
-                                    isGooglePressed.value = true;
-                                    HapticFeedback.lightImpact();
-                                  },
-                                  onTapUp: (_) async {
-                                    isGooglePressed.value = false;
-                                    if (isGoogleLoading.value || isGuestLoading.value) return;
-                                    isGoogleLoading.value = true;
-                                    try {
-                                      await AuthenticationService.signInWithGoogle(context);
-                                    } finally {
-                                      isGoogleLoading.value = false;
-                                    }
-                                  },
-                                  onTapCancel: () {
-                                    isGooglePressed.value = false;
-                                  },
-                                  child: AnimatedScale(
-                                    scale: isGooglePressed.value ? 0.96 : 1.0,
-                                    duration: const Duration(milliseconds: 100),
-                                    curve: Curves.easeInOut,
-                                    child: Container(
-                                      width: 220.w,
-                                      height: 52.h,
-                                      decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.circular(14.r),
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color: Colors.black.withValues(
-                                              alpha: isGooglePressed.value ? 0.05 : 0.08,
-                                            ),
-                                            blurRadius: isGooglePressed.value ? 6 : 12,
-                                            offset: Offset(0, isGooglePressed.value ? 2 : 4),
-                                          ),
-                                        ],
-                                      ),
-                                      child: Row(
-                                        children: [
-                                          SizedBox(width: 16.w),
-                                          if (isGoogleLoading.value) ...[
-                                            const GlowLightingSpinner(
-                                              size: 20,
-                                              colors: [
-                                                Color(0xFFAB31DE),
-                                                Color(0xFFAB31DE),
-                                                Color(0xFF5C1B78),
-                                                Color(0xFFAB31DE),
-                                              ],
-                                            ),
-                                          ] else ...[
-                                            Image.asset(
-                                              'assets/icons/google.png',
-                                              height: 20.h,
-                                            ),
-                                          ],
-                                          const Spacer(),
-                                          Text(
-                                            'Google',
-                                            style: GoogleFonts.poppins(
-                                              fontSize: 15.sp,
-                                              fontWeight: FontWeight.w600,
-                                              color: Colors.black87,
-                                              letterSpacing: 0.2,
-                                            ),
-                                          ),
-                                          const Spacer(),
-                                          Icon(
-                                            Icons.arrow_forward_ios_rounded,
-                                            size: 13.sp,
-                                            color: Colors.black54,
-                                          ),
-                                          SizedBox(width: 16.w),
-                                        ],
-                                      ),
-                                    ),
+                                  BoxShadow(
+                                    color: const Color(0xFF9333EA).withValues(alpha: 0.04),
+                                    blurRadius: 12,
+                                    offset: const Offset(0, 2),
                                   ),
-                                ),
+                                ],
                               ),
-
-                              SizedBox(height: 14.h),
-
-                              // 2. Guest Login (Frosted Dark Violet Glass Button)
-                              Center(
-                                child: GestureDetector(
-                                  onTapDown: (_) {
-                                    isGuestPressed.value = true;
-                                    HapticFeedback.lightImpact();
-                                  },
-                                  onTapUp: (_) async {
-                                    isGuestPressed.value = false;
-                                    if (isGuestLoading.value || isGoogleLoading.value) return;
-                                    isGuestLoading.value = true;
-                                    try {
-                                      await AuthenticationService.signInAnonymously(context);
-                                    } finally {
-                                      isGuestLoading.value = false;
-                                    }
-                                  },
-                                  onTapCancel: () {
-                                    isGuestPressed.value = false;
-                                  },
-                                  child: AnimatedScale(
-                                    scale: isGuestPressed.value ? 0.96 : 1.0,
-                                    duration: const Duration(milliseconds: 100),
-                                    curve: Curves.easeInOut,
-                                    child: Container(
-                                      width: 220.w,
-                                      height: 52.h,
-                                      decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.circular(14.r),
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color: Colors.black.withValues(
-                                              alpha: isGuestPressed.value ? 0.05 : 0.08,
-                                            ),
-                                            blurRadius: isGuestPressed.value ? 6 : 12,
-                                            offset: Offset(0, isGuestPressed.value ? 2 : 4),
-                                          ),
-                                        ],
-                                      ),
-                                      child: Row(
-                                        children: [
-                                          SizedBox(width: 16.w),
-                                          if (isGuestLoading.value) ...[
-                                            const GlowLightingSpinner(
-                                              size: 20,
-                                              colors: [
-                                                Color(0xFFAB31DE),
-                                                Color(0xFFAB31DE),
-                                                Color(0xFF5C1B78),
-                                                Color(0xFFAB31DE),
-                                              ],
-                                            ),
-                                          ] else ...[
-                                            Icon(
-                                              Icons.person_outline_rounded,
-                                              color: Colors.black87,
-                                              size: 20.sp,
-                                            ),
-                                          ],
-                                          const Spacer(),
-                                          Text(
-                                            'Guest',
-                                            style: GoogleFonts.poppins(
-                                              fontSize: 14.5.sp,
-                                              fontWeight: FontWeight.w600,
-                                              color: Colors.black87,
-                                              letterSpacing: 0.3,
-                                            ),
-                                          ),
-                                          const Spacer(),
-                                          Icon(
-                                            Icons.arrow_forward_ios_rounded,
-                                            size: 13.sp,
-                                            color: Colors.black54,
-                                          ),
-                                          SizedBox(width: 16.w),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-
-                        SizedBox(height: 28.h),
-
-                          // Contact Support & Disclosure Links
-                          Center(
-                            child: Column(
-                              children: [
-                                GestureDetector(
-                                onTap: () => LaunchUrl.openSupportMail(
-                                  context: context,
-                                  subject: 'Login Problem - Crazyreward',
-                                ),
-                                child: Padding(
-                                  padding: EdgeInsets.only(bottom: 8.h),
-                                  child: Row(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: [
+                                  // Card Title
+                                  Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      Text(
-                                        '${'problem-in-login'.tr()} ',
-                                        style: GoogleFonts.poppins(
-                                          fontSize: 12.sp,
-                                          color: const Color(0xFF475569),
-                                          fontWeight: FontWeight.w500,
+                                      Container(
+                                        width: 24.w,
+                                        height: 2.h,
+                                        decoration: BoxDecoration(
+                                          gradient: const LinearGradient(
+                                            colors: [Colors.transparent, Color(0xFF9333EA)],
+                                          ),
+                                          borderRadius: BorderRadius.circular(2.r),
                                         ),
                                       ),
-                                      Text(
-                                        'contact-us'.tr(),
-                                        style: GoogleFonts.poppins(
-                                          fontSize: 12.sp,
-                                          fontWeight: FontWeight.w700,
-                                          color: const Color(0xFFAB31DE),
-                                          decoration: TextDecoration.underline,
-                                          decorationColor: const Color(0xFFAB31DE),
+                                      Padding(
+                                        padding: EdgeInsets.symmetric(horizontal: 10.w),
+                                        child: Text(
+                                          'Get Started',
+                                          style: GoogleFonts.outfit(
+                                            fontSize: 16.sp,
+                                            fontWeight: FontWeight.w800,
+                                            color: const Color(0xFF1E1B2E),
+                                            letterSpacing: 0.5,
+                                          ),
+                                        ),
+                                      ),
+                                      Container(
+                                        width: 24.w,
+                                        height: 2.h,
+                                        decoration: BoxDecoration(
+                                          gradient: const LinearGradient(
+                                            colors: [Color(0xFF9333EA), Colors.transparent],
+                                          ),
+                                          borderRadius: BorderRadius.circular(2.r),
                                         ),
                                       ),
                                     ],
                                   ),
-                                ),
-                              ),
-
-                              // Small Terms / Privacy disclosure
-                              Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 16.w),
-                                child: Text.rich(
-                                  TextSpan(
-                                    text: 'By continuing, you agree to our ',
-                                    style: GoogleFonts.poppins(
-                                      fontSize: 10.5.sp,
-                                      color: const Color(0xFF475569),
-                                      fontWeight: FontWeight.w400,
+                                  SizedBox(height: 4.h),
+                                  Text(
+                                    'Choose your preferred login method',
+                                    textAlign: TextAlign.center,
+                                    style: GoogleFonts.outfit(
+                                      fontSize: 12.sp,
+                                      color: const Color(0xFF64748B),
+                                      fontWeight: FontWeight.w500,
                                     ),
-                                    children: [
-                                      TextSpan(
-                                        text: 'Terms',
-                                        recognizer: termsRecognizer,
-                                        style: GoogleFonts.poppins(
-                                          fontWeight: FontWeight.w600,
-                                          color: const Color(0xFFAB31DE),
-                                          decoration: TextDecoration.underline,
-                                          decorationColor: const Color(0xFFAB31DE),
-                                        ),
-                                      ),
-                                      const TextSpan(text: ' & '),
-                                      TextSpan(
-                                        text: 'Privacy Policy',
-                                        recognizer: privacyRecognizer,
-                                        style: GoogleFonts.poppins(
-                                          fontWeight: FontWeight.w600,
-                                          color: const Color(0xFFAB31DE),
-                                          decoration: TextDecoration.underline,
-                                          decorationColor: const Color(0xFFAB31DE),
-                                        ),
-                                      ),
-                                    ],
                                   ),
-                                  textAlign: TextAlign.center,
+
+                                  SizedBox(height: 20.h),
+
+                                  // 1. Google Login Button
+                                  GestureDetector(
+                                    behavior: HitTestBehavior.opaque,
+                                    onTapDown: (_) {
+                                      isGooglePressed.value = true;
+                                      HapticFeedback.lightImpact();
+                                    },
+                                    onTapCancel: () {
+                                      isGooglePressed.value = false;
+                                    },
+                                    onTap: () async {
+                                      isGooglePressed.value = false;
+                                      if (isGoogleLoading.value || isGuestLoading.value) return;
+                                      isGoogleLoading.value = true;
+                                      try {
+                                        await AuthenticationService.signInWithGoogle(context);
+                                      } finally {
+                                        isGoogleLoading.value = false;
+                                      }
+                                    },
+                                    child: AnimatedScale(
+                                      scale: isGooglePressed.value ? 0.97 : 1.0,
+                                      duration: const Duration(milliseconds: 100),
+                                      curve: Curves.easeInOut,
+                                      child: Container(
+                                        height: 52.h,
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius: BorderRadius.circular(16.r),
+                                          border: Border.all(
+                                            color: const Color(0xFFE2E8F0),
+                                            width: 1.2,
+                                          ),
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color: const Color(0xFF0F172A).withValues(
+                                                alpha: isGooglePressed.value ? 0.04 : 0.08,
+                                              ),
+                                              blurRadius: isGooglePressed.value ? 4 : 10,
+                                              offset: Offset(0, isGooglePressed.value ? 2 : 4),
+                                            ),
+                                          ],
+                                        ),
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: [
+                                            if (isGoogleLoading.value) ...[
+                                              const GlowLightingSpinner(
+                                                size: 22,
+                                                colors: [
+                                                  Color(0xFF7C3AED),
+                                                  Color(0xFFAB31DE),
+                                                  Color(0xFF5C1B78),
+                                                  Color(0xFF7C3AED),
+                                                ],
+                                              ),
+                                              SizedBox(width: 10.w),
+                                              Text(
+                                                'Connecting...',
+                                                style: GoogleFonts.outfit(
+                                                  fontSize: 14.5.sp,
+                                                  fontWeight: FontWeight.w700,
+                                                  color: const Color(0xFF1E293B),
+                                                ),
+                                              ),
+                                            ] else ...[
+                                              Image.asset(
+                                                'assets/icons/google.png',
+                                                height: 22.h,
+                                                errorBuilder: (_, __, ___) => Icon(
+                                                  Icons.g_mobiledata_rounded,
+                                                  size: 26.sp,
+                                                  color: const Color(0xFF4285F4),
+                                                ),
+                                              ),
+                                              SizedBox(width: 12.w),
+                                              Text(
+                                                'Continue with Google',
+                                                style: GoogleFonts.outfit(
+                                                  fontSize: 14.5.sp,
+                                                  fontWeight: FontWeight.w700,
+                                                  color: const Color(0xFF1E293B),
+                                                  letterSpacing: 0.2,
+                                                ),
+                                              ),
+                                            ],
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+
+                                  SizedBox(height: 12.h),
+
+                                  // 2. Guest Login Button
+                                  GestureDetector(
+                                    behavior: HitTestBehavior.opaque,
+                                    onTapDown: (_) {
+                                      isGuestPressed.value = true;
+                                      HapticFeedback.lightImpact();
+                                    },
+                                    onTapCancel: () {
+                                      isGuestPressed.value = false;
+                                    },
+                                    onTap: () async {
+                                      isGuestPressed.value = false;
+                                      if (isGuestLoading.value || isGoogleLoading.value) return;
+                                      isGuestLoading.value = true;
+                                      try {
+                                        await AuthenticationService.signInAnonymously(context);
+                                      } finally {
+                                        isGuestLoading.value = false;
+                                      }
+                                    },
+                                    child: AnimatedScale(
+                                      scale: isGuestPressed.value ? 0.97 : 1.0,
+                                      duration: const Duration(milliseconds: 100),
+                                      curve: Curves.easeInOut,
+                                      child: Container(
+                                        height: 52.h,
+                                        decoration: BoxDecoration(
+                                          color: const Color(0xFFFAF5FF),
+                                          borderRadius: BorderRadius.circular(16.r),
+                                          border: Border.all(
+                                            color: const Color(0xFFD8B4FE),
+                                            width: 1.2,
+                                          ),
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color: const Color(0xFF9333EA).withValues(
+                                                alpha: isGuestPressed.value ? 0.04 : 0.08,
+                                              ),
+                                              blurRadius: isGuestPressed.value ? 4 : 8,
+                                              offset: Offset(0, isGuestPressed.value ? 2 : 3),
+                                            ),
+                                          ],
+                                        ),
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: [
+                                            if (isGuestLoading.value) ...[
+                                              const GlowLightingSpinner(
+                                                size: 22,
+                                                colors: [
+                                                  Color(0xFFC084FC),
+                                                  Color(0xFFAB31DE),
+                                                  Color(0xFF5C1B78),
+                                                  Color(0xFFC084FC),
+                                                ],
+                                              ),
+                                              SizedBox(width: 10.w),
+                                              Text(
+                                                'Entering as Guest...',
+                                                style: GoogleFonts.outfit(
+                                                  fontSize: 14.5.sp,
+                                                  fontWeight: FontWeight.w700,
+                                                  color: const Color(0xFF7C3AED),
+                                                ),
+                                              ),
+                                            ] else ...[
+                                              Container(
+                                                padding: EdgeInsets.all(4.w),
+                                                decoration: BoxDecoration(
+                                                  color: const Color(0xFF7C3AED).withValues(alpha: 0.12),
+                                                  shape: BoxShape.circle,
+                                                ),
+                                                child: Icon(
+                                                  Icons.person_rounded,
+                                                  color: const Color(0xFF7C3AED),
+                                                  size: 18.sp,
+                                                ),
+                                              ),
+                                              SizedBox(width: 10.w),
+                                              Text(
+                                                'Continue as Guest',
+                                                style: GoogleFonts.outfit(
+                                                  fontSize: 14.5.sp,
+                                                  fontWeight: FontWeight.w700,
+                                                  color: const Color(0xFF7C3AED),
+                                                  letterSpacing: 0.2,
+                                                ),
+                                              ),
+                                            ],
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+
+                            SizedBox(height: 24.h),
+
+                            // Contact Support
+                            GestureDetector(
+                              onTap: () => LaunchUrl.openSupportMail(
+                                context: context,
+                                subject: 'Login Problem - Crazyreward',
+                              ),
+                              child: Container(
+                                padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(20.r),
+                                  border: Border.all(
+                                    color: const Color(0xFFE2E8F0),
+                                    width: 1.2,
+                                  ),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: const Color(0xFF0F172A).withValues(alpha: 0.04),
+                                      blurRadius: 6,
+                                      offset: const Offset(0, 2),
+                                    ),
+                                  ],
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(
+                                      Icons.headset_mic_rounded,
+                                      size: 15.sp,
+                                      color: const Color(0xFF7C3AED),
+                                    ),
+                                    SizedBox(width: 6.w),
+                                    Text(
+                                      '${'problem-in-login'.tr()} ',
+                                      style: GoogleFonts.outfit(
+                                        fontSize: 12.sp,
+                                        color: const Color(0xFF64748B),
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                    Text(
+                                      'contact-us'.tr(),
+                                      style: GoogleFonts.outfit(
+                                        fontSize: 12.sp,
+                                        fontWeight: FontWeight.w700,
+                                        color: const Color(0xFF7C3AED),
+                                        decoration: TextDecoration.underline,
+                                        decorationColor: const Color(0xFF7C3AED),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
-                            ],
-                          ),
+                            ),
+
+                            SizedBox(height: 16.h),
+
+                            // Terms & Privacy disclosure
+                            Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 20.w),
+                              child: Text.rich(
+                                TextSpan(
+                                  text: 'By continuing, you agree to our ',
+                                  style: GoogleFonts.outfit(
+                                    fontSize: 11.sp,
+                                    color: const Color(0xFF94A3B8),
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                  children: [
+                                    TextSpan(
+                                      text: 'Terms',
+                                      recognizer: termsRecognizer,
+                                      style: GoogleFonts.outfit(
+                                        fontWeight: FontWeight.w700,
+                                        color: const Color(0xFF7C3AED),
+                                        decoration: TextDecoration.underline,
+                                        decorationColor: const Color(0xFF7C3AED),
+                                      ),
+                                    ),
+                                    const TextSpan(text: ' & '),
+                                    TextSpan(
+                                      text: 'Privacy Policy',
+                                      recognizer: privacyRecognizer,
+                                      style: GoogleFonts.outfit(
+                                        fontWeight: FontWeight.w700,
+                                        color: const Color(0xFF7C3AED),
+                                        decoration: TextDecoration.underline,
+                                        decorationColor: const Color(0xFF7C3AED),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+
+                            SizedBox(height: 12.h),
+                          ],
                         ),
-                        ],
                       ),
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
-    ),
-  );
-}
+    );
+  }
 }
 
 class _AuthSingleHeroSection extends StatelessWidget {
@@ -405,51 +502,89 @@ class _AuthSingleHeroSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    return Column(
+      mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Expanded(
-          flex: 6,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Brand Gaming Title
-              Text(
-                'Crazyreward',
-                textAlign: TextAlign.left,
-                style: TextStyle(
-                  fontFamily: 'Neogen',
-                  fontSize: 28.sp,
-                  fontWeight: FontWeight.w800,
-                  color: const Color(0xFFAB31DE),
-                  letterSpacing: 0.2,
-                ),
+        // Glowing 3D App Icon
+        Container(
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            boxShadow: [
+              BoxShadow(
+                color: const Color(0xFF9333EA).withValues(alpha: 0.18),
+                blurRadius: 28,
+                spreadRadius: 2,
+                offset: const Offset(0, 6),
               ),
-
-              SizedBox(height: 6.h),
-
-              // Description
-              Text(
-                'Play exciting games, complete tasks, compete on the leaderboard, and have fun every day!',
-                textAlign: TextAlign.left,
-                style: GoogleFonts.poppins(
-                  fontSize: 11.sp,
-                  fontWeight: FontWeight.w400,
-                  color: Colors.black54,
-                  height: 1.35,
-                ),
-              ),
-
             ],
           ),
-        ),
-        SizedBox(width: 8.w),
-        Expanded(
-          flex: 5,
           child: Image.asset(
-            'assets/icons/loginicon.png',
+            'assets/icons/crazy_reward_logo.png',
+            width: 100.w,
+            height: 100.w,
             fit: BoxFit.contain,
+          ),
+        ),
+
+        SizedBox(height: 16.h),
+
+        // Brand Title (Matching Hot Offers KaushanScript Style)
+        Text(
+          'Crazyreward',
+          textAlign: TextAlign.center,
+          style: GoogleFonts.kaushanScript(
+            fontSize: 32.sp,
+            fontWeight: FontWeight.w800,
+            color: const Color(0xFF1E1B2E),
+            letterSpacing: 0.5,
+          ),
+        ),
+
+        SizedBox(height: 6.h),
+
+        // Tagline Pill
+        Container(
+          padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 5.h),
+          decoration: BoxDecoration(
+            color: const Color(0xFFFAF5FF),
+            borderRadius: BorderRadius.circular(16.r),
+            border: Border.all(
+              color: const Color(0xFFD8B4FE),
+              width: 1,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: const Color(0xFF9333EA).withValues(alpha: 0.06),
+                blurRadius: 8,
+              ),
+            ],
+          ),
+          child: Text(
+            'PLAY GAMES • WIN REWARDS',
+            style: GoogleFonts.outfit(
+              fontSize: 10.5.sp,
+              fontWeight: FontWeight.w800,
+              color: const Color(0xFF7C3AED),
+              letterSpacing: 1.2,
+            ),
+          ),
+        ),
+
+        SizedBox(height: 10.h),
+
+        // Description
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 16.w),
+          child: Text(
+            'Play exciting games, complete fun tasks, compete on the leaderboard, and unlock daily prizes!',
+            textAlign: TextAlign.center,
+            style: GoogleFonts.outfit(
+              fontSize: 12.sp,
+              fontWeight: FontWeight.w400,
+              color: const Color(0xFF64748B),
+              height: 1.4,
+            ),
           ),
         ),
       ],

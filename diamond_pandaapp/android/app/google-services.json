@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "751087523012",
+    "project_id": "diamond-panda",
+    "storage_bucket": "diamond-panda.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:751087523012:android:f2a3ead5bd2cda81db6591",
+        "android_client_info": {
+          "package_name": "com.diamondpanda.games"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "751087523012-4ufm4p9a7ohmdnos82hq1h4oev7gg897.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.diamondpanda.games",
+            "certificate_hash": "daa8e849a5cec007448496a2bc394d4957233d3d"
+          }
+        },
+        {
+          "client_id": "751087523012-dfbln7q0ontmccjtjodpsi24kr53054e.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDKk-_YKzm8H6_gzl1iw1_bUkV6Vl4NdPg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "751087523012-dfbln7q0ontmccjtjodpsi24kr53054e.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

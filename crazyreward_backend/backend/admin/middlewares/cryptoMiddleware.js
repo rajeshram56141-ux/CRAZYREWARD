@@ -113,10 +113,10 @@ const cryptoMiddleware = async (req, res, next) => {
     const urlLower = (req.originalUrl || req.url || '').toLowerCase();
     const reqPath = (req.path || '').toLowerCase();
 
-    // Bypass encryption ONLY for explicit Admin panel routes, webhooks, login/logout, postbacks & user balance updates
+    // Bypass encryption ONLY for explicit Admin panel routes, webhooks, login/logout, postbacks, user balance updates & server integrations
     const isBypassPath =
-        ['admin', 'login', 'logout', 'postback', 'webhook', 'verify', 'support', 'promotion', 'update-user-data', 'add-app-bonus', 'deduct-user-coins', 'block-user', 'unblock-user', 'block-payout', 'handle-payout', 'send-notification', 'wallet-catalog', 'app-data-config', 'promoter', 'giveaway', 'task', 'promo', 'delete-user-account', 'toggle-account-deleted', 'bulk-delete-users', 'wipe-user-data', 'reward-history', 'banner'].some(path => urlLower.includes(path)) ||
-        ['/manage-', '/add-', '/giveaway', '/dashboard', '/app-data', '/payment', '/user-', '/redis-'].some(prefix => reqPath.startsWith(prefix)) ||
+        ['admin', 'login', 'logout', 'postback', 'webhook', 'verify', 'support', 'promotion', 'update-user-data', 'add-app-bonus', 'deduct-user-coins', 'block-user', 'unblock-user', 'block-payout', 'handle-payout', 'send-notification', 'wallet-catalog', 'app-data-config', 'promoter', 'giveaway', 'task', 'promo', 'delete-user-account', 'toggle-account-deleted', 'bulk-delete-users', 'wipe-user-data', 'reward-history', 'banner', 'integrations', 'referral-codes'].some(path => urlLower.includes(path)) ||
+        ['/manage-', '/add-', '/giveaway', '/dashboard', '/app-data', '/payment', '/user-', '/redis-', '/api/integrations', '/api/referral-codes'].some(prefix => reqPath.startsWith(prefix)) ||
         Boolean(req.cookies && (req.cookies.adminToken || req.cookies.admin_token || req.cookies.token || req.cookies.admin)) ||
         Boolean(req.session && (req.session.admin || req.session.adminId));
 

@@ -198,6 +198,7 @@
         .badge-offerwall_history { background: #f7fafc; color: #4a5568; border: 1px solid #e2e8f0; }
         .badge-super_offer_history { background: #faf5ff; color: #9333ea; border: 1px solid #d8b4fe; }
         .badge-battle_arena_stats { background: #f1f5f9; color: #0f172a; border: 1px solid #cbd5e1; }
+        .badge-referral_codes_manage { background: #fdf4ff; color: #a21caf; border: 1px solid #f0abfc; }
 
         .scope-group-header {
             font-size: 11px;
@@ -409,6 +410,10 @@
 
                                     <!-- STATS & RECORDS -->
                                     <div class="scope-group-header">📊 Stats, Users & Audit Logs</div>
+                                    <label class="scope-item">
+                                        <input type="checkbox" name="scopes" value="referral_codes_manage">
+                                        <span class="scope-item-text">Referral Codes Sync & Stats (POST/GET /referral-codes)</span>
+                                    </label>
                                     <label class="scope-item">
                                         <input type="checkbox" name="scopes" value="app_analytics">
                                         <span class="scope-item-text">App Overview Stats (App Analytics)</span>
@@ -949,6 +954,47 @@
                             <div style="padding:14px 16px; background:#fff; font-size:13px;">
                                 <p style="margin:0 0 10px 0; color:var(--text-secondary); line-height:1.5;">Queries Battle Arena matches, scores, and winner distributions.</p>
                                 <pre style="background:#1e293b; color:#f8fafc; padding:10px; border-radius:8px; margin:0; overflow-x:auto; font-family:monospace; font-size:11px;">curl -X GET "${origin}/api/integrations/battle-arena-stats?limit=20" \\
+  -H "x-api-key: ${apiKey}"</pre>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                // 15. REFERRAL CODES & CREATORS
+                if (scopes.includes('referral_codes_manage') || scopes.includes('*')) {
+                    html += `
+                        <div style="margin-bottom: 20px; border:1.5px solid #f0abfc; border-radius:14px; overflow:hidden;">
+                            <div style="background:#fdf4ff; padding:10px 16px; display:flex; align-items:center; gap:8px;">
+                                <span style="background:#a21caf; color:#fff; font-size:10.5px; font-weight:800; padding:2px 8px; border-radius:6px; text-transform:uppercase;">POST</span>
+                                <code style="font-size:13px; font-weight:700; color:var(--text-main);">/referral-codes</code>
+                                <span style="margin-left:auto; font-size:11px; color:#a21caf; font-weight:700;">Sync Creator Referral Code</span>
+                            </div>
+                            <div style="padding:14px 16px; background:#fff; font-size:13px;">
+                                <p style="margin:0 0 10px 0; color:var(--text-secondary); line-height:1.5;">Creates or links a creator user with the specified referral code and creates a promoter link for admin tracking.</p>
+                                <strong style="display:block; margin-bottom:4px; font-size:12px; color:var(--text-main);">Payload Fields:</strong>
+                                <span style="color:#a21caf; font-size:12px; font-weight:600;">creatorName, referCode (required), email, channelName</span>
+                                <strong style="display:block; margin-top:8px; margin-bottom:4px; font-size:12px; color:var(--text-main);">cURL Example:</strong>
+                                <pre style="background:#1e293b; color:#f8fafc; padding:10px; border-radius:8px; margin:0 0 10px 0; overflow-x:auto; font-family:monospace; font-size:11px;">curl -X POST "${origin}/api/integrations/referral-codes" \\
+  -H "x-api-key: ${apiKey}" \\
+  -H "Content-Type: application/json" \\
+  -d '{
+    "creatorName": "Gaming Beast",
+    "referCode": "BEAST100",
+    "email": "beast@creator.com",
+    "channelName": "Beast Gaming"
+  }'</pre>
+                            </div>
+                        </div>
+
+                        <div style="margin-bottom: 20px; border:1.5px solid #f0abfc; border-radius:14px; overflow:hidden;">
+                            <div style="background:#fdf4ff; padding:10px 16px; display:flex; align-items:center; gap:8px;">
+                                <span style="background:#a21caf; color:#fff; font-size:10.5px; font-weight:800; padding:2px 8px; border-radius:6px; text-transform:uppercase;">GET</span>
+                                <code style="font-size:13px; font-weight:700; color:var(--text-main);">/referral-codes/:code/stats</code>
+                                <span style="margin-left:auto; font-size:11px; color:#a21caf; font-weight:700;">Get Verified Referral Installs</span>
+                            </div>
+                            <div style="padding:14px 16px; background:#fff; font-size:13px;">
+                                <p style="margin:0 0 10px 0; color:var(--text-secondary); line-height:1.5;">Returns creator information and total verified app installs matching this referral code in referredBy or upline.</p>
+                                <pre style="background:#1e293b; color:#f8fafc; padding:10px; border-radius:8px; margin:0; overflow-x:auto; font-family:monospace; font-size:11px;">curl -X GET "${origin}/api/integrations/referral-codes/BEAST100/stats" \\
   -H "x-api-key: ${apiKey}"</pre>
                             </div>
                         </div>

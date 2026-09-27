@@ -1,3 +1,4 @@
+
 const User = require('../admin/models/user');
 const ReferralSettings = require('../admin/models/referralSettings');
 const RewardHistory = require('../admin/models/rewardHistory');

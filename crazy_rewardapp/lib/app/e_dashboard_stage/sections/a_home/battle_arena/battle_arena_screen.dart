@@ -198,7 +198,7 @@ class BattleArenaScreen extends HookConsumerWidget {
                                               backgroundColor: const Color(0xFFFAF5FF),
                                               backgroundImage: photoUrl.isNotEmpty
                                                   ? NetworkImage(photoUrl)
-                                                  : const AssetImage('assets/icons/DIAMONDPANDA_LOGO.png') as ImageProvider,
+                                                  : const AssetImage('assets/icons/crazy_reward_logo.png') as ImageProvider,
                                             ),
                                           ),
                                         );
@@ -1445,7 +1445,7 @@ class _MyHistoryTabViewState extends State<_MyHistoryTabView> {
                           backgroundColor: const Color(0xFF1E1B2E),
                           backgroundImage: photoUrl.isNotEmpty
                               ? NetworkImage(photoUrl)
-                              : const AssetImage('assets/icons/DIAMONDPANDA_LOGO.png') as ImageProvider,
+                              : const AssetImage('assets/icons/crazy_reward_logo.png') as ImageProvider,
                         ),
                       ),
                       SizedBox(height: 10.h),

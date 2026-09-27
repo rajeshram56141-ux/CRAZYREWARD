@@ -33,7 +33,7 @@ class OnboardingScreen extends HookWidget {
 
   static const List<_IntroSlideData> _slides = [
     _IntroSlideData(
-      imageAsset: 'assets/icons/panda1.png',
+      imageAsset: 'assets/icons/crazy_reward_logo.png',
       tag: 'DISCOVER & PLAY',
       title: 'PLAY EXCITING\nGAMES & TASKS',
       description:
@@ -47,7 +47,7 @@ class OnboardingScreen extends HookWidget {
           'Complete exciting offerwalls, fun game tasks, and super offers to unlock new achievements!',
     ),
     _IntroSlideData(
-      imageAsset: 'assets/icons/panda invite.png',
+      imageAsset: 'assets/icons/invite_friend_boy.png',
       tag: 'INVITE & SHARE',
       title: 'INVITE FRIENDS &\nGET BONUSES',
       description:
@@ -59,7 +59,6 @@ class OnboardingScreen extends HookWidget {
   Widget build(BuildContext context) {
     final currentStep = useState<int>(0); // 0 = Language, 1 = Intro Slides
     final selectedLang = useState<String>(context.locale.languageCode);
-    final isButtonPressed = useState<bool>(false);
     final introPageController = usePageController();
     final currentIntroSlide = useState<int>(0);
 
@@ -69,7 +68,7 @@ class OnboardingScreen extends HookWidget {
           statusBarColor: Colors.transparent,
           statusBarIconBrightness: Brightness.dark,
           statusBarBrightness: Brightness.light,
-          systemNavigationBarColor: Colors.transparent,
+          systemNavigationBarColor: Color(0xFFF1F5F9),
           systemNavigationBarIconBrightness: Brightness.dark,
         ),
       );
@@ -114,21 +113,22 @@ class OnboardingScreen extends HookWidget {
           HapticFeedback.lightImpact();
           onLanguageSelected(lang.locale);
         },
-        child: Container(
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
           padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 13.h),
           decoration: BoxDecoration(
-            color: isSelected ? const Color(0xFFFAF5FF) : Colors.white,
+            color: Colors.white,
             borderRadius: BorderRadius.circular(18.r),
             border: Border.all(
-              color: isSelected ? const Color(0xFFAB31DE) : const Color(0xFFE2E8F0),
-              width: isSelected ? 1.5 : 1,
+              color: isSelected ? const Color(0xFF9333EA) : const Color(0xFFE2E8F0),
+              width: isSelected ? 1.8 : 1.2,
             ),
             boxShadow: [
               BoxShadow(
                 color: isSelected
-                    ? const Color(0xFFAB31DE).withValues(alpha: 0.1)
-                    : Colors.black.withValues(alpha: 0.02),
-                blurRadius: 10,
+                    ? const Color(0xFF9333EA).withValues(alpha: 0.14)
+                    : const Color(0xFF0F172A).withValues(alpha: 0.04),
+                blurRadius: isSelected ? 12 : 8,
                 offset: const Offset(0, 3),
               ),
             ],
@@ -140,11 +140,11 @@ class OnboardingScreen extends HookWidget {
                 width: 44.w,
                 height: 44.w,
                 decoration: BoxDecoration(
-                  color: isSelected ? const Color(0xFFF3E8FF) : const Color(0xFFF1F5F9),
+                  color: isSelected ? const Color(0xFFFAF5FF) : const Color(0xFFF8FAFC),
                   shape: BoxShape.circle,
                   border: Border.all(
-                    color: isSelected ? const Color(0xFFE9D5FF) : const Color(0xFFE2E8F0),
-                    width: 1,
+                    color: isSelected ? const Color(0xFFD8B4FE) : const Color(0xFFE2E8F0),
+                    width: 1.2,
                   ),
                 ),
                 alignment: Alignment.center,
@@ -173,18 +173,17 @@ class OnboardingScreen extends HookWidget {
                     Text(
                       '${lang.languageName.tr()} (${lang.languageName.caps()})',
                       style: GoogleFonts.outfit(
-                        color: isSelected ? const Color(0xFFAB31DE) : const Color(0xFF1E1B4B),
+                        color: const Color(0xFF1E1B2E),
                         fontWeight: isSelected ? FontWeight.w800 : FontWeight.w700,
                         fontSize: 14.5.sp,
+                        letterSpacing: 0.2,
                       ),
                     ),
                     SizedBox(height: 2.h),
                     Text(
                       lang.countryName,
                       style: GoogleFonts.outfit(
-                        color: isSelected
-                            ? const Color(0xFFAB31DE).withValues(alpha: 0.8)
-                            : const Color(0xFF64748B),
+                        color: const Color(0xFF64748B),
                         fontSize: 11.5.sp,
                         fontWeight: FontWeight.w500,
                       ),
@@ -201,12 +200,12 @@ class OnboardingScreen extends HookWidget {
                   shape: BoxShape.circle,
                   gradient: isSelected
                       ? const LinearGradient(
-                          colors: [Color(0xFFBA54EC), Color(0xFFAB31DE)],
+                          colors: [Color(0xFFE39FFF), Color(0xFF9333EA)],
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
                         )
                       : null,
-                  color: isSelected ? null : Colors.white,
+                  color: isSelected ? null : const Color(0xFFF1F5F9),
                   border: Border.all(
                     color: isSelected ? Colors.transparent : const Color(0xFFCBD5E1),
                     width: 1.5,
@@ -214,7 +213,7 @@ class OnboardingScreen extends HookWidget {
                   boxShadow: isSelected
                       ? [
                           BoxShadow(
-                            color: const Color(0xFFAB31DE).withValues(alpha: 0.3),
+                            color: const Color(0xFF9333EA).withValues(alpha: 0.35),
                             blurRadius: 6,
                             offset: const Offset(0, 2),
                           ),
@@ -236,76 +235,6 @@ class OnboardingScreen extends HookWidget {
       );
     }
 
-    // Signature Daily Task Claim-Style Button
-    Widget buildClaimStyleButton({
-      required String label,
-      required VoidCallback onTap,
-      IconData icon = Icons.arrow_forward_rounded,
-    }) {
-      return GestureDetector(
-        onTapDown: (_) {
-          isButtonPressed.value = true;
-          HapticFeedback.lightImpact();
-        },
-        onTapUp: (_) {
-          isButtonPressed.value = false;
-          onTap();
-        },
-        onTapCancel: () {
-          isButtonPressed.value = false;
-        },
-        child: AnimatedScale(
-          scale: isButtonPressed.value ? 0.96 : 1.0,
-          duration: const Duration(milliseconds: 100),
-          curve: Curves.easeInOut,
-          child: Container(
-            width: double.infinity,
-            height: 52.h,
-            decoration: BoxDecoration(
-              gradient: const LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  Color(0xFFE39FFF),
-                  Color(0xFFAB31DE),
-                ],
-              ),
-              borderRadius: BorderRadius.circular(26.r),
-              boxShadow: [
-                BoxShadow(
-                  color: const Color(0xFFAB31DE).withValues(
-                    alpha: isButtonPressed.value ? 0.25 : 0.45,
-                  ),
-                  blurRadius: isButtonPressed.value ? 8 : 16,
-                  offset: Offset(0, isButtonPressed.value ? 2 : 5),
-                ),
-              ],
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  label.toUpperCase(),
-                  style: GoogleFonts.outfit(
-                    color: Colors.white,
-                    fontSize: 15.sp,
-                    fontWeight: FontWeight.w700,
-                    letterSpacing: 0.8,
-                  ),
-                ),
-                SizedBox(width: 8.w),
-                Icon(
-                  icon,
-                  color: Colors.white,
-                  size: 20.sp,
-                ),
-              ],
-            ),
-          ),
-        ),
-      );
-    }
-
     // Step 0: Language Selection View
     Widget buildLanguageView() {
       return SafeArea(
@@ -313,20 +242,21 @@ class OnboardingScreen extends HookWidget {
           children: [
             // 1. Top Header Bar
             Padding(
-              padding: EdgeInsets.fromLTRB(16.w, 12.h, 16.w, 4.h),
+              padding: EdgeInsets.fromLTRB(16.w, 14.h, 16.w, 4.h),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
                     'Select Language',
                     textAlign: TextAlign.center,
-                    style: GoogleFonts.outfit(
-                      color: const Color(0xFF1E1B4B),
-                      fontSize: 22.sp,
+                    style: GoogleFonts.kaushanScript(
+                      color: const Color(0xFF1E1B2E),
+                      fontSize: 28.sp,
                       fontWeight: FontWeight.w800,
+                      letterSpacing: 0.5,
                     ),
                   ),
-                  SizedBox(height: 4.h),
+                  SizedBox(height: 6.h),
                   Text(
                     'Choose your preferred language for the app',
                     textAlign: TextAlign.center,
@@ -340,7 +270,7 @@ class OnboardingScreen extends HookWidget {
               ),
             ),
 
-            SizedBox(height: 12.h),
+            SizedBox(height: 14.h),
 
             // 2. Expanded Language Selection Cards List
             Expanded(
@@ -357,8 +287,8 @@ class OnboardingScreen extends HookWidget {
 
             // 3. Bottom Action Button Container
             Padding(
-              padding: EdgeInsets.fromLTRB(20.w, 8.h, 20.w, 52.h),
-              child: buildClaimStyleButton(
+              padding: EdgeInsets.fromLTRB(20.w, 10.h, 20.w, 20.h),
+              child: _EngagingShimmerActionButton(
                 label: 'continue'.tr(),
                 onTap: onLanguageContinue,
               ),
@@ -389,12 +319,19 @@ class OnboardingScreen extends HookWidget {
                     child: Container(
                       padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 7.h),
                       decoration: BoxDecoration(
-                        color: const Color(0xFFF3E8FF),
+                        color: Colors.white,
                         borderRadius: BorderRadius.circular(20.r),
                         border: Border.all(
-                          color: const Color(0xFFE9D5FF),
-                          width: 1,
+                          color: const Color(0xFFE2E8F0),
+                          width: 1.2,
                         ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: const Color(0xFF0F172A).withValues(alpha: 0.05),
+                            blurRadius: 8,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
                       ),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
@@ -402,7 +339,7 @@ class OnboardingScreen extends HookWidget {
                           Text(
                             'SKIP',
                             style: GoogleFonts.outfit(
-                              color: const Color(0xFFAB31DE),
+                              color: const Color(0xFF7C3AED),
                               fontSize: 12.sp,
                               fontWeight: FontWeight.w800,
                               letterSpacing: 0.8,
@@ -412,7 +349,7 @@ class OnboardingScreen extends HookWidget {
                           Icon(
                             Icons.arrow_forward_ios_rounded,
                             size: 11.sp,
-                            color: const Color(0xFFAB31DE),
+                            color: const Color(0xFF7C3AED),
                           ),
                         ],
                       ),
@@ -442,47 +379,55 @@ class OnboardingScreen extends HookWidget {
                         // Clean Floating Hero Illustration
                         _IntroHeroGraphicWidget(imageAsset: slide.imageAsset),
 
-                        SizedBox(height: 32.h),
+                        SizedBox(height: 18.h),
 
                         // Tag Pill Badge
                         Container(
                           padding: EdgeInsets.symmetric(
                             horizontal: 14.w,
-                            vertical: 5.h,
+                            vertical: 6.h,
                           ),
                           decoration: BoxDecoration(
-                            color: const Color(0xFFF3E8FF),
+                            color: const Color(0xFFFAF5FF),
                             borderRadius: BorderRadius.circular(12.r),
                             border: Border.all(
-                              color: const Color(0xFFE9D5FF),
+                              color: const Color(0xFFD8B4FE),
                               width: 1,
                             ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: const Color(0xFF9333EA).withValues(alpha: 0.08),
+                                blurRadius: 8,
+                              ),
+                            ],
                           ),
                           child: Text(
                             slide.tag,
-                            style: GoogleFonts.pressStart2p(
-                              color: const Color(0xFFAB31DE),
-                              fontSize: 9.sp,
-                              letterSpacing: 0.5,
+                            style: GoogleFonts.outfit(
+                              color: const Color(0xFF7C3AED),
+                              fontSize: 11.sp,
+                              fontWeight: FontWeight.w800,
+                              letterSpacing: 0.8,
                             ),
-                          ),
-                        ),
-
-                        SizedBox(height: 14.h),
-
-                        // Headline Title
-                        Text(
-                          slide.title,
-                          textAlign: TextAlign.center,
-                          style: GoogleFonts.outfit(
-                            fontSize: 25.sp,
-                            fontWeight: FontWeight.w800,
-                            color: const Color(0xFF1E1B4B),
-                            height: 1.2,
                           ),
                         ),
 
                         SizedBox(height: 10.h),
+
+                        // Headline Title (Matching Hot Offers KaushanScript Style)
+                        Text(
+                          slide.title,
+                          textAlign: TextAlign.center,
+                          style: GoogleFonts.kaushanScript(
+                            fontSize: 25.sp,
+                            fontWeight: FontWeight.w800,
+                            color: const Color(0xFF1E1B2E),
+                            letterSpacing: 0.5,
+                            height: 1.25,
+                          ),
+                        ),
+
+                        SizedBox(height: 8.h),
 
                         // Description Subtitle
                         Text(
@@ -492,11 +437,11 @@ class OnboardingScreen extends HookWidget {
                             fontSize: 13.sp,
                             fontWeight: FontWeight.w500,
                             color: const Color(0xFF64748B),
-                            height: 1.4,
+                            height: 1.35,
                           ),
                         ),
 
-                        SizedBox(height: 18.h),
+                        SizedBox(height: 16.h),
 
                         // Page Indicators
                         Row(
@@ -510,13 +455,13 @@ class OnboardingScreen extends HookWidget {
                               height: 8.w,
                               decoration: BoxDecoration(
                                 color: isCurrent
-                                    ? const Color(0xFFAB31DE)
+                                    ? const Color(0xFF9333EA)
                                     : const Color(0xFFCBD5E1),
                                 borderRadius: BorderRadius.circular(4.r),
                                 boxShadow: isCurrent
                                     ? [
                                         BoxShadow(
-                                          color: const Color(0xFFAB31DE).withValues(alpha: 0.4),
+                                          color: const Color(0xFF9333EA).withValues(alpha: 0.35),
                                           blurRadius: 8,
                                           spreadRadius: 1,
                                         ),
@@ -529,16 +474,13 @@ class OnboardingScreen extends HookWidget {
 
                         SizedBox(height: 16.h),
 
-                        // Action Button (Continue / Get Started)
-                        buildClaimStyleButton(
+                        // Unique Engaging Action Button (Continue / Get Started)
+                        _EngagingShimmerActionButton(
                           label: isLastSlide ? 'GET STARTED' : 'continue'.tr(),
-                          icon: isLastSlide
-                              ? Icons.rocket_launch_rounded
-                              : Icons.arrow_forward_rounded,
                           onTap: onNextIntroSlide,
                         ),
 
-                        SizedBox(height: 36.h),
+                        SizedBox(height: 24.h),
                       ],
                     ),
                   );
@@ -562,11 +504,11 @@ class OnboardingScreen extends HookWidget {
           statusBarColor: Colors.transparent,
           statusBarIconBrightness: Brightness.dark,
           statusBarBrightness: Brightness.light,
-          systemNavigationBarColor: Color(0xFFF8FAFC),
+          systemNavigationBarColor: Color(0xFFF1F5F9),
           systemNavigationBarIconBrightness: Brightness.dark,
         ),
         child: Scaffold(
-          backgroundColor: const Color(0xFFF8FAFC),
+          backgroundColor: const Color(0xFFF1F5F9),
           body: AnimatedSwitcher(
             duration: const Duration(milliseconds: 320),
             switchInCurve: Curves.easeInOut,
@@ -574,24 +516,11 @@ class OnboardingScreen extends HookWidget {
             child: currentStep.value == 0
                 ? Container(
                     key: const ValueKey('language_step'),
-                    color: const Color(0xFFF8FAFC),
                     child: buildLanguageView(),
                   )
                 : Container(
                     key: const ValueKey('intro_step'),
-                    color: const Color(0xFFF8FAFC),
-                    child: Stack(
-                      children: [
-                        Positioned.fill(
-                          child: Image.asset(
-                            'assets/icons/Splash (2).png',
-                            fit: BoxFit.cover,
-                            errorBuilder: (_, __, ___) => const SizedBox.shrink(),
-                          ),
-                        ),
-                        buildIntroView(),
-                      ],
-                    ),
+                    child: buildIntroView(),
                   ),
           ),
         ),
@@ -600,6 +529,187 @@ class OnboardingScreen extends HookWidget {
   }
 }
 
+// -------------------------------------------------------------
+// UNIQUE ENGAGING SHIMMER ACTION BUTTON
+// -------------------------------------------------------------
+class _EngagingShimmerActionButton extends StatefulWidget {
+  final String label;
+  final VoidCallback onTap;
+
+  const _EngagingShimmerActionButton({
+    required this.label,
+    required this.onTap,
+  });
+
+  @override
+  State<_EngagingShimmerActionButton> createState() => _EngagingShimmerActionButtonState();
+}
+
+class _EngagingShimmerActionButtonState extends State<_EngagingShimmerActionButton>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _shimmerController;
+  bool _isPressed = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _shimmerController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 2400),
+    )..repeat();
+  }
+
+  @override
+  void dispose() {
+    _shimmerController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTapDown: (_) {
+        setState(() => _isPressed = true);
+        HapticFeedback.lightImpact();
+      },
+      onTapUp: (_) {
+        setState(() => _isPressed = false);
+        widget.onTap();
+      },
+      onTapCancel: () {
+        setState(() => _isPressed = false);
+      },
+      child: AnimatedScale(
+        scale: _isPressed ? 0.95 : 1.0,
+        duration: const Duration(milliseconds: 120),
+        curve: Curves.easeOutBack,
+        child: Container(
+          width: double.infinity,
+          height: 56.h,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(28.r),
+            boxShadow: [
+              // Vibrant Ambient Color Aura
+              BoxShadow(
+                color: const Color(0xFF7C3AED).withValues(
+                  alpha: _isPressed ? 0.30 : 0.45,
+                ),
+                blurRadius: _isPressed ? 12 : 22,
+                offset: Offset(0, _isPressed ? 3 : 8),
+              ),
+              // Bottom 3D Depth Shadow
+              BoxShadow(
+                color: const Color(0xFF4C1D95).withValues(alpha: 0.35),
+                blurRadius: 6,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(28.r),
+            child: Stack(
+              children: [
+                // 1. Rich Electric Gradient Base
+                Positioned.fill(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      gradient: const LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [
+                          Color(0xFF8B5CF6), // Bright Violet
+                          Color(0xFF6D28D9), // Electric Purple
+                          Color(0xFF4C1D95), // Deep Royal Indigo
+                        ],
+                        stops: [0.0, 0.55, 1.0],
+                      ),
+                      borderRadius: BorderRadius.circular(28.r),
+                      border: Border.all(
+                        color: const Color(0xFFC4B5FD).withValues(alpha: 0.6),
+                        width: 1.4,
+                      ),
+                    ),
+                  ),
+                ),
+
+                // 2. Animated Shimmer Light Beam Sweep
+                Positioned.fill(
+                  child: AnimatedBuilder(
+                    animation: _shimmerController,
+                    builder: (context, child) {
+                      final val = _shimmerController.value;
+                      return Container(
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment(val * 4.0 - 2.0, -1.0),
+                            end: Alignment(val * 4.0 - 0.8, 1.0),
+                            colors: [
+                              Colors.transparent,
+                              Colors.white.withValues(alpha: 0.0),
+                              Colors.white.withValues(alpha: 0.28),
+                              Colors.white.withValues(alpha: 0.0),
+                              Colors.transparent,
+                            ],
+                            stops: const [0.0, 0.35, 0.5, 0.65, 1.0],
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+
+                // 3. Top Glass Gloss Highlight Line
+                Positioned(
+                  top: 1.5,
+                  left: 16.w,
+                  right: 16.w,
+                  height: 1.2,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          Colors.white.withValues(alpha: 0.0),
+                          Colors.white.withValues(alpha: 0.75),
+                          Colors.white.withValues(alpha: 0.0),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+
+                // 4. Foreground Content: Centered Bold Text with 3D Shadow
+                Positioned.fill(
+                  child: Center(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 20.w),
+                      child: Text(
+                        widget.label.toUpperCase(),
+                        textAlign: TextAlign.center,
+                        style: GoogleFonts.outfit(
+                          color: Colors.white,
+                          fontSize: 16.sp,
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: 1.2,
+                          shadows: [
+                            Shadow(
+                              color: Colors.black.withValues(alpha: 0.35),
+                              offset: const Offset(0, 2),
+                              blurRadius: 4,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
 
 // -------------------------------------------------------------
 // HERO GRAPHIC WIDGET
@@ -625,7 +735,7 @@ class _IntroHeroGraphicWidgetState extends State<_IntroHeroGraphicWidget>
       duration: const Duration(milliseconds: 2400),
     )..repeat(reverse: true);
 
-    _floatAnimation = Tween<double>(begin: -6.0, end: 6.0).animate(
+    _floatAnimation = Tween<double>(begin: -5.0, end: 5.0).animate(
       CurvedAnimation(parent: _floatController, curve: Curves.easeInOutSine),
     );
   }
@@ -643,14 +753,28 @@ class _IntroHeroGraphicWidgetState extends State<_IntroHeroGraphicWidget>
       builder: (context, child) {
         return Transform.translate(
           offset: Offset(0, _floatAnimation.value),
-          child: Image.asset(
-            widget.imageAsset,
-            width: 180.w,
-            height: 180.w,
-            fit: BoxFit.contain,
+          child: Container(
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              boxShadow: [
+                BoxShadow(
+                  color: const Color(0xFF9333EA).withValues(alpha: 0.16),
+                  blurRadius: 36,
+                  spreadRadius: 6,
+                ),
+              ],
+            ),
+            child: Image.asset(
+              widget.imageAsset,
+              width: 235.w,
+              height: 235.w,
+              fit: BoxFit.contain,
+            ),
           ),
         );
       },
     );
   }
 }
+
+

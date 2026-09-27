@@ -38,6 +38,7 @@ class DashboardScreen extends HookConsumerWidget {
       }
 
       CloudFunctions.balanceRefreshNotifier.addListener(refreshListener);
+
       return () {
         CloudFunctions.balanceRefreshNotifier.removeListener(refreshListener);
       };
@@ -83,7 +84,7 @@ class DashboardScreen extends HookConsumerWidget {
 
     return userAsync.when(
       loading: () => const Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: Color(0xFFF1F5F9),
         body: HomeScreenShimmer(),
       ),
       error: (err, stack) => const ErrorScreen(),

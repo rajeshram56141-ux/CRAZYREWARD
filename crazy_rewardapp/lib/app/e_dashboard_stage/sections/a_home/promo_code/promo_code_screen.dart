@@ -252,10 +252,16 @@ class PromoCodeScreen extends HookConsumerWidget {
                                     width: 1.0,
                                   ),
                                 ),
-                                child: Icon(
-                                  Icons.confirmation_num_rounded,
-                                  color: const Color(0xFF26262B),
-                                  size: 22.sp,
+                                child: Image.asset(
+                                  'assets/Icons1/icons8-voucher-64.png',
+                                  width: 26.w,
+                                  height: 26.w,
+                                  fit: BoxFit.contain,
+                                  errorBuilder: (_, __, ___) => Icon(
+                                    Icons.confirmation_num_rounded,
+                                    color: const Color(0xFF26262B),
+                                    size: 22.sp,
+                                  ),
                                 ),
                               ),
                               SizedBox(width: 14.w),

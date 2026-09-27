@@ -111,10 +111,18 @@ mixin AdKeys {
     bool? playGamesNative,
     bool? watchVideoNative,
   }) {
-    interstitialKey = (interstitial ?? '').trim();
-    rewardedKey = (rewarded ?? '').trim();
-    nativeKey = (native ?? '').trim();
-    bannerKey = (banner ?? '').trim();
+    if (interstitial != null && interstitial.trim().isNotEmpty) {
+      interstitialKey = interstitial.trim();
+    }
+    if (rewarded != null && rewarded.trim().isNotEmpty) {
+      rewardedKey = rewarded.trim();
+    }
+    if (native != null && native.trim().isNotEmpty) {
+      nativeKey = native.trim();
+    }
+    if (banner != null && banner.trim().isNotEmpty) {
+      bannerKey = banner.trim();
+    }
     if (enabled != null) {
       isAdsEnabled = enabled;
     }

@@ -215,8 +215,8 @@ class TopRecommendedTaskWidget extends StatelessWidget {
         if (!SplashService.isScreenEnabled('diamondCatch')) {
           _showUpcomingPopup(
             context,
-            title: 'Diamond Catch Coming Soon!',
-            message: 'Diamond Catch feature is currently under active development and will be available very soon.',
+            title: 'Crazy Racing Coming Soon!',
+            message: 'Crazy Racing feature is currently under active development and will be available very soon.',
           );
           return;
         }
@@ -224,8 +224,8 @@ class TopRecommendedTaskWidget extends StatelessWidget {
         AutoRouter.of(context).push(
           DiamondCatchScreenRoute(
             userId: userId,
-            installGems: (config['installGems'] as num?)?.toInt() ?? 2,
-            gameGems: (config['gameGems'] as num?)?.toInt() ?? 1,
+            installGems: (config['installGems'] as num?)?.toInt() ?? 10,
+            gameGems: (config['gameGems'] as num?)?.toInt() ?? 10,
             dailyGemsForInstall: (config['dailyGemsForInstall'] as num?)?.toInt() ?? 10,
             gemsRequired: (config['gemsRequired'] as num?)?.toInt() ?? 0,
           ),

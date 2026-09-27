@@ -1,4 +1,4 @@
-import 'dart:async';
+ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
@@ -534,7 +534,7 @@ class SuperOfferStep2ListScreen extends HookConsumerWidget {
       } catch (_) {}
     }, [activePkg.value, userId, usageStepsList, isScreenshotEnabled]);
 
-    // Resumed lifecycle listener: instantly query usage when returning to Crazyreward!
+    // Resumed lifecycle listener: instantly query usage when returning to Diamond Panda!
     useValueChanged<AppLifecycleState?, void>(lifecycleState, (_, __) async {
       if (lifecycleState == AppLifecycleState.resumed) {
         await updateAppUsage();
@@ -572,10 +572,10 @@ class SuperOfferStep2ListScreen extends HookConsumerWidget {
       return () => timer.cancel();
     }, [activePkg.value, userId, usageStepsList]);
 
-    // 2. Separate background poller for native app usage
+    // 2. Separate background poller for native app usage (1 second interval for instant updates)
     useEffect(() {
       updateAppUsage();
-      final usageTimer = Timer.periodic(const Duration(seconds: 3), (_) {
+      final usageTimer = Timer.periodic(const Duration(seconds: 1), (_) {
         updateAppUsage();
         if (isScreenshotEnabled && proofStatus.value == 'pending') {
           checkProofStatus();
@@ -2059,6 +2059,21 @@ class SuperOfferStep2ListScreen extends HookConsumerWidget {
                               onOpenApp: () async {
                                 final pkg = activePkg.value.trim();
                                 if (pkg.isNotEmpty) {
+                                  final hasPerm = await SuperOfferNativeManager.checkUsagePermission();
+                                  if (!hasPerm && context.mounted) {
+                                    await CustomStatusPopup.show(
+                                      context: context,
+                                      type: StatusPopupType.permission,
+                                      title: 'Usage Access Required',
+                                      message: 'Please allow Usage Access permission in Settings so Crazyreward can track your app usage time and reward your coins automatically.',
+                                      primaryButtonText: 'GRANT ACCESS',
+                                      onPrimaryTap: () async {
+                                        Navigator.pop(context);
+                                        await SuperOfferNativeManager.openUsageSettings();
+                                      },
+                                    );
+                                    return;
+                                  }
                                   lastLaunchTime.value = DateTime.now().millisecondsSinceEpoch;
                                   int stepStartMs = getStepStartTime(userId, pkg, stepNumber);
                                   if (stepStartMs <= 0) {
@@ -2960,7 +2975,7 @@ class SuperOfferStep2ListScreen extends HookConsumerWidget {
                 ),
               ),
               Text(
-                formatTime(usedSeconds),
+                '${formatTime(usedSeconds)} / ${formatTime(targetSeconds)}',
                 style: GoogleFonts.outfit(
                   color: const Color(0xFF1E1B4B),
                   fontSize: 12.sp,

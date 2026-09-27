@@ -1,0 +1,1 @@
+/Users/sudeep/Documents/Projects/pubscale_plugin/example/build/app/intermediates/cxx/Debug/5602l1m4/obj/x86_64

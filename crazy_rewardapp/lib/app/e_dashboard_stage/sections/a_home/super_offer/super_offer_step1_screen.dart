@@ -1,4 +1,4 @@
-import 'dart:async';
+ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -241,7 +241,7 @@ class SuperOfferStep1Screen extends HookConsumerWidget {
       }
 
       HapticFeedback.heavyImpact();
-      isClaiming.value = true;
+      isClaiming.value = true;  
       try {
         var pkg = activePkg.value.trim();
         if (pkg.isEmpty) {
@@ -280,8 +280,7 @@ class SuperOfferStep1Screen extends HookConsumerWidget {
             'isVerificationEnabled': true,
             'configSnapshot': SplashService.superOfferConfig,
           });
-          // If screenshot proof is enabled, keep isOfferUnlocked = true until proof submitted
-          SuperOfferWidget.setOfferUnlocked(userId, isScreenshotEnabled);
+          SuperOfferWidget.setOfferUnlocked(userId, false);
         } else {
           SuperOfferStep2ListScreen.removeOffer(userId, pkg);
           SuperOfferWidget.setOfferUnlocked(userId, false);
@@ -309,24 +308,34 @@ class SuperOfferStep1Screen extends HookConsumerWidget {
 
         if (context.mounted) {
           if (!isVerificationEnabled) {
-            CustomToast.showToast(
-              context,
-              msg: '+$effectiveCoins Coins claimed successfully!',
+            await CustomStatusPopup.showSuccess(
+              context: context,
+              title: 'Coins Added!',
+              message: '+$effectiveCoins Coins have been added to your wallet!',
+              primaryButtonText: 'AWESOME',
             );
-            Navigator.pop(context);
+            if (context.mounted) Navigator.pop(context);
           } else {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                builder: (context) => SuperOfferStep2ListScreen(
-                  userId: userId,
-                  coins: effectiveCoins,
-                  packageName: pkg,
-                  appName: actualName,
-                  installTimeText: 'Installed just now',
-                ),
-              ),
+            await CustomStatusPopup.showSuccess(
+              context: context,
+              title: 'Step 1 Completed!',
+              message: '+$effectiveCoins Coins have been credited to your wallet!\nComplete the next step to earn more rewards.',
+              primaryButtonText: 'CONTINUE',
             );
+            if (context.mounted) {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => SuperOfferStep2ListScreen(
+                    userId: userId,
+                    coins: effectiveCoins,
+                    packageName: pkg,
+                    appName: actualName,
+                    installTimeText: 'Installed just now',
+                  ),
+                ),
+              );
+            }
           }
         }
       } catch (e) {
@@ -1073,61 +1082,48 @@ class SuperOfferStep1Screen extends HookConsumerWidget {
                                               ),
                                             ],
                                           )
-                                        : (SplashService.superOfferConfig['superOfferVerificationEnabled'] != false)
-                                            ? Row(
-                                                mainAxisSize: MainAxisSize.min,
-                                                children: [
-                                                  Text(
-                                                    'COLLECT',
-                                                    style: GoogleFonts.outfit(
-                                                      color: Colors.white,
-                                                      fontSize: 16.sp,
-                                                      fontWeight: FontWeight.w900,
-                                                      letterSpacing: 0.4,
-                                                    ),
-                                                  ),
-                                                  SizedBox(width: 6.w),
-                                                  Icon(
-                                                    Icons.arrow_forward_rounded,
-                                                    color: Colors.white,
-                                                    size: 19.sp,
-                                                  ),
-                                                ],
-                                              )
-                                            : Row(
-                                                mainAxisSize: MainAxisSize.min,
-                                                children: [
-                                                  Text(
-                                                    'COLLECT',
-                                                    style: GoogleFonts.outfit(
-                                                      color: Colors.white,
-                                                      fontSize: 16.sp,
-                                                      fontWeight: FontWeight.w900,
-                                                      letterSpacing: 0.4,
-                                                    ),
-                                                  ),
-                                                  SizedBox(width: 8.w),
-                                                  Text(
-                                                    '+$effectiveCoins',
-                                                    style: GoogleFonts.outfit(
-                                                      color: const Color(0xFFFEF08A),
-                                                      fontSize: 16.sp,
-                                                      fontWeight: FontWeight.w900,
-                                                      letterSpacing: 0.2,
-                                                    ),
-                                                  ),
-                                                  SizedBox(width: 5.w),
-                                                  Image.asset(
-                                                    'assets/icons/coin.png',
-                                                    width: 20.w,
-                                                    height: 20.w,
-                                                  ),
-                                                ],
+                                        : Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Text(
+                                                'COLLECT',
+                                                style: GoogleFonts.outfit(
+                                                  color: Colors.white,
+                                                  fontSize: 16.sp,
+                                                  fontWeight: FontWeight.w900,
+                                                  letterSpacing: 0.4,
+                                                ),
                                               ),
-                                  ),
+                                              SizedBox(width: 8.w),
+                                              Text(
+                                                '+$effectiveCoins',
+                                                style: GoogleFonts.outfit(
+                                                  color: const Color(0xFFFEF08A),
+                                                  fontSize: 16.sp,
+                                                  fontWeight: FontWeight.w900,
+                                                  letterSpacing: 0.2,
+                                                ),
+                                              ),
+                                              SizedBox(width: 5.w),
+                                              Image.asset(
+                                                'assets/icons/coin.png',
+                                                width: 20.w,
+                                                height: 20.w,
+                                              ),
+                                              if (SplashService.superOfferConfig['superOfferVerificationEnabled'] != false) ...[
+                                                SizedBox(width: 6.w),
+                                                Icon(
+                                                  Icons.arrow_forward_rounded,
+                                                  color: Colors.white,
+                                                  size: 19.sp,
+                                                ),
+                                              ],
+                                            ],
+                                          ),
                                 ),
                               ),
                             ),
+                          ),
                           )
                         else
                           Row(

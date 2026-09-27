@@ -58,37 +58,33 @@ class DashboardService {
 
   static void setCachedUser(UserDataModel user) {
     _cachedUser = user;
-    try {
-      final storage = GetStorage();
-      storage.write('cached_user_${user.userId}', user.toSnapshot());
-    } catch (_) {}
   }
 
   static UserDataModel? getCachedUser(String userId) {
     if (_cachedUser != null && _cachedUser!.userId == userId) {
       return _cachedUser;
     }
-    try {
-      final storage = GetStorage();
-      final data = storage.read('cached_user_$userId');
-      if (data != null && data is Map) {
-        _cachedUser = UserDataModel.fromJson(Map<String, dynamic>.from(data));
-        return _cachedUser;
-      }
-    } catch (_) {}
     return null;
+  }
+
+  static void clearUserCache(String userId) {
+    _cachedUser = null;
+  }
+
+  static void updateCachedGems(String userId, int newGems) {
+    if (_cachedUser != null && _cachedUser!.userId == userId) {
+      _cachedUser = _cachedUser!.copyWith(gems: newGems);
+    }
   }
 
   //! Helper to fetch user profile from MongoDB
   static Future<UserDataModel?> fetchUserProfile(String userId) async {
     try {
       var firebaseUser = FirebaseAuth.instance.currentUser;
-      if (firebaseUser == null) {
-        firebaseUser = await FirebaseAuth.instance
-            .authStateChanges()
-            .firstWhere((u) => u != null)
-            .timeout(const Duration(seconds: 2), onTimeout: () => null);
-      }
+      firebaseUser ??= await FirebaseAuth.instance
+          .authStateChanges()
+          .firstWhere((u) => u != null)
+          .timeout(const Duration(seconds: 2), onTimeout: () => null);
 
       if (firebaseUser != null) {
         final token = await firebaseUser.getIdToken() ?? '';

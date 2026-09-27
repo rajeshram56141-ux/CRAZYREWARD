@@ -108,7 +108,7 @@ class _SplashViewState extends State<SplashView> with SingleTickerProviderStateM
       duration: const Duration(milliseconds: 2400),
     )..repeat(reverse: true);
 
-    _floatAnimation = Tween<double>(begin: -6.0, end: 6.0).animate(
+    _floatAnimation = Tween<double>(begin: -5.0, end: 5.0).animate(
       CurvedAnimation(parent: _floatController, curve: Curves.easeInOutSine),
     );
   }
@@ -126,42 +126,42 @@ class _SplashViewState extends State<SplashView> with SingleTickerProviderStateM
         statusBarColor: Colors.transparent,
         statusBarIconBrightness: Brightness.dark,
         statusBarBrightness: Brightness.light,
-        systemNavigationBarColor: Colors.black,
-        systemNavigationBarIconBrightness: Brightness.light,
+        systemNavigationBarColor: Colors.white,
+        systemNavigationBarIconBrightness: Brightness.dark,
       ),
       child: Scaffold(
-        backgroundColor: Colors.black,
+        backgroundColor: Colors.white,
         body: Stack(
           children: [
-            // 1. Full App Wallpaper Background
-            Positioned.fill(
-              child: Image.asset(
-                'assets/icons/Splash (2).png',
-                fit: BoxFit.cover,
-              ),
-            ),
-
-
-            // 3. Main Center Splash Content
+            // Main Center Splash Content
             Positioned.fill(
               child: SafeArea(
                 child: Column(
                   children: [
                     const Spacer(flex: 4),
 
-                    // Floating App Logo with Glowing Violet Card
+                    // Floating App Logo (Original Large Size with Elegant Soft Aura)
                     AnimatedBuilder(
                       animation: _floatAnimation,
                       builder: (context, child) {
                         return Transform.translate(
                           offset: Offset(0, _floatAnimation.value),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(24.r),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: const Color(0xFF9333EA).withValues(alpha: 0.16),
+                                  blurRadius: 36,
+                                  spreadRadius: 6,
+                                ),
+                              ],
+                            ),
                             child: Image.asset(
-                              'assets/icons/LOGO_SPLASHS.png',
-                              width: 120.w,
-                              height: 120.w,
-                              fit: BoxFit.cover,
+                              'assets/icons/crazy_reward_logo.png',
+                              width: 140.w,
+                              height: 140.w,
+                              fit: BoxFit.contain,
                             ),
                           ),
                         );
@@ -170,39 +170,49 @@ class _SplashViewState extends State<SplashView> with SingleTickerProviderStateM
 
                     SizedBox(height: 24.h),
 
-                    // App Title
+                    // App Title (Matching Hot Offers KaushanScript Style)
                     Text(
                       'Crazyreward',
                       textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontFamily: 'Neogen',
-                        color: const Color(0xFFAB31DE),
-                        fontSize: 28.sp,
+                      style: GoogleFonts.kaushanScript(
+                        color: const Color(0xFF1E1B2E),
+                        fontSize: 36.sp,
                         fontWeight: FontWeight.w800,
-                        letterSpacing: 0.2,
+                        letterSpacing: 0.5,
                       ),
                     ),
 
-                    SizedBox(height: 6.h),
+                    SizedBox(height: 8.h),
 
-                    // App Subtitle Tagline
-                    Text(
-                      'PLAY GAMES',
-                      textAlign: TextAlign.center,
-                      style: GoogleFonts.poppins(
-                        color: const Color(0xFFA78BFA),
-                        fontSize: 12.sp,
-                        fontWeight: FontWeight.w600,
-                        letterSpacing: 1.6,
+                    // App Subtitle Tagline Pill
+                    Container(
+                      padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 4.h),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFFAF5FF),
+                        borderRadius: BorderRadius.circular(16.r),
+                        border: Border.all(
+                          color: const Color(0xFFD8B4FE),
+                          width: 1,
+                        ),
+                      ),
+                      child: Text(
+                        'PLAY GAMES • WIN REWARDS',
+                        textAlign: TextAlign.center,
+                        style: GoogleFonts.outfit(
+                          color: const Color(0xFF7C3AED),
+                          fontSize: 10.5.sp,
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: 1.2,
+                        ),
                       ),
                     ),
 
                     const Spacer(flex: 3),
 
-                    // Brand New Futuristic Cyber Plasma Energy Loader
-                    const _SplashFuturisticCyberLoader(),
+                    // Clean Modern Loader for White Theme
+                    const _SplashModernLoader(),
 
-                    SizedBox(height: 24.h),
+                    SizedBox(height: 28.h),
                   ],
                 ),
               ),
@@ -215,16 +225,16 @@ class _SplashViewState extends State<SplashView> with SingleTickerProviderStateM
 }
 
 // -------------------------------------------------------------
-// BRAND NEW FUTURISTIC CYBER PLASMA ENERGY LOADER
+// CLEAN MODERN LOADER FOR WHITE THEME
 // -------------------------------------------------------------
-class _SplashFuturisticCyberLoader extends StatefulWidget {
-  const _SplashFuturisticCyberLoader();
+class _SplashModernLoader extends StatefulWidget {
+  const _SplashModernLoader();
 
   @override
-  State<_SplashFuturisticCyberLoader> createState() => _SplashFuturisticCyberLoaderState();
+  State<_SplashModernLoader> createState() => _SplashModernLoaderState();
 }
 
-class _SplashFuturisticCyberLoaderState extends State<_SplashFuturisticCyberLoader>
+class _SplashModernLoaderState extends State<_SplashModernLoader>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
 
@@ -233,7 +243,7 @@ class _SplashFuturisticCyberLoaderState extends State<_SplashFuturisticCyberLoad
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1600),
+      duration: const Duration(milliseconds: 1400),
     )..repeat();
   }
 
@@ -248,24 +258,17 @@ class _SplashFuturisticCyberLoaderState extends State<_SplashFuturisticCyberLoad
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        // Outer Capsule Track with Neon Glow
+        // Outer Track
         Container(
-          width: 180.w,
-          height: 8.h,
+          width: 160.w,
+          height: 6.h,
           decoration: BoxDecoration(
-            color: const Color(0xFF140D2B),
+            color: const Color(0xFFF1F5F9),
             borderRadius: BorderRadius.circular(10.r),
             border: Border.all(
-              color: const Color(0xFFAB31DE).withValues(alpha: 0.4),
+              color: const Color(0xFFE2E8F0),
               width: 1,
             ),
-            boxShadow: [
-              BoxShadow(
-                color: const Color(0xFFAB31DE).withValues(alpha: 0.3),
-                blurRadius: 12,
-                spreadRadius: 1,
-              ),
-            ],
           ),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(10.r),
@@ -278,16 +281,15 @@ class _SplashFuturisticCyberLoaderState extends State<_SplashFuturisticCyberLoad
                     gradient: LinearGradient(
                       begin: Alignment(value * 3.0 - 1.5, 0),
                       end: Alignment(value * 3.0 - 0.5, 0),
-                      colors: [
+                      colors: const [
                         Colors.transparent,
-                        const Color(0xFFAB31DE).withValues(alpha: 0.3),
-                        const Color(0xFFA78BFA),
-                        Colors.white,
-                        const Color(0xFFA78BFA),
-                        const Color(0xFFAB31DE).withValues(alpha: 0.3),
+                        Color(0xFFE9D5FF),
+                        Color(0xFF9333EA),
+                        Color(0xFF7C3AED),
+                        Color(0xFFE9D5FF),
                         Colors.transparent,
                       ],
-                      stops: const [0.0, 0.2, 0.45, 0.5, 0.55, 0.8, 1.0],
+                      stops: const [0.0, 0.25, 0.5, 0.65, 0.85, 1.0],
                     ),
                   ),
                 );
@@ -295,15 +297,15 @@ class _SplashFuturisticCyberLoaderState extends State<_SplashFuturisticCyberLoad
             ),
           ),
         ),
-        SizedBox(height: 12.h),
-        // Subtle Animated Loading Text
+        SizedBox(height: 10.h),
+        // Loading Text
         Text(
           'LOADING...',
           style: GoogleFonts.poppins(
-            color: Colors.black,
+            color: const Color(0xFF94A3B8),
             fontSize: 10.sp,
             fontWeight: FontWeight.w700,
-            letterSpacing: 2.5,
+            letterSpacing: 2.2,
           ),
         ),
       ],

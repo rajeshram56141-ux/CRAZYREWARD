@@ -22,8 +22,14 @@ class CloudFunctions {
   static Future<Map<String, dynamic>> claimGems(
     int gems,
     bool isInstall,
-  ) async =>
-      await _makeCloudCall('claimGems', {'gems': gems, 'isInstall': isInstall});
+  ) async {
+    final Map<String, dynamic> res =
+        await _makeCloudCall('claimGems', {'gems': gems, 'isInstall': isInstall});
+    if (res['response'] == 'success' || res['success'] == true) {
+      triggerBalanceRefresh();
+    }
+    return res;
+  }
 
   //! Track User Activity
   static Future<bool> trackUser() async {

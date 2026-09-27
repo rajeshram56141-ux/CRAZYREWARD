@@ -1,0 +1,21 @@
+{
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "diamond-panda",
+          "appId": "1:751087523012:android:f2a3ead5bd2cda81db6591",
+          "fileOutput": "android/app/google-services.json"
+        }
+      }
+    },
+    "dart": {
+      "lib/services/firebase_options.dart": {
+        "projectId": "diamond-panda",
+        "configurations": {
+          "android": "1:751087523012:android:f2a3ead5bd2cda81db6591"
+        }
+      }
+    }
+  }
+}

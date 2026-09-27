@@ -14,6 +14,7 @@ const DailyTask = require('../admin/models/dailyTask');
 const ReadEarn = require('../admin/models/readEarn');
 const Giveaway = require('../admin/models/giveaway');
 const PromoCode = require('../admin/models/promoCode');
+const Promoter = require('../admin/models/promoter');
 const cacheService = require('../services/cacheService');
 
 // Security key check middleware
@@ -741,6 +742,135 @@ router.delete('/promo-codes/:id', validateApiKey('promo_codes_manage'), async (r
         return res.json({ success: true, message: 'Promo code deleted' });
     } catch (err) {
         return res.status(500).json({ success: false, message: err.message });
+    }
+});
+
+// =========================================================================
+// 12. REFERRAL CODES & CREATOR SYNC API
+// =========================================================================
+
+// 12.1 Sync / Create Creator Referral Code
+router.post('/referral-codes', validateApiKey('referral_codes_manage'), async (req, res) => {
+    try {
+        const { creatorName, referCode, referralCode, email, channelName, app } = req.body || {};
+        const code = String(referCode || referralCode || '').trim().toUpperCase();
+
+        if (!code) {
+            return res.status(400).json({ success: false, message: 'Field referCode is required' });
+        }
+
+        const appName = String(app || process.env.DEFAULT_APP_NAME || 'Crazyreward').trim();
+
+        // Check if referral code already exists in User collection
+        let user = await User.findOne({
+            $or: [
+                { referralCode: code },
+                { referralCode: code.toLowerCase() },
+                { userId: 'creator_' + code.toLowerCase() }
+            ]
+        });
+
+        let isNewUser = false;
+        if (!user) {
+            const userId = 'creator_' + code.toLowerCase();
+            const displayName = String(creatorName || channelName || code).trim();
+            user = new User({
+                userId,
+                email: String(email || '').trim().toLowerCase(),
+                displayName,
+                referralCode: code,
+                isPromoter: true,
+                firstLogin: new Date(),
+                lastActiveAt: new Date()
+            });
+            await user.save();
+            isNewUser = true;
+        } else {
+            // Ensure promoter flag is active
+            if (!user.isPromoter) {
+                user.isPromoter = true;
+                await user.save();
+            }
+        }
+
+        // Link in Promoter collection with app name for admin tracking
+        let promoter = await Promoter.findOne({ userId: user.userId, app: appName });
+        if (!promoter) {
+            promoter = await Promoter.create({
+                userId: user.userId,
+                app: appName,
+                channelName: String(channelName || creatorName || '').trim(),
+                promoDate: new Date()
+            });
+        } else if (channelName && !promoter.channelName) {
+            promoter.channelName = String(channelName).trim();
+            await promoter.save();
+        }
+
+        return res.status(isNewUser ? 201 : 200).json({
+            success: true,
+            message: isNewUser ? 'Creator user and referral code created successfully' : 'Referral code already exists and is linked',
+            data: {
+                userId: user.userId,
+                displayName: user.displayName,
+                referralCode: user.referralCode,
+                email: user.email,
+                channelName: channelName || promoter?.channelName || '',
+                isNewUser
+            }
+        });
+    } catch (err) {
+        console.error('❌ Error syncing referral code via API:', err);
+        return res.status(500).json({ success: false, message: err.message || 'Internal Server Error' });
+    }
+});
+
+// 12.2 Get Creator Referral Stats (Verified Installs)
+router.get('/referral-codes/:code/stats', validateApiKey('referral_codes_manage'), async (req, res) => {
+    try {
+        const rawCode = String(req.params.code || '').trim();
+        if (!rawCode) {
+            return res.status(400).json({ success: false, message: 'Referral code parameter is required' });
+        }
+
+        const cleanCode = rawCode.toUpperCase();
+
+        // Find creator user by referral code or creator userId
+        const creator = await User.findOne({
+            $or: [
+                { referralCode: cleanCode },
+                { referralCode: rawCode },
+                { userId: 'creator_' + rawCode.toLowerCase() },
+                { userId: rawCode }
+            ]
+        }).lean();
+
+        if (!creator) {
+            return res.status(404).json({ success: false, message: 'Creator / Referral code not found' });
+        }
+
+        // Count users who have this creator in their referredBy or upline
+        const refConditions = [
+            { referredBy: creator.referralCode },
+            { referredBy: creator.referralCode.toUpperCase() },
+            { referredBy: creator.referralCode.toLowerCase() },
+            { referredBy: creator.userId },
+            { upline: creator.userId }
+        ];
+
+        const totalVerifiedInstalls = await User.countDocuments({ $or: refConditions });
+
+        return res.json({
+            success: true,
+            referralCode: creator.referralCode,
+            creatorName: creator.displayName || creator.name || 'Creator',
+            creatorUserId: creator.userId,
+            totalVerifiedInstalls,
+            totalInstalls: totalVerifiedInstalls
+        });
+    } catch (err) {
+        console.error('❌ Error fetching referral code stats via API:', err);
+        return res.status(500).json({ success: false, message: err.message || 'Internal Server Error' });
     }
 });
 

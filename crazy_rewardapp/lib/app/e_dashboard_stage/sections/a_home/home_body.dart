@@ -92,10 +92,10 @@ class HomeBody extends HookConsumerWidget {
 
     return Stack(
       children: [
-        // 1. Soft Premium Neutral Background
+        // 1. Soft Premium Neutral Light-Grey Background (matching Auth & Onboarding screens)
         Positioned.fill(
           child: Container(
-            color: const Color(0xFFF8FAFC),
+            color: const Color(0xFFF1F5F9),
           ),
         ),
 
@@ -154,13 +154,10 @@ class HomeBody extends HookConsumerWidget {
                           currentIndex: currentIndex,
                         ),
 
-                        // Daily Task Section (Above Banner Slider)
-                        if (!SplashService.isScreenHidden('dailyTasks'))
+                        // Daily Task / Hot Offers Section (Above Banner Slider)
+                        if (!SplashService.isScreenHidden('dailyTasks') && !SplashService.isScreenHidden('dailyTask'))
                           taskAsync.when(
                             data: (offers) {
-                              if (offers.isEmpty) {
-                                return const SizedBox.shrink();
-                              }
                               return Transform.translate(
                                 offset: Offset(0, -10.h),
                                 child: Padding(
@@ -174,8 +171,22 @@ class HomeBody extends HookConsumerWidget {
                                 ),
                               );
                             },
-                            error: (_, __) => const SizedBox.shrink(),
-                            loading: () => const SizedBox.shrink(),
+                            error: (_, __) => Transform.translate(
+                              offset: Offset(0, -10.h),
+                              child: Padding(
+                                padding: EdgeInsets.only(bottom: 2.h),
+                                child: HomeDailyTaskSection(
+                                  offers: const [],
+                                  userId: userId,
+                                  email: email,
+                                  country: country,
+                                ),
+                              ),
+                            ),
+                            loading: () => Transform.translate(
+                              offset: Offset(0, -10.h),
+                              child: const HomeDailyTaskShimmer(),
+                            ),
                           ),
 
                         // Home Banner Slider

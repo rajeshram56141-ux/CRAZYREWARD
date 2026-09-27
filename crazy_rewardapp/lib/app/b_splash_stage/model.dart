@@ -118,9 +118,24 @@ class StreakConfig {
   factory StreakConfig.fromMap(Map<String, dynamic>? map) {
     final data = map ?? {};
 
+    final dynamic rawAds = data['rewardedAds'] ??
+        data['rewarded_ads'] ??
+        data['ads'] ??
+        data['ad'] ??
+        data['showAds'] ??
+        data['show_ads'] ??
+        data['isAdsEnabled'] ??
+        data['enabled'] ??
+        data['rewarded'];
+
+    final bool isAds = rawAds == true ||
+        rawAds == 1 ||
+        rawAds.toString().toLowerCase() == 'true' ||
+        rawAds.toString().toLowerCase() == '1';
+
     return StreakConfig(
-      coins: data['coins'] ?? 0,
-      rewardedAds: data['rewardedAds'] ?? false,
+      coins: (data['coins'] as num?)?.toInt() ?? 0,
+      rewardedAds: isAds,
     );
   }
 }
@@ -297,10 +312,10 @@ class AdsConfig {
   factory AdsConfig.fromMap(Map<String, dynamic>? map) {
     if (map == null) return const AdsConfig();
     return AdsConfig(
-      interstitialKey: (map['interstitialKey'] ?? '').toString().trim(),
-      rewardedKey: (map['rewardedKey'] ?? '').toString().trim(),
-      nativeKey: (map['nativeKey'] ?? '').toString().trim(),
-      bannerKey: (map['bannerKey'] ?? '').toString().trim(),
+      interstitialKey: (map['interstitialKey'] ?? map['interstitial'] ?? map['interstitial_key'] ?? map['interstitialId'] ?? map['interstitial_id'] ?? '').toString().trim(),
+      rewardedKey: (map['rewardedKey'] ?? map['rewarded'] ?? map['rewarded_key'] ?? map['rewardedId'] ?? map['rewarded_id'] ?? '').toString().trim(),
+      nativeKey: (map['nativeKey'] ?? map['native'] ?? map['native_key'] ?? map['nativeId'] ?? map['native_id'] ?? '').toString().trim(),
+      bannerKey: (map['bannerKey'] ?? map['banner'] ?? map['banner_key'] ?? map['bannerId'] ?? map['banner_id'] ?? '').toString().trim(),
       enabled: map['enabled'] != false,
       homeNativeEnabled: map['homeNativeEnabled'] != false,
       superOfferNativeEnabled: map['superOfferNativeEnabled'] != false,

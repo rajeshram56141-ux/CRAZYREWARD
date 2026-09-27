@@ -1,4 +1,4 @@
-class SuperOfferModel {
+ class SuperOfferModel {
   final int streak;
   final int gems;
   final int dailyGems;

@@ -131,12 +131,16 @@ router.post('/diamond-catch-verify', cryptoMiddleware, async (req, res) => {
         const installTaskEnabled = Boolean(superOfferConfig.installTask === true || superOfferConfig.installTask === 'true');
         const triggerClaimNum = Number(gameInstallTriggerAt || userDoc.superOfferGameInstallTriggerAt || 2);
         const gameInstallTask = installTaskEnabled && (gameClaimsToday + 1) === triggerClaimNum;
+        const configGameGems = superOfferConfig.gameGems !== undefined ? Number(superOfferConfig.gameGems) : 10;
+        const configInstallGems = superOfferConfig.installGems !== undefined ? Number(superOfferConfig.installGems) : 10;
 
         return res.status(200).json({
             success: true,
             gameDailyLimit,
             gameClaimsToday,
             gameInstallTask,
+            gameGems: configGameGems,
+            installGems: configInstallGems,
             gameEligible: isGameEligible,
             serverTodayDateStr: todayIstDateStr,
             assignedDateStr: todayIstDateStr
@@ -155,10 +159,6 @@ router.post(['/reward/gems', '/claim-gems', '/gems'], cryptoMiddleware, antiRepl
         let isInstall = req.body?.isInstall;
         let appName = req.body?.appName || req.headers['app-name'] || req.headers['x-app-name'];
 
-        const isInstallClaim = Boolean(isInstall === true || isInstall === 'true');
-        // 🛡️ Security Fix: Enforce strict server-side gem cap (1 gem for game catch, 2 for install task)
-        const gemsToAdd = isInstallClaim ? 2 : 1;
-
         if (!userId) {
             return res.status(400).json({ success: false, message: 'Missing userId' });
         }
@@ -166,6 +166,22 @@ router.post(['/reward/gems', '/claim-gems', '/gems'], cryptoMiddleware, antiRepl
         await connectMongo();
 
         const superOfferConfig = await getSuperOfferConfig();
+
+        const isInstallClaim = Boolean(isInstall === true || isInstall === 'true');
+        const rawGameGems = Number(superOfferConfig.gameGems);
+        const rawInstallGems = Number(superOfferConfig.installGems);
+        const clientGems = Number(gems);
+
+        let gemsToAdd = 10;
+        if (isInstallClaim) {
+            gemsToAdd = !isNaN(rawInstallGems) && rawInstallGems > 0
+                ? Math.trunc(rawInstallGems)
+                : (!isNaN(clientGems) && clientGems > 0 ? Math.trunc(clientGems) : 10);
+        } else {
+            gemsToAdd = !isNaN(rawGameGems) && rawGameGems > 0
+                ? Math.trunc(rawGameGems)
+                : (!isNaN(clientGems) && clientGems > 0 ? Math.trunc(clientGems) : 10);
+        }
 
         const userDoc = await User.findOne({ userId });
         if (!userDoc) {
