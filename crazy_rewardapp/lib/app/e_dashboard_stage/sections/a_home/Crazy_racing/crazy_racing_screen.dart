@@ -480,15 +480,8 @@ class _CrazyRacingScreenState extends ConsumerState<CrazyRacingScreen>
     _obstacles.removeWhere((obs) => (obs.y - playerCenterY).abs() < 650.0 || obs.y >= playerCenterY - 120.0);
     _player.invulnerableTimer = 2.0; // 2.0s clean race start grace period
 
-    _showStartTutorialGuide = true;
+    _showStartTutorialGuide = false;
     _tutorialGuideTimer?.cancel();
-    _tutorialGuideTimer = Timer(const Duration(milliseconds: 3600), () {
-      if (mounted && _showStartTutorialGuide) {
-        setState(() {
-          _showStartTutorialGuide = false;
-        });
-      }
-    });
 
     setState(() {
       _lastFrameDuration = Duration.zero;

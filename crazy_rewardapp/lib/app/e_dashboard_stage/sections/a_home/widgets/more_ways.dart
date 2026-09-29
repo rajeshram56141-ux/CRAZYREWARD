@@ -71,9 +71,9 @@ class MoreWaysSection extends StatelessWidget {
                 width: cardWidthScaled,
                 title: 'Refer & Earn',
                 subtitle: 'Win upto 500',
-                iconPath: 'assets/Icons1/pngtree-d-blue-shield-with-check-mark-in-orange-circle-icon-security-png-image_16822296 1.png',
-                iconWidth: 40.w,
-                iconHeight: 40.w,
+                iconPath: 'assets/Icons1/Refer & Earn.png',
+                iconWidth: 46.w,
+                iconHeight: 46.w,
                 onTap: () {
                   HapticFeedback.lightImpact();
                   currentIndex.value = 1; // Switches to Refer / Invite Tab
@@ -128,10 +128,10 @@ class MoreWaysSection extends StatelessWidget {
                   width: cardWidthScaled,
                   title: 'Giveaway',
                   subtitle: 'Win upto 500',
-                  iconPath: 'assets/icons/trophy-cup.png',
+                  iconPath: 'assets/Icons1/Giveaway.png',
                   iconData: Icons.card_giftcard_rounded,
-                  iconWidth: 38.w,
-                  iconHeight: 38.w,
+                  iconWidth: 44.w,
+                  iconHeight: 44.w,
                   onTap: () {
                     HapticFeedback.lightImpact();
                     if (!SplashService.isScreenEnabled('giveaway')) {

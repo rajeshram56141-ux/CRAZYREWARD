@@ -126,14 +126,40 @@ class _SplashViewState extends State<SplashView> with SingleTickerProviderStateM
         statusBarColor: Colors.transparent,
         statusBarIconBrightness: Brightness.dark,
         statusBarBrightness: Brightness.light,
-        systemNavigationBarColor: Colors.white,
+        systemNavigationBarColor: Color(0xFFF1F5F9),
         systemNavigationBarIconBrightness: Brightness.dark,
       ),
       child: Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: const Color(0xFFF1F5F9),
         body: Stack(
           children: [
-            // Main Center Splash Content
+            // 1. Ambient Pastel Glow Blobs (Authentication Screen Style)
+            Positioned(
+              top: -60.h,
+              right: -40.w,
+              child: Container(
+                width: 220.w,
+                height: 220.w,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: const Color(0xFF9333EA).withValues(alpha: 0.08),
+                ),
+              ),
+            ),
+            Positioned(
+              bottom: 60.h,
+              left: -50.w,
+              child: Container(
+                width: 200.w,
+                height: 200.w,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: const Color(0xFF8B5CF6).withValues(alpha: 0.07),
+                ),
+              ),
+            ),
+
+            // 2. Main Center Splash Content
             Positioned.fill(
               child: SafeArea(
                 child: Column(

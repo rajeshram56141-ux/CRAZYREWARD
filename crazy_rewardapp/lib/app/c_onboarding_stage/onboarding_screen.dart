@@ -509,19 +509,52 @@ class OnboardingScreen extends HookWidget {
         ),
         child: Scaffold(
           backgroundColor: const Color(0xFFF1F5F9),
-          body: AnimatedSwitcher(
-            duration: const Duration(milliseconds: 320),
-            switchInCurve: Curves.easeInOut,
-            switchOutCurve: Curves.easeInOut,
-            child: currentStep.value == 0
-                ? Container(
-                    key: const ValueKey('language_step'),
-                    child: buildLanguageView(),
-                  )
-                : Container(
-                    key: const ValueKey('intro_step'),
-                    child: buildIntroView(),
+          body: Stack(
+            children: [
+              // 1. Ambient Pastel Glow Blobs (Authentication Screen Style)
+              Positioned(
+                top: -60.h,
+                right: -40.w,
+                child: Container(
+                  width: 220.w,
+                  height: 220.w,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: const Color(0xFF9333EA).withValues(alpha: 0.08),
                   ),
+                ),
+              ),
+              Positioned(
+                bottom: 60.h,
+                left: -50.w,
+                child: Container(
+                  width: 200.w,
+                  height: 200.w,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: const Color(0xFF8B5CF6).withValues(alpha: 0.07),
+                  ),
+                ),
+              ),
+
+              // 2. Animated Step Content
+              Positioned.fill(
+                child: AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 320),
+                  switchInCurve: Curves.easeInOut,
+                  switchOutCurve: Curves.easeInOut,
+                  child: currentStep.value == 0
+                      ? Container(
+                          key: const ValueKey('language_step'),
+                          child: buildLanguageView(),
+                        )
+                      : Container(
+                          key: const ValueKey('intro_step'),
+                          child: buildIntroView(),
+                        ),
+                ),
+              ),
+            ],
           ),
         ),
       ),

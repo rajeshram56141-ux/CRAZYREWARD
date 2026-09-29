@@ -57,9 +57,10 @@ class AuthenticationService {
       final GoogleSignInAuthentication googleAuth = account.authentication;
       final String? idToken = googleAuth.idToken;
 
-      if (idToken == null) {
+      if (idToken == null || idToken.isEmpty) {
+        debugPrint('Google auth idToken is null or empty');
         if (!context.mounted) return;
-        CustomToast.showToast(context);
+        CustomToast.showToast(context, msg: 'Google login failed. Please try again.');
         return;
       }
 
@@ -309,9 +310,10 @@ class AuthenticationService {
       final GoogleSignInAuthentication googleAuth = account.authentication;
       final String? idToken = googleAuth.idToken;
 
-      if (idToken == null) {
+      if (idToken == null || idToken.isEmpty) {
+        debugPrint('Google auth idToken is null or empty');
         if (!context.mounted) return;
-        CustomToast.showToast(context);
+        CustomToast.showToast(context, msg: 'Google account linking failed. Please try again.');
         return;
       }
 

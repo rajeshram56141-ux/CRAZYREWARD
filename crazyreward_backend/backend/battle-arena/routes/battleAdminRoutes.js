@@ -371,7 +371,7 @@ router.post('/quiz-bank/add', adminAuth, async (req, res) => {
             timeLimitSec: Number(timeLimitSec) || 20
         });
 
-        try { await cacheService.delPattern('quiz:*'); } catch (_) {}
+        try { await cacheService.delPattern('quiz:*'); } catch (_) { }
 
         res.redirect('/admin/battle-arena/quiz-bank');
     } catch (err) {
@@ -398,7 +398,7 @@ router.post('/quiz-bank/bulk-upload', adminAuth, async (req, res) => {
                     timeLimitSec: Number(item.timeLimitSec) || 20
                 });
             }
-            try { await cacheService.delPattern('quiz:*'); } catch (_) {}
+            try { await cacheService.delPattern('quiz:*'); } catch (_) { }
         }
         res.redirect('/admin/battle-arena/quiz-bank');
     } catch (err) {
@@ -416,7 +416,7 @@ router.all('/quiz-bank/delete/:id', adminAuth, async (req, res) => {
         } else {
             await QuizQuestion.findByIdAndDelete(id);
         }
-        try { await cacheService.delPattern('quiz:*'); } catch (_) {}
+        try { await cacheService.delPattern('quiz:*'); } catch (_) { }
         res.redirect('/admin/battle-arena/quiz-bank');
     } catch (err) {
         console.error('Delete quiz error:', err);
@@ -657,7 +657,7 @@ function getCurrentCycleId() {
 router.get('/leaderboard', adminAuth, async (req, res) => {
     try {
         await connectMongo();
-        
+
         const formatTimes = (c) => {
             if (c) {
                 const days = Number(c.cycleDays) || 1;
@@ -672,7 +672,7 @@ router.get('/leaderboard', adminAuth, async (req, res) => {
                     c.startTimeFormatted = toISTDateTimeLocal(new Date(Date.now() - days * 24 * 60 * 60 * 1000));
                 }
                 c.autoReschedule = c.autoReschedule !== false;
-                
+
                 let durationStr = `${days} Days`;
                 if (c.startTime && c.nextPayoutTime) {
                     const diffMs = new Date(c.nextPayoutTime).getTime() - new Date(c.startTime).getTime();
@@ -862,20 +862,22 @@ router.post('/leaderboard/cycle/save', adminAuth, async (req, res) => {
         if (isCurrentlyActive) {
             await BattleConfig.findOneAndUpdate(
                 { key: 'battleConfig' },
-                { $set: {
-                    leaderboardId: key,
-                    title: lbTitle,
-                    isActive: true,
-                    rewardTiers: updateData.rewardTiers || undefined,
-                    nextPayoutTime: updateData.nextPayoutTime,
-                    startTime: updateData.startTime,
-                    autoReschedule: updateData.autoReschedule,
-                    autoRewardProcess: updateData.autoRewardProcess,
-                    showWinnersOnly: updateData.showWinnersOnly,
-                    cycleDays: updateData.cycleDays,
-                    cycleType: updateData.cycleType,
-                    rankingBasis: updateData.rankingBasis
-                } },
+                {
+                    $set: {
+                        leaderboardId: key,
+                        title: lbTitle,
+                        isActive: true,
+                        rewardTiers: updateData.rewardTiers || undefined,
+                        nextPayoutTime: updateData.nextPayoutTime,
+                        startTime: updateData.startTime,
+                        autoReschedule: updateData.autoReschedule,
+                        autoRewardProcess: updateData.autoRewardProcess,
+                        showWinnersOnly: updateData.showWinnersOnly,
+                        cycleDays: updateData.cycleDays,
+                        cycleType: updateData.cycleType,
+                        rankingBasis: updateData.rankingBasis
+                    }
+                },
                 { upsert: true }
             );
         }
@@ -977,19 +979,21 @@ router.post('/leaderboard/cycle/toggle/:key', adminAuth, async (req, res) => {
                 await config.save();
                 await BattleConfig.findOneAndUpdate(
                     { key: 'battleConfig' },
-                    { $set: {
-                        leaderboardId: key,
-                        title: config.title,
-                        isActive: true,
-                        rewardTiers: config.rewardTiers,
-                        nextPayoutTime: config.nextPayoutTime,
-                        startTime: config.startTime,
-                        autoReschedule: config.autoReschedule !== false,
-                        autoRewardProcess: config.autoRewardProcess,
-                        showWinnersOnly: config.showWinnersOnly,
-                        cycleDays: config.cycleDays,
-                        cycleType: config.cycleType
-                    } },
+                    {
+                        $set: {
+                            leaderboardId: key,
+                            title: config.title,
+                            isActive: true,
+                            rewardTiers: config.rewardTiers,
+                            nextPayoutTime: config.nextPayoutTime,
+                            startTime: config.startTime,
+                            autoReschedule: config.autoReschedule !== false,
+                            autoRewardProcess: config.autoRewardProcess,
+                            showWinnersOnly: config.showWinnersOnly,
+                            cycleDays: config.cycleDays,
+                            cycleType: config.cycleType
+                        }
+                    },
                     { upsert: true }
                 );
             } else {
@@ -1190,7 +1194,7 @@ router.post('/leaderboard/cycle/end-current', adminAuth, async (req, res) => {
         const cycleDays = Number(config.cycleDays) || 7;
         const cycleTypeStr = (cycleDays === 1) ? 'Daily' : ((cycleDays === 30) ? 'Monthly' : 'Weekly');
         const lbTitle = config.title || `${cycleTypeStr} Leaderboard`;
-        
+
         // Payout Status based on Auto Reward setting:
         // When Manual (autoRewardProcess: false) -> PENDING
         // When Automatic (autoRewardProcess: true) -> PROCESSED
@@ -1296,11 +1300,13 @@ router.post('/leaderboard/cycle/end-current', adminAuth, async (req, res) => {
 
                 await BattleConfig.findOneAndUpdate(
                     { key: 'battleConfig' },
-                    { $set: {
-                        startTime: newStartTime,
-                        nextPayoutTime: newPayoutTime,
-                        isActive: true
-                    } }
+                    {
+                        $set: {
+                            startTime: newStartTime,
+                            nextPayoutTime: newPayoutTime,
+                            isActive: true
+                        }
+                    }
                 );
 
                 // 🚀 Broadcast New Tournament Live Notification
@@ -1323,14 +1329,16 @@ router.post('/leaderboard/cycle/end-current', adminAuth, async (req, res) => {
                 if (nextActive) {
                     await BattleConfig.findOneAndUpdate(
                         { key: 'battleConfig' },
-                        { $set: {
-                            startTime: nextActive.startTime,
-                            nextPayoutTime: nextActive.nextPayoutTime,
-                            isActive: true,
-                            autoReschedule: nextActive.autoReschedule !== false,
-                            title: nextActive.title,
-                            rewardTiers: nextActive.rewardTiers
-                        } }
+                        {
+                            $set: {
+                                startTime: nextActive.startTime,
+                                nextPayoutTime: nextActive.nextPayoutTime,
+                                isActive: true,
+                                autoReschedule: nextActive.autoReschedule !== false,
+                                title: nextActive.title,
+                                rewardTiers: nextActive.rewardTiers
+                            }
+                        }
                     );
                 } else {
                     await BattleConfig.findOneAndUpdate(

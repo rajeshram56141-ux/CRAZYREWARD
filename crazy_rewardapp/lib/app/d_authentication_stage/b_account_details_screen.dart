@@ -85,6 +85,8 @@ class AccountDetailsScreen extends HookConsumerWidget {
         statusBarColor: Colors.transparent,
         statusBarIconBrightness: Brightness.dark,
         statusBarBrightness: Brightness.light,
+        systemNavigationBarColor: Color(0xFFF1F5F9),
+        systemNavigationBarIconBrightness: Brightness.dark,
       ),
       child: PopScope(
         canPop: false,
@@ -94,22 +96,36 @@ class AccountDetailsScreen extends HookConsumerWidget {
           }
         },
         child: Scaffold(
-          backgroundColor: Colors.black,
+          backgroundColor: const Color(0xFFF1F5F9),
           resizeToAvoidBottomInset: true,
           body: SizedBox(
             width: screenSize.width,
             height: screenSize.height,
             child: Stack(
               children: [
-                // 1. App Wallpaper Background (Fixed Fullscreen)
+                // 1. Ambient Pastel Glow Blobs (Authentication Screen Style)
                 Positioned(
-                  left: 0,
-                  top: 0,
-                  width: screenSize.width,
-                  height: screenSize.height,
-                  child: Image.asset(
-                    'assets/icons/Splash (2).png',
-                    fit: BoxFit.cover,
+                  top: -60.h,
+                  right: -40.w,
+                  child: Container(
+                    width: 220.w,
+                    height: 220.w,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: const Color(0xFF9333EA).withValues(alpha: 0.08),
+                    ),
+                  ),
+                ),
+                Positioned(
+                  bottom: 60.h,
+                  left: -50.w,
+                  child: Container(
+                    width: 200.w,
+                    height: 200.w,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: const Color(0xFF8B5CF6).withValues(alpha: 0.07),
+                    ),
                   ),
                 ),
 

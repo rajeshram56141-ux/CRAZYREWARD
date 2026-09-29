@@ -458,15 +458,15 @@ class OfferPartnersSection extends HookConsumerWidget {
       child: Container(
         height: 148.h,
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: const Color(0xFF1E293B),
           borderRadius: BorderRadius.circular(26.r),
           border: Border.all(
-            color: const Color(0xFFF1F5F9),
+            color: const Color(0xFF334155),
             width: 1.5,
           ),
           boxShadow: [
             BoxShadow(
-              color: const Color(0xFF0F172A).withValues(alpha: 0.05),
+              color: Colors.black.withValues(alpha: 0.2),
               blurRadius: 18,
               offset: const Offset(0, 4),
             ),
@@ -484,7 +484,7 @@ class OfferPartnersSection extends HookConsumerWidget {
                 width: 172.w,
                 child: Container(
                   decoration: BoxDecoration(
-                    color: palette.outerGlowColor.withValues(alpha: 0.65),
+                    color: palette.outerGlowColor.withValues(alpha: 0.4),
                     borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(110.r),
                       bottomLeft: Radius.circular(110.r),
@@ -514,72 +514,45 @@ class OfferPartnersSection extends HookConsumerWidget {
                 ),
               ),
 
-              // 3. Right Side 3D Graphic Artwork (panda 2.png tucked even deeper inside card)
+              // 3. Right Side Graphic Artwork (Partner Brand Logo Image)
               Positioned(
-                right: -8.w,
-                bottom: -22.h,
-                width: 134.w,
-                height: 144.h,
+                right: 8.w,
+                top: 0,
+                bottom: 0,
+                width: 120.w,
                 child: Center(
                   child: Hero(
                     tag: 'partner_graphic_${offer.name}_${item.categoryLabel}',
-                    child: Stack(
-                      fit: StackFit.expand,
-                      children: [
-                        // Layer 1: Sharp Upper & Middle 3D Graphic (Body, Head & Arms Sharp)
-                        ShaderMask(
-                          shaderCallback: (rect) {
-                            return const LinearGradient(
-                              begin: Alignment.topCenter,
-                              end: Alignment.bottomCenter,
-                              colors: [
-                                Colors.black,
-                                Colors.black,
-                                Colors.transparent,
-                              ],
-                              stops: [0.0, 0.65, 0.90],
-                            ).createShader(rect);
-                          },
-                          blendMode: BlendMode.dstIn,
-                          child: Image.asset(
-                            'assets/icons/panda 2.png',
+                    child: (offer.config?.iconUrl.isNotEmpty ?? false)
+                        ? Image.network(
+                            offer.config!.iconUrl,
+                            height: 60.h,
+                            fit: BoxFit.contain,
+                            errorBuilder: (_, __, ___) => Image.asset(
+                              offer.logoImage,
+                              height: 60.h,
+                              fit: BoxFit.contain,
+                              errorBuilder: (_, __, ___) => Icon(
+                                isSurvey
+                                    ? Icons.assignment_turned_in_rounded
+                                    : Icons.auto_awesome_rounded,
+                                color: palette.accentArrowColor,
+                                size: 50.w,
+                              ),
+                            ),
+                          )
+                        : Image.asset(
+                            offer.logoImage,
+                            height: 60.h,
                             fit: BoxFit.contain,
                             errorBuilder: (_, __, ___) => Icon(
                               isSurvey
                                   ? Icons.assignment_turned_in_rounded
                                   : Icons.auto_awesome_rounded,
                               color: palette.accentArrowColor,
-                              size: 56.w,
+                              size: 50.w,
                             ),
                           ),
-                        ),
-
-                        // Layer 2: Subtly Blurred Feet Base of Graphic (Pushed lower)
-                        ShaderMask(
-                          shaderCallback: (rect) {
-                            return const LinearGradient(
-                              begin: Alignment.topCenter,
-                              end: Alignment.bottomCenter,
-                              colors: [
-                                Colors.transparent,
-                                Colors.black,
-                                Colors.black,
-                              ],
-                              stops: [0.60, 0.85, 1.0],
-                            ).createShader(rect);
-                          },
-                          blendMode: BlendMode.dstIn,
-                          child: ImageFiltered(
-                            imageFilter: ImageFilter.blur(sigmaX: 4.5, sigmaY: 4.5),
-                            child: Image.asset(
-                              'assets/icons/panda 2.png',
-                              fit: BoxFit.contain,
-                              errorBuilder: (_, __, ___) => const SizedBox.shrink(),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
                   ),
                 ),
               ),
@@ -604,7 +577,7 @@ class OfferPartnersSection extends HookConsumerWidget {
                             color: palette.logoBadgeBg,
                             borderRadius: BorderRadius.circular(18.r),
                             border: Border.all(
-                              color: palette.outerGlowColor,
+                              color: palette.outerGlowColor.withValues(alpha: 0.5),
                               width: 1.0,
                             ),
                           ),
@@ -619,31 +592,39 @@ class OfferPartnersSection extends HookConsumerWidget {
                           ),
                         ),
 
-                        // Bottom-Left Circular Action Arrow Button (Unique Accent Color)
+                        // Bottom-Left Circular Action Arrow Button (Unique Brand Accent Color)
                         Container(
                           width: 38.w,
                           height: 38.w,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            color: Colors.white,
+                            color: offer.enabled
+                                ? palette.accentArrowColor.withValues(alpha: 0.15)
+                                : const Color(0xFF1E293B),
                             border: Border.all(
-                              color: palette.outerGlowColor,
+                              color: offer.enabled
+                                  ? palette.accentArrowColor.withValues(alpha: 0.7)
+                                  : const Color(0xFF334155),
                               width: 1.5,
                             ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: palette.accentArrowColor.withValues(alpha: 0.12),
-                                blurRadius: 6,
-                                offset: const Offset(0, 2),
-                              ),
-                            ],
+                            boxShadow: offer.enabled
+                                ? [
+                                    BoxShadow(
+                                      color: palette.accentArrowColor.withValues(alpha: 0.35),
+                                      blurRadius: 8,
+                                      offset: const Offset(0, 2),
+                                    ),
+                                  ]
+                                : null,
                           ),
                           child: Center(
                             child: Icon(
                               offer.enabled
                                   ? Icons.arrow_forward_rounded
                                   : Icons.lock_rounded,
-                              color: palette.accentArrowColor,
+                              color: offer.enabled
+                                  ? palette.accentArrowColor
+                                  : const Color(0xFF64748B),
                               size: 18.sp,
                             ),
                           ),
@@ -667,7 +648,7 @@ class OfferPartnersSection extends HookConsumerWidget {
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                               style: GoogleFonts.poppins(
-                                color: const Color(0xFF0F172A),
+                                color: Colors.white,
                                 fontSize: 17.sp,
                                 fontWeight: FontWeight.w700,
                                 letterSpacing: -0.2,
@@ -679,7 +660,7 @@ class OfferPartnersSection extends HookConsumerWidget {
                               maxLines: 3,
                               overflow: TextOverflow.ellipsis,
                               style: GoogleFonts.poppins(
-                                color: const Color(0xFF64748B),
+                                color: const Color(0xFF94A3B8),
                                 fontSize: 11.sp,
                                 fontWeight: FontWeight.w400,
                                 height: 1.25,
@@ -700,7 +681,7 @@ class OfferPartnersSection extends HookConsumerWidget {
   }
 }
 
-// Unique Color Palette for Each Card
+// Unique Dark & Vibrant Accent Color Palette for Each Card
 class _CardThemePalette {
   final Color outerGlowColor;
   final Color innerDomeColor;
@@ -716,54 +697,54 @@ class _CardThemePalette {
 }
 
 final List<_CardThemePalette> _themePalettes = const [
-  // 1. Purple Lavender Theme
+  // 1. Purple Violet Theme
   _CardThemePalette(
-    outerGlowColor: Color(0xFFF3E8FF),
-    innerDomeColor: Color(0xFFF0E5FF),
-    logoBadgeBg: Color(0xFFF8F5FF),
-    accentArrowColor: Color(0xFF9333EA),
+    outerGlowColor: Color(0xFF6D28D9),
+    innerDomeColor: Color(0xFF4C1D95),
+    logoBadgeBg: Color(0xFF2E1065),
+    accentArrowColor: Color(0xFFA78BFA),
   ),
   // 2. Sky Blue Theme
   _CardThemePalette(
-    outerGlowColor: Color(0xFFE0F2FE),
-    innerDomeColor: Color(0xFFBAE6FD),
-    logoBadgeBg: Color(0xFFF0F9FF),
-    accentArrowColor: Color(0xFF0284C7),
+    outerGlowColor: Color(0xFF0369A1),
+    innerDomeColor: Color(0xFF075985),
+    logoBadgeBg: Color(0xFF0C4A6E),
+    accentArrowColor: Color(0xFF38BDF8),
   ),
   // 3. Emerald Mint Theme
   _CardThemePalette(
-    outerGlowColor: Color(0xFFD1FAE5),
-    innerDomeColor: Color(0xFFA7F3D0),
-    logoBadgeBg: Color(0xFFECFDF5),
-    accentArrowColor: Color(0xFF059669),
+    outerGlowColor: Color(0xFF047857),
+    innerDomeColor: Color(0xFF065F46),
+    logoBadgeBg: Color(0xFF022C22),
+    accentArrowColor: Color(0xFF34D399),
   ),
   // 4. Rose Pink Theme
   _CardThemePalette(
-    outerGlowColor: Color(0xFFFCE7F3),
-    innerDomeColor: Color(0xFFFBCFE8),
-    logoBadgeBg: Color(0xFFFDF2F8),
-    accentArrowColor: Color(0xFFDB2777),
+    outerGlowColor: Color(0xFFBE185D),
+    innerDomeColor: Color(0xFF831843),
+    logoBadgeBg: Color(0xFF500724),
+    accentArrowColor: Color(0xFFF472B6),
   ),
   // 5. Golden Amber Theme
   _CardThemePalette(
-    outerGlowColor: Color(0xFFFEF3C7),
-    innerDomeColor: Color(0xFFFDE68A),
-    logoBadgeBg: Color(0xFFFFFBEB),
-    accentArrowColor: Color(0xFFD97706),
+    outerGlowColor: Color(0xFFB45309),
+    innerDomeColor: Color(0xFF78350F),
+    logoBadgeBg: Color(0xFF451A03),
+    accentArrowColor: Color(0xFFFBBF24),
   ),
   // 6. Indigo Violet Theme
   _CardThemePalette(
-    outerGlowColor: Color(0xFFE0E7FF),
-    innerDomeColor: Color(0xFFC7D2FE),
-    logoBadgeBg: Color(0xFFEEF2FF),
-    accentArrowColor: Color(0xFF4F46E5),
+    outerGlowColor: Color(0xFF4338CA),
+    innerDomeColor: Color(0xFF3730A3),
+    logoBadgeBg: Color(0xFF1E1B4B),
+    accentArrowColor: Color(0xFF818CF8),
   ),
   // 7. Peach Coral Theme
   _CardThemePalette(
-    outerGlowColor: Color(0xFFFFEDD5),
-    innerDomeColor: Color(0xFFFED7AA),
-    logoBadgeBg: Color(0xFFFFF7ED),
-    accentArrowColor: Color(0xFFEA580C),
+    outerGlowColor: Color(0xFFC2410C),
+    innerDomeColor: Color(0xFF7C2D12),
+    logoBadgeBg: Color(0xFF431407),
+    accentArrowColor: Color(0xFFFB923C),
   ),
 ];
 

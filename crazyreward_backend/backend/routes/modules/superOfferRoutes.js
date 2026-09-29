@@ -123,10 +123,9 @@ router.post(['/super-offer-verify', '/verify'], cryptoMiddleware, async (req, re
                 }
             } else {
                 userSuperOfferLimit = null;
-                if (!userDoc.superOfferGapMinutes) {
-                    userDoc.superOfferGapMinutes = parseNumberOrRange(superOfferConfig.gapMinutes || superOfferConfig.hoursGap) || 60;
-                    updateFields.superOfferGapMinutes = userDoc.superOfferGapMinutes;
-                }
+                const freshGap = parseNumberOrRange(superOfferConfig.gapMinutes || superOfferConfig.hoursGap) || 60;
+                userDoc.superOfferGapMinutes = freshGap;
+                updateFields.superOfferGapMinutes = freshGap;
             }
         }
 
@@ -145,7 +144,8 @@ router.post(['/super-offer-verify', '/verify'], cryptoMiddleware, async (req, re
             await User.updateOne({ _id: userDoc._id || undefined, userId: userDoc.userId || userId }, { $set: updateFields }).catch(() => { });
         }
 
-        const gapMinutes = Number(userDoc.superOfferGapMinutes || superOfferConfig.gapMinutes || superOfferConfig.hoursGap || 60);
+        const globalGapMinutes = parseNumberOrRange(superOfferConfig.gapMinutes || superOfferConfig.hoursGap);
+        const gapMinutes = Number((globalGapMinutes !== null && globalGapMinutes !== undefined && !isNaN(globalGapMinutes) && globalGapMinutes > 0) ? globalGapMinutes : (userDoc.superOfferGapMinutes || 60));
         const hoursGap = gapMinutes;
         const dailyLimit = userSuperOfferLimit || 10;
 
@@ -1043,7 +1043,8 @@ router.post('/deduct-gems', cryptoMiddleware, async (req, res) => {
             $or: [
                 { userId: String(userId).trim() },
                 { email: String(userId).trim() },
-                { gmail: String(userId).trim() }
+                { gmail: String(userId).trim() },
+                { firebaseUid: String(userId).trim() }
             ]
         });
 

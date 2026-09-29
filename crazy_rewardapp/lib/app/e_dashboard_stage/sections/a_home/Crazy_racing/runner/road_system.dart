@@ -1425,6 +1425,9 @@ class RoadVisualRenderer {
   // --------------------------------------------------------------------------
   // WHITE DASHED LANE DIVIDERS
   // --------------------------------------------------------------------------
+  // --------------------------------------------------------------------------
+  // WHITE/NEON DASHED LANE DIVIDERS & GLOW
+  // --------------------------------------------------------------------------
   static void _drawLaneDividerMarkings({
     required Canvas canvas,
     required Size size,
@@ -1443,6 +1446,14 @@ class RoadVisualRenderer {
     const int stripeSteps = 20;
     final double baseSpacing = roadHeight / stripeSteps;
 
+    // Draw Outer Track Boundary Lines (Yellow / Neon White)
+    final Paint boundaryLinePaint = Paint()
+      ..color = const Color(0xFFFBBF24).withValues(alpha: 0.85)
+      ..strokeWidth = 3.5
+      ..style = PaintingStyle.stroke;
+    canvas.drawLine(Offset(roadTopLeft, horizonY), Offset(roadLeft, size.height), boundaryLinePaint);
+    canvas.drawLine(Offset(size.width - roadTopLeft, horizonY), Offset(roadRight, size.height), boundaryLinePaint);
+
     for (int lineIndex = 1; lineIndex <= 2; lineIndex++) {
       for (int i = 0; i < stripeSteps + 4; i++) {
         final double rawY = horizonY + ((i * baseSpacing + roadScrollOffset) % (roadHeight + baseSpacing));
@@ -1453,15 +1464,27 @@ class RoadVisualRenderer {
 
         if (sy < horizonY + 2 || sy > size.height) continue;
 
-        final double stripeLength = (8.0 + perspectiveProgress * 28.0);
-        final double strokeW = (1.2 + perspectiveProgress * 3.2);
+        final double stripeLength = (10.0 + perspectiveProgress * 32.0);
+        final double strokeW = (1.8 + perspectiveProgress * 4.2);
 
         final double currentRoadLeft = roadTopLeft + (roadLeft - roadTopLeft) * perspectiveProgress;
         final double currentLaneWidth = (roadTopWidth + (roadBottomWidth - roadTopWidth) * perspectiveProgress) / 3;
         final double lx = currentRoadLeft + lineIndex * currentLaneWidth;
 
+        // Soft Glow Backdrop
+        final glowPaint = Paint()
+          ..color = theme.laneStripeColor.withValues(alpha: (0.22 * perspectiveProgress).clamp(0.0, 0.45))
+          ..strokeWidth = strokeW + 3.0
+          ..strokeCap = StrokeCap.round;
+
+        canvas.drawLine(
+          Offset(lx, sy),
+          Offset(lx, sy + stripeLength),
+          glowPaint,
+        );
+
         final stripePaint = Paint()
-          ..color = theme.laneStripeColor.withValues(alpha: (0.4 + perspectiveProgress * 0.55).clamp(0.0, 1.0))
+          ..color = theme.laneStripeColor.withValues(alpha: (0.6 + perspectiveProgress * 0.4).clamp(0.0, 1.0))
           ..strokeWidth = strokeW
           ..strokeCap = StrokeCap.round;
 
@@ -1475,7 +1498,7 @@ class RoadVisualRenderer {
   }
 
   // --------------------------------------------------------------------------
-  // 3D BEVELED RACING CURBS
+  // 3D BEVELED RACING CURBS WITH DROP SHADOWS
   // --------------------------------------------------------------------------
   static void _drawBeveledRacingCurbs({
     required Canvas canvas,
@@ -1507,10 +1530,30 @@ class RoadVisualRenderer {
       final double xr1 = roadTopRight + (roadRight - roadTopRight) * p1;
       final double xr2 = roadTopRight + (roadRight - roadTopRight) * p2;
 
-      final double curbWidth = 4.0 + p1 * 7.0;
+      final double curbWidth = 6.0 + p1 * 9.0;
 
       final bool isColorA = ((i + (roadScrollOffset / curbStep).floor()) % 2 == 0);
       final curbColor = isColorA ? theme.curbColorA : theme.curbColorB;
+
+      // Drop Shadow Under Curb Edge
+      final shadowPaint = Paint()..color = Colors.black.withValues(alpha: 0.35);
+
+      final Path leftShadowPath = Path()
+        ..moveTo(xl1 - curbWidth - 2, y1 + 2)
+        ..lineTo(xl1 + 2, y1 + 2)
+        ..lineTo(xl2 + 2, y2 + 2)
+        ..lineTo(xl2 - curbWidth - 2, y2 + 2)
+        ..close();
+      canvas.drawPath(leftShadowPath, shadowPaint);
+
+      final Path rightShadowPath = Path()
+        ..moveTo(xr1 - 2, y1 + 2)
+        ..lineTo(xr1 + curbWidth + 2, y1 + 2)
+        ..lineTo(xr2 + curbWidth + 2, y2 + 2)
+        ..lineTo(xr2 - 2, y2 + 2)
+        ..close();
+      canvas.drawPath(rightShadowPath, shadowPaint);
+
       final curbPaint = Paint()..color = curbColor;
 
       final Path leftCurbPath = Path()
@@ -1528,6 +1571,15 @@ class RoadVisualRenderer {
         ..lineTo(xr2, y2)
         ..close();
       canvas.drawPath(rightCurbPath, curbPaint);
+
+      // Top Highlight Bevel Stroke
+      final bevelPaint = Paint()
+        ..color = Colors.white.withValues(alpha: isColorA ? 0.35 : 0.20)
+        ..strokeWidth = 1.2
+        ..style = PaintingStyle.stroke;
+
+      canvas.drawLine(Offset(xl1, y1), Offset(xl2, y2), bevelPaint);
+      canvas.drawLine(Offset(xr1, y1), Offset(xr2, y2), bevelPaint);
     }
   }
 

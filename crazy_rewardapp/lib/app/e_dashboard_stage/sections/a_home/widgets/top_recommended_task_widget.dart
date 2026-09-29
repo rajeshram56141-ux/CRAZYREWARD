@@ -252,7 +252,7 @@ class TopRecommendedTaskWidget extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text(
-                      'Play Games',
+                      'Crazy Racing',
                       textAlign: TextAlign.center,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -265,7 +265,7 @@ class TopRecommendedTaskWidget extends StatelessWidget {
                     ),
                     SizedBox(height: 3.h),
                     Text(
-                      '& Win Coins',
+                      'Play & Win Gems',
                       textAlign: TextAlign.center,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -279,16 +279,16 @@ class TopRecommendedTaskWidget extends StatelessWidget {
                 ),
               ),
             ),
-            // Bottom 3D Controller Image (Properly scaled & nestled in circular glow)
+            // Bottom 3D Image (Crazy Racing.png - Centered!)
             Positioned(
-              bottom: 8.h,
+              bottom: -4.h,
               left: 0,
               right: 0,
               child: Center(
                 child: Image.asset(
-                  'assets/Icons1/pngtree-controller-3d-illustration-png-image_11477416 1 (1).png',
-                  width: 72.w,
-                  height: 54.h,
+                  'assets/Icons1/Crazy Racing.png',
+                  width: 130.w,
+                  height: 88.h,
                   fit: BoxFit.contain,
                 ),
               ),
@@ -380,16 +380,16 @@ class TopRecommendedTaskWidget extends StatelessWidget {
                 ),
               ),
             ),
-            // Bottom 3D Super Offer Treasure Box Icon
+            // Bottom 3D Super Offer Icon (Super Offer .png)
             Positioned(
-              bottom: 2.h,
+              bottom: -4.h,
               left: 0,
               right: 0,
               child: Center(
                 child: Image.asset(
-                  'assets/Icons1/super_offer_3d.png',
-                  width: 92.w,
-                  height: 72.h,
+                  'assets/Icons1/Super Offer .png',
+                  width: 130.w,
+                  height: 88.h,
                   fit: BoxFit.contain,
                 ),
               ),
@@ -465,16 +465,16 @@ class TopRecommendedTaskWidget extends StatelessWidget {
                 ),
               ),
             ),
-            // Bottom 3D Battle Icon Image
+            // Bottom 3D Battle Icon Image (Battle quiz 1.png - Extra Large!)
             Positioned(
-              bottom: 8.h,
+              bottom: -6.h,
               left: 0,
               right: 0,
               child: Center(
                 child: Image.asset(
-                  'assets/Icons1/battle-3d-icon-png-download-11623292 3.png',
-                  width: 72.w,
-                  height: 54.h,
+                  'assets/Icons1/Battle quiz 1.png',
+                  width: 150.w,
+                  height: 98.h,
                   fit: BoxFit.contain,
                 ),
               ),
@@ -556,16 +556,16 @@ class TopRecommendedTaskWidget extends StatelessWidget {
                 ),
               ),
             ),
-            // Bottom 3D Shield/Task Icon Image
+            // Bottom 3D Offerwall Icon (Offerwall.png)
             Positioned(
-              bottom: 8.h,
+              bottom: -4.h,
               left: 0,
               right: 0,
               child: Center(
                 child: Image.asset(
-                  'assets/Icons1/pngtree-d-blue-shield-with-check-mark-in-orange-circle-icon-security-png-image_16822296 1.png',
-                  width: 72.w,
-                  height: 54.h,
+                  'assets/Icons1/Offerwall.png',
+                  width: 130.w,
+                  height: 88.h,
                   fit: BoxFit.contain,
                 ),
               ),
@@ -1424,7 +1424,7 @@ class TopRecommendedTaskWidget extends StatelessWidget {
 
                     // Title
                     Text(
-                      'Play Games',
+                      'Crazy Racing',
                       textAlign: TextAlign.center,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -2262,16 +2262,16 @@ class _PlayTimeBannerWidget extends HookWidget {
                 padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
                 child: Row(
                   children: [
-                    // 3D PlayTime Game Icon
+                    // 3D PlayTime Game Icon (Playtime.png)
                     SizedBox(
-                      width: 84.w,
-                      height: 76.h,
+                      width: 106.w,
+                      height: 88.h,
                       child: Center(
                         child: Image.asset(
-                          'assets/icons/gamesplaytime.png',
+                          'assets/Icons1/Playtime.png',
                           fit: BoxFit.contain,
                           errorBuilder: (_, __, ___) => Image.asset(
-                            'assets/icons/playtimegame.png',
+                            'assets/icons/gamesplaytime.png',
                             fit: BoxFit.contain,
                           ),
                         ),

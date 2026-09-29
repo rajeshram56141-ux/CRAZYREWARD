@@ -883,8 +883,8 @@ class SuperOfferStep2ListScreen extends HookConsumerWidget {
                 SizedBox(height: 14.h),
                 Text(
                   'Remove Offer?',
-                  style: GoogleFonts.outfit(
-                    color: const Color(0xFF1E1B4B),
+                  style: GoogleFonts.poppins(
+                    color: const Color(0xFF1E1B2E),
                     fontSize: 18.sp,
                     fontWeight: FontWeight.w800,
                   ),
@@ -893,7 +893,7 @@ class SuperOfferStep2ListScreen extends HookConsumerWidget {
                 Text(
                   'Are you sure you want to remove "${resolvedAppName.value}" from your offers list?',
                   textAlign: TextAlign.center,
-                  style: GoogleFonts.outfit(
+                  style: GoogleFonts.poppins(
                     color: const Color(0xFF64748B),
                     fontSize: 13.sp,
                     fontWeight: FontWeight.w400,
@@ -915,7 +915,7 @@ class SuperOfferStep2ListScreen extends HookConsumerWidget {
                           ),
                           child: Text(
                             'CANCEL',
-                            style: GoogleFonts.outfit(
+                            style: GoogleFonts.poppins(
                               color: const Color(0xFF64748B),
                               fontSize: 13.5.sp,
                               fontWeight: FontWeight.w700,
@@ -998,7 +998,7 @@ class SuperOfferStep2ListScreen extends HookConsumerWidget {
                           ),
                           child: Text(
                             'REMOVE',
-                            style: GoogleFonts.outfit(
+                            style: GoogleFonts.poppins(
                               color: Colors.white,
                               fontSize: 13.5.sp,
                               fontWeight: FontWeight.w800,
@@ -1033,7 +1033,7 @@ class SuperOfferStep2ListScreen extends HookConsumerWidget {
           ref.invalidate(DashboardService.userDataProvider(userId));
         },
         child: Scaffold(
-          backgroundColor: Colors.white,
+          backgroundColor: const Color(0xFFF1F5F9),
           body: SafeArea(
             child: Column(
               children: [
@@ -1079,8 +1079,8 @@ class SuperOfferStep2ListScreen extends HookConsumerWidget {
                       SizedBox(width: 12.w),
                       Text(
                         'Super Offers',
-                        style: GoogleFonts.outfit(
-                          color: const Color(0xFF1E1B4B),
+                        style: GoogleFonts.poppins(
+                          color: const Color(0xFF1E1B2E),
                           fontSize: 18.5.sp,
                           fontWeight: FontWeight.w800,
                           letterSpacing: -0.2,
@@ -1114,7 +1114,7 @@ class SuperOfferStep2ListScreen extends HookConsumerWidget {
                                 SizedBox(width: 6.w),
                                 Text(
                                   'Watch Tutorial',
-                                  style: GoogleFonts.outfit(
+                                  style: GoogleFonts.poppins(
                                     color: const Color(0xFF64748B),
                                     fontSize: 12.sp,
                                     fontWeight: FontWeight.w600,
@@ -1158,8 +1158,8 @@ class SuperOfferStep2ListScreen extends HookConsumerWidget {
                           SizedBox(height: 16.h),
                           Text(
                             'No Pending Offers',
-                            style: GoogleFonts.outfit(
-                              color: const Color(0xFF1E1B4B),
+                            style: GoogleFonts.poppins(
+                              color: const Color(0xFF1E1B2E),
                               fontSize: 18.sp,
                               fontWeight: FontWeight.w800,
                             ),
@@ -1168,7 +1168,7 @@ class SuperOfferStep2ListScreen extends HookConsumerWidget {
                           Text(
                             'You do not have any pending offers right now. Complete super offers to see your active tasks here!',
                             textAlign: TextAlign.center,
-                            style: GoogleFonts.outfit(
+                            style: GoogleFonts.poppins(
                               color: const Color(0xFF64748B),
                               fontSize: 13.sp,
                               fontWeight: FontWeight.w400,
@@ -1313,7 +1313,7 @@ class SuperOfferStep2ListScreen extends HookConsumerWidget {
                                     child: Center(
                                       child: Text(
                                         item['appName']?.toString() ?? 'Offer ${idx + 1}',
-                                        style: GoogleFonts.outfit(
+                                        style: GoogleFonts.poppins(
                                           color: isSelected ? Colors.white : const Color(0xFF64748B),
                                           fontSize: 12.5.sp,
                                           fontWeight: FontWeight.w800,
@@ -1375,8 +1375,8 @@ class SuperOfferStep2ListScreen extends HookConsumerWidget {
                                   children: [
                                     Text(
                                       resolvedAppName.value,
-                                      style: GoogleFonts.outfit(
-                                        color: const Color(0xFF1E1B4B),
+                                      style: GoogleFonts.poppins(
+                                        color: const Color(0xFF1E1B2E),
                                         fontSize: 16.5.sp,
                                         fontWeight: FontWeight.w800,
                                       ),
@@ -1394,7 +1394,7 @@ class SuperOfferStep2ListScreen extends HookConsumerWidget {
                                         SizedBox(width: 4.w),
                                         Text(
                                           resolvedInstallTime.value,
-                                          style: GoogleFonts.outfit(
+                                          style: GoogleFonts.poppins(
                                             color: const Color(0xFF64748B),
                                             fontSize: 12.sp,
                                             fontWeight: FontWeight.w600,
@@ -1422,8 +1422,8 @@ class SuperOfferStep2ListScreen extends HookConsumerWidget {
                             SizedBox(width: 6.w),
                             Text(
                               'REWARDS',
-                              style: GoogleFonts.outfit(
-                                color: const Color(0xFF1E1B4B),
+                              style: GoogleFonts.poppins(
+                                color: const Color(0xFF1E1B2E),
                                 fontSize: 13.5.sp,
                                 fontWeight: FontWeight.w800,
                                 letterSpacing: 0.8,
@@ -1477,8 +1477,8 @@ class SuperOfferStep2ListScreen extends HookConsumerWidget {
                                   children: [
                                     Text(
                                       'Install App',
-                                      style: GoogleFonts.outfit(
-                                        color: const Color(0xFF1E1B4B),
+                                      style: GoogleFonts.poppins(
+                                        color: const Color(0xFF1E1B2E),
                                         fontSize: 15.5.sp,
                                         fontWeight: FontWeight.w800,
                                       ),
@@ -1486,7 +1486,7 @@ class SuperOfferStep2ListScreen extends HookConsumerWidget {
                                     SizedBox(height: 2.h),
                                     Text(
                                       'Install app and use it for a couple of minutes.',
-                                      style: GoogleFonts.outfit(
+                                      style: GoogleFonts.poppins(
                                         color: const Color(0xFF64748B),
                                         fontSize: 11.5.sp,
                                         fontWeight: FontWeight.w400,
@@ -1511,7 +1511,7 @@ class SuperOfferStep2ListScreen extends HookConsumerWidget {
                                       SizedBox(width: 4.w),
                                       Text(
                                         '$installCoins Coins',
-                                        style: GoogleFonts.outfit(
+                                        style: GoogleFonts.poppins(
                                           color: const Color(0xFFAB31DE),
                                           fontSize: 13.5.sp,
                                           fontWeight: FontWeight.w800,
@@ -1532,7 +1532,7 @@ class SuperOfferStep2ListScreen extends HookConsumerWidget {
                                     ),
                                     child: Text(
                                       'Done',
-                                      style: GoogleFonts.outfit(
+                                      style: GoogleFonts.poppins(
                                         color: const Color(0xFF15803D),
                                         fontSize: 10.5.sp,
                                         fontWeight: FontWeight.w800,
@@ -1555,12 +1555,12 @@ class SuperOfferStep2ListScreen extends HookConsumerWidget {
                             decoration: BoxDecoration(
                               color: proofStatus.value == 'approved'
                                   ? const Color(0xFFF0FDF4)
-                                  : const Color(0xFFFAF5FF),
+                                  : Colors.white,
                               borderRadius: BorderRadius.circular(20.r),
                               border: Border.all(
                                 color: proofStatus.value == 'approved'
                                     ? const Color(0xFF86EFAC)
-                                    : const Color(0xFFF3E8FF),
+                                    : const Color(0xFFF1F5F9),
                                 width: 1.2,
                               ),
                               boxShadow: [
@@ -1606,8 +1606,8 @@ class SuperOfferStep2ListScreen extends HookConsumerWidget {
                                         children: [
                                           Text(
                                             'Upload Screenshot',
-                                            style: GoogleFonts.outfit(
-                                              color: const Color(0xFF1E1B4B),
+                                            style: GoogleFonts.poppins(
+                                              color: const Color(0xFF1E1B2E),
                                               fontSize: 15.5.sp,
                                               fontWeight: FontWeight.w800,
                                             ),
@@ -1615,7 +1615,7 @@ class SuperOfferStep2ListScreen extends HookConsumerWidget {
                                           SizedBox(height: 2.h),
                                           Text(
                                             'Sign up in the app & take a screenshot and upload it.',
-                                            style: GoogleFonts.outfit(
+                                            style: GoogleFonts.poppins(
                                               color: const Color(0xFF64748B),
                                               fontSize: 11.5.sp,
                                               fontWeight: FontWeight.w400,
@@ -1641,7 +1641,7 @@ class SuperOfferStep2ListScreen extends HookConsumerWidget {
                                             SizedBox(width: 4.w),
                                             Text(
                                               '$screenshotCoins Coins',
-                                              style: GoogleFonts.outfit(
+                                              style: GoogleFonts.poppins(
                                                 color: const Color(0xFFAB31DE),
                                                 fontSize: 13.5.sp,
                                                 fontWeight: FontWeight.w800,
@@ -1660,7 +1660,7 @@ class SuperOfferStep2ListScreen extends HookConsumerWidget {
                                             ),
                                             child: Text(
                                               'Pending',
-                                              style: GoogleFonts.outfit(
+                                              style: GoogleFonts.poppins(
                                                 color: const Color(0xFFB45309),
                                                 fontSize: 11.sp,
                                                 fontWeight: FontWeight.w800,
@@ -1678,7 +1678,7 @@ class SuperOfferStep2ListScreen extends HookConsumerWidget {
                                             ),
                                             child: Text(
                                               'Done',
-                                              style: GoogleFonts.outfit(
+                                              style: GoogleFonts.poppins(
                                                 color: const Color(0xFF15803D),
                                                 fontSize: 11.sp,
                                                 fontWeight: FontWeight.w800,
@@ -1696,7 +1696,7 @@ class SuperOfferStep2ListScreen extends HookConsumerWidget {
                                             ),
                                             child: Text(
                                               'Rejected',
-                                              style: GoogleFonts.outfit(
+                                              style: GoogleFonts.poppins(
                                                 color: const Color(0xFFB91C1C),
                                                 fontSize: 11.sp,
                                                 fontWeight: FontWeight.w800,
@@ -1732,7 +1732,7 @@ class SuperOfferStep2ListScreen extends HookConsumerWidget {
                                               SizedBox(width: 8.w),
                                               Text(
                                                 'Pending Review',
-                                                style: GoogleFonts.outfit(
+                                                style: GoogleFonts.poppins(
                                                   color: const Color(0xFFB45309),
                                                   fontSize: 14.sp,
                                                   fontWeight: FontWeight.w800,
@@ -1743,7 +1743,7 @@ class SuperOfferStep2ListScreen extends HookConsumerWidget {
                                           SizedBox(height: 6.h),
                                           Text(
                                             'Your Screenshot is under admin review, coins will be awarded after approval.',
-                                            style: GoogleFonts.outfit(
+                                            style: GoogleFonts.poppins(
                                               color: const Color(0xFF78350F),
                                               fontSize: 12.sp,
                                               fontWeight: FontWeight.w500,
@@ -1773,7 +1773,7 @@ class SuperOfferStep2ListScreen extends HookConsumerWidget {
                                                 SizedBox(width: 6.w),
                                                 Text(
                                                   'Proof Rejected',
-                                                  style: GoogleFonts.outfit(
+                                                  style: GoogleFonts.poppins(
                                                     color: const Color(0xFFB91C1C),
                                                     fontSize: 13.sp,
                                                     fontWeight: FontWeight.w800,
@@ -1785,7 +1785,7 @@ class SuperOfferStep2ListScreen extends HookConsumerWidget {
                                               SizedBox(height: 4.h),
                                               Text(
                                                 'Reason: ${proofReason.value}',
-                                                style: GoogleFonts.outfit(
+                                                style: GoogleFonts.poppins(
                                                   color: const Color(0xFF991B1B),
                                                   fontSize: 11.5.sp,
                                                   fontWeight: FontWeight.w600,
@@ -1795,7 +1795,7 @@ class SuperOfferStep2ListScreen extends HookConsumerWidget {
                                             SizedBox(height: 4.h),
                                             Text(
                                               'Please upload a valid screenshot proof below to submit again.',
-                                              style: GoogleFonts.outfit(
+                                              style: GoogleFonts.poppins(
                                                 color: const Color(0xFF7F1D1D),
                                                 fontSize: 11.sp,
                                               ),
@@ -1806,7 +1806,7 @@ class SuperOfferStep2ListScreen extends HookConsumerWidget {
                                     ],
                                     Text(
                                       '1: Sign up in the app or Register in the app.\n2: Or if it is a game, play the game until level 3.\n3: Take a screenshot of the installed app\'s profile section or level section and upload it.',
-                                      style: GoogleFonts.outfit(
+                                      style: GoogleFonts.poppins(
                                         color: const Color(0xFF64748B),
                                         fontSize: 12.sp,
                                         fontWeight: FontWeight.w500,
@@ -1852,7 +1852,7 @@ class SuperOfferStep2ListScreen extends HookConsumerWidget {
                                                       SizedBox(width: 6.w),
                                                       Text(
                                                         'Tap to change screenshot',
-                                                        style: GoogleFonts.outfit(
+                                                        style: GoogleFonts.poppins(
                                                           color: const Color(0xFFAB31DE),
                                                           fontSize: 12.sp,
                                                           fontWeight: FontWeight.w700,
@@ -1886,8 +1886,8 @@ class SuperOfferStep2ListScreen extends HookConsumerWidget {
                                                   SizedBox(height: 6.h),
                                                   Text(
                                                     'Select Screenshot',
-                                                    style: GoogleFonts.outfit(
-                                                      color: const Color(0xFF1E1B4B),
+                                                    style: GoogleFonts.poppins(
+                                                      color: const Color(0xFF1E1B2E),
                                                       fontSize: 13.5.sp,
                                                       fontWeight: FontWeight.w800,
                                                     ),
@@ -1896,7 +1896,7 @@ class SuperOfferStep2ListScreen extends HookConsumerWidget {
                                                   Text(
                                                     'Upload proof that you installed & completed task',
                                                     textAlign: TextAlign.center,
-                                                    style: GoogleFonts.outfit(
+                                                    style: GoogleFonts.poppins(
                                                       color: const Color(0xFF64748B),
                                                       fontSize: 11.sp,
                                                       fontWeight: FontWeight.w500,
@@ -1930,7 +1930,7 @@ class SuperOfferStep2ListScreen extends HookConsumerWidget {
                                           Expanded(
                                             child: Text(
                                               'Note: Admins verify all submissions manually. Submitting fake, edited, or incorrect screenshots will lead to permanent account suspension!',
-                                              style: GoogleFonts.outfit(
+                                              style: GoogleFonts.poppins(
                                                 color: const Color(0xFF991B1B),
                                                 fontSize: 11.sp,
                                                 fontWeight: FontWeight.w600,
@@ -1986,7 +1986,7 @@ class SuperOfferStep2ListScreen extends HookConsumerWidget {
                                                     SizedBox(width: 6.w),
                                                     Text(
                                                       proofStatus.value == 'rejected' ? 'Re-upload Screenshot Proof' : 'Submit Proof',
-                                                      style: GoogleFonts.outfit(
+                                                      style: GoogleFonts.poppins(
                                                         color: Colors.white,
                                                         fontSize: 14.sp,
                                                         fontWeight: FontWeight.w800,
@@ -2264,7 +2264,7 @@ class SuperOfferStep2ListScreen extends HookConsumerWidget {
                                               Expanded(
                                                 child: Text(
                                                   'Awesome! +$stCoins Coins added to your wallet! 🎉',
-                                                  style: GoogleFonts.outfit(color: Colors.white, fontWeight: FontWeight.w700),
+                                                  style: GoogleFonts.poppins(color: Colors.white, fontWeight: FontWeight.w700),
                                                 ),
                                               ),
                                             ],
@@ -2315,7 +2315,7 @@ class SuperOfferStep2ListScreen extends HookConsumerWidget {
                             children: [
                               Text(
                                 'Total Reward',
-                                style: GoogleFonts.outfit(
+                                style: GoogleFonts.poppins(
                                   color: Colors.white.withValues(alpha: 0.9),
                                   fontSize: 13.sp,
                                   fontWeight: FontWeight.w600,
@@ -2334,7 +2334,7 @@ class SuperOfferStep2ListScreen extends HookConsumerWidget {
                                   SizedBox(width: 8.w),
                                   Text(
                                     '$totalPotentialEarnings Coins',
-                                    style: GoogleFonts.outfit(
+                                    style: GoogleFonts.poppins(
                                       color: Colors.white,
                                       fontSize: 20.sp,
                                       fontWeight: FontWeight.w800,
@@ -2430,7 +2430,7 @@ class SuperOfferStep2ListScreen extends HookConsumerWidget {
                                         children: [
                                           Text(
                                             'Next Offer',
-                                            style: GoogleFonts.outfit(
+                                            style: GoogleFonts.poppins(
                                               color: Colors.white,
                                               fontSize: 15.sp,
                                               fontWeight: FontWeight.w800,
@@ -2476,7 +2476,7 @@ class SuperOfferStep2ListScreen extends HookConsumerWidget {
                               child: Center(
                                 child: Text(
                                   'Remove Offer',
-                                  style: GoogleFonts.outfit(
+                                  style: GoogleFonts.poppins(
                                     color: const Color(0xFFE11D48),
                                     fontSize: 14.sp,
                                     fontWeight: FontWeight.w800,
@@ -2565,8 +2565,8 @@ class SuperOfferStep2ListScreen extends HookConsumerWidget {
                 children: [
                   Text(
                     baseTitle,
-                    style: GoogleFonts.outfit(
-                      color: const Color(0xFF1E1B4B),
+                    style: GoogleFonts.poppins(
+                      color: const Color(0xFF1E1B2E),
                       fontSize: 15.5.sp,
                       fontWeight: FontWeight.w800,
                     ),
@@ -2574,7 +2574,7 @@ class SuperOfferStep2ListScreen extends HookConsumerWidget {
                   SizedBox(height: 2.h),
                   Text(
                     'Usage Skipped',
-                    style: GoogleFonts.outfit(
+                    style: GoogleFonts.poppins(
                       color: const Color(0xFFB91C1C),
                       fontSize: 11.5.sp,
                       fontWeight: FontWeight.w600,
@@ -2592,7 +2592,7 @@ class SuperOfferStep2ListScreen extends HookConsumerWidget {
               ),
               child: Text(
                 'SKIPPED (0 🪙)',
-                style: GoogleFonts.outfit(
+                style: GoogleFonts.poppins(
                   color: const Color(0xFFB91C1C),
                   fontSize: 11.sp,
                   fontWeight: FontWeight.w900,
@@ -2640,8 +2640,8 @@ class SuperOfferStep2ListScreen extends HookConsumerWidget {
                 children: [
                   Text(
                     baseTitle,
-                    style: GoogleFonts.outfit(
-                      color: const Color(0xFF1E1B4B),
+                    style: GoogleFonts.poppins(
+                      color: const Color(0xFF1E1B2E),
                       fontSize: 15.5.sp,
                       fontWeight: FontWeight.w800,
                     ),
@@ -2649,7 +2649,7 @@ class SuperOfferStep2ListScreen extends HookConsumerWidget {
                   SizedBox(height: 2.h),
                   Text(
                     'Use app for $usageTargetLongText',
-                    style: GoogleFonts.outfit(
+                    style: GoogleFonts.poppins(
                       color: const Color(0xFF64748B),
                       fontSize: 11.5.sp,
                       fontWeight: FontWeight.w400,
@@ -2675,7 +2675,7 @@ class SuperOfferStep2ListScreen extends HookConsumerWidget {
                     SizedBox(width: 4.w),
                     Text(
                       '$stepCoins Coins',
-                      style: GoogleFonts.outfit(
+                      style: GoogleFonts.poppins(
                         color: const Color(0xFFAB31DE),
                         fontSize: 13.5.sp,
                         fontWeight: FontWeight.w800,
@@ -2693,7 +2693,7 @@ class SuperOfferStep2ListScreen extends HookConsumerWidget {
                   ),
                   child: Text(
                     'Done',
-                    style: GoogleFonts.outfit(
+                    style: GoogleFonts.poppins(
                       color: const Color(0xFF15803D),
                       fontSize: 10.5.sp,
                       fontWeight: FontWeight.w800,
@@ -2749,8 +2749,8 @@ class SuperOfferStep2ListScreen extends HookConsumerWidget {
                 children: [
                   Text(
                     baseTitle,
-                    style: GoogleFonts.outfit(
-                      color: const Color(0xFF1E1B4B),
+                    style: GoogleFonts.poppins(
+                      color: const Color(0xFF1E1B2E),
                       fontSize: 15.5.sp,
                       fontWeight: FontWeight.w800,
                     ),
@@ -2758,7 +2758,7 @@ class SuperOfferStep2ListScreen extends HookConsumerWidget {
                   SizedBox(height: 2.h),
                   Text(
                     'Unlocks in ${formatRemaining(cooldownRemainingSec)}',
-                    style: GoogleFonts.outfit(
+                    style: GoogleFonts.poppins(
                       color: const Color(0xFFB45309),
                       fontSize: 11.5.sp,
                       fontWeight: FontWeight.w600,
@@ -2779,7 +2779,7 @@ class SuperOfferStep2ListScreen extends HookConsumerWidget {
                 SizedBox(width: 4.w),
                 Text(
                   '$stepCoins Coins',
-                  style: GoogleFonts.outfit(
+                  style: GoogleFonts.poppins(
                     color: const Color(0xFFAB31DE),
                     fontSize: 13.5.sp,
                     fontWeight: FontWeight.w800,
@@ -2894,8 +2894,8 @@ class SuperOfferStep2ListScreen extends HookConsumerWidget {
                   children: [
                     Text(
                       baseTitle,
-                      style: GoogleFonts.outfit(
-                        color: const Color(0xFF1E1B4B),
+                      style: GoogleFonts.poppins(
+                        color: const Color(0xFF1E1B2E),
                         fontSize: 15.5.sp,
                         fontWeight: FontWeight.w800,
                       ),
@@ -2903,7 +2903,7 @@ class SuperOfferStep2ListScreen extends HookConsumerWidget {
                     SizedBox(height: 2.h),
                     Text(
                       'Use app for $usageTargetLongText',
-                      style: GoogleFonts.outfit(
+                      style: GoogleFonts.poppins(
                         color: const Color(0xFF64748B),
                         fontSize: 11.5.sp,
                         fontWeight: FontWeight.w500,
@@ -2927,7 +2927,7 @@ class SuperOfferStep2ListScreen extends HookConsumerWidget {
                       SizedBox(width: 4.w),
                       Text(
                         '$stepCoins Coins',
-                        style: GoogleFonts.outfit(
+                        style: GoogleFonts.poppins(
                           color: currentTheme.primaryColor,
                           fontSize: 13.5.sp,
                           fontWeight: FontWeight.w800,
@@ -2948,7 +2948,7 @@ class SuperOfferStep2ListScreen extends HookConsumerWidget {
                     ),
                     child: Text(
                       canClaim ? 'READY' : 'ACTIVE',
-                      style: GoogleFonts.outfit(
+                      style: GoogleFonts.poppins(
                         color: currentTheme.primaryColor,
                         fontSize: 10.5.sp,
                         fontWeight: FontWeight.w800,
@@ -2968,7 +2968,7 @@ class SuperOfferStep2ListScreen extends HookConsumerWidget {
             children: [
               Text(
                 'Usage Progress',
-                style: GoogleFonts.outfit(
+                style: GoogleFonts.poppins(
                   color: const Color(0xFF64748B),
                   fontSize: 11.5.sp,
                   fontWeight: FontWeight.w600,
@@ -2976,8 +2976,8 @@ class SuperOfferStep2ListScreen extends HookConsumerWidget {
               ),
               Text(
                 '${formatTime(usedSeconds)} / ${formatTime(targetSeconds)}',
-                style: GoogleFonts.outfit(
-                  color: const Color(0xFF1E1B4B),
+                style: GoogleFonts.poppins(
+                  color: const Color(0xFF1E1B2E),
                   fontSize: 12.sp,
                   fontWeight: FontWeight.w700,
                 ),
@@ -3044,7 +3044,7 @@ class SuperOfferStep2ListScreen extends HookConsumerWidget {
                           SizedBox(width: 6.w),
                           Text(
                             'OPEN APP',
-                            style: GoogleFonts.outfit(
+                            style: GoogleFonts.poppins(
                               color: Colors.white,
                               fontSize: 13.5.sp,
                               fontWeight: FontWeight.w900,
@@ -3077,7 +3077,7 @@ class SuperOfferStep2ListScreen extends HookConsumerWidget {
                         SizedBox(width: 4.w),
                         Text(
                           'SKIP',
-                          style: GoogleFonts.outfit(
+                          style: GoogleFonts.poppins(
                             fontSize: 13.sp,
                             fontWeight: FontWeight.w800,
                             letterSpacing: 0.5,
@@ -3127,7 +3127,7 @@ class SuperOfferStep2ListScreen extends HookConsumerWidget {
                           SizedBox(width: 8.w),
                           Text(
                             'COLLECT $stepCoins COINS',
-                            style: GoogleFonts.outfit(
+                            style: GoogleFonts.poppins(
                               color: Colors.white,
                               fontSize: 14.5.sp,
                               fontWeight: FontWeight.w900,
@@ -3180,7 +3180,7 @@ class SuperOfferStep2ListScreen extends HookConsumerWidget {
               children: [
                 Text(
                   title,
-                  style: GoogleFonts.outfit(
+                  style: GoogleFonts.poppins(
                     color: const Color(0xFF64748B),
                     fontSize: 15.5.sp,
                     fontWeight: FontWeight.w800,
@@ -3189,7 +3189,7 @@ class SuperOfferStep2ListScreen extends HookConsumerWidget {
                 SizedBox(height: 2.h),
                 Text(
                   subtitle,
-                  style: GoogleFonts.outfit(
+                  style: GoogleFonts.poppins(
                     color: const Color(0xFF94A3B8),
                     fontSize: 11.5.sp,
                     fontWeight: FontWeight.w500,
@@ -3198,7 +3198,7 @@ class SuperOfferStep2ListScreen extends HookConsumerWidget {
                 SizedBox(height: 3.h),
                 Text(
                   'Locked',
-                  style: GoogleFonts.outfit(
+                  style: GoogleFonts.poppins(
                     color: const Color(0xFF94A3B8),
                     fontSize: 11.5.sp,
                     fontWeight: FontWeight.w700,
@@ -3223,7 +3223,7 @@ class SuperOfferStep2ListScreen extends HookConsumerWidget {
               SizedBox(width: 4.w),
               Text(
                 '$coins Coins',
-                style: GoogleFonts.outfit(
+                style: GoogleFonts.poppins(
                   color: const Color(0xFF94A3B8),
                   fontSize: 13.5.sp,
                   fontWeight: FontWeight.w800,

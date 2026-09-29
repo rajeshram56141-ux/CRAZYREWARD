@@ -247,15 +247,36 @@ class OfferwallScreen extends HookConsumerWidget {
         statusBarColor: Colors.transparent,
         statusBarIconBrightness: Brightness.dark,
         statusBarBrightness: Brightness.light,
+        systemNavigationBarColor: Color(0xFFF1F5F9),
+        systemNavigationBarIconBrightness: Brightness.dark,
       ),
       child: Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: const Color(0xFFF1F5F9),
         body: Stack(
           children: [
-            // 1. Solid Clean White Background
-            Positioned.fill(
+            // 1. Ambient Pastel Glow Blobs (Authentication Screen Style)
+            Positioned(
+              top: -60.h,
+              right: -40.w,
               child: Container(
-                color: Colors.white,
+                width: 220.w,
+                height: 220.w,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: const Color(0xFF9333EA).withValues(alpha: 0.08),
+                ),
+              ),
+            ),
+            Positioned(
+              bottom: 60.h,
+              left: -50.w,
+              child: Container(
+                width: 200.w,
+                height: 200.w,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: const Color(0xFF8B5CF6).withValues(alpha: 0.07),
+                ),
               ),
             ),
 
@@ -275,53 +296,64 @@ class OfferwallScreen extends HookConsumerWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        // Left: Executive Back Arrow + Screen Title
-                        Row(
-                          children: [
-                            GestureDetector(
-                              onTap: () {
-                                HapticFeedback.lightImpact();
-                                AutoRouter.of(context).maybePop();
-                              },
-                              child: Container(
-                                width: 40.w,
-                                height: 40.w,
-                                alignment: Alignment.center,
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(14.r),
-                                  border: Border.all(
-                                    color: const Color(0xFFE2E8F0),
-                                    width: 1.2,
-                                  ),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.black.withValues(alpha: 0.04),
-                                      blurRadius: 8,
-                                      offset: const Offset(0, 2),
+                        // Left: Executive Back Arrow + Screen Title (Prevent Right Overflow!)
+                        Expanded(
+                          child: Row(
+                            children: [
+                              GestureDetector(
+                                onTap: () {
+                                  HapticFeedback.lightImpact();
+                                  AutoRouter.of(context).maybePop();
+                                },
+                                child: Container(
+                                  width: 40.w,
+                                  height: 40.w,
+                                  alignment: Alignment.center,
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(14.r),
+                                    border: Border.all(
+                                      color: const Color(0xFFE2E8F0),
+                                      width: 1.2,
                                     ),
-                                  ],
-                                ),
-                                child: Icon(
-                                  Icons.arrow_back_rounded,
-                                  color: const Color(0xFF26262B),
-                                  size: 20.sp,
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withValues(alpha: 0.04),
+                                        blurRadius: 8,
+                                        offset: const Offset(0, 2),
+                                      ),
+                                    ],
+                                  ),
+                                  child: Icon(
+                                    Icons.arrow_back_rounded,
+                                    color: const Color(0xFF26262B),
+                                    size: 20.sp,
+                                  ),
                                 ),
                               ),
-                            ),
-                            SizedBox(width: 12.w),
+                              SizedBox(width: 10.w),
 
-                            Text(
-                              screenTitle,
-                              style: GoogleFonts.kaushanScript(
-                                color: const Color(0xFF26262B),
-                                fontSize: 26.sp,
-                                fontWeight: FontWeight.w800,
-                                letterSpacing: 0.5,
+                              Expanded(
+                                child: FittedBox(
+                                  fit: BoxFit.scaleDown,
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(
+                                    screenTitle,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: GoogleFonts.kaushanScript(
+                                      color: const Color(0xFF1E1B4B),
+                                      fontSize: 26.sp,
+                                      fontWeight: FontWeight.w800,
+                                      letterSpacing: 0.5,
+                                    ),
+                                  ),
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
+                        SizedBox(width: 8.w),
 
                         // Right: Executive "How To?" Pill Button
                         GestureDetector(
@@ -381,7 +413,7 @@ class OfferwallScreen extends HookConsumerWidget {
                     margin: EdgeInsets.only(left: 14, right: 14, bottom: 8),
                   ),
 
-                  // 2 Cards Per Row Grid
+                  // Full-width Horizontal Cards List View
                   Expanded(
                     child: RefreshIndicator(
                       onRefresh: () async {
@@ -392,19 +424,14 @@ class OfferwallScreen extends HookConsumerWidget {
                       },
                       color: const Color(0xFFAB31DE),
                       backgroundColor: Colors.white,
-                      child: GridView.builder(
+                      child: ListView.separated(
                         controller: scrollController,
                         physics: const AlwaysScrollableScrollPhysics(
                           parent: BouncingScrollPhysics(),
                         ),
                         padding: EdgeInsets.fromLTRB(14.w, 4.h, 14.w, 40.h),
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          mainAxisSpacing: 12.h,
-                          crossAxisSpacing: 10.w,
-                          childAspectRatio: 1.42,
-                        ),
                         itemCount: currentList.length,
+                        separatorBuilder: (context, index) => SizedBox(height: 12.h),
                         itemBuilder: (context, index) {
                           final OfferwallProvider offerwall = currentList[index];
                           return OfferwallExecutiveCard(
@@ -429,7 +456,7 @@ class OfferwallScreen extends HookConsumerWidget {
 }
 
 // -----------------------------------------------------------------------------
-// EXECUTIVE 2-CARD WIDE HORIZONTAL OFFERWALL CARD
+// EXECUTIVE HORIZONTAL OFFERWALL CARD WIDGET (Left Brand Icon & Arch Dome)
 // -----------------------------------------------------------------------------
 class OfferwallExecutiveCard extends HookWidget {
   const OfferwallExecutiveCard({
@@ -454,6 +481,9 @@ class OfferwallExecutiveCard extends HookWidget {
     final palette = _themePalettes[index % _themePalettes.length];
     final subtitle = getOfferwallSubtitle(offerwall.name);
     final isLocked = !offerwall.enabled;
+    final brandAccentColor = (theme.primaryColor != const Color(0xFF38BDF8))
+        ? theme.primaryColor
+        : palette.accentArrowColor;
 
     String displayName = offerwall.name;
     if (displayName.toLowerCase() == 'sushiads') {
@@ -501,73 +531,75 @@ class OfferwallExecutiveCard extends HookWidget {
         isPressed.value = false;
       },
       child: AnimatedScale(
-        scale: isPressed.value ? 0.94 : 1.0,
+        scale: isPressed.value ? 0.96 : 1.0,
         duration: const Duration(milliseconds: 100),
         curve: Curves.easeOutCubic,
         child: Container(
+          width: double.infinity,
+          height: 88.h,
           decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(18.r),
+            color: const Color(0xFF1E293B),
+            borderRadius: BorderRadius.circular(20.r),
             border: Border.all(
-              color: const Color(0xFFE2E8F0),
+              color: const Color(0xFF334155),
               width: 1.2,
             ),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: 0.04),
-                blurRadius: 10,
-                offset: const Offset(0, 2),
+                color: Colors.black.withValues(alpha: 0.2),
+                blurRadius: 12,
+                offset: const Offset(0, 4),
               ),
             ],
           ),
           child: ClipRRect(
-            borderRadius: BorderRadius.circular(18.r),
+            borderRadius: BorderRadius.circular(20.r),
             child: Stack(
               children: [
-                // 1. Right Pastel Outer Glow Layer
+                // 1. Left Pastel Arch Dome Outer Layer
                 Positioned(
-                  right: 0,
+                  left: 0,
+                  top: 0,
+                  bottom: 0,
+                  width: 90.w,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: palette.outerGlowColor.withValues(alpha: isLocked ? 0.2 : 0.5),
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(20.r),
+                        bottomLeft: Radius.circular(20.r),
+                        topRight: Radius.circular(70.r),
+                        bottomRight: Radius.circular(70.r),
+                      ),
+                    ),
+                  ),
+                ),
+
+                // 2. Left Pastel Arch Dome Inner Layer
+                Positioned(
+                  left: 0,
                   top: 0,
                   bottom: 0,
                   width: 78.w,
                   child: Container(
                     decoration: BoxDecoration(
-                      color: palette.outerGlowColor.withValues(alpha: 0.65),
+                      color: palette.innerDomeColor,
                       borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(70.r),
-                        bottomLeft: Radius.circular(70.r),
-                        topRight: Radius.circular(18.r),
-                        bottomRight: Radius.circular(18.r),
+                        topLeft: Radius.circular(20.r),
+                        bottomLeft: Radius.circular(20.r),
+                        topRight: Radius.circular(80.r),
+                        bottomRight: Radius.circular(70.r),
                       ),
                     ),
                   ),
                 ),
 
-                // 2. Right Pastel Inner Arch Dome Layer
+                // 3. Left Side Offerwall Brand Logo Image
                 Positioned(
-                  right: 0,
+                  left: 6.w,
                   top: 0,
                   bottom: 0,
                   width: 66.w,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: palette.innerDomeColor,
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(80.r),
-                        bottomLeft: Radius.circular(70.r),
-                        topRight: Radius.circular(18.r),
-                        bottomRight: Radius.circular(18.r),
-                      ),
-                    ),
-                  ),
-                ),
-
-                // 3. Right Side Offerwall Specific Brand Logo Image (Replaces Panda Icon!)
-                Positioned(
-                  right: 4.w,
-                  top: 0,
-                  bottom: 0,
-                  width: 58.w,
                   child: Center(
                     child: (offerwall.config?.iconUrl.isNotEmpty ?? false)
                         ? Image.network(
@@ -608,130 +640,68 @@ class OfferwallExecutiveCard extends HookWidget {
                   ),
                 ),
 
-                // 4. Foreground Content Layout (Un-truncated Name & Subtitle + Arrow CTA)
+                // 4. Foreground Content Layout (Title & Subtitle + Metallic Arrow CTA)
                 Padding(
-                  padding: EdgeInsets.fromLTRB(10.w, 10.h, 8.w, 8.h),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  padding: EdgeInsets.fromLTRB(96.w, 10.h, 14.w, 10.h),
+                  child: Row(
                     children: [
-                      // Top Row: Small Logo Container + Title & Subtitle Column
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          // Small Logo Container
-                          Container(
-                            width: 32.w,
-                            height: 32.w,
-                            padding: EdgeInsets.all(4.w),
-                            decoration: BoxDecoration(
-                              color: palette.logoBadgeBg,
-                              borderRadius: BorderRadius.circular(9.r),
-                              border: Border.all(
-                                color: palette.outerGlowColor,
-                                width: 0.8,
+                      // Title & Subtitle Column (Enlarged Text!)
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              displayName,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: GoogleFonts.poppins(
+                                color: isLocked ? const Color(0xFF64748B) : Colors.white,
+                                fontSize: 17.5.sp,
+                                fontWeight: FontWeight.w700,
                               ),
                             ),
-                            child: (offerwall.config?.iconUrl.isNotEmpty ?? false)
-                                ? Image.network(
-                                    offerwall.config!.iconUrl,
-                                    fit: BoxFit.contain,
-                                    errorBuilder: (_, __, ___) => Image.asset(
-                                      offerwall.logoImage,
-                                      fit: BoxFit.contain,
-                                      errorBuilder: (_, __, ___) => Image.asset(
-                                        theme.bgAsset,
-                                        fit: BoxFit.contain,
-                                        errorBuilder: (_, __, ___) => Icon(
-                                          Icons.grid_view_rounded,
-                                          color: palette.accentArrowColor,
-                                          size: 16.w,
-                                        ),
-                                      ),
-                                    ),
-                                  )
-                                : Image.asset(
-                                    offerwall.logoImage,
-                                    fit: BoxFit.contain,
-                                    errorBuilder: (_, __, ___) => Image.asset(
-                                      theme.bgAsset,
-                                      fit: BoxFit.contain,
-                                      errorBuilder: (_, __, ___) => Icon(
-                                        Icons.grid_view_rounded,
-                                        color: palette.accentArrowColor,
-                                        size: 16.w,
-                                      ),
-                                    ),
-                                  ),
-                          ),
-
-                          SizedBox(width: 6.w),
-
-                          // Full Un-truncated Title & Subtitle Column
-                          Expanded(
-                            child: Padding(
-                              padding: EdgeInsets.only(right: 36.w),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    displayName,
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: GoogleFonts.poppins(
-                                      color: isLocked ? const Color(0xFF94A3B8) : const Color(0xFF1E1B4B),
-                                      fontSize: 12.sp,
-                                      fontWeight: FontWeight.w700,
-                                      height: 1.15,
-                                    ),
-                                  ),
-                                  SizedBox(height: 2.h),
-                                  Text(
-                                    subtitle,
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: GoogleFonts.poppins(
-                                      color: const Color(0xFF64748B),
-                                      fontSize: 9.5.sp,
-                                      fontWeight: FontWeight.w400,
-                                      height: 1.15,
-                                    ),
-                                  ),
-                                ],
+                            SizedBox(height: 3.h),
+                            Text(
+                              subtitle,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: GoogleFonts.poppins(
+                                color: const Color(0xFF94A3B8),
+                                fontSize: 12.sp,
+                                fontWeight: FontWeight.w400,
                               ),
-                            ),
-                          ),
-                        ],
-                      ),
-
-                      // Bottom Row: Metallic Circular Button
-                      Container(
-                        width: 26.w,
-                        height: 26.w,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          gradient: const LinearGradient(
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
-                            colors: [
-                              Colors.white,
-                              Color(0xFFE5E7EB),
-                              Color(0xFFB0B5C2),
-                            ],
-                          ),
-                          border: Border.all(
-                            color: offerwall.enabled
-                                ? const Color(0xFF9CA3AF)
-                                : const Color(0xFFCBD5E1),
-                            width: 1,
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withValues(alpha: 0.08),
-                              blurRadius: 4,
-                              offset: const Offset(0, 1.5),
                             ),
                           ],
+                        ),
+                      ),
+
+                      SizedBox(width: 8.w),
+
+                      // Action Arrow CTA Button matching Offer Brand Color
+                      Container(
+                        width: 32.w,
+                        height: 32.w,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: offerwall.enabled
+                              ? brandAccentColor.withValues(alpha: 0.15)
+                              : const Color(0xFF1E293B),
+                          border: Border.all(
+                            color: offerwall.enabled
+                                ? brandAccentColor.withValues(alpha: 0.7)
+                                : const Color(0xFF334155),
+                            width: 1.5,
+                          ),
+                          boxShadow: offerwall.enabled
+                              ? [
+                                  BoxShadow(
+                                    color: brandAccentColor.withValues(alpha: 0.35),
+                                    blurRadius: 8,
+                                    offset: const Offset(0, 2),
+                                  ),
+                                ]
+                              : null,
                         ),
                         child: Center(
                           child: Icon(
@@ -739,9 +709,9 @@ class OfferwallExecutiveCard extends HookWidget {
                                 ? Icons.arrow_forward_rounded
                                 : Icons.lock_rounded,
                             color: offerwall.enabled
-                                ? const Color(0xFF16161A)
-                                : const Color(0xFF94A3B8),
-                            size: 13.sp,
+                                ? brandAccentColor
+                                : const Color(0xFF64748B),
+                            size: 16.sp,
                           ),
                         ),
                       ),
@@ -757,7 +727,7 @@ class OfferwallExecutiveCard extends HookWidget {
   }
 }
 
-// Unique Pastel Color Palette for Each Card
+// Unique Dark & Vibrant Accent Color Palette for Each Card
 class _CardThemePalette {
   final Color outerGlowColor;
   final Color innerDomeColor;
@@ -773,53 +743,54 @@ class _CardThemePalette {
 }
 
 final List<_CardThemePalette> _themePalettes = const [
-  // 1. Purple Lavender Theme
+  // 1. Purple Violet Theme
   _CardThemePalette(
-    outerGlowColor: Color(0xFFF3E8FF),
-    innerDomeColor: Color(0xFFF0E5FF),
-    logoBadgeBg: Color(0xFFF8F5FF),
-    accentArrowColor: Color(0xFF9333EA),
+    outerGlowColor: Color(0xFF6D28D9),
+    innerDomeColor: Color(0xFF4C1D95),
+    logoBadgeBg: Color(0xFF2E1065),
+    accentArrowColor: Color(0xFFA78BFA),
   ),
-  // 2. Soft Sky Blue Theme
+  // 2. Sky Blue Theme
   _CardThemePalette(
-    outerGlowColor: Color(0xFFE0F2FE),
-    innerDomeColor: Color(0xFFBAE6FD),
-    logoBadgeBg: Color(0xFFF0F9FF),
-    accentArrowColor: Color(0xFF0284C7),
+    outerGlowColor: Color(0xFF0369A1),
+    innerDomeColor: Color(0xFF075985),
+    logoBadgeBg: Color(0xFF0C4A6E),
+    accentArrowColor: Color(0xFF38BDF8),
   ),
   // 3. Golden Amber Theme
   _CardThemePalette(
-    outerGlowColor: Color(0xFFFEF3C7),
-    innerDomeColor: Color(0xFFFDE68A),
-    logoBadgeBg: Color(0xFFFFFBEB),
-    accentArrowColor: Color(0xFFD97706),
+    outerGlowColor: Color(0xFFB45309),
+    innerDomeColor: Color(0xFF78350F),
+    logoBadgeBg: Color(0xFF451A03),
+    accentArrowColor: Color(0xFFFBBF24),
   ),
   // 4. Rose Pink Theme
   _CardThemePalette(
-    outerGlowColor: Color(0xFFFCE7F3),
-    innerDomeColor: Color(0xFFFBCFE8),
-    logoBadgeBg: Color(0xFFFDF2F8),
-    accentArrowColor: Color(0xFFDB2777),
+    outerGlowColor: Color(0xFFBE185D),
+    innerDomeColor: Color(0xFF831843),
+    logoBadgeBg: Color(0xFF500724),
+    accentArrowColor: Color(0xFFF472B6),
   ),
-  // 5. Mint Emerald Theme
+  // 5. Emerald Green Theme
   _CardThemePalette(
-    outerGlowColor: Color(0xFFD1FAE5),
-    innerDomeColor: Color(0xFFA7F3D0),
-    logoBadgeBg: Color(0xFFECFDF5),
-    accentArrowColor: Color(0xFF059669),
+    outerGlowColor: Color(0xFF047857),
+    innerDomeColor: Color(0xFF065F46),
+    logoBadgeBg: Color(0xFF022C22),
+    accentArrowColor: Color(0xFF34D399),
   ),
-  // 6. Indigo Violet Theme
+  // 6. Indigo Blue Theme
   _CardThemePalette(
-    outerGlowColor: Color(0xFFE0E7FF),
-    innerDomeColor: Color(0xFFC7D2FE),
-    logoBadgeBg: Color(0xFFEEF2FF),
-    accentArrowColor: Color(0xFF4F46E5),
+    outerGlowColor: Color(0xFF4338CA),
+    innerDomeColor: Color(0xFF3730A3),
+    logoBadgeBg: Color(0xFF1E1B4B),
+    accentArrowColor: Color(0xFF818CF8),
   ),
   // 7. Peach Coral Theme
   _CardThemePalette(
-    outerGlowColor: Color(0xFFFFEDD5),
-    innerDomeColor: Color(0xFFFED7AA),
-    logoBadgeBg: Color(0xFFFFF7ED),
-    accentArrowColor: Color(0xFFEA580C),
+    outerGlowColor: Color(0xFFC2410C),
+    innerDomeColor: Color(0xFF7C2D12),
+    logoBadgeBg: Color(0xFF431407),
+    accentArrowColor: Color(0xFFFB923C),
   ),
 ];
+

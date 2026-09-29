@@ -327,13 +327,44 @@ class MainActivity: FlutterActivity() {
         }
     }
 
+    private fun isIgnoredSystemPackage(pkg: String): Boolean {
+        if (pkg == context.packageName) return true
+        if (pkg == "android" ||
+            pkg.startsWith("com.android.") ||
+            pkg.startsWith("com.sec.android.") ||
+            pkg.startsWith("com.samsung.") ||
+            pkg.startsWith("com.miui.") ||
+            pkg.startsWith("com.coloros.") ||
+            pkg.startsWith("com.oppo.") ||
+            pkg.startsWith("com.vivo.") ||
+            pkg.startsWith("com.huawei.")) {
+            return true
+        }
+
+        // Only ignore internal Google system services and overlays, allow downloadable Google consumer apps (e.g. YouTube Studio, Google Pay, Chrome, etc.)
+        val googleSystemPrefixes = listOf(
+            "com.google.android.gms",
+            "com.google.android.gsf",
+            "com.google.android.packageinstaller",
+            "com.google.android.feedback",
+            "com.google.android.overlay",
+            "com.google.android.setupwizard",
+            "com.google.android.ext.",
+            "com.google.android.syncadapters",
+            "com.google.android.tts",
+            "com.google.android.webview",
+            "com.google.android.inputmethod"
+        )
+        return googleSystemPrefixes.any { pkg.startsWith(it) }
+    }
+
     private fun getRecentlyInstalledPackage(startTimeMs: Long): String? {
         try {
             // Layer 1: Check SharedPreferences from dynamic BroadcastReceiver
             val prefs = context.getSharedPreferences("app_manager_prefs", Context.MODE_PRIVATE)
             val lastPkg = prefs.getString("last_installed_package", null)
             val lastTime = prefs.getLong("last_installed_time", 0L)
-            if (lastPkg != null && lastTime >= (startTimeMs - 5000L) && isAppInstalled(lastPkg)) {
+            if (lastPkg != null && !isIgnoredSystemPackage(lastPkg) && lastTime >= (startTimeMs - 5000L) && isAppInstalled(lastPkg)) {
                 return lastPkg
             }
 
@@ -347,11 +378,7 @@ class MainActivity: FlutterActivity() {
                     while (events.hasNextEvent()) {
                         events.getNextEvent(event)
                         val p = event.packageName
-                        if (p != null && p != context.packageName &&
-                            !p.startsWith("com.android.") &&
-                            !p.startsWith("com.google.android.") &&
-                            !p.startsWith("com.sec.android.") &&
-                            !p.startsWith("com.samsung.")) {
+                        if (p != null && !isIgnoredSystemPackage(p)) {
                             if (!candidates.contains(p)) {
                                 candidates.add(p)
                             }
@@ -376,11 +403,7 @@ class MainActivity: FlutterActivity() {
 
             for (pkgInfo in packages) {
                 val pkgName = pkgInfo.packageName
-                if (pkgName == context.packageName ||
-                    pkgName.startsWith("com.android.") ||
-                    pkgName.startsWith("com.google.android.") ||
-                    pkgName.startsWith("com.sec.android.") ||
-                    pkgName.startsWith("com.samsung.")) {
+                if (isIgnoredSystemPackage(pkgName)) {
                     continue
                 }
                 if (pkgInfo.firstInstallTime >= newestTime) {
