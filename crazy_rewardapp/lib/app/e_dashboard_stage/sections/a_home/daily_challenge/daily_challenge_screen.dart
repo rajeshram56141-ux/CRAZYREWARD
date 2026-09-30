@@ -13,7 +13,6 @@ import '../../../../../../utils/routes/routes_import.gr.dart';
 import '../../../../../../widgets/common/custom_loading.dart';
 import '../../../../../../widgets/common/custom_toast.dart';
 import '../../../../../../widgets/common/custom_status_popup.dart';
-import '../../../../../../widgets/common/screen_banner_widget.dart';
 import '../../../../../../widgets/ads/topon_native_ad_card.dart';
 import '../../../../../../utils/constant/constant.dart';
 import '../../../provider/dashboard_provider.dart';
@@ -724,9 +723,14 @@ class _DailyChallengeScreenState extends ConsumerState<DailyChallengeScreen>
                                       margin: EdgeInsets.only(bottom: 12.h),
                                     ),
 
-                                    // -------------------------------------------------------------
-                                    // 1. Hero Executive Balance Card System (Matching Home Screen)
-                                    // -------------------------------------------------------------
+                                    // Super Offer style Top Mission Banner Card
+                                    _buildTopMissionBannerCard(
+                                      title: 'Daily Missions!',
+                                      subtitle: 'Complete today\'s tasks & earn exclusive bonus coins!',
+                                      iconPath: 'assets/Icons1/daily challenges.png',
+                                    ),
+
+                                    // 1. Hero Executive Balance Card System
                                     _buildHeroExecutiveCard(
                                       context: context,
                                       data: challengeData,
@@ -735,14 +739,7 @@ class _DailyChallengeScreenState extends ConsumerState<DailyChallengeScreen>
                                       progress: progressPercent,
                                       userId: userId,
                                     ),
-
                                     SizedBox(height: 16.h),
-
-                                    // Screen Banner Widget (Daily Challenge Screen)
-                                    const ScreenBannerWidget(
-                                      screenKey: 'dailyChallengeScreen',
-                                      margin: EdgeInsets.only(bottom: 12.0),
-                                    ),
 
                                     // -------------------------------------------------------------
                                     // 2. Dual Floating Executive Stats Cards (Matching Home Screen)
@@ -807,6 +804,14 @@ class _DailyChallengeScreenState extends ConsumerState<DailyChallengeScreen>
         ),
       ),
     );
+  }
+
+  Widget _buildTopMissionBannerCard({
+    required String title,
+    required String subtitle,
+    required String iconPath,
+  }) {
+    return const SizedBox.shrink();
   }
 
   // ---------------------------------------------------------------------------
@@ -1003,32 +1008,54 @@ class _DailyChallengeScreenState extends ConsumerState<DailyChallengeScreen>
 
             SizedBox(height: 14.h),
 
-            // Headline
-            Text(
-              'Daily Task Challenge',
-              style: GoogleFonts.poppins(
-                color: Colors.white,
-                fontSize: 19.sp,
-                fontWeight: FontWeight.w800,
-                letterSpacing: -0.2,
-              ),
-            ),
-
-            SizedBox(height: 3.h),
-
-            // Subtitle
-            Text(
-              isDone
-                  ? (isClaimed
-                      ? 'You claimed today\'s reward. Check back tomorrow!'
-                      : 'Awesome! All tasks complete. Claim your bonus coins now.')
-                  : 'Complete all ${data.totalTasksCount} tasks today & claim your bonus coins before midnight.',
-              style: GoogleFonts.poppins(
-                color: Colors.white.withValues(alpha: 0.85),
-                fontSize: 11.5.sp,
-                height: 1.35,
-                fontWeight: FontWeight.w400,
-              ),
+            // Row with Left 3D Icon & Right Headline + Subtitle
+            Row(
+              children: [
+                SizedBox(
+                  width: 64.w,
+                  height: 64.w,
+                  child: Image.asset(
+                    'assets/Icons1/daily challenges.png',
+                    fit: BoxFit.contain,
+                    errorBuilder: (_, __, ___) => Icon(
+                      Icons.emoji_events_rounded,
+                      color: Colors.white,
+                      size: 40.sp,
+                    ),
+                  ),
+                ),
+                SizedBox(width: 12.w),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Daily Task Challenge',
+                        style: GoogleFonts.poppins(
+                          color: Colors.white,
+                          fontSize: 18.sp,
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: -0.2,
+                        ),
+                      ),
+                      SizedBox(height: 3.h),
+                      Text(
+                        isDone
+                            ? (isClaimed
+                                ? 'You claimed today\'s reward. Check back tomorrow!'
+                                : 'Awesome! All tasks complete. Claim your bonus coins now.')
+                            : 'Complete all ${data.totalTasksCount} tasks today & claim your bonus coins before midnight.',
+                        style: GoogleFonts.poppins(
+                          color: Colors.white.withValues(alpha: 0.85),
+                          fontSize: 11.sp,
+                          height: 1.3,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
 
             SizedBox(height: 14.h),
@@ -1093,7 +1120,7 @@ class _DailyChallengeScreenState extends ConsumerState<DailyChallengeScreen>
   }
 
   // ---------------------------------------------------------------------------
-  // Dual Stats Cards (Matching Home Screen Clean Cards)
+  // Dual Stats Cards (Matching Super Offer Screen Dark Obsidian Cards)
   // ---------------------------------------------------------------------------
   Widget _buildDualStatsCards({
     required BuildContext context,
@@ -1110,19 +1137,18 @@ class _DailyChallengeScreenState extends ConsumerState<DailyChallengeScreen>
               _showTasksCompletedInfo(context);
             },
             child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 14.h),
+              padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 13.h),
               decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(18.r),
-                border: Border.all(
-                  color: const Color(0xFFE2E8F0),
-                  width: 1.2,
+                image: const DecorationImage(
+                  image: AssetImage('assets/Icons1/Rectangle 13.png'),
+                  fit: BoxFit.fill,
                 ),
+                borderRadius: BorderRadius.circular(18.r),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.03),
+                    color: Colors.black.withValues(alpha: 0.18),
                     blurRadius: 10,
-                    offset: const Offset(0, 3),
+                    offset: const Offset(0, 4),
                   ),
                 ],
               ),
@@ -1132,13 +1158,17 @@ class _DailyChallengeScreenState extends ConsumerState<DailyChallengeScreen>
                     width: 38.w,
                     height: 38.w,
                     decoration: BoxDecoration(
-                      color: const Color(0xFF26262B),
-                      borderRadius: BorderRadius.circular(12.r),
+                      color: const Color(0xFF202028),
+                      borderRadius: BorderRadius.circular(11.r),
+                      border: Border.all(
+                        color: Colors.white.withValues(alpha: 0.08),
+                        width: 1,
+                      ),
                     ),
                     alignment: Alignment.center,
                     child: Icon(
                       Icons.task_alt_rounded,
-                      color: Colors.white,
+                      color: const Color(0xFFC084FC),
                       size: 20.sp,
                     ),
                   ),
@@ -1151,7 +1181,7 @@ class _DailyChallengeScreenState extends ConsumerState<DailyChallengeScreen>
                         Text(
                           '${data.completedTasksCount}/${data.totalTasksCount}',
                           style: GoogleFonts.poppins(
-                            color: const Color(0xFF1E1B4B),
+                            color: Colors.white,
                             fontSize: 17.sp,
                             fontWeight: FontWeight.w800,
                             height: 1.1,
@@ -1166,7 +1196,7 @@ class _DailyChallengeScreenState extends ConsumerState<DailyChallengeScreen>
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                                 style: GoogleFonts.poppins(
-                                  color: const Color(0xFF64748B),
+                                  color: const Color(0xFF9E9EA7),
                                   fontSize: 11.sp,
                                   fontWeight: FontWeight.w500,
                                 ),
@@ -1175,7 +1205,7 @@ class _DailyChallengeScreenState extends ConsumerState<DailyChallengeScreen>
                             SizedBox(width: 3.w),
                             Icon(
                               Icons.info_outline_rounded,
-                              color: const Color(0xFF94A3B8),
+                              color: const Color(0xFFC084FC).withValues(alpha: 0.8),
                               size: 11.sp,
                             ),
                           ],
@@ -1189,7 +1219,7 @@ class _DailyChallengeScreenState extends ConsumerState<DailyChallengeScreen>
           ),
         ),
 
-        SizedBox(width: 12.w),
+        SizedBox(width: 10.w),
 
         // 2. Countdown Timer Card
         Expanded(
@@ -1200,19 +1230,18 @@ class _DailyChallengeScreenState extends ConsumerState<DailyChallengeScreen>
               _showResetsInfo(context);
             },
             child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 14.h),
+              padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 13.h),
               decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(18.r),
-                border: Border.all(
-                  color: const Color(0xFFE2E8F0),
-                  width: 1.2,
+                image: const DecorationImage(
+                  image: AssetImage('assets/Icons1/Rectangle 13.png'),
+                  fit: BoxFit.fill,
                 ),
+                borderRadius: BorderRadius.circular(18.r),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.03),
+                    color: Colors.black.withValues(alpha: 0.18),
                     blurRadius: 10,
-                    offset: const Offset(0, 3),
+                    offset: const Offset(0, 4),
                   ),
                 ],
               ),
@@ -1222,8 +1251,12 @@ class _DailyChallengeScreenState extends ConsumerState<DailyChallengeScreen>
                     width: 38.w,
                     height: 38.w,
                     decoration: BoxDecoration(
-                      color: const Color(0xFF26262B),
-                      borderRadius: BorderRadius.circular(12.r),
+                      color: const Color(0xFF202028),
+                      borderRadius: BorderRadius.circular(11.r),
+                      border: Border.all(
+                        color: Colors.white.withValues(alpha: 0.08),
+                        width: 1,
+                      ),
                     ),
                     alignment: Alignment.center,
                     child: Icon(
@@ -1243,7 +1276,7 @@ class _DailyChallengeScreenState extends ConsumerState<DailyChallengeScreen>
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: GoogleFonts.poppins(
-                            color: const Color(0xFF1E1B4B),
+                            color: Colors.white,
                             fontSize: 14.sp,
                             fontWeight: FontWeight.w800,
                             height: 1.1,
@@ -1258,7 +1291,7 @@ class _DailyChallengeScreenState extends ConsumerState<DailyChallengeScreen>
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                                 style: GoogleFonts.poppins(
-                                  color: const Color(0xFF64748B),
+                                  color: const Color(0xFF9E9EA7),
                                   fontSize: 11.sp,
                                   fontWeight: FontWeight.w500,
                                 ),
@@ -1267,7 +1300,7 @@ class _DailyChallengeScreenState extends ConsumerState<DailyChallengeScreen>
                             SizedBox(width: 3.w),
                             Icon(
                               Icons.info_outline_rounded,
-                              color: const Color(0xFF94A3B8),
+                              color: const Color(0xFF9E9EA7),
                               size: 11.sp,
                             ),
                           ],
@@ -1285,7 +1318,7 @@ class _DailyChallengeScreenState extends ConsumerState<DailyChallengeScreen>
   }
 
   // ---------------------------------------------------------------------------
-  // Today's Tasks Section Header (Matching Home Screen Section Style)
+  // Today's Tasks Section Header (Matching Super Offer Screen Style)
   // ---------------------------------------------------------------------------
   Widget _buildTodayTasksSectionHeader(DailyChallengeData challengeData) {
     return Row(
@@ -1297,7 +1330,7 @@ class _DailyChallengeScreenState extends ConsumerState<DailyChallengeScreen>
               width: 4.w,
               height: 18.h,
               decoration: BoxDecoration(
-                color: const Color(0xFF26262B),
+                color: const Color(0xFFAB31DE),
                 borderRadius: BorderRadius.circular(2.r),
               ),
             ),
@@ -1315,7 +1348,7 @@ class _DailyChallengeScreenState extends ConsumerState<DailyChallengeScreen>
         Container(
           padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
           decoration: BoxDecoration(
-            color: const Color(0xFFF1F5F9),
+            color: Colors.white,
             borderRadius: BorderRadius.circular(8.r),
             border: Border.all(
               color: const Color(0xFFE2E8F0),
@@ -1343,22 +1376,31 @@ class _DailyChallengeScreenState extends ConsumerState<DailyChallengeScreen>
       width: double.infinity,
       padding: EdgeInsets.symmetric(vertical: 28.h, horizontal: 16.w),
       decoration: BoxDecoration(
-        color: Colors.white,
+        image: const DecorationImage(
+          image: AssetImage('assets/Icons1/Rectangle 13.png'),
+          fit: BoxFit.fill,
+        ),
         borderRadius: BorderRadius.circular(20.r),
-        border: Border.all(color: const Color(0xFFE2E8F0), width: 1.2),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.15),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Column(
         children: [
           Icon(
             Icons.assignment_late_outlined,
             size: 40.sp,
-            color: const Color(0xFF94A3B8),
+            color: const Color(0xFF9E9EA7),
           ),
           SizedBox(height: 10.h),
           Text(
             'No Tasks Available',
             style: GoogleFonts.poppins(
-              color: const Color(0xFF1E1B4B),
+              color: Colors.white,
               fontSize: 15.sp,
               fontWeight: FontWeight.w700,
             ),
@@ -1367,7 +1409,7 @@ class _DailyChallengeScreenState extends ConsumerState<DailyChallengeScreen>
           Text(
             'Please check back later for new daily challenges.',
             style: GoogleFonts.poppins(
-              color: const Color(0xFF64748B),
+              color: const Color(0xFF9E9EA7),
               fontSize: 12.sp,
               fontWeight: FontWeight.w400,
             ),
@@ -1378,7 +1420,7 @@ class _DailyChallengeScreenState extends ConsumerState<DailyChallengeScreen>
   }
 
   // ---------------------------------------------------------------------------
-  // Executive Task Item Card (Matching Clean Home Card System 1-to-1)
+  // Executive Task Item Card (Matching Super Offer Screen Dark Obsidian Style)
   // ---------------------------------------------------------------------------
   Widget _buildExecutiveTaskCard({
     required BuildContext context,
@@ -1393,17 +1435,16 @@ class _DailyChallengeScreenState extends ConsumerState<DailyChallengeScreen>
 
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(18.r),
-        border: Border.all(
-          color: isComplete ? const Color(0xFF86EFAC) : const Color(0xFFE2E8F0),
-          width: 1.2,
+        image: const DecorationImage(
+          image: AssetImage('assets/Icons1/Rectangle 13.png'),
+          fit: BoxFit.fill,
         ),
+        borderRadius: BorderRadius.circular(18.r),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.03),
+            color: Colors.black.withValues(alpha: 0.18),
             blurRadius: 10,
-            offset: const Offset(0, 3),
+            offset: const Offset(0, 4),
           ),
         ],
       ),
@@ -1417,10 +1458,10 @@ class _DailyChallengeScreenState extends ConsumerState<DailyChallengeScreen>
               width: 44.w,
               height: 44.w,
               decoration: BoxDecoration(
-                color: isComplete ? const Color(0xFFDCFCE7) : const Color(0xFFF8FAFC),
+                color: const Color(0xFF202028),
                 borderRadius: BorderRadius.circular(14.r),
                 border: Border.all(
-                  color: isComplete ? const Color(0xFF86EFAC) : const Color(0xFFE2E8F0),
+                  color: isComplete ? const Color(0xFF86EFAC).withValues(alpha: 0.4) : Colors.white.withValues(alpha: 0.08),
                   width: 1.2,
                 ),
               ),
@@ -1430,7 +1471,7 @@ class _DailyChallengeScreenState extends ConsumerState<DailyChallengeScreen>
                 fit: BoxFit.contain,
                 errorBuilder: (_, __, ___) => Icon(
                   Icons.emoji_events_rounded,
-                  color: isComplete ? const Color(0xFF15803D) : const Color(0xFF26262B),
+                  color: isComplete ? const Color(0xFF86EFAC) : const Color(0xFFC084FC),
                   size: 22.sp,
                 ),
               ),
@@ -1449,7 +1490,7 @@ class _DailyChallengeScreenState extends ConsumerState<DailyChallengeScreen>
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: GoogleFonts.poppins(
-                      color: const Color(0xFF1E1B4B),
+                      color: Colors.white,
                       fontSize: 14.5.sp,
                       fontWeight: FontWeight.w700,
                     ),
@@ -1460,7 +1501,7 @@ class _DailyChallengeScreenState extends ConsumerState<DailyChallengeScreen>
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: GoogleFonts.poppins(
-                      color: const Color(0xFF64748B),
+                      color: const Color(0xFF9E9EA7),
                       fontSize: 11.5.sp,
                       fontWeight: FontWeight.w400,
                     ),
@@ -1476,7 +1517,7 @@ class _DailyChallengeScreenState extends ConsumerState<DailyChallengeScreen>
                             Container(
                               height: 6.h,
                               decoration: BoxDecoration(
-                                color: const Color(0xFFF1F5F9),
+                                color: Colors.white.withValues(alpha: 0.15),
                                 borderRadius: BorderRadius.circular(3.r),
                               ),
                             ),
@@ -1486,9 +1527,9 @@ class _DailyChallengeScreenState extends ConsumerState<DailyChallengeScreen>
                                 height: 6.h,
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(3.r),
-                                  color: isComplete
-                                      ? const Color(0xFF16A34A)
-                                      : const Color(0xFF26262B),
+                                  gradient: isComplete
+                                      ? const LinearGradient(colors: [Color(0xFF4ADE80), Color(0xFF22C55E)])
+                                      : const LinearGradient(colors: [Color(0xFFE39FFF), Color(0xFFAB31DE)]),
                                 ),
                               ),
                             ),
@@ -1499,7 +1540,7 @@ class _DailyChallengeScreenState extends ConsumerState<DailyChallengeScreen>
                       Text(
                         '$current/$target',
                         style: GoogleFonts.poppins(
-                          color: isComplete ? const Color(0xFF16A34A) : const Color(0xFF26262B),
+                          color: isComplete ? const Color(0xFF86EFAC) : Colors.white,
                           fontSize: 11.sp,
                           fontWeight: FontWeight.w700,
                         ),
@@ -1512,27 +1553,27 @@ class _DailyChallengeScreenState extends ConsumerState<DailyChallengeScreen>
 
             SizedBox(width: 12.w),
 
-            // Right CTA: "Done" Badge or Metallic "GO" Button
+            // Right CTA: "Done" Badge or Super Offer style White Pill "GO" Button
             if (isComplete)
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFDCFCE7),
+                  color: const Color(0xFF16A34A).withValues(alpha: 0.25),
                   borderRadius: BorderRadius.circular(10.r),
                   border: Border.all(
-                    color: const Color(0xFF86EFAC),
+                    color: const Color(0xFF86EFAC).withValues(alpha: 0.4),
                     width: 1,
                   ),
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(Icons.check_rounded, color: const Color(0xFF15803D), size: 14.sp),
+                    Icon(Icons.check_rounded, color: const Color(0xFF86EFAC), size: 14.sp),
                     SizedBox(width: 4.w),
                     Text(
                       'Done',
                       style: GoogleFonts.poppins(
-                        color: const Color(0xFF15803D),
+                        color: const Color(0xFF86EFAC),
                         fontSize: 11.5.sp,
                         fontWeight: FontWeight.w700,
                       ),
@@ -1544,27 +1585,14 @@ class _DailyChallengeScreenState extends ConsumerState<DailyChallengeScreen>
               _PopScaleButton(
                 onTap: () => _navigateToTask(task.taskType, userId, email),
                 child: Container(
-                  width: 58.w,
-                  height: 32.h,
+                  padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
                   decoration: BoxDecoration(
-                    gradient: const LinearGradient(
-                      colors: [
-                        Colors.white,
-                        Color(0xFFE5E7EB),
-                        Color(0xFFB0B5C2),
-                      ],
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                    ),
-                    borderRadius: BorderRadius.circular(10.r),
-                    border: Border.all(
-                      color: const Color(0xFF9CA3AF),
-                      width: 1,
-                    ),
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(12.r),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.08),
-                        blurRadius: 4,
+                        color: Colors.black.withValues(alpha: 0.15),
+                        blurRadius: 6,
                         offset: const Offset(0, 2),
                       ),
                     ],
@@ -1588,30 +1616,36 @@ class _DailyChallengeScreenState extends ConsumerState<DailyChallengeScreen>
   }
 
   // ---------------------------------------------------------------------------
-  // How It Works Rules Card (Matching Home Screen Clean Style)
+  // How It Works Rules Card (Matching Super Offer Screen Dark Obsidian Style)
   // ---------------------------------------------------------------------------
   Widget _buildRulesInfoCard() {
     return Container(
       padding: EdgeInsets.all(16.r),
       decoration: BoxDecoration(
-        color: const Color(0xFFF8FAFC),
-        borderRadius: BorderRadius.circular(18.r),
-        border: Border.all(
-          color: const Color(0xFFE2E8F0),
-          width: 1.2,
+        image: const DecorationImage(
+          image: AssetImage('assets/Icons1/Rectangle 13.png'),
+          fit: BoxFit.fill,
         ),
+        borderRadius: BorderRadius.circular(18.r),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.18),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              Icon(Icons.info_outline_rounded, color: const Color(0xFF26262B), size: 18.sp),
+              Icon(Icons.info_outline_rounded, color: const Color(0xFFC084FC), size: 18.sp),
               SizedBox(width: 6.w),
               Text(
                 'How Daily Challenge Works',
                 style: GoogleFonts.poppins(
-                  color: const Color(0xFF1E1B4B),
+                  color: Colors.white,
                   fontSize: 13.5.sp,
                   fontWeight: FontWeight.w700,
                 ),
@@ -1633,12 +1667,12 @@ class _DailyChallengeScreenState extends ConsumerState<DailyChallengeScreen>
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('• ', style: TextStyle(color: const Color(0xFF26262B), fontSize: 14.sp, fontWeight: FontWeight.bold)),
+          Text('• ', style: TextStyle(color: const Color(0xFFC084FC), fontSize: 14.sp, fontWeight: FontWeight.bold)),
           Expanded(
             child: Text(
               text,
               style: GoogleFonts.poppins(
-                color: const Color(0xFF64748B),
+                color: const Color(0xFF9E9EA7),
                 fontSize: 11.5.sp,
                 height: 1.35,
                 fontWeight: FontWeight.w400,

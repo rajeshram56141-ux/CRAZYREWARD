@@ -1,4 +1,4 @@
-class CrazyRacingSet {
+class DiamondCatchSet {
   final bool gameInstallTask;
   final int dailyGemsForInstall;
   final int gameGems;
@@ -7,7 +7,7 @@ class CrazyRacingSet {
   final int gameDailyLimit;
   final int gameClaimsToday;
 
-  CrazyRacingSet({
+  DiamondCatchSet({
     required this.gameInstallTask,
     required this.dailyGemsForInstall,
     required this.gameGems,
@@ -17,5 +17,3 @@ class CrazyRacingSet {
     required this.gameClaimsToday,
   });
 }
-
-typedef DiamondCatchSet = CrazyRacingSet;

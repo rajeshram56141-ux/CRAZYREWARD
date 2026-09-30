@@ -86,17 +86,16 @@ class _WatchVideoFullVideoWidgetState extends State<WatchVideoFullVideoWidget> {
         curve: Curves.easeInOut,
         child: Container(
           decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(18.r),
-            border: Border.all(
-              color: const Color(0xFFE2E8F0),
-              width: 1.2,
+            image: const DecorationImage(
+              image: AssetImage('assets/Icons1/Rectangle 13.png'),
+              fit: BoxFit.fill,
             ),
+            borderRadius: BorderRadius.circular(18.r),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: 0.03),
-                blurRadius: 10,
-                offset: const Offset(0, 3),
+                color: const Color(0xFF0F172A).withValues(alpha: 0.12),
+                blurRadius: 16,
+                offset: const Offset(0, 6),
               ),
             ],
           ),
@@ -200,7 +199,7 @@ class _WatchVideoFullVideoWidgetState extends State<WatchVideoFullVideoWidget> {
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: GoogleFonts.poppins(
-                        color: const Color(0xFF1E1B4B),
+                        color: Colors.white,
                         fontSize: 14.5.sp,
                         fontWeight: FontWeight.w700,
                       ),
@@ -218,7 +217,7 @@ class _WatchVideoFullVideoWidgetState extends State<WatchVideoFullVideoWidget> {
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: GoogleFonts.poppins(
-                        color: const Color(0xFF64748B),
+                        color: const Color(0xFF9E9EA7),
                         fontSize: 11.sp,
                         fontWeight: FontWeight.w400,
                         height: 1.25,
@@ -230,7 +229,7 @@ class _WatchVideoFullVideoWidgetState extends State<WatchVideoFullVideoWidget> {
                     // Bottom Row (Coins Badge & Silver Metallic Watch Button)
                     Row(
                       children: [
-                        // Dark Coin Badge (Matching Home Screen)
+                        // Dark Coin Badge
                         Container(
                           padding: EdgeInsets.symmetric(
                             horizontal: 8.w,

@@ -11,7 +11,7 @@ import '../../../../../utils/constant/constant.dart';
 import '../../../../../widgets/ads/topon_native_ad_card.dart';
 import '../../../../../widgets/common/screen_banner_widget.dart';
 import '../../../../../widgets/common/shimmer_tag.dart';
-import '../../../../b_splash_stage/splash_service.dart';
+import '../../../../b_splash_stage/splash_service.dart'; 
 import '../../../provider/dashboard_provider.dart';
 import '../daily_task/daily_task_model.dart';
 import 'provider/watch_video_provider.dart';
@@ -65,12 +65,12 @@ class WatchVideoScreen extends HookConsumerWidget {
         statusBarBrightness: Brightness.light,
       ),
       child: Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: const Color(0xFFF1F5F9),
         body: Stack(
           children: [
-            // 1. Solid Clean White Base Background
+            // 1. Soft Slate Gray Background
             Positioned.fill(
-              child: Container(color: Colors.white),
+              child: Container(color: const Color(0xFFF1F5F9)),
             ),
 
             // 2. Main Scrollable Body
@@ -151,6 +151,9 @@ class WatchVideoScreen extends HookConsumerWidget {
                                     screenKey: 'watchVideoScreen',
                                     margin: EdgeInsets.only(left: 16, right: 16, bottom: 12),
                                   ),
+
+                                  // Super Offer style Top Banner Card
+                                  _buildTopBannerCard(),
 
                                   SizedBox(height: 6.h),
 
@@ -238,6 +241,71 @@ class WatchVideoScreen extends HookConsumerWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildTopBannerCard() {
+    return Container(
+      width: double.infinity,
+      margin: EdgeInsets.only(left: 16.w, right: 16.w, bottom: 14.h),
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
+      decoration: BoxDecoration(
+        image: const DecorationImage(
+          image: AssetImage('assets/Icons1/Rectangle 13.png'),
+          fit: BoxFit.fill,
+        ),
+        borderRadius: BorderRadius.circular(20.r),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.18),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          SizedBox(
+            width: 75.w,
+            height: 65.h,
+            child: Image.asset(
+              'assets/icons/watch video.png',
+              fit: BoxFit.contain,
+              errorBuilder: (_, __, ___) => Image.asset(
+                'assets/Icons1/super_offer_3d.png',
+                fit: BoxFit.contain,
+              ),
+            ),
+          ),
+          SizedBox(width: 12.w),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  'Watch & Earn!',
+                  style: GoogleFonts.poppins(
+                    color: Colors.white,
+                    fontSize: 19.sp,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+                SizedBox(height: 4.h),
+                Text(
+                  'Watch short video offers & earn instant coins!',
+                  style: GoogleFonts.poppins(
+                    color: const Color(0xFF9E9EA7),
+                    fontSize: 11.5.sp,
+                    fontWeight: FontWeight.w500,
+                    height: 1.25,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

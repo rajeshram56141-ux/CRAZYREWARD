@@ -246,7 +246,7 @@ class TopRecommendedTaskWidget extends StatelessWidget {
             Align(
               alignment: Alignment.topCenter,
               child: Padding(
-                padding: EdgeInsets.only(top: 14.h, left: 6.w, right: 6.w),
+                padding: EdgeInsets.only(top: 11.h, left: 4.w, right: 4.w),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -258,8 +258,8 @@ class TopRecommendedTaskWidget extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                       style: GoogleFonts.poppins(
                         color: Colors.white,
-                        fontSize: 14.5.sp,
-                        fontWeight: FontWeight.w700,
+                        fontSize: 16.5.sp,
+                        fontWeight: FontWeight.w800,
                         height: 1.15,
                       ),
                     ),
@@ -331,7 +331,7 @@ class TopRecommendedTaskWidget extends StatelessWidget {
             Align(
               alignment: Alignment.topCenter,
               child: Padding(
-                padding: EdgeInsets.only(top: 14.h, left: 6.w, right: 6.w),
+                padding: EdgeInsets.only(top: 11.h, left: 4.w, right: 4.w),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -343,8 +343,8 @@ class TopRecommendedTaskWidget extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                       style: GoogleFonts.poppins(
                         color: Colors.white,
-                        fontSize: 14.5.sp,
-                        fontWeight: FontWeight.w700,
+                        fontSize: 16.5.sp,
+                        fontWeight: FontWeight.w800,
                         height: 1.15,
                       ),
                     ),
@@ -432,7 +432,7 @@ class TopRecommendedTaskWidget extends StatelessWidget {
             Align(
               alignment: Alignment.topCenter,
               child: Padding(
-                padding: EdgeInsets.only(top: 14.h, left: 6.w, right: 6.w),
+                padding: EdgeInsets.only(top: 11.h, left: 4.w, right: 4.w),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -444,8 +444,8 @@ class TopRecommendedTaskWidget extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                       style: GoogleFonts.poppins(
                         color: Colors.white,
-                        fontSize: 14.5.sp,
-                        fontWeight: FontWeight.w700,
+                        fontSize: 16.5.sp,
+                        fontWeight: FontWeight.w800,
                         height: 1.15,
                       ),
                     ),
@@ -523,7 +523,7 @@ class TopRecommendedTaskWidget extends StatelessWidget {
             Align(
               alignment: Alignment.topCenter,
               child: Padding(
-                padding: EdgeInsets.only(top: 14.h, left: 6.w, right: 6.w),
+                padding: EdgeInsets.only(top: 11.h, left: 4.w, right: 4.w),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -535,8 +535,8 @@ class TopRecommendedTaskWidget extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                       style: GoogleFonts.poppins(
                         color: Colors.white,
-                        fontSize: 14.5.sp,
-                        fontWeight: FontWeight.w700,
+                        fontSize: 16.5.sp,
+                        fontWeight: FontWeight.w800,
                         height: 1.15,
                       ),
                     ),
@@ -2259,13 +2259,13 @@ class _PlayTimeBannerWidget extends HookWidget {
 
               // 2. Foreground Content: Left Icon + Center Text & Tag + Right Action Button
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
+                padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 8.h),
                 child: Row(
                   children: [
-                    // 3D PlayTime Game Icon (Playtime.png)
+                    // 3D PlayTime Game Icon
                     SizedBox(
-                      width: 106.w,
-                      height: 88.h,
+                      width: 92.w,
+                      height: 86.h,
                       child: Center(
                         child: Image.asset(
                           'assets/Icons1/Playtime.png',
@@ -2295,18 +2295,18 @@ class _PlayTimeBannerWidget extends HookWidget {
                                   style: GoogleFonts.poppins(
                                     color: Colors.white,
                                     fontSize: 16.5.sp,
-                                    fontWeight: FontWeight.w700,
+                                    fontWeight: FontWeight.w800,
                                     letterSpacing: -0.2,
                                     height: 1.15,
                                   ),
                                 ),
                               ),
-                              SizedBox(width: 6.w),
+                              SizedBox(width: 5.w),
                               // Coin / Minute Tag matching Dark Theme
                               Container(
                                 padding: EdgeInsets.symmetric(
                                   horizontal: 5.w,
-                                  vertical: 1.5.h,
+                                  vertical: 2.h,
                                 ),
                                 decoration: BoxDecoration(
                                   color: const Color(0xFF2E2E38),
@@ -2335,7 +2335,7 @@ class _PlayTimeBannerWidget extends HookWidget {
                                       'Per Min',
                                       style: GoogleFonts.poppins(
                                         color: const Color(0xFFFBBF24),
-                                        fontSize: 7.8.sp,
+                                        fontSize: 8.sp,
                                         fontWeight: FontWeight.w700,
                                       ),
                                     ),
@@ -2351,9 +2351,9 @@ class _PlayTimeBannerWidget extends HookWidget {
                             overflow: TextOverflow.ellipsis,
                             style: GoogleFonts.poppins(
                               color: const Color(0xFF9E9EA7),
-                              fontSize: 10.sp,
+                              fontSize: 9.5.sp,
                               fontWeight: FontWeight.w400,
-                              height: 1.25,
+                              height: 1.2,
                             ),
                           ),
                         ],

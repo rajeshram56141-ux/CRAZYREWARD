@@ -230,6 +230,22 @@ class BattleArenaScreen extends HookConsumerWidget {
                                   ),
                                   child: Row(
                                     children: [
+                                      // 3D Battle Graphic (On Left!)
+                                      Image.asset(
+                                        'assets/Icons1/Battle quiz 1.png',
+                                        width: 82.w,
+                                        height: 82.w,
+                                        fit: BoxFit.contain,
+                                        errorBuilder: (_, __, ___) => Image.asset(
+                                          'assets/Icons1/battle-3d-icon-png-download-11623292 3.png',
+                                          width: 76.w,
+                                          height: 76.w,
+                                          fit: BoxFit.contain,
+                                        ),
+                                      ),
+                                      SizedBox(width: 12.w),
+
+                                      // Text Details (On Right!)
                                       Expanded(
                                         child: Column(
                                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -309,21 +325,6 @@ class BattleArenaScreen extends HookConsumerWidget {
                                               orElse: () => const SizedBox.shrink(),
                                             ),
                                           ],
-                                        ),
-                                      ),
-                                      SizedBox(width: 8.w),
-
-                                      // 3D Battle Graphic
-                                      Image.asset(
-                                        'assets/Icons1/battle-3d-icon-png-download-11623292 3.png',
-                                        width: 76.w,
-                                        height: 76.w,
-                                        fit: BoxFit.contain,
-                                        errorBuilder: (_, __, ___) => Image.asset(
-                                          'assets/icons/battle.png',
-                                          width: 70.w,
-                                          height: 70.w,
-                                          fit: BoxFit.contain,
                                         ),
                                       ),
                                     ],

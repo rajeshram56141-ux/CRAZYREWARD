@@ -204,18 +204,20 @@ class RedeemScreen extends HookConsumerWidget {
 
                       SizedBox(height: 6.h),
 
-                      // 3. Premium Modern Executive Wallet Balance Card
+                      // 3. Premium Modern Executive Wallet Balance Card (Dark Obsidian Theme)
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: 16.w),
                         child: Container(
                           width: double.infinity,
                           decoration: BoxDecoration(
-                            color: Colors.white,
+                            image: const DecorationImage(
+                              image: AssetImage('assets/Icons1/Rectangle 13.png'),
+                              fit: BoxFit.fill,
+                            ),
                             borderRadius: BorderRadius.circular(24.r),
-                            border: Border.all(color: const Color(0xFFE2E8F0), width: 1.2),
                             boxShadow: [
                               BoxShadow(
-                                color: const Color(0xFF0F172A).withValues(alpha: 0.04),
+                                color: Colors.black.withValues(alpha: 0.14),
                                 blurRadius: 18,
                                 offset: const Offset(0, 6),
                               ),
@@ -225,34 +227,6 @@ class RedeemScreen extends HookConsumerWidget {
                             borderRadius: BorderRadius.circular(24.r),
                             child: Stack(
                               children: [
-                                // Right Backdrop Dome
-                                Positioned(
-                                  right: 0,
-                                  top: 0,
-                                  bottom: 0,
-                                  width: 130.w,
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      gradient: LinearGradient(
-                                        colors: [
-                                          const Color(0xFFF8FAFC).withValues(alpha: 0.0),
-                                          const Color(0xFFF8FAFC).withValues(alpha: 0.8),
-                                          const Color(0xFFF1F5F9),
-                                        ],
-                                        begin: Alignment.topCenter,
-                                        end: Alignment.bottomCenter,
-                                        stops: const [0.0, 0.25, 1.0],
-                                      ),
-                                      borderRadius: BorderRadius.only(
-                                        topLeft: Radius.circular(60.r),
-                                        bottomLeft: Radius.circular(60.r),
-                                        topRight: Radius.circular(24.r),
-                                        bottomRight: Radius.circular(24.r),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-
                                 // Right Mascot Artwork
                                 Positioned(
                                   right: 6.w,
@@ -281,14 +255,14 @@ class RedeemScreen extends HookConsumerWidget {
                                             height: 8.w,
                                             decoration: const BoxDecoration(
                                               shape: BoxShape.circle,
-                                              color: Color(0xFF26262B),
+                                              color: Color(0xFF48C78E),
                                             ),
                                           ),
                                           SizedBox(width: 7.w),
                                           Text(
                                             'Available Balance',
                                             style: GoogleFonts.poppins(
-                                              color: const Color(0xFF64748B),
+                                              color: const Color(0xFFCBD5E1),
                                               fontSize: 12.5.sp,
                                               fontWeight: FontWeight.w600,
                                               letterSpacing: 0.2,
@@ -314,7 +288,7 @@ class RedeemScreen extends HookConsumerWidget {
                                             child: Text(
                                               _formatBalance(availableCoins.toDouble()),
                                               style: GoogleFonts.poppins(
-                                                color: const Color(0xFF26262B),
+                                                color: Colors.white,
                                                 fontSize: 24.sp,
                                                 fontWeight: FontWeight.w800,
                                                 letterSpacing: -0.5,
@@ -328,7 +302,7 @@ class RedeemScreen extends HookConsumerWidget {
 
                                       SizedBox(height: 10.h),
 
-                                      // History Pill Button (Dark Obsidian Theme)
+                                      // History Pill Button
                                       GestureDetector(
                                         onTap: () {
                                           HapticFeedback.lightImpact();
@@ -341,18 +315,15 @@ class RedeemScreen extends HookConsumerWidget {
                                         child: Container(
                                           padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 6.h),
                                           decoration: BoxDecoration(
-                                            gradient: const LinearGradient(
-                                              colors: [
-                                                Color(0xFF26262B),
-                                                Color(0xFF18181B),
-                                              ],
-                                              begin: Alignment.topCenter,
-                                              end: Alignment.bottomCenter,
-                                            ),
+                                            color: Colors.white.withValues(alpha: 0.15),
                                             borderRadius: BorderRadius.circular(12.r),
+                                            border: Border.all(
+                                              color: Colors.white.withValues(alpha: 0.25),
+                                              width: 1,
+                                            ),
                                             boxShadow: [
                                               BoxShadow(
-                                                color: const Color(0xFF18181B).withValues(alpha: 0.2),
+                                                color: Colors.black.withValues(alpha: 0.15),
                                                 blurRadius: 6,
                                                 offset: const Offset(0, 2),
                                               ),
@@ -499,18 +470,21 @@ class RedeemScreen extends HookConsumerWidget {
                                                 width: 28.w,
                                                 height: 28.w,
                                                 decoration: BoxDecoration(
-                                                  color: const Color(0xFFF1F5F9),
+                                                  color: const Color(0xFF26262B),
                                                   borderRadius: BorderRadius.circular(8.r),
-                                                  border: Border.all(
-                                                    color: const Color(0xFFE2E8F0),
-                                                    width: 1,
-                                                  ),
+                                                  boxShadow: [
+                                                    BoxShadow(
+                                                      color: Colors.black.withValues(alpha: 0.1),
+                                                      blurRadius: 4,
+                                                      offset: const Offset(0, 2),
+                                                    ),
+                                                  ],
                                                 ),
                                                 alignment: Alignment.center,
                                                 child: Icon(
                                                   Icons.confirmation_number_rounded,
-                                                  color: const Color(0xFF26262B),
-                                                  size: 16.sp,
+                                                  color: Colors.white,
+                                                  size: 15.sp,
                                                 ),
                                               ),
                                               SizedBox(width: 10.w),
@@ -661,21 +635,16 @@ class RedeemScreen extends HookConsumerWidget {
             width: 142.w,
             height: 124.h,
             decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(20.r),
-              border: Border.all(
-                color: denomination.isOutOfStock
-                    ? const Color(0xFFFCA5A5)
-                    : (isLocked ? const Color(0xFFF1F5F9) : const Color(0xFFE2E8F0)),
-                width: 1.2,
+              image: const DecorationImage(
+                image: AssetImage('assets/Icons1/Rectangle 13.png'),
+                fit: BoxFit.fill,
               ),
+              borderRadius: BorderRadius.circular(20.r),
               boxShadow: [
                 BoxShadow(
                   color: denomination.isOutOfStock
-                      ? const Color(0xFFEF4444).withValues(alpha: 0.08)
-                      : (isLocked
-                          ? const Color(0xFF0F172A).withValues(alpha: 0.02)
-                          : const Color(0xFF0F172A).withValues(alpha: 0.05)),
+                      ? const Color(0xFFEF4444).withValues(alpha: 0.15)
+                      : Colors.black.withValues(alpha: 0.14),
                   blurRadius: 10,
                   offset: const Offset(0, 4),
                 ),
@@ -697,8 +666,8 @@ class RedeemScreen extends HookConsumerWidget {
                           padding: EdgeInsets.all(6.w),
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            color: const Color(0xFFF8FAFC),
-                            border: Border.all(color: const Color(0xFFE2E8F0), width: 1),
+                            color: Colors.white,
+                            border: Border.all(color: Colors.white.withValues(alpha: 0.3), width: 1),
                           ),
                           child: InternetImage(
                             url: method.image,
@@ -710,7 +679,7 @@ class RedeemScreen extends HookConsumerWidget {
                           child: Text(
                             amountText,
                             style: GoogleFonts.poppins(
-                              color: const Color(0xFF26262B),
+                              color: Colors.white,
                               fontSize: 16.5.sp,
                               fontWeight: FontWeight.w800,
                               letterSpacing: -0.2,
@@ -728,7 +697,7 @@ class RedeemScreen extends HookConsumerWidget {
                         child: Text(
                           denomination.subtitle!,
                           style: GoogleFonts.poppins(
-                            color: const Color(0xFF64748B),
+                            color: const Color(0xFFCBD5E1),
                             fontSize: 10.5.sp,
                             fontWeight: FontWeight.w600,
                           ),
@@ -742,7 +711,7 @@ class RedeemScreen extends HookConsumerWidget {
                     Container(
                       height: 1.0,
                       width: double.infinity,
-                      color: const Color(0xFFF1F5F9),
+                      color: Colors.white.withValues(alpha: 0.12),
                     ),
 
                     // Bottom Row: If Out of Stock -> Show "OUT OF STOCK"
@@ -752,10 +721,10 @@ class RedeemScreen extends HookConsumerWidget {
                         padding: EdgeInsets.symmetric(vertical: 4.5.h),
                         alignment: Alignment.center,
                         decoration: BoxDecoration(
-                          color: const Color(0xFFFEF2F2),
+                          color: const Color(0xFFEF4444).withValues(alpha: 0.2),
                           borderRadius: BorderRadius.circular(10.r),
                           border: Border.all(
-                            color: const Color(0xFFFCA5A5),
+                            color: const Color(0xFFEF4444).withValues(alpha: 0.5),
                             width: 1,
                           ),
                         ),
@@ -765,13 +734,13 @@ class RedeemScreen extends HookConsumerWidget {
                             Icon(
                               Icons.block_rounded,
                               size: 11.sp,
-                              color: const Color(0xFFDC2626),
+                              color: const Color(0xFFFCA5A5),
                             ),
                             SizedBox(width: 4.w),
                             Text(
                               'OUT OF STOCK',
                               style: GoogleFonts.poppins(
-                                color: const Color(0xFFDC2626),
+                                color: const Color(0xFFFCA5A5),
                                 fontSize: 9.5.sp,
                                 fontWeight: FontWeight.w800,
                                 letterSpacing: 0.3,
@@ -789,10 +758,10 @@ class RedeemScreen extends HookConsumerWidget {
                           Container(
                             padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 3.5.h),
                             decoration: BoxDecoration(
-                              color: const Color(0xFFF8FAFC),
+                              color: const Color(0xFFFFC107).withValues(alpha: 0.2),
                               borderRadius: BorderRadius.circular(10.r),
                               border: Border.all(
-                                color: const Color(0xFFE2E8F0),
+                                color: const Color(0xFFFFC107).withValues(alpha: 0.5),
                                 width: 1,
                               ),
                             ),
@@ -810,8 +779,8 @@ class RedeemScreen extends HookConsumerWidget {
                                     formattedCoins,
                                     style: GoogleFonts.poppins(
                                       color: isLocked
-                                          ? const Color(0xFF94A3B8)
-                                          : const Color(0xFF26262B),
+                                          ? const Color(0xFFCBD5E1)
+                                          : const Color(0xFFFFD54F),
                                       fontSize: 10.5.sp,
                                       fontWeight: FontWeight.w700,
                                     ),
@@ -823,25 +792,17 @@ class RedeemScreen extends HookConsumerWidget {
                             ),
                           ),
 
-                          // Action arrow circle (Dark Obsidian)
+                          // Action arrow circle
                           Container(
                             width: 22.w,
                             height: 22.w,
                             alignment: Alignment.center,
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              gradient: LinearGradient(
-                                colors: isLocked
-                                    ? [const Color(0xFFCBD5E1), const Color(0xFF94A3B8)]
-                                    : [const Color(0xFF26262B), const Color(0xFF16161A)],
-                                begin: Alignment.topCenter,
-                                end: Alignment.bottomCenter,
-                              ),
+                              color: Colors.white,
                               boxShadow: [
                                 BoxShadow(
-                                  color: isLocked
-                                      ? Colors.transparent
-                                      : const Color(0xFF16161A).withValues(alpha: 0.2),
+                                  color: Colors.black.withValues(alpha: 0.1),
                                   blurRadius: 4,
                                   offset: const Offset(0, 2),
                                 ),
@@ -849,7 +810,7 @@ class RedeemScreen extends HookConsumerWidget {
                             ),
                             child: Icon(
                               Icons.arrow_forward_rounded,
-                              color: Colors.white,
+                              color: const Color(0xFF16161A),
                               size: 12.sp,
                             ),
                           ),

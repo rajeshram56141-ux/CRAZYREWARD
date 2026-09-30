@@ -165,6 +165,76 @@ class GiveawayScreen extends HookConsumerWidget {
 
                   SizedBox(height: 14.h),
 
+                  // Hero Banner Header Card (Matching Super Offer & Battle Quiz Hero Style)
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16.w),
+                    child: Container(
+                      width: double.infinity,
+                      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
+                      decoration: BoxDecoration(
+                        image: const DecorationImage(
+                          image: AssetImage('assets/Icons1/Rectangle 13.png'),
+                          fit: BoxFit.fill,
+                        ),
+                        borderRadius: BorderRadius.circular(20.r),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.14),
+                            blurRadius: 10,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      child: Row(
+                        children: [
+                          // Left 3D Giveaway Icon (assets/Icons1/Giveaway.png)
+                          Image.asset(
+                            'assets/Icons1/Giveaway.png',
+                            width: 72.w,
+                            height: 72.w,
+                            fit: BoxFit.contain,
+                            errorBuilder: (_, __, ___) => Icon(
+                              Icons.card_giftcard_rounded,
+                              color: const Color(0xFF10B981),
+                              size: 42.sp,
+                            ),
+                          ),
+                          SizedBox(width: 12.w),
+
+                          // Right Title & Subtitle Column
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  'Live Giveaways!',
+                                  style: GoogleFonts.poppins(
+                                    color: Colors.white,
+                                    fontSize: 18.sp,
+                                    fontWeight: FontWeight.w800,
+                                  ),
+                                ),
+                                SizedBox(height: 3.h),
+                                Text(
+                                  'Join free giveaways & win mega rewards!',
+                                  style: GoogleFonts.poppins(
+                                    color: const Color(0xFFE2E8F0),
+                                    fontSize: 11.5.sp,
+                                    fontWeight: FontWeight.w500,
+                                    height: 1.25,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+
+                  SizedBox(height: 14.h),
+
                   // Full-Width Category Filter Tabs Row
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 16.w),

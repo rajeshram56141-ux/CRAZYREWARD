@@ -71,13 +71,18 @@ class _BattleLeaderboardScreenState extends State<BattleLeaderboardScreen> {
                 ),
               ),
               Image.asset(
-                'assets/icons/leader.png',
+                'assets/Icons1/leaderboard.png',
                 height: 95.h,
                 fit: BoxFit.contain,
-                errorBuilder: (_, __, ___) => Icon(
-                  Icons.emoji_events_rounded,
-                  color: const Color(0xFFFBBF24),
-                  size: 70.sp,
+                errorBuilder: (_, __, ___) => Image.asset(
+                  'assets/icons/leader.png',
+                  height: 95.h,
+                  fit: BoxFit.contain,
+                  errorBuilder: (_, __, ___) => Icon(
+                    Icons.emoji_events_rounded,
+                    color: const Color(0xFFFBBF24),
+                    size: 70.sp,
+                  ),
                 ),
               ),
             ],

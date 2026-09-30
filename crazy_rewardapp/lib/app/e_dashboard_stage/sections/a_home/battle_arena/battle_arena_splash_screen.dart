@@ -204,13 +204,13 @@ class _BattleArenaSplashScreenState extends State<BattleArenaSplashScreen>
                           );
                         },
                         child: Image.asset(
-                          'assets/Icons1/battle-3d-icon-png-download-11623292 3.png',
+                          'assets/Icons1/Battle quiz 1.png',
                           fit: BoxFit.contain,
                           errorBuilder: (_, __, ___) => Image.asset(
-                            'assets/icons/battle.png',
+                            'assets/Icons1/battle-3d-icon-png-download-11623292 3.png',
                             fit: BoxFit.contain,
                             errorBuilder: (_, __, ___) => Image.asset(
-                              'assets/icons/battle game.png',
+                              'assets/icons/battle.png',
                               fit: BoxFit.contain,
                               errorBuilder: (_, __, ___) => Icon(
                                 Icons.sports_esports_rounded,

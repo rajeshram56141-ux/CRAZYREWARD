@@ -216,253 +216,241 @@ class PromoCodeScreen extends HookConsumerWidget {
                       margin: EdgeInsets.only(bottom: 14),
                     ),
 
-                    // Executive Promo Code Card
+                    // Executive Promo Code Card (Hero Header)
                     Container(
                       width: double.infinity,
-                      padding: EdgeInsets.all(20.r),
+                      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
+                      decoration: BoxDecoration(
+                        image: const DecorationImage(
+                          image: AssetImage('assets/Icons1/Rectangle 13.png'),
+                          fit: BoxFit.fill,
+                        ),
+                        borderRadius: BorderRadius.circular(20.r),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.14),
+                            blurRadius: 10,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      child: Row(
+                        children: [
+                          // Left 3D Voucher Icon (Enlarged!)
+                          Image.asset(
+                            'assets/Icons1/promocode.png',
+                            width: 82.w,
+                            height: 82.w,
+                            fit: BoxFit.contain,
+                            errorBuilder: (_, __, ___) => Image.asset(
+                              'assets/Icons1/icons8-voucher-64.png',
+                              width: 82.w,
+                              height: 82.w,
+                              fit: BoxFit.contain,
+                            ),
+                          ),
+                          SizedBox(width: 12.w),
+
+                          // Right Title & Subtitle Column (Balanced text size)
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Redeem Special Code',
+                                  style: GoogleFonts.poppins(
+                                    color: Colors.white,
+                                    fontSize: 15.5.sp,
+                                    fontWeight: FontWeight.w800,
+                                  ),
+                                ),
+                                SizedBox(height: 3.h),
+                                Text(
+                                  'Enter code & claim instant reward coins!',
+                                  style: GoogleFonts.poppins(
+                                    color: const Color(0xFFE2E8F0),
+                                    fontSize: 10.5.sp,
+                                    fontWeight: FontWeight.w500,
+                                    height: 1.25,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    SizedBox(height: 16.h),
+
+                    // Code Input Box with Integrated Paste Button (Outside Card)
+                    Container(
+                      height: 48.h,
                       decoration: BoxDecoration(
                         color: Colors.white,
-                        borderRadius: BorderRadius.circular(20.r),
+                        borderRadius: BorderRadius.circular(14.r),
                         border: Border.all(
                           color: const Color(0xFFE2E8F0),
                           width: 1.2,
                         ),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.04),
-                            blurRadius: 12,
-                            offset: const Offset(0, 3),
+                            color: Colors.black.withValues(alpha: 0.03),
+                            blurRadius: 6,
+                            offset: const Offset(0, 2),
                           ),
                         ],
                       ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                      child: Row(
                         children: [
-                          Row(
-                            children: [
-                              Container(
-                                width: 44.w,
-                                height: 44.w,
-                                alignment: Alignment.center,
-                                decoration: BoxDecoration(
-                                  color: const Color(0xFFF1F5F9),
-                                  borderRadius: BorderRadius.circular(14.r),
-                                  border: Border.all(
-                                    color: const Color(0xFFE2E8F0),
-                                    width: 1.0,
-                                  ),
-                                ),
-                                child: Image.asset(
-                                  'assets/Icons1/icons8-voucher-64.png',
-                                  width: 26.w,
-                                  height: 26.w,
-                                  fit: BoxFit.contain,
-                                  errorBuilder: (_, __, ___) => Icon(
-                                    Icons.confirmation_num_rounded,
-                                    color: const Color(0xFF26262B),
-                                    size: 22.sp,
-                                  ),
-                                ),
-                              ),
-                              SizedBox(width: 14.w),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      'Redeem Special Code',
-                                      style: GoogleFonts.poppins(
-                                        color: const Color(0xFF26262B),
-                                        fontSize: 16.sp,
-                                        fontWeight: FontWeight.w800,
-                                      ),
-                                    ),
-                                    SizedBox(height: 2.h),
-                                    Text(
-                                      'Enter code & claim instant reward coins',
-                                      style: GoogleFonts.poppins(
-                                        color: const Color(0xFF64748B),
-                                        fontSize: 11.5.sp,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-
-                          SizedBox(height: 18.h),
-
-                          // Code Input Box with Integrated Paste Button
-                          Container(
-                            height: 48.h,
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(14.r),
-                              border: Border.all(
-                                color: const Color(0xFFE2E8F0),
-                                width: 1.2,
-                              ),
-                            ),
-                            child: Row(
-                              children: [
-                                SizedBox(width: 14.w),
-                                Expanded(
-                                  child: TextFormField(
-                                    controller: promoCodeCon,
-                                    textCapitalization: TextCapitalization.characters,
-                                    cursorColor: const Color(0xFF26262B),
-                                    style: GoogleFonts.poppins(
-                                      color: const Color(0xFF26262B),
-                                      fontSize: 14.sp,
-                                      fontWeight: FontWeight.w700,
-                                      letterSpacing: 0.5,
-                                    ),
-                                    onChanged: (_) {
-                                      if (errorMessage.value != null) {
-                                        errorMessage.value = null;
-                                      }
-                                    },
-                                    decoration: InputDecoration(
-                                      hintText: 'Enter your code',
-                                      hintStyle: GoogleFonts.poppins(
-                                        color: const Color(0xFF94A3B8),
-                                        fontSize: 13.sp,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                      border: InputBorder.none,
-                                      isDense: true,
-                                      contentPadding: EdgeInsets.zero,
-                                    ),
-                                  ),
-                                ),
-                                if (promoCodeCon.text.isNotEmpty)
-                                  IconButton(
-                                    icon: Icon(
-                                      Icons.close_rounded,
-                                      color: const Color(0xFF94A3B8),
-                                      size: 18.sp,
-                                    ),
-                                    onPressed: () {
-                                      promoCodeCon.clear();
-                                      errorMessage.value = null;
-                                    },
-                                  ),
-                                // Paste Button
-                                GestureDetector(
-                                  onTap: () async {
-                                    HapticFeedback.lightImpact();
-                                    final data = await Clipboard.getData(Clipboard.kTextPlain);
-                                    if (data?.text != null && data!.text!.trim().isNotEmpty) {
-                                      promoCodeCon.text = data.text!.trim();
-                                      errorMessage.value = null;
-                                    }
-                                  },
-                                  child: Container(
-                                    width: 48.w,
-                                    height: 48.h,
-                                    decoration: BoxDecoration(
-                                      color: const Color(0xFFF8FAFC),
-                                      borderRadius: BorderRadius.only(
-                                        topRight: Radius.circular(14.r),
-                                        bottomRight: Radius.circular(14.r),
-                                      ),
-                                      border: const Border(
-                                        left: BorderSide(
-                                          color: Color(0xFFE2E8F0),
-                                          width: 1.2,
-                                        ),
-                                      ),
-                                    ),
-                                    alignment: Alignment.center,
-                                    child: Icon(
-                                      Icons.content_paste_rounded,
-                                      color: const Color(0xFF26262B),
-                                      size: 18.sp,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-
-                          if (errorMessage.value != null) ...[
-                            SizedBox(height: 8.h),
-                            Text(
-                              errorMessage.value!,
+                          SizedBox(width: 14.w),
+                          Expanded(
+                            child: TextFormField(
+                              controller: promoCodeCon,
+                              textCapitalization: TextCapitalization.characters,
+                              cursorColor: const Color(0xFF26262B),
                               style: GoogleFonts.poppins(
-                                color: const Color(0xFFEF4444),
-                                fontSize: 12.sp,
-                                fontWeight: FontWeight.w600,
+                                color: const Color(0xFF26262B),
+                                fontSize: 14.sp,
+                                fontWeight: FontWeight.w700,
+                                letterSpacing: 0.5,
+                              ),
+                              onChanged: (_) {
+                                if (errorMessage.value != null) {
+                                  errorMessage.value = null;
+                                }
+                              },
+                              decoration: InputDecoration(
+                                hintText: 'Enter your code',
+                                hintStyle: GoogleFonts.poppins(
+                                  color: const Color(0xFF94A3B8),
+                                  fontSize: 13.sp,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                                border: InputBorder.none,
+                                isDense: true,
+                                contentPadding: EdgeInsets.zero,
                               ),
                             ),
-                          ],
-
-                          SizedBox(height: 16.h),
-
-                          // Apply Code Button (Silver Metallic Gradient Button)
+                          ),
+                          if (promoCodeCon.text.isNotEmpty)
+                            IconButton(
+                              icon: Icon(
+                                Icons.close_rounded,
+                                color: const Color(0xFF94A3B8),
+                                size: 18.sp,
+                              ),
+                              onPressed: () {
+                                promoCodeCon.clear();
+                                errorMessage.value = null;
+                              },
+                            ),
+                          // Paste Button
                           GestureDetector(
-                            onTap: submitPromoCode,
+                            onTap: () async {
+                              HapticFeedback.lightImpact();
+                              final data = await Clipboard.getData(Clipboard.kTextPlain);
+                              if (data?.text != null && data!.text!.trim().isNotEmpty) {
+                                promoCodeCon.text = data.text!.trim();
+                                errorMessage.value = null;
+                              }
+                            },
                             child: Container(
-                              width: double.infinity,
+                              width: 48.w,
                               height: 48.h,
                               decoration: BoxDecoration(
-                                gradient: const LinearGradient(
-                                  colors: [
-                                    Colors.white,
-                                    Color(0xFFE5E7EB),
-                                    Color(0xFFB0B5C2),
-                                  ],
-                                  begin: Alignment.topCenter,
-                                  end: Alignment.bottomCenter,
+                                color: const Color(0xFFF8FAFC),
+                                borderRadius: BorderRadius.only(
+                                  topRight: Radius.circular(14.r),
+                                  bottomRight: Radius.circular(14.r),
                                 ),
-                                borderRadius: BorderRadius.circular(14.r),
-                                border: Border.all(
-                                  color: const Color(0xFF9CA3AF),
-                                  width: 1.0,
-                                ),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black.withValues(alpha: 0.08),
-                                    blurRadius: 8,
-                                    offset: const Offset(0, 3),
+                                border: const Border(
+                                  left: BorderSide(
+                                    color: Color(0xFFE2E8F0),
+                                    width: 1.2,
                                   ),
-                                ],
+                                ),
                               ),
-                              child: Center(
-                                child: isLoading.value
-                                    ? const SizedBox(
-                                        width: 20,
-                                        height: 20,
-                                        child: CircularProgressIndicator(
-                                          strokeWidth: 2.5,
-                                          valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF16161A)),
-                                        ),
-                                      )
-                                    : Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: [
-                                          Icon(
-                                            Icons.check_circle_rounded,
-                                            color: const Color(0xFF16161A),
-                                            size: 18.sp,
-                                          ),
-                                          SizedBox(width: 8.w),
-                                          Text(
-                                            'Apply Code',
-                                            style: GoogleFonts.poppins(
-                                              color: const Color(0xFF16161A),
-                                              fontSize: 15.sp,
-                                              fontWeight: FontWeight.w800,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
+                              alignment: Alignment.center,
+                              child: Icon(
+                                Icons.content_paste_rounded,
+                                color: const Color(0xFF26262B),
+                                size: 18.sp,
                               ),
                             ),
                           ),
                         ],
+                      ),
+                    ),
+
+                    if (errorMessage.value != null) ...[
+                      SizedBox(height: 8.h),
+                      Text(
+                        errorMessage.value!,
+                        style: GoogleFonts.poppins(
+                          color: const Color(0xFFEF4444),
+                          fontSize: 12.sp,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+
+                    SizedBox(height: 14.h),
+
+                    // Apply Code Button (Outside Card)
+                    GestureDetector(
+                      onTap: submitPromoCode,
+                      child: Container(
+                        width: double.infinity,
+                        height: 48.h,
+                        decoration: BoxDecoration(
+                          gradient: const LinearGradient(
+                            colors: [
+                              Color(0xFF26262B),
+                              Color(0xFF16161A),
+                            ],
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                          ),
+                          borderRadius: BorderRadius.circular(14.r),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withValues(alpha: 0.12),
+                              blurRadius: 10,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
+                        ),
+                        child: Center(
+                          child: isLoading.value
+                              ? const SizedBox(
+                                  width: 20,
+                                  height: 20,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2.5,
+                                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                                  ),
+                                )
+                              : Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      Icons.check_circle_rounded,
+                                      color: Colors.white,
+                                      size: 18.sp,
+                                    ),
+                                    SizedBox(width: 8.w),
+                                    Text(
+                                      'Apply Code',
+                                      style: GoogleFonts.poppins(
+                                        color: Colors.white,
+                                        fontSize: 15.sp,
+                                        fontWeight: FontWeight.w800,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                        ),
                       ),
                     ),
 
@@ -680,15 +668,22 @@ class PromoCodeScreen extends HookConsumerWidget {
                   color: Colors.transparent,
                   child: Container(
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      gradient: const LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [
+                          Color(0xFF222226),
+                          Color(0xFF141417),
+                        ],
+                      ),
                       borderRadius: BorderRadius.circular(20.r),
                       border: Border.all(
-                        color: const Color(0xFFE2E8F0),
+                        color: const Color(0xFF2E2E38),
                         width: 1.2,
                       ),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.08),
+                          color: Colors.black.withValues(alpha: 0.25),
                           blurRadius: 14,
                           offset: const Offset(0, 4),
                         ),
@@ -697,23 +692,23 @@ class PromoCodeScreen extends HookConsumerWidget {
                     padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
                     child: Row(
                       children: [
-                        // Telegram Icon Box
+                        // Telegram Icon Box (Enlarged Icon & Dark Theme)
                         Container(
-                          width: 40.w,
-                          height: 40.w,
+                          width: 48.w,
+                          height: 48.w,
                           alignment: Alignment.center,
                           decoration: BoxDecoration(
-                            color: const Color(0xFFF8FAFC),
-                            borderRadius: BorderRadius.circular(12.r),
+                            color: const Color(0xFF0088CC).withValues(alpha: 0.15),
+                            borderRadius: BorderRadius.circular(14.r),
                             border: Border.all(
-                              color: const Color(0xFFE2E8F0),
-                              width: 1.0,
+                              color: const Color(0xFF0088CC).withValues(alpha: 0.3),
+                              width: 1.2,
                             ),
                           ),
                           child: Image.asset(
                             'assets/icons/telegram.png',
-                            width: 24.w,
-                            height: 24.w,
+                            width: 32.w,
+                            height: 32.w,
                             fit: BoxFit.contain,
                           ),
                         ),
@@ -727,16 +722,17 @@ class PromoCodeScreen extends HookConsumerWidget {
                               Text(
                                 'Join Telegram Channel',
                                 style: GoogleFonts.poppins(
-                                  color: const Color(0xFF26262B),
+                                  color: Colors.white,
                                   fontSize: 13.sp,
                                   fontWeight: FontWeight.w700,
                                 ),
                               ),
+                              SizedBox(height: 1.h),
                               Text(
                                 'Get daily promo codes & updates',
                                 style: GoogleFonts.poppins(
-                                  color: const Color(0xFF64748B),
-                                  fontSize: 11.sp,
+                                  color: const Color(0xFF94A3B8),
+                                  fontSize: 10.5.sp,
                                   fontWeight: FontWeight.w500,
                                 ),
                               ),
@@ -746,7 +742,7 @@ class PromoCodeScreen extends HookConsumerWidget {
 
                         SizedBox(width: 8.w),
 
-                        // Join Button (Silver Metallic)
+                        // Join Button (Matching Telegram Cyan/Blue Icon Color)
                         GestureDetector(
                           onTap: () {
                             HapticFeedback.lightImpact();
@@ -759,36 +755,32 @@ class PromoCodeScreen extends HookConsumerWidget {
                             );
                           },
                           child: Container(
-                            padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 8.h),
+                            padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 9.h),
                             decoration: BoxDecoration(
                               gradient: const LinearGradient(
                                 colors: [
-                                  Colors.white,
-                                  Color(0xFFE5E7EB),
-                                  Color(0xFFB0B5C2),
+                                  Color(0xFF38BDF8),
+                                  Color(0xFF0088CC),
                                 ],
                                 begin: Alignment.topCenter,
                                 end: Alignment.bottomCenter,
                               ),
-                              borderRadius: BorderRadius.circular(10.r),
-                              border: Border.all(
-                                color: const Color(0xFF9CA3AF),
-                                width: 1.0,
-                              ),
+                              borderRadius: BorderRadius.circular(12.r),
                               boxShadow: [
                                 BoxShadow(
-                                  color: Colors.black.withValues(alpha: 0.08),
-                                  blurRadius: 4,
-                                  offset: const Offset(0, 2),
+                                  color: const Color(0xFF0088CC).withValues(alpha: 0.4),
+                                  blurRadius: 8,
+                                  offset: const Offset(0, 3),
                                 ),
                               ],
                             ),
                             child: Text(
-                              'Join Now',
+                              'JOIN NOW',
                               style: GoogleFonts.poppins(
-                                color: const Color(0xFF16161A),
+                                color: Colors.white,
                                 fontSize: 12.sp,
-                                fontWeight: FontWeight.w700,
+                                fontWeight: FontWeight.w800,
+                                letterSpacing: 0.3,
                               ),
                             ),
                           ),

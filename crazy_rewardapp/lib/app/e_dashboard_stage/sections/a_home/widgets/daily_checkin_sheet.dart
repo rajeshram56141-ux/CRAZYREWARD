@@ -240,10 +240,10 @@ class DailyCheckInPopup extends HookConsumerWidget {
 
                       SizedBox(height: 20.h),
 
-                      // Executive Streak Hero Card (with assets/Icons1/Rectangle 13.png background)
+                      // Executive Streak Hero Card (Matching Super Offer Banner Style)
                       Container(
                         width: double.infinity,
-                        padding: EdgeInsets.all(20.r),
+                        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
                         decoration: BoxDecoration(
                           image: const DecorationImage(
                             image: AssetImage('assets/Icons1/Rectangle 13.png'),
@@ -252,69 +252,57 @@ class DailyCheckInPopup extends HookConsumerWidget {
                           borderRadius: BorderRadius.circular(20.r),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withValues(alpha: 0.08),
-                              blurRadius: 14,
+                              color: Colors.black.withValues(alpha: 0.18),
+                              blurRadius: 10,
                               offset: const Offset(0, 4),
                             ),
                           ],
                         ),
-                        child: Column(
+                        child: Row(
                           children: [
-                            // Flame Icon Container
-                            Container(
-                              width: 52.w,
-                              height: 52.w,
-                              alignment: Alignment.center,
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(16.r),
-                                border: Border.all(
-                                  color: const Color(0xFFE2E8F0),
-                                  width: 1.2,
-                                ),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black.withValues(alpha: 0.06),
-                                    blurRadius: 8,
-                                    offset: const Offset(0, 2),
-                                  ),
-                                ],
-                              ),
+                            // Left Flame / Streak Icon Box - Clean without border box
+                            SizedBox(
+                              width: 78.w,
+                              height: 78.w,
                               child: Image.asset(
                                 'assets/icons/fire (2).png',
-                                width: 30.w,
-                                height: 30.w,
+                                width: 78.w,
+                                height: 78.w,
                                 fit: BoxFit.contain,
-                                errorBuilder: (_, __, ___) => Text(
-                                  '🔥',
-                                  style: TextStyle(fontSize: 26.sp),
+                                errorBuilder: (_, __, ___) => Image.asset(
+                                  'assets/icons/ninja streak.png',
+                                  width: 78.w,
+                                  fit: BoxFit.contain,
                                 ),
                               ),
                             ),
+                            SizedBox(width: 14.w),
 
-                            SizedBox(height: 12.h),
-
-                            // Streak Counter Title
-                            Text(
-                              '$safeStreak Day Streak!',
-                              textAlign: TextAlign.center,
-                              style: GoogleFonts.poppins(
-                                color: Colors.white,
-                                fontSize: 20.sp,
-                                fontWeight: FontWeight.w800,
-                              ),
-                            ),
-
-                            SizedBox(height: 4.h),
-
-                            // Subtitle
-                            Text(
-                              'Check in every day to claim your bonus coin rewards!',
-                              textAlign: TextAlign.center,
-                              style: GoogleFonts.poppins(
-                                color: const Color(0xFFE2E8F0),
-                                fontSize: 12.sp,
-                                fontWeight: FontWeight.w500,
+                            // Right Title & Subtitle
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    '$safeStreak Day Streak!',
+                                    style: GoogleFonts.poppins(
+                                      color: Colors.white,
+                                      fontSize: 18.sp,
+                                      fontWeight: FontWeight.w800,
+                                    ),
+                                  ),
+                                  SizedBox(height: 4.h),
+                                  Text(
+                                    'Check in every day to claim your bonus coin rewards!',
+                                    style: GoogleFonts.poppins(
+                                      color: const Color(0xFF9E9EA7),
+                                      fontSize: 11.5.sp,
+                                      fontWeight: FontWeight.w500,
+                                      height: 1.25,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                           ],
@@ -425,19 +413,16 @@ class DailyCheckInPopup extends HookConsumerWidget {
       margin: EdgeInsets.only(bottom: 10.h),
       padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16.r),
-        border: Border.all(
-          color: isToday && canClaim
-              ? const Color(0xFF26262B)
-              : const Color(0xFFE2E8F0),
-          width: isToday && canClaim ? 1.4 : 1.2,
+        image: const DecorationImage(
+          image: AssetImage('assets/Icons1/Rectangle 13.png'),
+          fit: BoxFit.fill,
         ),
+        borderRadius: BorderRadius.circular(16.r),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.03),
+            color: Colors.black.withValues(alpha: 0.14),
             blurRadius: 8,
-            offset: const Offset(0, 2),
+            offset: const Offset(0, 3),
           ),
         ],
       ),
@@ -469,7 +454,7 @@ class DailyCheckInPopup extends HookConsumerWidget {
                     Text(
                       '+$dayCoins Coins',
                       style: GoogleFonts.poppins(
-                        color: const Color(0xFF26262B),
+                        color: Colors.white,
                         fontSize: 14.5.sp,
                         fontWeight: FontWeight.w700,
                       ),
@@ -480,7 +465,7 @@ class DailyCheckInPopup extends HookConsumerWidget {
                 Text(
                   'Day $dayNum Reward',
                   style: GoogleFonts.poppins(
-                    color: const Color(0xFF94A3B8),
+                    color: const Color(0xFFCBD5E1),
                     fontSize: 11.sp,
                     fontWeight: FontWeight.w500,
                   ),
@@ -496,24 +481,24 @@ class DailyCheckInPopup extends HookConsumerWidget {
               padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 7.h),
               alignment: Alignment.center,
               decoration: BoxDecoration(
-                color: const Color(0xFFF0FDF4),
+                color: const Color(0xFF16A34A).withValues(alpha: 0.2),
                 borderRadius: BorderRadius.circular(10.r),
                 border: Border.all(
-                  color: const Color(0xFFBBF7D0),
+                  color: const Color(0xFF4ADE80),
                   width: 1.0,
                 ),
               ),
               child: Text(
                 'Claimed ✓',
                 style: GoogleFonts.poppins(
-                  color: const Color(0xFF16A34A),
+                  color: const Color(0xFF4ADE80),
                   fontSize: 12.sp,
                   fontWeight: FontWeight.w700,
                 ),
               ),
             )
           else if (isToday && canClaim)
-            // Active Watch Ad Metallic Silver Button
+            // Active Watch Ad Button
             GestureDetector(
               onTap: onClaimTap,
               child: Container(
@@ -546,7 +531,7 @@ class DailyCheckInPopup extends HookConsumerWidget {
                     ? SizedBox(
                         width: 16,
                         height: 16,
-                        child: CircularProgressIndicator(
+                        child: const CircularProgressIndicator(
                           strokeWidth: 2.0,
                           valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF16161A)),
                         ),
@@ -578,10 +563,10 @@ class DailyCheckInPopup extends HookConsumerWidget {
               padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 7.h),
               alignment: Alignment.center,
               decoration: BoxDecoration(
-                color: const Color(0xFFF1F5F9),
+                color: Colors.white.withValues(alpha: 0.12),
                 borderRadius: BorderRadius.circular(10.r),
                 border: Border.all(
-                  color: const Color(0xFFE2E8F0),
+                  color: Colors.white.withValues(alpha: 0.2),
                   width: 1.0,
                 ),
               ),
@@ -591,13 +576,13 @@ class DailyCheckInPopup extends HookConsumerWidget {
                   Icon(
                     Icons.lock_outline_rounded,
                     size: 13.sp,
-                    color: const Color(0xFF94A3B8),
+                    color: Colors.white70,
                   ),
                   SizedBox(width: 4.w),
                   Text(
                     'Locked',
                     style: GoogleFonts.poppins(
-                      color: const Color(0xFF94A3B8),
+                      color: Colors.white70,
                       fontSize: 12.sp,
                       fontWeight: FontWeight.w600,
                     ),
@@ -621,9 +606,33 @@ class _TvAdIconWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CustomPaint(
-      size: Size(size.w, size.w * 0.95),
-      painter: const _TvAdIconPainter(),
+    return Container(
+      width: size.w,
+      height: size.w,
+      padding: EdgeInsets.all(5.w),
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          colors: [
+            Color(0xFFFF3366),
+            Color(0xFFFF9900),
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(12.r),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFFFF3366).withValues(alpha: 0.35),
+            blurRadius: 8,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
+      alignment: Alignment.center,
+      child: CustomPaint(
+        size: Size(size.w * 0.75, size.w * 0.7),
+        painter: const _TvAdIconPainter(),
+      ),
     );
   }
 }
@@ -638,7 +647,7 @@ class _TvAdIconPainter extends CustomPainter {
 
     // Paint for TV Outline & Antenna
     final tvPaint = Paint()
-      ..color = const Color(0xFFCBD5E1) // Clean slate outline
+      ..color = Colors.white
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1.8
       ..strokeCap = StrokeCap.round
@@ -669,7 +678,7 @@ class _TvAdIconPainter extends CustomPainter {
       text: TextSpan(
         text: 'AD',
         style: GoogleFonts.poppins(
-          color: const Color(0xFF26262B), // Bold executive dark
+          color: Colors.white,
           fontSize: (size.width * 0.32).sp,
           fontWeight: FontWeight.w900,
           letterSpacing: -0.2,

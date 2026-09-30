@@ -948,7 +948,7 @@ class SuperOfferWidget extends HookConsumerWidget {
                           Text(
                             formatDuration(remainingTime.value),
                             style: GoogleFonts.poppins(
-                              color: const Color(0xFF9E9EA7),
+                              color: const Color(0xFF64748B),
                               fontSize: 10.sp,
                               fontWeight: FontWeight.w600,
                             ),

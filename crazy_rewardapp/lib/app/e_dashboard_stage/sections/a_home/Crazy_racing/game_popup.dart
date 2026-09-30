@@ -14,8 +14,6 @@ import '../../../../../widgets/common/custom_toast.dart';
 import '../../../provider/dashboard_provider.dart';
 import 'crazy_racing_model.dart';
 import 'crazy_racing_provider.dart';
-import 'widgets/turbo_car_showcase.dart';
-import 'runner/player_car.dart';
 import '../../../../b_splash_stage/splash_service.dart';
 
 enum _PopupState {
@@ -39,8 +37,6 @@ class GameResultPopup extends ConsumerStatefulWidget {
     required this.dailyGemsForInstall,
     this.isInstallTask = false,
     this.onResume,
-    this.crashCause,
-    this.carTheme,
   });
 
   final bool isWin;
@@ -54,8 +50,6 @@ class GameResultPopup extends ConsumerStatefulWidget {
   final int dailyGems;
   final int dailyGemsForInstall;
   final bool isInstallTask;
-  final String? crashCause;
-  final PlayerCarTheme? carTheme;
 
   @override
   ConsumerState<GameResultPopup> createState() => _GameResultPopupState();
@@ -75,25 +69,7 @@ class _GameResultPopupState extends ConsumerState<GameResultPopup>
   int? _initialAvailableStorage;
 
   static const MethodChannel _appManagerChannel =
-      MethodChannel('com.crazyreward.games/app_manager');
-
-  int get _effectiveGameGems {
-    final liveConfig = SplashService.superOfferConfig;
-    final configVal = (liveConfig['gameGems'] as num?)?.toInt();
-    if (configVal != null && configVal > 0) return configVal;
-    if (widget.gameGems > 0) return widget.gameGems;
-    if (widget.dailyGems > 0) return widget.dailyGems;
-    return 10;
-  }
-
-  int get _effectiveInstallGems {
-    final liveConfig = SplashService.superOfferConfig;
-    final configVal = (liveConfig['installGems'] as num?)?.toInt();
-    if (configVal != null && configVal > 0) return configVal;
-    if (widget.installGems > 0) return widget.installGems;
-    if (widget.dailyGemsForInstall > 0) return widget.dailyGemsForInstall;
-    return 10;
-  }
+      MethodChannel('com.diamondpanda.games/app_manager');
 
   @override
   void initState() {
@@ -160,10 +136,9 @@ class _GameResultPopupState extends ConsumerState<GameResultPopup>
       setState(() => _isAdLoading = false);
 
       if (isSuccess) {
-        Map<String, dynamic> claimRes = {};
         try {
-          claimRes = await CloudFunctions.claimGems(
-            _effectiveInstallGems,
+          await CloudFunctions.claimGems(
+            widget.installGems > 0 ? widget.installGems : 5,
             true,
           );
         } catch (e) {
@@ -172,18 +147,10 @@ class _GameResultPopupState extends ConsumerState<GameResultPopup>
 
         final user = FirebaseAuth.instance.currentUser;
         if (user != null) {
-          final serverGems = (claimRes['gems'] as num?)?.toInt();
-          if (serverGems != null) {
-            DashboardService.updateCachedGems(user.uid, serverGems);
-          } else {
-            DashboardService.clearUserCache(user.uid);
-          }
-          ref.invalidate(DashboardService.userGemsProvider(user.uid));
           ref.invalidate(DashboardService.userDataProvider(user.uid));
           ref.invalidate(DashboardService.superOfferDataProvider(user.uid));
           ref.invalidate(diamondCatchVerifierProvider(user.uid));
         }
-        CloudFunctions.triggerBalanceRefresh();
 
         if (mounted) {
           setState(() {
@@ -210,6 +177,9 @@ class _GameResultPopupState extends ConsumerState<GameResultPopup>
     List<Color> orbGradient;
     Color orbBorderColor;
     Color orbShadowColor;
+    List<Color> arcColors;
+    List<Color> closeBtnColors;
+    Color closeGlowColor;
 
     switch (_popupState) {
       case _PopupState.winResult:
@@ -228,6 +198,19 @@ class _GameResultPopupState extends ConsumerState<GameResultPopup>
         orbShadowColor = isWin
             ? const Color(0xFFFFD700).withValues(alpha: 0.50)
             : const Color(0xFFEF4444).withValues(alpha: 0.50);
+        arcColors = isWin
+            ? [
+                const Color(0xFFFFD700).withValues(alpha: 0.35),
+                const Color(0xFFD97706).withValues(alpha: 0.20),
+                Colors.transparent,
+              ]
+            : [
+                const Color(0xFFEF4444).withValues(alpha: 0.35),
+                const Color(0xFFB91C1C).withValues(alpha: 0.20),
+                Colors.transparent,
+              ];
+        closeBtnColors = const [Color(0xFFF87171), Color(0xFFEF4444), Color(0xFFB91C1C)];
+        closeGlowColor = const Color(0xFFEF4444);
         break;
 
       case _PopupState.finishToUnlock:
@@ -236,6 +219,13 @@ class _GameResultPopupState extends ConsumerState<GameResultPopup>
         orbGradient = const [Color(0xFFFEF08A), Color(0xFFFBBF24), Color(0xFFD97706)];
         orbBorderColor = const Color(0xFFFFD700);
         orbShadowColor = const Color(0xFFFFD700).withValues(alpha: 0.50);
+        arcColors = [
+          const Color(0xFFFFD700).withValues(alpha: 0.35),
+          const Color(0xFFD97706).withValues(alpha: 0.20),
+          Colors.transparent,
+        ];
+        closeBtnColors = const [Color(0xFFF87171), Color(0xFFEF4444), Color(0xFFB91C1C)];
+        closeGlowColor = const Color(0xFFEF4444);
         break;
 
       case _PopupState.taskFailed:
@@ -244,6 +234,13 @@ class _GameResultPopupState extends ConsumerState<GameResultPopup>
         orbGradient = const [Color(0xFFF87171), Color(0xFFEF4444), Color(0xFFB91C1C)];
         orbBorderColor = const Color(0xFFFF4D4D);
         orbShadowColor = const Color(0xFFEF4444).withValues(alpha: 0.50);
+        arcColors = [
+          const Color(0xFFEF4444).withValues(alpha: 0.35),
+          const Color(0xFFB91C1C).withValues(alpha: 0.20),
+          Colors.transparent,
+        ];
+        closeBtnColors = const [Color(0xFFF87171), Color(0xFFEF4444), Color(0xFFB91C1C)];
+        closeGlowColor = const Color(0xFFEF4444);
         break;
 
       case _PopupState.taskSuccess:
@@ -252,6 +249,13 @@ class _GameResultPopupState extends ConsumerState<GameResultPopup>
         orbGradient = const [Color(0xFF86EFAC), Color(0xFF22C55E), Color(0xFF15803D)];
         orbBorderColor = const Color(0xFF4ADE80);
         orbShadowColor = const Color(0xFF22C55E).withValues(alpha: 0.50);
+        arcColors = [
+          const Color(0xFF22C55E).withValues(alpha: 0.35),
+          const Color(0xFF15803D).withValues(alpha: 0.20),
+          Colors.transparent,
+        ];
+        closeBtnColors = const [Color(0xFFF87171), Color(0xFFEF4444), Color(0xFFB91C1C)];
+        closeGlowColor = const Color(0xFFEF4444);
         break;
     }
 
@@ -441,7 +445,9 @@ class _GameResultPopupState extends ConsumerState<GameResultPopup>
     Color orbBorderColor,
     Color orbShadowColor,
   ) {
-    final int rewardGems = _effectiveGameGems;
+    final int rewardGems = widget.gameGems > 0
+        ? widget.gameGems
+        : (widget.dailyGems > 0 ? widget.dailyGems : 1);
 
     return Column(
       key: const ValueKey('winResultView'),
@@ -489,7 +495,7 @@ class _GameResultPopupState extends ConsumerState<GameResultPopup>
           SizedBox(height: 4.h),
         ],
 
-        // 2. Large Bold Main Title & Crash Reason (Only on Game Over)
+        // 2. Large Bold Main Title (Only on Game Over)
         if (!isWin) ...[
           Text(
             'TRY AGAIN!',
@@ -502,61 +508,45 @@ class _GameResultPopupState extends ConsumerState<GameResultPopup>
               letterSpacing: 0.8,
             ),
           ),
-          SizedBox(height: 6.h),
-          if (widget.crashCause != null && widget.crashCause!.isNotEmpty) ...[
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 5.h),
-              decoration: BoxDecoration(
-                color: const Color(0xFF1E0A0A),
-                borderRadius: BorderRadius.circular(12.r),
-                border: Border.all(
-                  color: const Color(0xFFFF4D4D).withValues(alpha: 0.8),
-                  width: 1.5,
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: const Color(0xFFFF4D4D).withValues(alpha: 0.25),
-                    blurRadius: 8,
-                  ),
-                ],
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(
-                    Icons.warning_amber_rounded,
-                    color: const Color(0xFFFF6B6B),
-                    size: 16.sp,
-                  ),
-                  SizedBox(width: 6.w),
-                  Flexible(
-                    child: Text(
-                      "CRASHED INTO: ${widget.crashCause!.toUpperCase()}",
-                      style: GoogleFonts.fredoka(
-                        color: const Color(0xFFFFE4E6),
-                        fontSize: 11.5.sp,
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: 0.5,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-          SizedBox(height: 8.h),
+          SizedBox(height: 12.h),
         ],
-        SizedBox(height: 8.h),
+        SizedBox(height: 16.h),
 
-        // 3. Center 2.5D Animated Arcade Gaming Car (Transparent Background)
-        SizedBox(
-          width: 180.w,
-          height: 110.h,
+        // 3. Center Glowing 3D Panda Mascot Badge
+        Container(
+          width: 110.w,
+          height: 110.w,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: orbGradient,
+            ),
+            border: Border.all(
+              color: orbBorderColor,
+              width: 2.2,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: orbShadowColor,
+                blurRadius: 26,
+                spreadRadius: 2,
+                offset: const Offset(0, 6),
+              ),
+            ],
+          ),
           child: Center(
-            child: TurboCarBadge(
-              size: 96.w,
-              theme: widget.carTheme,
-              isCrashed: !isWin,
+            child: Image.asset(
+              'assets/icons/panda1.png',
+              width: 85.w,
+              height: 85.w,
+              fit: BoxFit.contain,
+              errorBuilder: (_, __, ___) => Image.asset(
+                'assets/icons/gems.png',
+                width: 60.w,
+                height: 60.w,
+              ),
             ),
           ),
         ),
@@ -735,121 +725,54 @@ class _GameResultPopupState extends ConsumerState<GameResultPopup>
           SizedBox(height: 12.h),
         ],
 
-        // 6. Dual Action Buttons: HOME & PLAY AGAIN
-        Row(
-          children: [
-            Expanded(
-              flex: 1,
-              child: _PopScaleButton(
-                onTap: () {
-                  HapticFeedback.lightImpact();
-                  Navigator.pop(context);
-                  widget.onHome();
-                },
-                child: Container(
-                  height: 46.h,
-                  decoration: BoxDecoration(
-                    gradient: const LinearGradient(
-                      colors: [
-                        Color(0xFF60A5FA),
-                        Color(0xFF3B82F6),
-                        Color(0xFF2563EB),
-                        Color(0xFF1E40AF),
-                      ],
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                    ),
-                    borderRadius: BorderRadius.circular(16.r),
-                    border: Border.all(
-                      color: const Color(0xFF93C5FD),
-                      width: 1.5,
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.4),
-                        blurRadius: 8,
-                        offset: const Offset(0, 4),
-                      ),
-                    ],
-                  ),
-                  alignment: Alignment.center,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.home_rounded,
-                          color: Colors.white, size: 19.sp),
-                      SizedBox(width: 5.w),
-                      Text(
-                        'HOME',
-                        style: GoogleFonts.fredoka(
-                          color: Colors.white,
-                          fontSize: 13.5.sp,
-                          fontWeight: FontWeight.w800,
-                          letterSpacing: 0.5,
-                        ),
-                      ),
-                    ],
+        // 6. Secondary Action: PLAY AGAIN
+        _PopScaleButton(
+          onTap: () {
+            HapticFeedback.lightImpact();
+            Navigator.pop(context);
+            widget.onRestart();
+          },
+          child: Container(
+            width: double.infinity,
+            height: 46.h,
+            decoration: BoxDecoration(
+              gradient: const LinearGradient(
+                colors: [Color(0xFFFEF08A), Color(0xFFFBBF24), Color(0xFFF59E0B), Color(0xFFB45309)],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+              ),
+              borderRadius: BorderRadius.circular(16.r),
+              border: Border.all(
+                color: const Color(0xFFFFD700),
+                width: 1.5,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.4),
+                  blurRadius: 8,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
+            alignment: Alignment.center,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.replay_rounded,
+                    color: Colors.white, size: 20.sp),
+                SizedBox(width: 6.w),
+                Text(
+                  'PLAY AGAIN',
+                  style: GoogleFonts.fredoka(
+                    color: Colors.white,
+                    fontSize: 14.sp,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: 0.5,
                   ),
                 ),
-              ),
+              ],
             ),
-            SizedBox(width: 10.w),
-            Expanded(
-              flex: 1,
-              child: _PopScaleButton(
-                onTap: () {
-                  HapticFeedback.lightImpact();
-                  Navigator.pop(context);
-                  widget.onRestart();
-                },
-                child: Container(
-                  height: 46.h,
-                  decoration: BoxDecoration(
-                    gradient: const LinearGradient(
-                      colors: [
-                        Color(0xFFFEF08A),
-                        Color(0xFFFBBF24),
-                        Color(0xFFF59E0B),
-                        Color(0xFFB45309),
-                      ],
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                    ),
-                    borderRadius: BorderRadius.circular(16.r),
-                    border: Border.all(
-                      color: const Color(0xFFFFD700),
-                      width: 1.5,
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.4),
-                        blurRadius: 8,
-                        offset: const Offset(0, 4),
-                      ),
-                    ],
-                  ),
-                  alignment: Alignment.center,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.replay_rounded,
-                          color: Colors.white, size: 19.sp),
-                      SizedBox(width: 5.w),
-                      Text(
-                        'PLAY AGAIN',
-                        style: GoogleFonts.fredoka(
-                          color: Colors.white,
-                          fontSize: 13.5.sp,
-                          fontWeight: FontWeight.w800,
-                          letterSpacing: 0.5,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ],
+          ),
         ),
       ],
     );
@@ -869,7 +792,7 @@ class _GameResultPopupState extends ConsumerState<GameResultPopup>
       children: [
         // 1. Tag
         Text(
-          'Crazy Racing',
+          'Diamond Catch',
           textAlign: TextAlign.center,
           style: GoogleFonts.fredoka(
             color: const Color(0xFFDDD6FE),
@@ -1149,14 +1072,15 @@ class _GameResultPopupState extends ConsumerState<GameResultPopup>
     Color orbBorderColor,
     Color orbShadowColor,
   ) {
-    final int gemsEarned = _effectiveInstallGems;
+    final int gemsEarned =
+        widget.installGems > 0 ? widget.installGems : 5;
 
     return Column(
       key: const ValueKey('taskSuccessView'),
       mainAxisSize: MainAxisSize.min,
       children: [
         Text(
-          'Crazy Racing',
+          'Diamond Catch',
           textAlign: TextAlign.center,
           style: GoogleFonts.fredoka(
             color: const Color(0xFFA7F3D0),
@@ -1209,7 +1133,7 @@ class _GameResultPopupState extends ConsumerState<GameResultPopup>
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 4.w),
           child: Text(
-            'You\'ve successfully completed Crazy Racing and earned gems—keep going!',
+            'You\'ve successfully completed Diamond Catch and earned gems—keep going!',
             textAlign: TextAlign.center,
             style: GoogleFonts.fredoka(
               color: const Color(0xFFCBD5E1),
@@ -1306,13 +1230,11 @@ class _GameResultPopupState extends ConsumerState<GameResultPopup>
         try {
           verifier = await ref.read(diamondCatchVerifierProvider(currentUser.uid).future);
           if (verifier != null && verifier.gameEligible == false) {
-            if (mounted) {
-              CustomToast.showToast(
-                context,
-                msg: 'Today game limit over, come tomorrow!',
-              );
-              setState(() => _isAdLoading = false);
-            }
+            CustomToast.showToast(
+              context,
+              msg: 'Today game limit over, come tomorrow!',
+            );
+            if (mounted) setState(() => _isAdLoading = false);
             return;
           }
         } catch (e) {
@@ -1340,11 +1262,12 @@ class _GameResultPopupState extends ConsumerState<GameResultPopup>
         if (rewardGranted) return;
         rewardGranted = true;
 
-        final int gemsToClaim = _effectiveGameGems;
+        final int gemsToClaim = widget.gameGems > 0
+            ? widget.gameGems
+            : (widget.dailyGems > 0 ? widget.dailyGems : 1);
 
-        Map<String, dynamic> claimRes = {};
         try {
-          claimRes = await CloudFunctions.claimGems(
+          await CloudFunctions.claimGems(
             gemsToClaim,
             false,
           );
@@ -1354,18 +1277,10 @@ class _GameResultPopupState extends ConsumerState<GameResultPopup>
 
         final user = FirebaseAuth.instance.currentUser;
         if (user != null) {
-          final serverGems = (claimRes['gems'] as num?)?.toInt();
-          if (serverGems != null) {
-            DashboardService.updateCachedGems(user.uid, serverGems);
-          } else {
-            DashboardService.clearUserCache(user.uid);
-          }
-          ref.invalidate(DashboardService.userGemsProvider(user.uid));
           ref.invalidate(DashboardService.userDataProvider(user.uid));
           ref.invalidate(DashboardService.superOfferDataProvider(user.uid));
           ref.invalidate(diamondCatchVerifierProvider(user.uid));
         }
-        CloudFunctions.triggerBalanceRefresh();
         if (!mounted) return;
         setState(() {
           _isClaimed = true;
@@ -1374,7 +1289,7 @@ class _GameResultPopupState extends ConsumerState<GameResultPopup>
 
         CustomToast.showToast(
           context,
-          msg: '🎉 $gemsToClaim Gems Claimed Successfully!',
+          msg: '🎉 Gems Claimed Successfully!',
         );
       }
 
@@ -1391,12 +1306,6 @@ class _GameResultPopupState extends ConsumerState<GameResultPopup>
               setState(() => _isAdLoading = false);
             }
           },
-          onAdFailed: () async {
-            await executeGemClaim();
-            if (mounted) {
-              setState(() => _isAdLoading = false);
-            }
-          },
         );
       } else {
         await AdManager().showRewardedAd(
@@ -1405,34 +1314,20 @@ class _GameResultPopupState extends ConsumerState<GameResultPopup>
           onReward: () async {
             await executeGemClaim();
           },
-          onAdClosed: (_) async {
-            await executeGemClaim();
+          onAdClosed: (_) {
             if (mounted) {
               setState(() => _isAdLoading = false);
             }
           },
-          onAdFailed: () async {
-            // High-priority automatic fallback to interstitial or grant reward
-            await AdManager().showInterstitialAd(
-              onClosed: () async {
-                await executeGemClaim();
-                if (mounted) {
-                  setState(() => _isAdLoading = false);
-                }
-              },
-              onAdFailed: () async {
-                await executeGemClaim();
-                if (mounted) {
-                  setState(() => _isAdLoading = false);
-                }
-              },
-            );
+          onAdFailed: () {
+            if (mounted) {
+              setState(() => _isAdLoading = false);
+            }
           },
         );
       }
     } catch (e) {
        // debugPrint("Ad Error: $e");
-    } finally {
       if (mounted) {
         setState(() => _isAdLoading = false);
       }
@@ -1455,14 +1350,9 @@ class _GameResultPopupState extends ConsumerState<GameResultPopup>
               .toLowerCase() ??
           'rewarded';
 
-      if (!mounted) return;
       if (adType == 'interstitial') {
         await AdManager().showInterstitialAd(
           onClosed: () {
-            _installClickTime = DateTime.now();
-            if (mounted) setState(() => _isAdLoading = false);
-          },
-          onAdFailed: () {
             _installClickTime = DateTime.now();
             if (mounted) setState(() => _isAdLoading = false);
           },
@@ -1487,7 +1377,6 @@ class _GameResultPopupState extends ConsumerState<GameResultPopup>
       }
     } catch (e) {
        // debugPrint("Ad watch error: $e");
-    } finally {
       if (mounted) {
         setState(() => _isAdLoading = false);
       }
@@ -1499,13 +1388,6 @@ class _GameResultPopupState extends ConsumerState<GameResultPopup>
     HapticFeedback.lightImpact();
     setState(() => _isAdLoading = true);
 
-    void doResume() {
-      if (!mounted) return;
-      setState(() => _isAdLoading = false);
-      Navigator.pop(context);
-      widget.onResume?.call();
-    }
-
     try {
       final adType = SplashService.superOfferConfig['adType']
               ?.toString()
@@ -1515,10 +1397,10 @@ class _GameResultPopupState extends ConsumerState<GameResultPopup>
       if (adType == 'interstitial') {
         await AdManager().showInterstitialAd(
           onClosed: () {
-            doResume();
-          },
-          onAdFailed: () {
-            doResume();
+            if (mounted) {
+              Navigator.pop(context);
+              widget.onResume?.call();
+            }
           },
         );
       } else {
@@ -1527,26 +1409,26 @@ class _GameResultPopupState extends ConsumerState<GameResultPopup>
           onReward: () async {},
           onAdClicked: () async {},
           onAdClosed: (_) {
-            doResume();
+            if (mounted) {
+              Navigator.pop(context);
+              widget.onResume?.call();
+            }
           },
-          onAdFailed: () async {
-            await AdManager().showInterstitialAd(
-              onClosed: () {
-                doResume();
-              },
-              onAdFailed: () {
-                doResume();
-              },
-            );
+          onAdFailed: () {
+            if (mounted) {
+              setState(() => _isAdLoading = false);
+              Navigator.pop(context);
+              widget.onResume?.call();
+            }
           },
         );
       }
     } catch (e) {
        // debugPrint("Resume Ad Error: $e");
-      doResume();
-    } finally {
       if (mounted) {
         setState(() => _isAdLoading = false);
+        Navigator.pop(context);
+        widget.onResume?.call();
       }
     }
   }
@@ -1831,4 +1713,202 @@ class _TaperedButtonPainter extends CustomPainter {
   bool shouldRepaint(covariant _TaperedButtonPainter oldDelegate) => true;
 }
 
+// ---------------------------------------------------------------------------
+// CENTER NOTCHED POPUP CLIPPER & PAINTERS
+// ---------------------------------------------------------------------------
 
+class _CenterNotchedClipper extends CustomClipper<Path> {
+  final double cornerRadius;
+  final double notchWidth;
+  final double notchDepth;
+
+  const _CenterNotchedClipper({
+    this.cornerRadius = 24.0,
+    this.notchWidth = 68.0,
+    this.notchDepth = 22.0,
+  });
+
+  @override
+  Path getClip(Size size) {
+    final w = size.width;
+    final h = size.height;
+    final r = cornerRadius;
+    final cx = w / 2;
+    final hw = notchWidth / 2;
+    final d = notchDepth;
+
+    final path = Path();
+    path.moveTo(0, r);
+    path.quadraticBezierTo(0, 0, r, 0);
+
+    path.lineTo(cx - hw - 8, 0);
+
+    path.cubicTo(
+      cx - hw + 2, 0,
+      cx - hw - 2, d * 0.5,
+      cx - hw + 8, d * 0.85,
+    );
+    path.cubicTo(
+      cx - hw + 16, d + 3,
+      cx + hw - 16, d + 3,
+      cx + hw - 8, d * 0.85,
+    );
+    path.cubicTo(
+      cx + hw + 2, d * 0.5,
+      cx + hw - 2, 0,
+      cx + hw + 8, 0,
+    );
+
+    path.lineTo(w - r, 0);
+    path.quadraticBezierTo(w, 0, w, r);
+
+    path.lineTo(w, h - r);
+    path.quadraticBezierTo(w, h, w - r, h);
+
+    path.lineTo(r, h);
+    path.quadraticBezierTo(0, h, 0, h - r);
+
+    path.close();
+    return path;
+  }
+
+  @override
+  bool shouldReclip(covariant CustomClipper<Path> oldClipper) => false;
+}
+
+class _CenterNotchedBorderPainter extends CustomPainter {
+  final double cornerRadius;
+  final double notchWidth;
+  final double notchDepth;
+  final Color borderColor;
+
+  const _CenterNotchedBorderPainter({
+    this.cornerRadius = 24.0,
+    this.notchWidth = 68.0,
+    this.notchDepth = 22.0,
+    required this.borderColor,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final w = size.width;
+    final h = size.height;
+    final r = cornerRadius;
+    final cx = w / 2;
+    final hw = notchWidth / 2;
+    final d = notchDepth;
+
+    final path = Path();
+    path.moveTo(0, r);
+    path.quadraticBezierTo(0, 0, r, 0);
+    path.lineTo(cx - hw - 8, 0);
+
+    path.cubicTo(
+      cx - hw + 2, 0,
+      cx - hw - 2, d * 0.5,
+      cx - hw + 8, d * 0.85,
+    );
+    path.cubicTo(
+      cx - hw + 16, d + 3,
+      cx + hw - 16, d + 3,
+      cx + hw - 8, d * 0.85,
+    );
+    path.cubicTo(
+      cx + hw + 2, d * 0.5,
+      cx + hw - 2, 0,
+      cx + hw + 8, 0,
+    );
+
+    path.lineTo(w - r, 0);
+    path.quadraticBezierTo(w, 0, w, r);
+
+    path.lineTo(w, h - r);
+    path.quadraticBezierTo(w, h, w - r, h);
+
+    path.lineTo(r, h);
+    path.quadraticBezierTo(0, h, 0, h - r);
+    path.close();
+
+    final shader = LinearGradient(
+      begin: Alignment.topCenter,
+      end: Alignment.bottomCenter,
+      colors: [
+        borderColor.withValues(alpha: 0.90),
+        borderColor.withValues(alpha: 0.45),
+        borderColor.withValues(alpha: 0.70),
+      ],
+    ).createShader(Rect.fromLTWH(0, 0, w, h));
+
+    final paint = Paint()
+      ..shader = shader
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.5;
+
+    canvas.drawPath(path, paint);
+  }
+
+  @override
+  bool shouldRepaint(covariant _CenterNotchedBorderPainter oldDelegate) {
+    return oldDelegate.borderColor != borderColor ||
+        oldDelegate.cornerRadius != cornerRadius ||
+        oldDelegate.notchWidth != notchWidth ||
+        oldDelegate.notchDepth != notchDepth;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// AMBIENT DUAL SWIRLING RIBBON ARCS BACKGROUND PAINTER
+// ---------------------------------------------------------------------------
+
+class _PopupSwirlingArcsPainter extends CustomPainter {
+  final List<Color> arcColors;
+
+  const _PopupSwirlingArcsPainter({required this.arcColors});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final cx = size.width * 0.5;
+    final cy = size.height * 0.44;
+    final center = Offset(cx, cy);
+    final radius = size.width * 0.30;
+    const strokeW = 36.0;
+    final rect = Rect.fromCircle(center: center, radius: radius);
+
+    // Left Torus Ribbon Arc
+    final leftShader = LinearGradient(
+      begin: Alignment.topCenter,
+      end: Alignment.bottomLeft,
+      colors: arcColors,
+    ).createShader(rect);
+
+    final leftPaint = Paint()
+      ..shader = leftShader
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = strokeW
+      ..strokeCap = StrokeCap.butt;
+
+    const leftStartAngle = 1.75;
+    const leftSweepAngle = 2.45;
+    canvas.drawArc(rect, leftStartAngle, leftSweepAngle, false, leftPaint);
+
+    // Right Torus Ribbon Arc
+    final rightShader = LinearGradient(
+      begin: Alignment.bottomCenter,
+      end: Alignment.topRight,
+      colors: arcColors,
+    ).createShader(rect);
+
+    final rightPaint = Paint()
+      ..shader = rightShader
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = strokeW
+      ..strokeCap = StrokeCap.butt;
+
+    const rightStartAngle = 4.89;
+    const rightSweepAngle = 2.45;
+    canvas.drawArc(rect, rightStartAngle, rightSweepAngle, false, rightPaint);
+  }
+
+  @override
+  bool shouldRepaint(covariant _PopupSwirlingArcsPainter oldDelegate) => true;
+}

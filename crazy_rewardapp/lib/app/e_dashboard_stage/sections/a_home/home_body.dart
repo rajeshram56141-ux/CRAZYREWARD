@@ -855,7 +855,7 @@ class _PlayGamesHeroBanner extends HookConsumerWidget {
         },
         child: Container(
           width: double.infinity,
-          height: 96.h,
+          height: 102.h,
           clipBehavior: Clip.antiAlias,
           decoration: BoxDecoration(
             color: const Color(0xFFFFF7CC),
@@ -879,7 +879,7 @@ class _PlayGamesHeroBanner extends HookConsumerWidget {
                 left: -15.w,
                 top: -12.h,
                 bottom: -12.h,
-                width: 120.w,
+                width: 130.w,
                 child: Container(
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
@@ -895,14 +895,14 @@ class _PlayGamesHeroBanner extends HookConsumerWidget {
                   children: [
                     // 3D Challenge Trophy Podium Icon
                     SizedBox(
-                      width: 90.w,
-                      height: 80.h,
+                      width: 106.w,
+                      height: 94.h,
                       child: Center(
                         child: Image.asset(
-                          'assets/Icons1/challenge-3d-icon-png-download-10612205 1.png',
+                          'assets/Icons1/daily challenges.png',
                           fit: BoxFit.contain,
                           errorBuilder: (_, __, ___) => Image.asset(
-                            'assets/icons/dailychallange.png',
+                            'assets/Icons1/daily challenges.png',
                             fit: BoxFit.contain,
                           ),
                         ),

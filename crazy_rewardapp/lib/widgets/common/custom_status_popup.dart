@@ -1261,20 +1261,46 @@ class CustomStatusPopup extends StatelessWidget {
 
     const Color effectivePrimaryTextColor = Colors.white;
 
+    final Color glowColor;
+    switch (curType) {
+      case StatusPopupType.success:
+        glowColor = const Color(0xFF00E676);
+        break;
+      case StatusPopupType.failed:
+        glowColor = const Color(0xFFEF4444);
+        break;
+      case StatusPopupType.inProgress:
+      case StatusPopupType.warning:
+        glowColor = const Color(0xFFF59E0B);
+        break;
+      case StatusPopupType.info:
+      case StatusPopupType.permission:
+        glowColor = const Color(0xFF00B0FF);
+        break;
+    }
+
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
-        color: Colors.white,
+        image: const DecorationImage(
+          image: AssetImage('assets/Icons1/Rectangle 13.png'),
+          fit: BoxFit.fill,
+        ),
         borderRadius: BorderRadius.circular(28.r),
         border: Border.all(
-          color: const Color(0xFFE2E8F0),
-          width: 1.2,
+          color: Colors.white.withValues(alpha: 0.35),
+          width: 1.5,
         ),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF0F172A).withValues(alpha: 0.08),
-            blurRadius: 24,
-            offset: const Offset(0, 8),
+            color: Colors.white.withValues(alpha: 0.12),
+            blurRadius: 20,
+            spreadRadius: 1,
+          ),
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.5),
+            blurRadius: 30,
+            offset: const Offset(0, 10),
           ),
         ],
       ),
@@ -1306,17 +1332,17 @@ class CustomStatusPopup extends StatelessWidget {
                   height: 32.w,
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
-                    color: const Color(0xFFF1F5F9),
+                    color: Colors.white.withValues(alpha: 0.1),
                     shape: BoxShape.circle,
                     border: Border.all(
-                      color: const Color(0xFFE2E8F0),
+                      color: Colors.white.withValues(alpha: 0.2),
                       width: 1,
                     ),
                   ),
                   child: Icon(
                     Icons.close_rounded,
                     size: 18.sp,
-                    color: const Color(0xFF64748B),
+                    color: const Color(0xFF94A3B8),
                   ),
                 ),
               ),
@@ -1337,15 +1363,15 @@ class CustomStatusPopup extends StatelessWidget {
                         height: orbSize ?? 80.w,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: iconBgLight,
+                          color: iconBgLight.withValues(alpha: 0.15),
                           border: Border.all(
-                            color: const Color(0xFFE2E8F0),
+                            color: iconColor.withValues(alpha: 0.3),
                             width: 1.2,
                           ),
                           boxShadow: [
                             BoxShadow(
-                              color: iconColor.withValues(alpha: 0.12),
-                              blurRadius: 16,
+                              color: iconColor.withValues(alpha: 0.25),
+                              blurRadius: 20,
                               spreadRadius: 2,
                             ),
                           ],
@@ -1354,7 +1380,7 @@ class CustomStatusPopup extends StatelessWidget {
                         child: Container(
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            color: iconBgInner,
+                            color: iconBgInner.withValues(alpha: 0.2),
                           ),
                           child: Icon(
                             iconData,
@@ -1371,10 +1397,10 @@ class CustomStatusPopup extends StatelessWidget {
                     Container(
                       padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 4.h),
                       decoration: BoxDecoration(
-                        color: const Color(0xFFFAF5FF),
+                        color: Colors.white.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(12.r),
                         border: Border.all(
-                          color: const Color(0xFFD8B4FE),
+                          color: Colors.white.withValues(alpha: 0.2),
                           width: 1,
                         ),
                       ),
@@ -1382,7 +1408,7 @@ class CustomStatusPopup extends StatelessWidget {
                         effectiveTag,
                         textAlign: TextAlign.center,
                         style: GoogleFonts.outfit(
-                          color: const Color(0xFF7C3AED),
+                          color: iconColor,
                           fontSize: 11.sp,
                           fontWeight: FontWeight.w800,
                           letterSpacing: 0.8,
@@ -1397,7 +1423,7 @@ class CustomStatusPopup extends StatelessWidget {
                     effectiveTitle,
                     textAlign: TextAlign.center,
                     style: GoogleFonts.outfit(
-                      color: const Color(0xFF1E1B2E),
+                      color: Colors.white,
                       fontSize: 20.sp,
                       fontWeight: FontWeight.w800,
                       height: 1.2,
@@ -1413,7 +1439,7 @@ class CustomStatusPopup extends StatelessWidget {
                         message!,
                         textAlign: TextAlign.center,
                         style: GoogleFonts.outfit(
-                          color: const Color(0xFF64748B),
+                          color: const Color(0xFF94A3B8),
                           fontSize: 13.sp,
                           fontWeight: FontWeight.w400,
                           height: 1.45,
@@ -1435,7 +1461,7 @@ class CustomStatusPopup extends StatelessWidget {
                       secondaryButtonText!.isNotEmpty) ...[
                     Row(
                       children: [
-                        // Secondary / Cancel Button (Light lavender with subtle border)
+                        // Secondary / Cancel Button (Glass style button)
                         Expanded(
                           child: _PopScaleButton(
                             onTap: () {
@@ -1456,17 +1482,17 @@ class CustomStatusPopup extends StatelessWidget {
                               height: 48.h,
                               alignment: Alignment.center,
                               decoration: BoxDecoration(
-                                color: const Color(0xFFFAF5FF),
+                                color: Colors.white.withValues(alpha: 0.1),
                                 borderRadius: BorderRadius.circular(14.r),
                                 border: Border.all(
-                                  color: const Color(0xFFD8B4FE),
+                                  color: Colors.white.withValues(alpha: 0.2),
                                   width: 1.2,
                                 ),
                               ),
                               child: Text(
                                 secondaryButtonText!,
                                 style: GoogleFonts.outfit(
-                                  color: const Color(0xFF7C3AED),
+                                  color: Colors.white,
                                   fontSize: 14.sp,
                                   fontWeight: FontWeight.w700,
                                 ),

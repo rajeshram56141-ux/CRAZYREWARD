@@ -87,9 +87,9 @@ class MoreWaysSection extends StatelessWidget {
                 width: cardWidthScaled,
                 title: 'Leaderboard',
                 subtitle: 'Win upto 500',
-                iconPath: 'assets/Icons1/image 39.png',
-                iconWidth: 42.w,
-                iconHeight: 38.h,
+                iconPath: 'assets/Icons1/leaderboard.png',
+                iconWidth: 46.w,
+                iconHeight: 46.w,
                 onTap: () {
                   HapticFeedback.lightImpact();
                   currentIndex.value = 4; // Switches to Leaderboard (Rank) Tab
@@ -103,7 +103,7 @@ class MoreWaysSection extends StatelessWidget {
                   width: cardWidthScaled,
                   title: 'Promo Code',
                   subtitle: 'Win upto 500',
-                  iconPath: 'assets/Icons1/icons8-voucher-64.png',
+                  iconPath: 'assets/Icons1/promocode.png',
                   iconWidth: 42.w,
                   iconHeight: 42.w,
                   onTap: () {

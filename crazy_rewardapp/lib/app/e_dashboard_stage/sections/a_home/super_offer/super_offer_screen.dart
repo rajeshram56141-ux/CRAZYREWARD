@@ -171,7 +171,7 @@ class SuperOfferScreen extends HookConsumerWidget {
       orElse: () => 0,
     );
 
-    return AnnotatedRegion<SystemUiOverlayStyle>(
+     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: const SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
         statusBarIconBrightness: Brightness.dark,
@@ -325,7 +325,7 @@ class SuperOfferScreen extends HookConsumerWidget {
                                                   superOffer.gemsRequired == 0) {
                                                 return _buildNoTasksWidget();
                                               }
- 
+
                                               final config = SplashService.superOfferConfig;
                                               final gameGemsVal =
                                                   (config['gameGems'] as num?)?.toInt() ?? 1;
@@ -335,7 +335,7 @@ class SuperOfferScreen extends HookConsumerWidget {
                                                   (config['dailyGemsForInstall'] as num?)
                                                           ?.toInt() ??
                                                       2;
- 
+
                                               return SuperOfferWidget(
                                                 coins: superOffer.coins,
                                                 gems: liveGems,
@@ -454,7 +454,7 @@ class SuperOfferScreen extends HookConsumerWidget {
     );
   }
 
-  // Pure White Luxury Floating Stats Cards
+  // Pure Dark Obsidian Floating Stats Cards
   Widget _buildStatsCard(BuildContext context, SuperOfferModel offerData, WidgetRef ref) {
     final userAsync = ref.watch(DashboardService.userDataProvider(userId));
     final liveStreak = userAsync.maybeWhen(
@@ -858,7 +858,7 @@ class SuperOfferScreen extends HookConsumerWidget {
   Widget _buildSuperMissionHeader() {
     return Container(
       width: double.infinity,
-      padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
       decoration: BoxDecoration(
         image: const DecorationImage(
           image: AssetImage('assets/Icons1/Rectangle 13.png'),
@@ -867,71 +867,54 @@ class SuperOfferScreen extends HookConsumerWidget {
         borderRadius: BorderRadius.circular(20.r),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.12),
-            blurRadius: 14,
+            color: Colors.black.withValues(alpha: 0.18),
+            blurRadius: 10,
             offset: const Offset(0, 4),
           ),
         ],
       ),
-      child: Column(
+      child: Row(
         children: [
-          // 3D Gift Box Icon Container (matching Daily Check In Hero Card)
-          Container(
-            width: 52.w,
-            height: 52.w,
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(16.r),
-              border: Border.all(
-                color: const Color(0xFFE2E8F0),
-                width: 1.2,
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.06),
-                  blurRadius: 8,
-                  offset: const Offset(0, 2),
-                ),
-              ],
-            ),
+          // Left 3D Super Offer Icon (assets/Icons1/Super Offer .png)
+          SizedBox(
+            width: 85.w,
+            height: 75.h,
             child: Image.asset(
-              'assets/Icons1/super_offer_3d.png',
-              width: 32.w,
-              height: 32.w,
+              'assets/Icons1/Super Offer .png',
               fit: BoxFit.contain,
               errorBuilder: (_, __, ___) => Image.asset(
-                'assets/icons/suprerofferdhn.png',
-                width: 32.w,
-                height: 32.w,
+                'assets/Icons1/super_offer_3d.png',
                 fit: BoxFit.contain,
               ),
             ),
           ),
+          SizedBox(width: 12.w),
 
-          SizedBox(height: 12.h),
-
-          // Title
-          Text(
-            'Super Missions!',
-            textAlign: TextAlign.center,
-            style: GoogleFonts.poppins(
-              color: Colors.white,
-              fontSize: 20.sp,
-              fontWeight: FontWeight.w800,
-            ),
-          ),
-
-          SizedBox(height: 4.h),
-
-          // Subtitle
-          Text(
-            'Complete verified offers to earn massive rewards!',
-            textAlign: TextAlign.center,
-            style: GoogleFonts.poppins(
-              color: const Color(0xFFE2E8F0),
-              fontSize: 12.sp,
-              fontWeight: FontWeight.w500,
+          // Right Title & Subtitle Column
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  'Super Missions!',
+                  style: GoogleFonts.poppins(
+                    color: Colors.white,
+                    fontSize: 19.sp,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+                SizedBox(height: 4.h),
+                Text(
+                  'Complete verified offers to earn massive rewards!',
+                  style: GoogleFonts.poppins(
+                    color: const Color(0xFF9E9EA7),
+                    fontSize: 11.5.sp,
+                    fontWeight: FontWeight.w500,
+                    height: 1.25,
+                  ),
+                ),
+              ],
             ),
           ),
         ],
@@ -1119,17 +1102,13 @@ class SuperOfferScreen extends HookConsumerWidget {
                 ],
               ),
             ),
+            SizedBox(width: 10.w),
 
-            SizedBox(width: 8.w),
-
-            // Right Silver Metallic Action Button (Home Screen Design)
+            // Right Silver Metallic Button
             GestureDetector(
-              onTap: () {
-                HapticFeedback.lightImpact();
-                onTap();
-              },
+              onTap: onTap,
               child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 9.h),
+                padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 8.h),
                 decoration: BoxDecoration(
                   gradient: const LinearGradient(
                     colors: [
@@ -1149,24 +1128,13 @@ class SuperOfferScreen extends HookConsumerWidget {
                     ),
                   ],
                 ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
-                      Icons.play_arrow_rounded,
-                      color: const Color(0xFF16161A),
-                      size: 16.sp,
-                    ),
-                    SizedBox(width: 2.w),
-                    Text(
-                      buttonText,
-                      style: GoogleFonts.poppins(
-                        color: const Color(0xFF16161A),
-                        fontSize: 12.sp,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ],
+                child: Text(
+                  buttonText,
+                  style: GoogleFonts.poppins(
+                    color: const Color(0xFF16161A),
+                    fontSize: 12.sp,
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
               ),
             ),

@@ -331,7 +331,7 @@ class RedeemPopup extends HookWidget {
               child: Text(
                 getFieldLabel(key),
                 style: GoogleFonts.poppins(
-                  color: const Color(0xFF26262B),
+                  color: const Color(0xFF94A3B8),
                   fontSize: 11.5.sp,
                   fontWeight: FontWeight.w700,
                   letterSpacing: 0.5,
@@ -342,17 +342,17 @@ class RedeemPopup extends HookWidget {
             // Field Input Box
             Container(
               decoration: BoxDecoration(
-                color: const Color(0xFFF8FAFC),
+                color: Colors.white.withValues(alpha: 0.08),
                 borderRadius: BorderRadius.circular(14.r),
                 border: Border.all(
-                  color: const Color(0xFFE2E8F0),
+                  color: Colors.white.withValues(alpha: 0.2),
                   width: 1.2,
                 ),
               ),
               child: key.contains(':')
                   ? DropdownButtonFormField<String>(
                       isExpanded: true,
-                      dropdownColor: Colors.white,
+                      dropdownColor: const Color(0xFF1E1E24),
                       value: controller.text.isNotEmpty &&
                               key.split(':')[1].split('|').map((e) => e.trim()).toList().contains(controller.text)
                           ? controller.text
@@ -360,30 +360,30 @@ class RedeemPopup extends HookWidget {
                       hint: Text(
                         getHintText(key),
                         style: GoogleFonts.poppins(
-                          color: const Color(0xFF94A3B8),
+                          color: Colors.white38,
                           fontSize: 13.sp,
                           fontWeight: FontWeight.w400,
                         ),
                       ),
                       icon: const Icon(
                         Icons.arrow_drop_down_rounded,
-                        color: Color(0xFF26262B),
+                        color: Colors.white,
                       ),
                       style: GoogleFonts.poppins(
-                        color: const Color(0xFF26262B),
+                        color: Colors.white,
                         fontSize: 14.sp,
                         fontWeight: FontWeight.w600,
                       ),
                       decoration: InputDecoration(
                         hintText: getHintText(key),
                         hintStyle: GoogleFonts.poppins(
-                          color: const Color(0xFF94A3B8),
+                          color: Colors.white38,
                           fontSize: 13.sp,
                           fontWeight: FontWeight.w400,
                         ),
                         prefixIcon: Icon(
                           getPrefixIcon(key),
-                          color: const Color(0xFF26262B),
+                          color: Colors.white70,
                           size: 20.sp,
                         ),
                         border: InputBorder.none,
@@ -392,7 +392,7 @@ class RedeemPopup extends HookWidget {
                           horizontal: 16.w,
                         ),
                         errorStyle: GoogleFonts.poppins(
-                          color: const Color(0xFFEF4444),
+                          color: const Color(0xFFFCA5A5),
                           fontSize: 11.5.sp,
                           fontWeight: FontWeight.w500,
                         ),
@@ -408,7 +408,7 @@ class RedeemPopup extends HookWidget {
                           child: Text(
                             opt,
                             style: GoogleFonts.poppins(
-                              color: const Color(0xFF26262B),
+                              color: Colors.white,
                               fontSize: 14.sp,
                               fontWeight: FontWeight.w500,
                             ),
@@ -425,22 +425,22 @@ class RedeemPopup extends HookWidget {
                   : TextFormField(
                       controller: controller,
                       keyboardType: getKeyboardType(key),
-                      cursorColor: const Color(0xFF26262B),
+                      cursorColor: Colors.white,
                       style: GoogleFonts.poppins(
-                        color: const Color(0xFF26262B),
+                        color: Colors.white,
                         fontSize: 14.sp,
                         fontWeight: FontWeight.w600,
                       ),
                       decoration: InputDecoration(
                         hintText: getHintText(key),
                         hintStyle: GoogleFonts.poppins(
-                          color: const Color(0xFF94A3B8),
+                          color: Colors.white38,
                           fontSize: 13.sp,
                           fontWeight: FontWeight.w400,
                         ),
                         prefixIcon: Icon(
                           getPrefixIcon(key),
-                          color: const Color(0xFF26262B),
+                          color: Colors.white70,
                           size: 20.sp,
                         ),
                         border: InputBorder.none,
@@ -449,7 +449,7 @@ class RedeemPopup extends HookWidget {
                           horizontal: 16.w,
                         ),
                         errorStyle: GoogleFonts.poppins(
-                          color: const Color(0xFFEF4444),
+                          color: const Color(0xFFFCA5A5),
                           fontSize: 11.5.sp,
                           fontWeight: FontWeight.w500,
                         ),
@@ -493,13 +493,25 @@ class RedeemPopup extends HookWidget {
         child: Container(
           width: double.infinity,
           decoration: BoxDecoration(
-            color: Colors.white,
+            image: const DecorationImage(
+              image: AssetImage('assets/Icons1/Rectangle 13.png'),
+              fit: BoxFit.fill,
+            ),
             borderRadius: BorderRadius.circular(28.r),
+            border: Border.all(
+              color: Colors.white.withValues(alpha: 0.35),
+              width: 1.5,
+            ),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: 0.12),
-                blurRadius: 24,
-                offset: const Offset(0, 8),
+                color: Colors.white.withValues(alpha: 0.12),
+                blurRadius: 20,
+                spreadRadius: 1,
+              ),
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.5),
+                blurRadius: 30,
+                offset: const Offset(0, 10),
               ),
             ],
           ),
@@ -916,13 +928,25 @@ class _InsufficientBalanceSheet extends StatelessWidget {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
-        color: Colors.white,
+        image: const DecorationImage(
+          image: AssetImage('assets/Icons1/Rectangle 13.png'),
+          fit: BoxFit.fill,
+        ),
         borderRadius: BorderRadius.circular(28.r),
+        border: Border.all(
+          color: Colors.white.withValues(alpha: 0.35),
+          width: 1.5,
+        ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.12),
-            blurRadius: 24,
-            offset: const Offset(0, 8),
+            color: Colors.white.withValues(alpha: 0.12),
+            blurRadius: 20,
+            spreadRadius: 1,
+          ),
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.5),
+            blurRadius: 30,
+            offset: const Offset(0, 10),
           ),
         ],
       ),
@@ -943,9 +967,13 @@ class _InsufficientBalanceSheet extends StatelessWidget {
                   width: 32.w,
                   height: 32.w,
                   alignment: Alignment.center,
-                  decoration: const BoxDecoration(
-                    color: Colors.transparent,
+                  decoration: BoxDecoration(
+                    color: Colors.white.withValues(alpha: 0.1),
                     shape: BoxShape.circle,
+                    border: Border.all(
+                      color: Colors.white.withValues(alpha: 0.2),
+                      width: 1,
+                    ),
                   ),
                   child: Icon(
                     Icons.close_rounded,
@@ -967,15 +995,19 @@ class _InsufficientBalanceSheet extends StatelessWidget {
                   Container(
                     width: 76.w,
                     height: 76.w,
-                    decoration: const BoxDecoration(
+                    decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: Color(0xFFFEF2F2),
+                      color: const Color(0xFFEF4444).withValues(alpha: 0.15),
+                      border: Border.all(
+                        color: const Color(0xFFEF4444).withValues(alpha: 0.3),
+                        width: 1.2,
+                      ),
                     ),
                     padding: EdgeInsets.all(8.w),
                     child: Container(
-                      decoration: const BoxDecoration(
+                      decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: Color(0xFFFEE2E2),
+                        color: const Color(0xFFEF4444).withValues(alpha: 0.25),
                       ),
                       child: Icon(
                         Icons.priority_high_rounded,
@@ -991,7 +1023,7 @@ class _InsufficientBalanceSheet extends StatelessWidget {
                     'Insufficient Coins',
                     textAlign: TextAlign.center,
                     style: GoogleFonts.poppins(
-                      color: const Color(0xFF26262B),
+                      color: Colors.white,
                       fontSize: 19.sp,
                       fontWeight: FontWeight.w700,
                       height: 1.2,
@@ -1004,7 +1036,7 @@ class _InsufficientBalanceSheet extends StatelessWidget {
                         : message.tr(),
                     textAlign: TextAlign.center,
                     style: GoogleFonts.poppins(
-                      color: const Color(0xFF64748B),
+                      color: const Color(0xFF94A3B8),
                       fontSize: 12.5.sp,
                       fontWeight: FontWeight.w400,
                       height: 1.4,
@@ -1018,10 +1050,10 @@ class _InsufficientBalanceSheet extends StatelessWidget {
                     width: double.infinity,
                     padding: EdgeInsets.all(14.w),
                     decoration: BoxDecoration(
-                      color: const Color(0xFFF8FAFC),
+                      color: Colors.white.withValues(alpha: 0.08),
                       borderRadius: BorderRadius.circular(16.r),
                       border: Border.all(
-                        color: const Color(0xFFE2E8F0),
+                        color: Colors.white.withValues(alpha: 0.18),
                         width: 1.2,
                       ),
                     ),
@@ -1032,9 +1064,9 @@ class _InsufficientBalanceSheet extends StatelessWidget {
                           height: 38.w,
                           padding: EdgeInsets.all(6.w),
                           decoration: BoxDecoration(
-                            color: Colors.white,
+                            color: Colors.white.withValues(alpha: 0.15),
                             borderRadius: BorderRadius.circular(12.r),
-                            border: Border.all(color: const Color(0xFFE2E8F0), width: 1),
+                            border: Border.all(color: Colors.white24, width: 1),
                           ),
                           child: InternetImage(
                             url: image,
@@ -1048,7 +1080,7 @@ class _InsufficientBalanceSheet extends StatelessWidget {
                             Text(
                               methodName,
                               style: GoogleFonts.poppins(
-                                color: const Color(0xFF26262B),
+                                color: Colors.white,
                                 fontSize: 14.5.sp,
                                 fontWeight: FontWeight.w700,
                               ),
@@ -1056,7 +1088,7 @@ class _InsufficientBalanceSheet extends StatelessWidget {
                             Text(
                               '$symbol$amount',
                               style: GoogleFonts.poppins(
-                                color: const Color(0xFF26262B),
+                                color: Colors.white,
                                 fontSize: 13.5.sp,
                                 fontWeight: FontWeight.w700,
                               ),
@@ -1070,10 +1102,10 @@ class _InsufficientBalanceSheet extends StatelessWidget {
                             vertical: 5.h,
                           ),
                           decoration: BoxDecoration(
-                            color: Colors.white,
+                            color: Colors.white.withValues(alpha: 0.12),
                             borderRadius: BorderRadius.circular(12.r),
                             border: Border.all(
-                              color: const Color(0xFFE2E8F0),
+                              color: Colors.white.withValues(alpha: 0.2),
                               width: 1,
                             ),
                           ),
@@ -1089,7 +1121,7 @@ class _InsufficientBalanceSheet extends StatelessWidget {
                               Text(
                                 formattedCoins,
                                 style: GoogleFonts.poppins(
-                                  color: const Color(0xFF26262B),
+                                  color: Colors.white,
                                   fontSize: 13.sp,
                                   fontWeight: FontWeight.w700,
                                 ),
@@ -1103,7 +1135,7 @@ class _InsufficientBalanceSheet extends StatelessWidget {
 
                   SizedBox(height: 20.h),
 
-                  // Button (Dark Obsidian / Clean Red)
+                  // Button (Gradient)
                   _PopScaleButton(
                     onTap: () => Navigator.pop(context),
                     child: Container(
@@ -1113,8 +1145,8 @@ class _InsufficientBalanceSheet extends StatelessWidget {
                       decoration: BoxDecoration(
                         gradient: const LinearGradient(
                           colors: [
-                            Color(0xFF26262B),
-                            Color(0xFF18181B),
+                            Color(0xFF00E676),
+                            Color(0xFF00B0FF),
                           ],
                         ),
                         borderRadius: BorderRadius.circular(14.r),
@@ -1237,10 +1269,10 @@ class _RedeemResultView extends StatelessWidget {
           width: double.infinity,
           padding: EdgeInsets.all(14.w),
           decoration: BoxDecoration(
-            color: const Color(0xFFF8FAFC),
+            color: Colors.white.withValues(alpha: 0.08),
             borderRadius: BorderRadius.circular(16.r),
             border: Border.all(
-              color: const Color(0xFFE2E8F0),
+              color: Colors.white.withValues(alpha: 0.18),
               width: 1.2,
             ),
           ),
@@ -1256,16 +1288,9 @@ class _RedeemResultView extends StatelessWidget {
                     height: 32.w,
                     padding: EdgeInsets.all(4.w),
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: Colors.white.withValues(alpha: 0.15),
                       borderRadius: BorderRadius.circular(10.r),
-                      border: Border.all(color: const Color(0xFFE2E8F0), width: 1),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.04),
-                          blurRadius: 4,
-                          offset: const Offset(0, 2),
-                        ),
-                      ],
+                      border: Border.all(color: Colors.white24, width: 1),
                     ),
                     child: (paymentMethodImage != null && paymentMethodImage!.isNotEmpty)
                         ? InternetImage(
@@ -1274,7 +1299,7 @@ class _RedeemResultView extends StatelessWidget {
                           )
                         : Icon(
                             Icons.confirmation_number_rounded,
-                            color: const Color(0xFF26262B),
+                            color: Colors.white,
                             size: 16.sp,
                           ),
                   ),
@@ -1283,7 +1308,7 @@ class _RedeemResultView extends StatelessWidget {
                     child: Text(
                       paymentMethodTitle ?? 'Voucher Code',
                       style: GoogleFonts.poppins(
-                        color: const Color(0xFF26262B),
+                        color: Colors.white,
                         fontSize: 14.sp,
                         fontWeight: FontWeight.w700,
                       ),
@@ -1296,14 +1321,14 @@ class _RedeemResultView extends StatelessWidget {
                     children: [
                       Icon(
                         Icons.copy_rounded,
-                        color: const Color(0xFF26262B),
+                        color: const Color(0xFF00E676),
                         size: 14.sp,
                       ),
                       SizedBox(width: 4.w),
                       Text(
                         isGooglePlay ? 'Copy & Redeem' : 'Copy',
                         style: GoogleFonts.poppins(
-                          color: const Color(0xFF26262B),
+                          color: const Color(0xFF00E676),
                           fontSize: 12.5.sp,
                           fontWeight: FontWeight.w700,
                         ),
@@ -1317,18 +1342,18 @@ class _RedeemResultView extends StatelessWidget {
                 width: double.infinity,
                 padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 10.h),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: Colors.white.withValues(alpha: 0.12),
                   borderRadius: BorderRadius.circular(12.r),
                   border: Border.all(
-                    color: const Color(0xFFE2E8F0),
+                    color: Colors.white.withValues(alpha: 0.2),
                     width: 1.2,
                   ),
                 ),
                 child: SelectableText(
                   cleanCode,
                   style: GoogleFonts.poppins(
-                    color: const Color(0xFF26262B),
-                    fontSize: 15.sp,
+                    color: const Color(0xFFFFD700),
+                    fontSize: 16.sp,
                     fontWeight: FontWeight.w800,
                     letterSpacing: 0.8,
                   ),
@@ -1376,15 +1401,19 @@ class _RedeemResultView extends StatelessWidget {
         child: Container(
           width: 76.w,
           height: 76.w,
-          decoration: const BoxDecoration(
+          decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: Color(0xFFFFFBEB),
+            color: const Color(0xFFD97706).withValues(alpha: 0.15),
+            border: Border.all(
+              color: const Color(0xFFD97706).withValues(alpha: 0.3),
+              width: 1.2,
+            ),
           ),
           padding: EdgeInsets.all(8.w),
           child: Container(
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: Color(0xFFFEF3C7),
+              color: const Color(0xFFD97706).withValues(alpha: 0.25),
             ),
             child: Icon(
               Icons.priority_high_rounded,
@@ -1403,7 +1432,12 @@ class _RedeemResultView extends StatelessWidget {
       title: mainTitle,
       message: popupMessage,
       centerIcon: centerIcon,
-      primaryButtonColor: primaryButtonColor ?? const Color(0xFF26262B),
+      primaryButtonGradient: isSuccess
+          ? const LinearGradient(
+              colors: [Color(0xFF00E676), Color(0xFF00B0FF)],
+            )
+          : null,
+      primaryButtonColor: primaryButtonColor,
       customBody: customBody,
       primaryButtonText: primaryButtonText,
       onPrimaryTap: onPrimaryTap,
@@ -1580,11 +1614,23 @@ class _WithdrawAccountDetailsPopupState extends ConsumerState<_WithdrawAccountDe
       width: double.infinity,
       constraints: BoxConstraints(maxWidth: 360.w),
       decoration: BoxDecoration(
-        color: Colors.white,
+        image: const DecorationImage(
+          image: AssetImage('assets/Icons1/Rectangle 13.png'),
+          fit: BoxFit.fill,
+        ),
         borderRadius: BorderRadius.circular(28.r),
+        border: Border.all(
+          color: Colors.white.withValues(alpha: 0.35),
+          width: 1.5,
+        ),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF0F172A).withValues(alpha: 0.14),
+            color: Colors.white.withValues(alpha: 0.12),
+            blurRadius: 20,
+            spreadRadius: 1,
+          ),
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.5),
             blurRadius: 30,
             offset: const Offset(0, 10),
           ),
@@ -1609,21 +1655,16 @@ class _WithdrawAccountDetailsPopupState extends ConsumerState<_WithdrawAccountDe
                           width: 44.w,
                           height: 44.w,
                           decoration: BoxDecoration(
-                            gradient: const LinearGradient(
-                              colors: [Color(0xFF26262B), Color(0xFF18181B)],
-                            ),
+                            color: Colors.white.withValues(alpha: 0.15),
                             borderRadius: BorderRadius.circular(14.r),
-                            boxShadow: [
-                              BoxShadow(
-                                color: const Color(0xFF18181B).withValues(alpha: 0.25),
-                                blurRadius: 10,
-                                offset: const Offset(0, 3),
-                              ),
-                            ],
+                            border: Border.all(
+                              color: Colors.white.withValues(alpha: 0.25),
+                              width: 1,
+                            ),
                           ),
                           child: Icon(
                             Icons.verified_user_rounded,
-                            color: Colors.white,
+                            color: const Color(0xFF48C78E),
                             size: 24.sp,
                           ),
                         ),
@@ -1635,7 +1676,7 @@ class _WithdrawAccountDetailsPopupState extends ConsumerState<_WithdrawAccountDe
                               Text(
                                 'Account Verification',
                                 style: GoogleFonts.poppins(
-                                  color: const Color(0xFF26262B),
+                                  color: Colors.white,
                                   fontSize: 17.sp,
                                   fontWeight: FontWeight.w700,
                                 ),
@@ -1644,7 +1685,7 @@ class _WithdrawAccountDetailsPopupState extends ConsumerState<_WithdrawAccountDe
                               Text(
                                 'Required once to enable payouts',
                                 style: GoogleFonts.poppins(
-                                  color: const Color(0xFF64748B),
+                                  color: const Color(0xFFCBD5E1),
                                   fontSize: 11.5.sp,
                                   fontWeight: FontWeight.w500,
                                 ),
@@ -1656,14 +1697,14 @@ class _WithdrawAccountDetailsPopupState extends ConsumerState<_WithdrawAccountDe
                     ),
 
                     SizedBox(height: 18.h),
-                    Container(height: 1, color: const Color(0xFFF1F5F9)),
+                    Container(height: 1, color: Colors.white.withValues(alpha: 0.12)),
                     SizedBox(height: 16.h),
 
                     // 1. Full Name Label & Field
                     Text(
                       'FULL NAME',
                       style: GoogleFonts.poppins(
-                        color: const Color(0xFF64748B),
+                        color: const Color(0xFF94A3B8),
                         fontSize: 11.sp,
                         fontWeight: FontWeight.w700,
                         letterSpacing: 0.5,
@@ -1674,35 +1715,35 @@ class _WithdrawAccountDetailsPopupState extends ConsumerState<_WithdrawAccountDe
                       controller: _nameController,
                       textCapitalization: TextCapitalization.words,
                       style: GoogleFonts.poppins(
-                        color: const Color(0xFF26262B),
+                        color: Colors.white,
                         fontSize: 14.sp,
                         fontWeight: FontWeight.w600,
                       ),
                       decoration: InputDecoration(
                         hintText: 'Enter your full name',
                         hintStyle: GoogleFonts.poppins(
-                          color: const Color(0xFF94A3B8),
+                          color: Colors.white38,
                           fontSize: 13.sp,
                         ),
                         prefixIcon: Icon(
                           Icons.person_outline_rounded,
-                          color: const Color(0xFF26262B),
+                          color: Colors.white70,
                           size: 19.sp,
                         ),
                         filled: true,
-                        fillColor: const Color(0xFFF8FAFC),
+                        fillColor: Colors.white.withValues(alpha: 0.08),
                         contentPadding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(14.r),
-                          borderSide: const BorderSide(color: Color(0xFFE2E8F0), width: 1),
+                          borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.2), width: 1),
                         ),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(14.r),
-                          borderSide: const BorderSide(color: Color(0xFFE2E8F0), width: 1),
+                          borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.2), width: 1),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(14.r),
-                          borderSide: const BorderSide(color: Color(0xFF26262B), width: 1.5),
+                          borderSide: const BorderSide(color: Color(0xFF48C78E), width: 1.5),
                         ),
                       ),
                       validator: (val) {
@@ -1718,7 +1759,7 @@ class _WithdrawAccountDetailsPopupState extends ConsumerState<_WithdrawAccountDe
                     Text(
                       'MOBILE NUMBER',
                       style: GoogleFonts.poppins(
-                        color: const Color(0xFF64748B),
+                        color: const Color(0xFF94A3B8),
                         fontSize: 11.sp,
                         fontWeight: FontWeight.w700,
                         letterSpacing: 0.5,
@@ -1733,7 +1774,7 @@ class _WithdrawAccountDetailsPopupState extends ConsumerState<_WithdrawAccountDe
                         LengthLimitingTextInputFormatter(10),
                       ],
                       style: GoogleFonts.poppins(
-                        color: const Color(0xFF26262B),
+                        color: Colors.white,
                         fontSize: 14.sp,
                         fontWeight: FontWeight.w600,
                         letterSpacing: 1.0,
@@ -1741,16 +1782,16 @@ class _WithdrawAccountDetailsPopupState extends ConsumerState<_WithdrawAccountDe
                       decoration: InputDecoration(
                         hintText: '10-digit mobile number',
                         hintStyle: GoogleFonts.poppins(
-                          color: const Color(0xFF94A3B8),
+                          color: Colors.white38,
                           fontSize: 13.sp,
                           letterSpacing: 0,
                         ),
                         prefixIcon: Container(
                           padding: EdgeInsets.symmetric(horizontal: 12.w),
                           margin: EdgeInsets.only(right: 8.w),
-                          decoration: const BoxDecoration(
+                          decoration: BoxDecoration(
                             border: Border(
-                              right: BorderSide(color: Color(0xFFE2E8F0), width: 1),
+                              right: BorderSide(color: Colors.white.withValues(alpha: 0.2), width: 1),
                             ),
                           ),
                           child: Row(
@@ -1759,7 +1800,7 @@ class _WithdrawAccountDetailsPopupState extends ConsumerState<_WithdrawAccountDe
                               Text(
                                 '🇮🇳 +91',
                                 style: GoogleFonts.poppins(
-                                  color: const Color(0xFF26262B),
+                                  color: Colors.white,
                                   fontSize: 13.5.sp,
                                   fontWeight: FontWeight.w700,
                                 ),
@@ -1768,19 +1809,19 @@ class _WithdrawAccountDetailsPopupState extends ConsumerState<_WithdrawAccountDe
                           ),
                         ),
                         filled: true,
-                        fillColor: const Color(0xFFF8FAFC),
+                        fillColor: Colors.white.withValues(alpha: 0.08),
                         contentPadding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(14.r),
-                          borderSide: const BorderSide(color: Color(0xFFE2E8F0), width: 1),
+                          borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.2), width: 1),
                         ),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(14.r),
-                          borderSide: const BorderSide(color: Color(0xFFE2E8F0), width: 1),
+                          borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.2), width: 1),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(14.r),
-                          borderSide: const BorderSide(color: Color(0xFF26262B), width: 1.5),
+                          borderSide: const BorderSide(color: Color(0xFF48C78E), width: 1.5),
                         ),
                       ),
                       validator: (val) {
@@ -1798,7 +1839,7 @@ class _WithdrawAccountDetailsPopupState extends ConsumerState<_WithdrawAccountDe
                     Text(
                       'GENDER',
                       style: GoogleFonts.poppins(
-                        color: const Color(0xFF64748B),
+                        color: const Color(0xFF94A3B8),
                         fontSize: 11.sp,
                         fontWeight: FontWeight.w700,
                         letterSpacing: 0.5,
@@ -1824,13 +1865,19 @@ class _WithdrawAccountDetailsPopupState extends ConsumerState<_WithdrawAccountDe
                         alignment: Alignment.center,
                         decoration: BoxDecoration(
                           gradient: const LinearGradient(
-                            colors: [Color(0xFF26262B), Color(0xFF18181B)],
+                            colors: [Color(0xFF00E676), Color(0xFF00B0FF)],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
                           ),
                           borderRadius: BorderRadius.circular(14.r),
+                          border: Border.all(
+                            color: Colors.white.withValues(alpha: 0.35),
+                            width: 1,
+                          ),
                           boxShadow: [
                             BoxShadow(
-                              color: const Color(0xFF18181B).withValues(alpha: 0.25),
-                              blurRadius: 10,
+                              color: const Color(0xFF00E676).withValues(alpha: 0.35),
+                              blurRadius: 12,
                               offset: const Offset(0, 4),
                             ),
                           ],
@@ -1849,8 +1896,15 @@ class _WithdrawAccountDetailsPopupState extends ConsumerState<_WithdrawAccountDe
                                 style: GoogleFonts.poppins(
                                   color: Colors.white,
                                   fontSize: 13.5.sp,
-                                  fontWeight: FontWeight.w700,
-                                  letterSpacing: 0.4,
+                                  fontWeight: FontWeight.w800,
+                                  letterSpacing: 0.5,
+                                  shadows: [
+                                    Shadow(
+                                      color: Colors.black.withValues(alpha: 0.3),
+                                      blurRadius: 4,
+                                      offset: const Offset(0, 1),
+                                    ),
+                                  ],
                                 ),
                               ),
                       ),
@@ -1903,26 +1957,29 @@ class _WithdrawAccountDetailsPopupState extends ConsumerState<_WithdrawAccountDe
           duration: const Duration(milliseconds: 180),
           padding: EdgeInsets.symmetric(vertical: 10.h),
           decoration: BoxDecoration(
-            color: isSelected ? const Color(0xFFF8FAFC) : Colors.white,
+            color: isSelected
+                ? Colors.white.withValues(alpha: 0.2)
+                : Colors.white.withValues(alpha: 0.06),
             borderRadius: BorderRadius.circular(12.r),
             border: Border.all(
-              color: isSelected ? const Color(0xFF26262B) : const Color(0xFFE2E8F0),
+              color: isSelected ? const Color(0xFF48C78E) : Colors.white.withValues(alpha: 0.15),
               width: isSelected ? 1.6 : 1.0,
             ),
           ),
           child: Row(
+            mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(
                 icon,
                 size: 18.sp,
-                color: isSelected ? const Color(0xFF26262B) : const Color(0xFF64748B),
+                color: isSelected ? const Color(0xFF48C78E) : const Color(0xFF94A3B8),
               ),
               SizedBox(width: 6.w),
               Text(
                 label,
                 style: GoogleFonts.poppins(
-                  color: isSelected ? const Color(0xFF26262B) : const Color(0xFF64748B),
+                  color: isSelected ? Colors.white : const Color(0xFF94A3B8),
                   fontSize: 13.sp,
                   fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
                 ),

@@ -2,9 +2,8 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:google_fonts/google_fonts.dart';
 
-import '../../b_splash_stage/splash_service.dart';
-import '../../../../widgets/common/custom_status_popup.dart';
 import '../../../utils/routes/routes_import.gr.dart';
 
 class DashboardNavbar extends StatelessWidget {
@@ -13,24 +12,30 @@ class DashboardNavbar extends StatelessWidget {
     required this.currentIndex,
     required this.items,
     required this.isLoading,
+    this.userId = '',
+    this.country = 'IN',
+    this.isGuest = false,
   });
 
   final ValueNotifier<int> currentIndex;
   final List<String> items;
   final bool isLoading;
+  final String userId;
+  final String country;
+  final bool isGuest;
 
   int _getSlotIndex(int tabIndex) {
     switch (tabIndex) {
-      case 2:
-        return 0; // Slot 0
       case 4:
-        return 1; // Slot 1
-      case 0:
-        return 2; // Slot 2
+        return 0; // Slot 0: Leaderboard (Far Left Corner)
       case 1:
-        return 3; // Slot 3
+        return 1; // Slot 1: Invite & Earn (Left Side)
+      case 0:
+        return 2; // Slot 2: Home (Center)
       case 3:
-        return 4; // Slot 4
+        return 4; // Slot 4: Profile (Far Right Corner)
+      case 2:
+        return 0; // Watch Video fallback to slot 0
       default:
         return 2;
     }
@@ -40,32 +45,38 @@ class DashboardNavbar extends StatelessWidget {
     switch (slotIndex) {
       case 0:
         return const _NavItemData(
-          icon: Icons.play_circle_fill_rounded,
-          tabIndex: 2,
+          icon: Icons.emoji_events_rounded,
+          label: 'Rank',
+          tabIndex: 4,
         );
       case 1:
         return const _NavItemData(
-          icon: Icons.emoji_events_rounded,
-          tabIndex: 4,
+          icon: Icons.group_add_rounded,
+          label: 'Invite',
+          tabIndex: 1,
         );
       case 2:
         return const _NavItemData(
-          icon: Icons.sports_esports_rounded,
+          icon: Icons.home_rounded,
+          label: 'Home',
           tabIndex: 0,
         );
       case 3:
         return const _NavItemData(
-          icon: Icons.group_add_rounded,
-          tabIndex: 1,
+          icon: Icons.account_balance_wallet_rounded,
+          label: 'Wallet',
+          tabIndex: -1,
         );
       case 4:
         return const _NavItemData(
           icon: Icons.account_circle_rounded,
+          label: 'Profile',
           tabIndex: 3,
         );
       default:
         return const _NavItemData(
           icon: Icons.home_rounded,
+          label: 'Home',
           tabIndex: 0,
         );
     }
@@ -78,8 +89,8 @@ class DashboardNavbar extends StatelessWidget {
     }
 
     final double bottomPadding = MediaQuery.of(context).padding.bottom;
-    final double navBarHeight = 52.h + bottomPadding;
-    final double totalHeight = navBarHeight + 16.h;
+    final double navBarHeight = 56.h;
+    final double totalHeight = navBarHeight + 24.h + (bottomPadding > 0 ? bottomPadding - 4.h : 0);
 
     return ValueListenableBuilder<int>(
       valueListenable: currentIndex,
@@ -102,123 +113,115 @@ class DashboardNavbar extends StatelessWidget {
               builder: (context, animatedSlot, _) {
                 final double cx = (animatedSlot + 0.5) * slotWidth;
 
-                return SizedBox(
-                  width: width,
-                  height: totalHeight,
-                  child: Stack(
-                    clipBehavior: Clip.none,
-                    alignment: Alignment.bottomCenter,
-                    children: [
-                      // 1. Dark Obsidian Scooped Curved Navigation Bar with Dynamic Sliding Notch
-                      Positioned(
-                        bottom: 0,
-                        left: 0,
-                        right: 0,
-                        height: navBarHeight,
-                        child: CustomPaint(
-                          painter: _NotchedNavPainter(cx: cx),
-                          child: ClipPath(
-                            clipper: _NotchedNavClipper(cx: cx),
-                            child: Container(
-                              decoration: const BoxDecoration(
-                                gradient: LinearGradient(
-                                  begin: Alignment.topCenter,
-                                  end: Alignment.bottomCenter,
-                                  colors: [
-                                    Colors.white,
-                                    Color(0xFFF3E8FF),
-                                    Color(0xFFEADBFF),
-                                  ],
+                return Padding(
+                  padding: EdgeInsets.only(
+                    bottom: bottomPadding > 0 ? bottomPadding : 10.h,
+                    left: 12.w,
+                    right: 12.w,
+                  ),
+                  child: SizedBox(
+                    width: width - 24.w,
+                    height: totalHeight,
+                    child: Stack(
+                      clipBehavior: Clip.none,
+                      alignment: Alignment.bottomCenter,
+                      children: [
+                        // 1. Floating Dark Obsidian Scooped Curved Navigation Bar
+                        Positioned(
+                          bottom: 0,
+                          left: 0,
+                          right: 0,
+                          height: navBarHeight,
+                          child: CustomPaint(
+                            painter: _NotchedNavPainter(cx: cx - 12.w),
+                            child: ClipPath(
+                              clipper: _NotchedNavClipper(cx: cx - 12.w),
+                              child: Container(
+                                decoration: const BoxDecoration(
+                                  gradient: LinearGradient(
+                                    begin: Alignment.topCenter,
+                                    end: Alignment.bottomCenter,
+                                    colors: [
+                                      Color(0xFF26262F),
+                                      Color(0xFF18181F),
+                                      Color(0xFF111116),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
                           ),
                         ),
-                      ),
 
-                      // 2. Base Side Navigation Slots (Row of 5 items)
-                      Positioned(
-                        bottom: bottomPadding + 4.h,
-                        left: 0,
-                        right: 0,
-                        child: Row(
-                          children: List.generate(5, (slotIndex) {
-                            final item = _getNavItemData(slotIndex);
-                            final isCurrentActive = slotIndex == activeSlotIndex;
+                        // 2. Base Navigation Slots (Row of 5 items)
+                        Positioned(
+                          bottom: 10.h,
+                          left: 0,
+                          right: 0,
+                          child: Row(
+                            children: List.generate(5, (slotIndex) {
+                              final item = _getNavItemData(slotIndex);
+                              final isCurrentActive = slotIndex == activeSlotIndex;
 
-                            return Expanded(
-                              child: _NavScaleTap(
-                                onTap: () {
-                                  HapticFeedback.lightImpact();
-                                  if (slotIndex == 0) {
-                                    if (!SplashService.isScreenEnabled('watchVideo') && !SplashService.isScreenEnabled('watchAndEarn')) {
-                                      CustomStatusPopup.showComingSoon(
-                                        context: context,
-                                        title: 'Watch & Earn Coming Soon!',
-                                        message: 'Watch & Earn feature is currently under active development and will be available very soon.',
+                              return Expanded(
+                                child: _NavScaleTap(
+                                  onTap: () {
+                                    HapticFeedback.lightImpact();
+                                    if (slotIndex == 3) {
+                                      AutoRouter.of(context).push(
+                                        RedeemScreenRoute(
+                                          userId: userId,
+                                          country: country,
+                                          isGuest: isGuest,
+                                        ),
                                       );
                                       return;
                                     }
-                                    AutoRouter.of(context).push(
-                                      WatchVideoScreenRoute(
-                                        userId: '',
-                                        email: '',
-                                        country: 'IN',
+                                    currentIndex.value = item.tabIndex;
+                                  },
+                                  child: Container(
+                                    height: 36.h,
+                                    alignment: Alignment.center,
+                                    child: Opacity(
+                                      opacity: isCurrentActive ? 0.0 : 1.0,
+                                      child: Icon(
+                                        item.icon,
+                                        size: 22.sp,
+                                        color: Colors.white.withValues(alpha: 0.45),
                                       ),
-                                    );
-                                    return;
-                                  }
-                                  currentIndex.value = item.tabIndex;
-                                },
-                                child: Container(
-                                  height: 36.h,
-                                  alignment: Alignment.center,
-                                  child: Opacity(
-                                    opacity: isCurrentActive ? 0.0 : 1.0,
-                                    child: Icon(
-                                      item.icon,
-                                      size: 21.sp,
-                                      color: const Color(0xFF6B657D),
                                     ),
                                   ),
                                 ),
-                              ),
-                            );
-                          }),
+                              );
+                            }),
+                          ),
                         ),
-                      ),
 
-                      // 3. Sliding Elevated 3D Button with Sunken Dish & Top Purple Crescent
-                      Positioned(
-                        bottom: navBarHeight - 23.h,
-                        left: cx - 23.w,
-                        child: _ElevatedCenterButton(
-                          icon: activeItem.icon,
-                          onTap: () {
-                            HapticFeedback.lightImpact();
-                            if (activeSlotIndex == 0) {
-                              if (!SplashService.isScreenEnabled('watchVideo') && !SplashService.isScreenEnabled('watchAndEarn')) {
-                                CustomStatusPopup.showComingSoon(
-                                  context: context,
-                                  title: 'Watch & Earn Coming Soon!',
-                                  message: 'Watch & Earn feature is currently under active development and will be available very soon.',
+                        // 3. Sliding Elevated Yellow-Orange Circular Button with Label
+                        Positioned(
+                          bottom: navBarHeight - 26.h,
+                          left: (cx - 12.w) - 27.w,
+                          child: _ElevatedCenterButton(
+                            icon: activeItem.icon,
+                            label: activeItem.label,
+                            onTap: () {
+                              HapticFeedback.lightImpact();
+                              if (activeSlotIndex == 3) {
+                                AutoRouter.of(context).push(
+                                  RedeemScreenRoute(
+                                    userId: userId,
+                                    country: country,
+                                    isGuest: isGuest,
+                                  ),
                                 );
                                 return;
                               }
-                              AutoRouter.of(context).push(
-                                WatchVideoScreenRoute(
-                                  userId: '',
-                                  email: '',
-                                  country: 'IN',
-                                ),
-                              );
-                              return;
-                            }
-                            currentIndex.value = activeItem.tabIndex;
-                          },
+                              currentIndex.value = activeItem.tabIndex;
+                            },
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 );
               },
@@ -230,27 +233,49 @@ class DashboardNavbar extends StatelessWidget {
   }
 }
 
-// Elevated 3D Sliding Button with Realistic Sunken Shadow & Top Purple Crescent
+// Elevated Yellow/Orange Glowing Button matching reference screenshot 1-to-1
 class _ElevatedCenterButton extends StatelessWidget {
   const _ElevatedCenterButton({
     required this.icon,
+    required this.label,
     required this.onTap,
   });
 
   final IconData icon;
+  final String label;
   final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
     return _NavScaleTap(
       onTap: onTap,
-      child: SizedBox(
-        width: 46.w,
-        height: 46.w,
-        child: CustomPaint(
-          painter: const _Realistic3DHomeButtonPainter(),
-          child: Center(
-            child: AnimatedSwitcher(
+      child: Container(
+        width: 54.w,
+        height: 54.w,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          gradient: const LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Color(0xFFFFD000),
+              Color(0xFFFF9D00),
+              Color(0xFFFF7A00),
+            ],
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: const Color(0xFFFF9D00).withValues(alpha: 0.45),
+              blurRadius: 14,
+              spreadRadius: 1,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            AnimatedSwitcher(
               duration: const Duration(milliseconds: 200),
               transitionBuilder: (child, animation) => ScaleTransition(
                 scale: animation,
@@ -259,109 +284,36 @@ class _ElevatedCenterButton extends StatelessWidget {
               child: Icon(
                 icon,
                 key: ValueKey(icon),
-                size: 20.5.sp,
+                size: 21.sp,
                 color: Colors.white,
               ),
             ),
-          ),
+            SizedBox(height: 1.h),
+            Text(
+              label,
+              style: GoogleFonts.poppins(
+                color: Colors.white,
+                fontSize: 9.sp,
+                fontWeight: FontWeight.w800,
+                height: 1,
+              ),
+            ),
+          ],
         ),
       ),
     );
   }
 }
 
-class _Realistic3DHomeButtonPainter extends CustomPainter {
-  const _Realistic3DHomeButtonPainter();
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final center = Offset(size.width / 2, size.height / 2);
-    final outerRadius = size.width / 2;
-    final innerRadius = outerRadius * 0.77;
-
-    // 1. Outer Sunken Dish with Custom Purple ambient gradient
-    final outerRect = Rect.fromCircle(center: center, radius: outerRadius);
-    final outerPaint = Paint()
-      ..shader = const LinearGradient(
-        begin: Alignment.topCenter,
-        end: Alignment.bottomCenter,
-        colors: [
-          Color(0xFFE39FFF),
-          Color(0xFFAB31DE),
-        ],
-      ).createShader(outerRect);
-
-    canvas.drawCircle(center, outerRadius, outerPaint);
-
-    // 2. Outer Dish Inner Rim Shadow (Sunken Depth)
-    final outerShadowPaint = Paint()
-      ..shader = RadialGradient(
-        center: Alignment.center,
-        radius: 0.95,
-        colors: [
-          Colors.transparent,
-          const Color(0xFFAB31DE).withValues(alpha: 0.20),
-        ],
-        stops: const [0.60, 1.0],
-      ).createShader(outerRect);
-    canvas.drawCircle(center, outerRadius, outerShadowPaint);
-
-    // 3. Inner Dome Button Drop Shadow into Dish
-    final innerPath = Path()
-      ..addOval(Rect.fromCircle(center: Offset(center.dx, center.dy + 1.4), radius: innerRadius));
-    canvas.drawShadow(
-      innerPath,
-      const Color(0xFFAB31DE).withValues(alpha: 0.25),
-      4.0,
-      true,
-    );
-
-    // 4. Inner Convex Dome Button
-    final innerRect = Rect.fromCircle(center: center, radius: innerRadius);
-    final innerPaint = Paint()
-      ..shader = RadialGradient(
-        center: const Alignment(0, -0.45),
-        radius: 0.85,
-        colors: const [
-          Color(0xFFE39FFF),
-          Color(0xFFAB31DE),
-        ],
-        stops: const [0.0, 0.80],
-      ).createShader(innerRect);
-
-    canvas.drawCircle(center, innerRadius, innerPaint);
-
-    // 5. Subtle top rim bevel highlight on inner dome
-    final innerBevelPaint = Paint()
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 0.75
-      ..shader = LinearGradient(
-        begin: Alignment.topCenter,
-        end: Alignment.bottomCenter,
-        colors: [
-          Colors.white.withValues(alpha: 0.22),
-          Colors.white.withValues(alpha: 0.05),
-          Colors.transparent,
-        ],
-        stops: const [0.0, 0.40, 1.0],
-      ).createShader(innerRect);
-
-    canvas.drawCircle(center, innerRadius, innerBevelPaint);
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
-}
-
-// Smooth Scooped U-Notch Geometry for any position cx
+// Smooth Scooped U-Notch Geometry matching reference screenshot
 Path _buildNotchedPath(Size size, double cx) {
   final double w = size.width;
   final double h = size.height;
 
-  final double cornerRadius = 16.0;
-  final double notchWidth = 32.0; // Half width of scoop
-  final double notchDepth = 18.0; // Depth of dip
-  final double transitionWidth = 12.0; // Smooth curve transition
+  final double cornerRadius = 28.0; // Rounded pill ends
+  final double notchWidth = 33.0; // Half width of scoop
+  final double notchDepth = 22.0; // Depth of dip
+  final double transitionWidth = 14.0; // Smooth curve transition
 
   final double notchStart = cx - notchWidth - transitionWidth;
   final double notchEnd = cx + notchWidth + transitionWidth;
@@ -381,10 +333,10 @@ Path _buildNotchedPath(Size size, double cx) {
   path.cubicTo(
     cx - notchWidth,
     0,
-    cx - notchWidth + 4.5,
-    notchDepth * 0.40,
+    cx - notchWidth + 5.0,
+    notchDepth * 0.42,
     cx - notchWidth * 0.65,
-    notchDepth * 0.86,
+    notchDepth * 0.88,
   );
 
   // Bottom rounded cradle of the scoop
@@ -394,13 +346,13 @@ Path _buildNotchedPath(Size size, double cx) {
     cx + notchWidth * 0.32,
     notchDepth,
     cx + notchWidth * 0.65,
-    notchDepth * 0.86,
+    notchDepth * 0.88,
   );
 
   // Smooth exit curve out of scooped dip
   path.cubicTo(
-    cx + notchWidth - 4.5,
-    notchDepth * 0.40,
+    cx + notchWidth - 5.0,
+    notchDepth * 0.42,
     cx + notchWidth,
     0,
     cx + notchWidth + transitionWidth,
@@ -413,9 +365,11 @@ Path _buildNotchedPath(Size size, double cx) {
   }
   path.quadraticBezierTo(w, 0, w, cornerRadius);
 
-  // Right vertical, bottom, and left vertical edges
-  path.lineTo(w, h);
-  path.lineTo(0, h);
+  // Bottom right corner & bottom left corner
+  path.lineTo(w, h - cornerRadius);
+  path.quadraticBezierTo(w, h, w - cornerRadius, h);
+  path.lineTo(cornerRadius, h);
+  path.quadraticBezierTo(0, h, 0, h - cornerRadius);
   path.close();
 
   return path;
@@ -441,12 +395,12 @@ class _NotchedNavPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final path = _buildNotchedPath(size, cx);
 
-    // 1. Soft top ambient glow around the dynamic notch at cx
+    // 1. Soft top ambient glow around the dynamic notch
     final glowGradient = RadialGradient(
       center: Alignment((cx / size.width) * 2 - 1, -1.0),
       radius: 0.35,
       colors: [
-        const Color(0xFF8B5CF6).withValues(alpha: 0.18),
+        const Color(0xFFFF9D00).withValues(alpha: 0.20),
         Colors.transparent,
       ],
     ).createShader(Rect.fromLTWH(0, 0, size.width, size.height));
@@ -457,19 +411,8 @@ class _NotchedNavPainter extends CustomPainter {
     canvas.drawPath(path, glowPaint);
 
     // 2. Subtle top rim light stroke
-    final strokeGradient = LinearGradient(
-      begin: Alignment.topCenter,
-      end: Alignment.bottomCenter,
-      colors: [
-        const Color(0xFFAB31DE).withValues(alpha: 0.20),
-        const Color(0xFFAB31DE).withValues(alpha: 0.10),
-        Colors.transparent,
-      ],
-      stops: const [0.0, 0.4, 1.0],
-    ).createShader(Rect.fromLTWH(0, 0, size.width, size.height));
-
     final strokePaint = Paint()
-      ..shader = strokeGradient
+      ..color = Colors.white.withValues(alpha: 0.12)
       ..strokeWidth = 1.0
       ..style = PaintingStyle.stroke;
     canvas.drawPath(path, strokePaint);
@@ -482,10 +425,12 @@ class _NotchedNavPainter extends CustomPainter {
 
 class _NavItemData {
   final IconData icon;
+  final String label;
   final int tabIndex;
 
   const _NavItemData({
     required this.icon,
+    required this.label,
     required this.tabIndex,
   });
 }

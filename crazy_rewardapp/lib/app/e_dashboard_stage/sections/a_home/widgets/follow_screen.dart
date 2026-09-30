@@ -204,22 +204,26 @@ class FollowScreen extends HookConsumerWidget {
   }
 
   // -------------------------------------------------------------
-  // COMMUNITY HERO CARD (EXECUTIVE LIGHT DESIGN)
+  // COMMUNITY HERO CARD (DARK EXECUTIVE DESIGN)
   // -------------------------------------------------------------
   Widget _buildCommunityHeroCard(int coins) {
     return Container(
       width: double.infinity,
       padding: EdgeInsets.all(16.w),
       decoration: BoxDecoration(
-        color: Colors.white,
+        gradient: const LinearGradient(
+          colors: [Color(0xFF222228), Color(0xFF16161A)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
         borderRadius: BorderRadius.circular(20.r),
         border: Border.all(
-          color: const Color(0xFFE2E8F0),
+          color: const Color(0xFF2D2D36),
           width: 1.2,
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
+            color: Colors.black.withValues(alpha: 0.25),
             blurRadius: 10,
             offset: const Offset(0, 3),
           ),
@@ -227,29 +231,15 @@ class FollowScreen extends HookConsumerWidget {
       ),
       child: Row(
         children: [
-          Container(
-            width: 50.w,
-            height: 50.w,
-            decoration: BoxDecoration(
-              gradient: const LinearGradient(
-                colors: [Color(0xFF2E2E36), Color(0xFF18181B)],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-              borderRadius: BorderRadius.circular(16.r),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.15),
-                  blurRadius: 8,
-                  offset: const Offset(0, 3),
-                ),
-              ],
-            ),
-            alignment: Alignment.center,
-            child: Icon(
+          Image.asset(
+            'assets/Icons1/joinour community.png',
+            width: 80.w,
+            height: 80.w,
+            fit: BoxFit.contain,
+            errorBuilder: (_, __, ___) => Icon(
               Icons.stars_rounded,
               color: const Color(0xFFFFB800),
-              size: 28.sp,
+              size: 52.sp,
             ),
           ),
           SizedBox(width: 14.w),
@@ -260,7 +250,7 @@ class FollowScreen extends HookConsumerWidget {
                 Text(
                   'Join Official Community',
                   style: GoogleFonts.poppins(
-                    color: const Color(0xFF26262B),
+                    color: Colors.white,
                     fontSize: 15.sp,
                     fontWeight: FontWeight.w700,
                   ),
@@ -271,7 +261,7 @@ class FollowScreen extends HookConsumerWidget {
                       ? 'Follow official channels & get +$coins Coins for each channel!'
                       : 'Follow our official channels for regular updates and announcements.',
                   style: GoogleFonts.poppins(
-                    color: const Color(0xFF64748B),
+                    color: const Color(0xFF94A3B8),
                     fontSize: 11.5.sp,
                     height: 1.3,
                     fontWeight: FontWeight.w500,
@@ -287,7 +277,7 @@ class FollowScreen extends HookConsumerWidget {
 }
 
 // -------------------------------------------------------------
-// SOCIAL PLATFORM CARD WITH 10-SEC VALIDATION & EXECUTIVE DESIGN
+// SOCIAL PLATFORM CARD WITH 10-SEC VALIDATION & DARK EXECUTIVE DESIGN
 // -------------------------------------------------------------
 class _SocialPlatformCard extends HookConsumerWidget {
   const _SocialPlatformCard({
@@ -340,33 +330,33 @@ class _SocialPlatformCard extends HookConsumerWidget {
       }
     }
 
-    Color getPlatformBadgeBg() {
-      switch (tag) {
-        case 'whatsapp':
-          return const Color(0xFFDCFCE7);
-        case 'youtube':
-          return const Color(0xFFFEE2E2);
-        case 'telegram':
-          return const Color(0xFFE0F2FE);
-        case 'instagram':
-          return const Color(0xFFFCE7F3);
-        default:
-          return const Color(0xFFF1F5F9);
-      }
-    }
-
     Color getPlatformIconColor() {
       switch (tag) {
         case 'whatsapp':
-          return const Color(0xFF16A34A);
+          return const Color(0xFF22C55E);
         case 'youtube':
-          return const Color(0xFFDC2626);
+          return const Color(0xFFEF4444);
         case 'telegram':
-          return const Color(0xFF0284C7);
+          return const Color(0xFF06B6D4);
         case 'instagram':
-          return const Color(0xFFDB2777);
+          return const Color(0xFFEC4899);
         default:
-          return const Color(0xFF26262B);
+          return const Color(0xFF38BDF8);
+      }
+    }
+
+    List<Color> getPlatformGradient() {
+      switch (tag) {
+        case 'whatsapp':
+          return const [Color(0xFF22C55E), Color(0xFF15803D)];
+        case 'youtube':
+          return const [Color(0xFFEF4444), Color(0xFFB91C1C)];
+        case 'telegram':
+          return const [Color(0xFF06B6D4), Color(0xFF0284C7)];
+        case 'instagram':
+          return const [Color(0xFFEC4899), Color(0xFFBE185D)];
+        default:
+          return const [Color(0xFF3B82F6), Color(0xFF1D4ED8)];
       }
     }
 
@@ -458,35 +448,39 @@ class _SocialPlatformCard extends HookConsumerWidget {
         child: Container(
           padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 14.h),
           decoration: BoxDecoration(
-            color: Colors.white,
+            gradient: const LinearGradient(
+              colors: [Color(0xFF222228), Color(0xFF16161A)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
             borderRadius: BorderRadius.circular(18.r),
             border: Border.all(
-              color: const Color(0xFFE2E8F0),
+              color: const Color(0xFF2D2D36),
               width: 1.2,
             ),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: 0.04),
+                color: Colors.black.withValues(alpha: 0.25),
                 blurRadius: 8,
-                offset: const Offset(0, 2),
+                offset: const Offset(0, 3),
               ),
             ],
           ),
           child: Row(
             children: [
-              // Platform Brand Logo Container
+              // Platform Brand Logo Container (Larger Icon)
               Container(
-                width: 44.w,
-                height: 44.w,
+                width: 52.w,
+                height: 52.w,
                 decoration: BoxDecoration(
-                  color: getPlatformBadgeBg(),
-                  borderRadius: BorderRadius.circular(14.r),
+                  color: getPlatformIconColor().withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(15.r),
                   border: Border.all(
-                    color: getPlatformIconColor().withValues(alpha: 0.2),
-                    width: 1,
+                    color: getPlatformIconColor().withValues(alpha: 0.3),
+                    width: 1.2,
                   ),
                 ),
-                padding: EdgeInsets.all(9.w),
+                padding: EdgeInsets.all(8.w),
                 child: Image.asset(
                   'assets/icons/$tag.png',
                   fit: BoxFit.contain,
@@ -496,7 +490,7 @@ class _SocialPlatformCard extends HookConsumerWidget {
                     errorBuilder: (_, __, ___) => Icon(
                       Icons.share_rounded,
                       color: getPlatformIconColor(),
-                      size: 22.sp,
+                      size: 26.sp,
                     ),
                   ),
                 ),
@@ -515,7 +509,7 @@ class _SocialPlatformCard extends HookConsumerWidget {
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: GoogleFonts.poppins(
-                        color: const Color(0xFF26262B),
+                        color: Colors.white,
                         fontSize: 14.5.sp,
                         fontWeight: FontWeight.w700,
                       ),
@@ -526,7 +520,7 @@ class _SocialPlatformCard extends HookConsumerWidget {
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: GoogleFonts.poppins(
-                        color: const Color(0xFF64748B),
+                        color: const Color(0xFF94A3B8),
                         fontSize: 11.5.sp,
                         fontWeight: FontWeight.w500,
                       ),
@@ -534,15 +528,15 @@ class _SocialPlatformCard extends HookConsumerWidget {
 
                     SizedBox(height: 5.h),
 
-                    // Badge Pill (Coin Reward if not followed, or Followed indicator if followed)
+                    // Badge Pill (Coin Reward if not followed)
                     if (!isFollowed && rewardCoins > 0)
                       Container(
                         padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 3.h),
                         decoration: BoxDecoration(
-                          color: const Color(0xFFFEF3C7),
+                          color: const Color(0xFFFEF3C7).withValues(alpha: 0.12),
                           borderRadius: BorderRadius.circular(8.r),
                           border: Border.all(
-                            color: const Color(0xFFFDE68A),
+                            color: const Color(0xFFFDE68A).withValues(alpha: 0.3),
                             width: 1,
                           ),
                         ),
@@ -559,7 +553,7 @@ class _SocialPlatformCard extends HookConsumerWidget {
                             Text(
                               '+$rewardCoins Coins',
                               style: GoogleFonts.poppins(
-                                color: const Color(0xFFD97706),
+                                color: const Color(0xFFFBBF24),
                                 fontSize: 11.sp,
                                 fontWeight: FontWeight.w700,
                               ),
@@ -573,15 +567,15 @@ class _SocialPlatformCard extends HookConsumerWidget {
 
               SizedBox(width: 10.w),
 
-              // Action Button (Silver-Metallic Join/Subscribe or Soft Outline Open)
+              // Action Button (Brand-Matched Color Gradient)
               if (isVerifying.value)
                 Container(
                   padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 8.h),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFF1F5F9),
+                    color: const Color(0xFF272730),
                     borderRadius: BorderRadius.circular(20.r),
                     border: Border.all(
-                      color: const Color(0xFFE2E8F0),
+                      color: const Color(0xFF3F3F46),
                       width: 1,
                     ),
                   ),
@@ -592,7 +586,7 @@ class _SocialPlatformCard extends HookConsumerWidget {
                         width: 12.w,
                         height: 12.w,
                         child: const CircularProgressIndicator(
-                          color: Color(0xFF26262B),
+                          color: Colors.white,
                           strokeWidth: 2,
                         ),
                       ),
@@ -600,7 +594,7 @@ class _SocialPlatformCard extends HookConsumerWidget {
                       Text(
                         'Verifying...',
                         style: GoogleFonts.poppins(
-                          color: const Color(0xFF26262B),
+                          color: Colors.white,
                           fontSize: 11.5.sp,
                           fontWeight: FontWeight.w600,
                         ),
@@ -610,23 +604,19 @@ class _SocialPlatformCard extends HookConsumerWidget {
                 )
               else if (!isFollowed)
                 Container(
-                  padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 7.h),
+                  padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
                   decoration: BoxDecoration(
-                    gradient: const LinearGradient(
-                      colors: [
-                        Colors.white,
-                        Color(0xFFE5E7EB),
-                        Color(0xFFB0B5C2),
-                      ],
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
+                    gradient: LinearGradient(
+                      colors: getPlatformGradient(),
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
                     ),
                     borderRadius: BorderRadius.circular(20.r),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.15),
-                        blurRadius: 6,
-                        offset: const Offset(0, 2),
+                        color: getPlatformIconColor().withValues(alpha: 0.35),
+                        blurRadius: 8,
+                        offset: const Offset(0, 3),
                       ),
                     ],
                   ),
@@ -636,15 +626,15 @@ class _SocialPlatformCard extends HookConsumerWidget {
                       Text(
                         getButtonLabel(),
                         style: GoogleFonts.poppins(
-                          color: const Color(0xFF16161A),
-                          fontSize: 12.sp,
+                          color: Colors.white,
+                          fontSize: 12.5.sp,
                           fontWeight: FontWeight.w700,
                         ),
                       ),
                       SizedBox(width: 4.w),
                       Icon(
                         Icons.arrow_outward_rounded,
-                        color: const Color(0xFF16161A),
+                        color: Colors.white,
                         size: 13.sp,
                       ),
                     ],
@@ -654,10 +644,10 @@ class _SocialPlatformCard extends HookConsumerWidget {
                 Container(
                   padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 7.h),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFF8FAFC),
+                    color: const Color(0xFF272730),
                     borderRadius: BorderRadius.circular(20.r),
                     border: Border.all(
-                      color: const Color(0xFFE2E8F0),
+                      color: getPlatformIconColor().withValues(alpha: 0.5),
                       width: 1,
                     ),
                   ),
@@ -667,7 +657,7 @@ class _SocialPlatformCard extends HookConsumerWidget {
                       Text(
                         'Open',
                         style: GoogleFonts.poppins(
-                          color: const Color(0xFF64748B),
+                          color: getPlatformIconColor(),
                           fontSize: 12.sp,
                           fontWeight: FontWeight.w700,
                         ),
@@ -675,7 +665,7 @@ class _SocialPlatformCard extends HookConsumerWidget {
                       SizedBox(width: 4.w),
                       Icon(
                         Icons.open_in_new_rounded,
-                        color: const Color(0xFF64748B),
+                        color: getPlatformIconColor(),
                         size: 12.sp,
                       ),
                     ],

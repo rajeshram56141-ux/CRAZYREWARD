@@ -8,7 +8,7 @@ import '../../../../../utils/helper/helper.dart';
 import '../../../../b_splash_stage/splash_service.dart';
 import 'crazy_racing_model.dart';
 
-final crazyRacingVerifierProvider = FutureProvider.autoDispose.family<CrazyRacingSet, String>((ref, String userId) async {
+final diamondCatchVerifierProvider = FutureProvider.autoDispose.family<DiamondCatchSet, String>((ref, String userId) async {
   final Dio dio = Dio();
 
   final appName = SplashService.appName;
@@ -50,11 +50,11 @@ final crazyRacingVerifierProvider = FutureProvider.autoDispose.family<CrazyRacin
       final gameClaimsToday = (data['gameClaimsToday'] as num?)?.toInt() ?? 0;
       final gameEligible = data['gameEligible'] ?? true;
       final gameInstallTask = data['gameInstallTask'] ?? false;
-      final gameGems = (data['gameGems'] as num?)?.toInt() ?? (config['gameGems'] as num?)?.toInt() ?? 10;
-      final installGems = (data['installGems'] as num?)?.toInt() ?? (config['installGems'] as num?)?.toInt() ?? 10;
+      final gameGems = (config['gameGems'] as num?)?.toInt() ?? 1;
+      final installGems = (config['installGems'] as num?)?.toInt() ?? 5;
       final dailyGemsForInstall = (config['dailyGemsForInstall'] as num?)?.toInt() ?? 2;
 
-      return CrazyRacingSet(
+      return DiamondCatchSet(
         gameInstallTask: gameInstallTask,
         dailyGemsForInstall: dailyGemsForInstall,
         gameGems: gameGems,
@@ -66,28 +66,25 @@ final crazyRacingVerifierProvider = FutureProvider.autoDispose.family<CrazyRacin
     }
 
     final config = SplashService.superOfferConfig;
-    return CrazyRacingSet(
+    return DiamondCatchSet(
       gameInstallTask: false,
       dailyGemsForInstall: (config['dailyGemsForInstall'] as num?)?.toInt() ?? 2,
-      gameGems: (config['gameGems'] as num?)?.toInt() ?? 10,
-      installGems: (config['installGems'] as num?)?.toInt() ?? 10,
+      gameGems: (config['gameGems'] as num?)?.toInt() ?? 1,
+      installGems: (config['installGems'] as num?)?.toInt() ?? 5,
       gameEligible: true,
       gameDailyLimit: 10,
       gameClaimsToday: 0,
     );
   } catch (e) {
     final config = SplashService.superOfferConfig;
-    return CrazyRacingSet(
+    return DiamondCatchSet(
       gameInstallTask: false,
       dailyGemsForInstall: (config['dailyGemsForInstall'] as num?)?.toInt() ?? 2,
-      gameGems: (config['gameGems'] as num?)?.toInt() ?? 10,
-      installGems: (config['installGems'] as num?)?.toInt() ?? 10,
+      gameGems: (config['gameGems'] as num?)?.toInt() ?? 1,
+      installGems: (config['installGems'] as num?)?.toInt() ?? 5,
       gameEligible: true,
       gameDailyLimit: 10,
       gameClaimsToday: 0,
     );
   }
 });
-
-// Backward compatibility alias
-final diamondCatchVerifierProvider = crazyRacingVerifierProvider;

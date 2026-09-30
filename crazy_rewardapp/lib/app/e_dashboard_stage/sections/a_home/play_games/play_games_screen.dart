@@ -149,268 +149,350 @@ class PlayGamesScreen extends HookConsumerWidget {
 
             // 2. Main Content
             Positioned.fill(
-              child: asyncGames.when(
-                data: (offers) {
-                  final categories = offers
-                      .map((e) => e.category)
-                      .where((c) => c.trim().isNotEmpty)
-                      .toSet()
-                      .toList();
-
-                  final selectedCategory = ref.watch(selectedCategoryProvider);
-
-                  final filteredGames = selectedCategory == null
-                      ? offers
-                      : offers
-                          .where((g) => g.category == selectedCategory)
-                          .toList();
-
-                  return RefreshIndicator(
-                    color: const Color(0xFF48C78E),
-                    backgroundColor: Colors.white,
-                    edgeOffset: topPadding + 60.h,
-                    onRefresh: () async {
-                      ref.invalidate(playGamesProvider(userId));
-                      await ref.read(playGamesProvider(userId).future).catchError((_) => <PlayGamesModel>[]);
-                    },
-                    child: LayoutBuilder(
-                      builder: (context, constraints) {
-                        return SingleChildScrollView(
-                          controller: scrollController,
-                          physics: const AlwaysScrollableScrollPhysics(
-                            parent: BouncingScrollPhysics(),
-                          ),
-                          child: ConstrainedBox(
-                            constraints: BoxConstraints(
-                              minHeight: constraints.maxHeight,
-                            ),
-                            child: Container(
-                              color: Colors.transparent,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  // Top Header Bar
-                                  Padding(
-                                    padding: EdgeInsets.fromLTRB(
-                                      16.w,
-                                      topPadding + 8.h,
-                                      16.w,
-                                      14.h,
-                                    ),
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              child: RefreshIndicator(
+                color: const Color(0xFF48C78E),
+                backgroundColor: Colors.white,
+                edgeOffset: topPadding + 60.h,
+                onRefresh: () async {
+                  ref.invalidate(playGamesProvider(userId));
+                  await ref.read(playGamesProvider(userId).future).catchError((_) => <PlayGamesModel>[]);
+                },
+                child: LayoutBuilder(
+                  builder: (context, constraints) {
+                    return SingleChildScrollView(
+                      controller: scrollController,
+                      physics: const AlwaysScrollableScrollPhysics(
+                        parent: BouncingScrollPhysics(),
+                      ),
+                      child: ConstrainedBox(
+                        constraints: BoxConstraints(
+                          minHeight: constraints.maxHeight,
+                        ),
+                        child: Container(
+                          color: Colors.transparent,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              // Top Header Bar
+                              Padding(
+                                padding: EdgeInsets.fromLTRB(
+                                  16.w,
+                                  topPadding + 8.h,
+                                  16.w,
+                                  14.h,
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    // Left: Back Button + Title
+                                    Row(
                                       children: [
-                                        // Left: Back Button + Title
-                                        Row(
-                                          children: [
-                                            GestureDetector(
-                                              onTap: () {
-                                                HapticFeedback.lightImpact();
-                                                AutoRouter.of(context).maybePop();
-                                              },
-                                              child: Container(
-                                                width: 40.w,
-                                                height: 40.w,
-                                                alignment: Alignment.center,
-                                                decoration: BoxDecoration(
-                                                  color: Colors.white,
-                                                  borderRadius: BorderRadius.circular(14.r),
-                                                  border: Border.all(
-                                                    color: const Color(0xFFE2E8F0),
-                                                    width: 1.2,
-                                                  ),
-                                                  boxShadow: [
-                                                    BoxShadow(
-                                                      color: Colors.black.withValues(alpha: 0.04),
-                                                      blurRadius: 8,
-                                                      offset: const Offset(0, 2),
-                                                    ),
-                                                  ],
-                                                ),
-                                                child: Icon(
-                                                  Icons.arrow_back_rounded,
-                                                  color: const Color(0xFF26262B),
-                                                  size: 20.sp,
-                                                ),
-                                              ),
-                                            ),
-                                            SizedBox(width: 12.w),
-                                            Text(
-                                              'Play Games',
-                                              style: GoogleFonts.kaushanScript(
-                                                color: const Color(0xFF26262B),
-                                                fontSize: 28.sp,
-                                                fontWeight: FontWeight.w800,
-                                                letterSpacing: 0.5,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-
-                                        // Right: "How To?" Button
                                         GestureDetector(
                                           onTap: () {
                                             HapticFeedback.lightImpact();
-                                            LaunchUrl.inWeb(
-                                              url: SplashService.getTutorialUrl(
-                                                'playGames',
-                                                SplashService.urlConfig.playGamesTutorial,
-                                              ),
-                                              context: context,
-                                            );
+                                            AutoRouter.of(context).maybePop();
                                           },
                                           child: Container(
-                                            padding: EdgeInsets.symmetric(
-                                              horizontal: 12.w,
-                                              vertical: 8.h,
-                                            ),
+                                            width: 40.w,
+                                            height: 40.w,
+                                            alignment: Alignment.center,
                                             decoration: BoxDecoration(
                                               color: Colors.white,
-                                              borderRadius: BorderRadius.circular(12.r),
+                                              borderRadius: BorderRadius.circular(14.r),
                                               border: Border.all(
                                                 color: const Color(0xFFE2E8F0),
                                                 width: 1.2,
                                               ),
                                               boxShadow: [
                                                 BoxShadow(
-                                                  color: Colors.black.withValues(alpha: 0.03),
-                                                  blurRadius: 6,
+                                                  color: Colors.black.withValues(alpha: 0.04),
+                                                  blurRadius: 8,
                                                   offset: const Offset(0, 2),
                                                 ),
                                               ],
                                             ),
-                                            child: Row(
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: [
-                                                Icon(
-                                                  Icons.help_outline_rounded,
-                                                  color: const Color(0xFF26262B),
-                                                  size: 15.sp,
-                                                ),
-                                                SizedBox(width: 5.w),
-                                                Text(
-                                                  'How To?',
-                                                  style: GoogleFonts.poppins(
-                                                    color: const Color(0xFF26262B),
-                                                    fontSize: 12.sp,
-                                                    fontWeight: FontWeight.w700,
-                                                  ),
-                                                ),
-                                              ],
+                                            child: Icon(
+                                              Icons.arrow_back_rounded,
+                                              color: const Color(0xFF26262B),
+                                              size: 20.sp,
                                             ),
+                                          ),
+                                        ),
+                                        SizedBox(width: 12.w),
+                                        Text(
+                                          'Play Games',
+                                          style: GoogleFonts.kaushanScript(
+                                            color: const Color(0xFF26262B),
+                                            fontSize: 28.sp,
+                                            fontWeight: FontWeight.w800,
+                                            letterSpacing: 0.5,
                                           ),
                                         ),
                                       ],
                                     ),
-                                  ),
 
-                                  SizedBox(height: 4.h),
-
-                                  // Screen Banner (Admin Configurable 700x200 with AD badge)
-                                  const ScreenBannerWidget(
-                                    screenKey: 'playGamesScreen',
-                                    margin: EdgeInsets.only(left: 16, right: 16, bottom: 12),
-                                  ),
-
-                                  // Sub-Category Filter Chips Row
-                                  if (categories.isNotEmpty)
-                                    Padding(
-                                      padding: EdgeInsets.only(bottom: 16.h),
-                                      child: SingleChildScrollView(
-                                        scrollDirection: Axis.horizontal,
-                                        padding: EdgeInsets.symmetric(horizontal: 16.w),
-                                        physics: const BouncingScrollPhysics(),
-                                        child: Row(
-                                          children: [
-                                            _FilterChip(
-                                              label: 'All',
-                                              isSelected: selectedCategory == null,
-                                              onTap: () {
-                                                HapticFeedback.lightImpact();
-                                                ref.read(selectedCategoryProvider.notifier).state = null;
-                                              },
+                                    // Right: "How To?" Button
+                                    GestureDetector(
+                                      onTap: () {
+                                        HapticFeedback.lightImpact();
+                                        LaunchUrl.inWeb(
+                                          url: SplashService.getTutorialUrl(
+                                            'playGames',
+                                            SplashService.urlConfig.playGamesTutorial,
+                                          ),
+                                          context: context,
+                                        );
+                                      },
+                                      child: Container(
+                                        padding: EdgeInsets.symmetric(
+                                          horizontal: 12.w,
+                                          vertical: 8.h,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius: BorderRadius.circular(12.r),
+                                          border: Border.all(
+                                            color: const Color(0xFFE2E8F0),
+                                            width: 1.2,
+                                          ),
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color: Colors.black.withValues(alpha: 0.03),
+                                              blurRadius: 6,
+                                              offset: const Offset(0, 2),
                                             ),
-                                            for (final category in categories) ...[
-                                              SizedBox(width: 8.w),
-                                              _FilterChip(
-                                                label: category,
-                                                isSelected: selectedCategory == category,
-                                                onTap: () {
-                                                  HapticFeedback.lightImpact();
-                                                  ref.read(selectedCategoryProvider.notifier).state = category;
-                                                },
+                                          ],
+                                        ),
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Icon(
+                                              Icons.help_outline_rounded,
+                                              color: const Color(0xFF26262B),
+                                              size: 15.sp,
+                                            ),
+                                            SizedBox(width: 5.w),
+                                            Text(
+                                              'How To?',
+                                              style: GoogleFonts.poppins(
+                                                color: const Color(0xFF26262B),
+                                                fontSize: 12.sp,
+                                                fontWeight: FontWeight.w700,
                                               ),
-                                            ],
+                                            ),
                                           ],
                                         ),
                                       ),
                                     ),
+                                  ],
+                                ),
+                              ),
 
-                                  // Game Cards List Matching Home Screen Cards 1-to-1
-                                  Padding(
-                                    padding: EdgeInsets.symmetric(horizontal: 16.w),
-                                    child: offers.isEmpty
-                                        ? Padding(
-                                            padding: EdgeInsets.symmetric(vertical: 40.h),
-                                            child: const NoDailyTask(),
-                                          )
-                                        : ListView.separated(
-                                            shrinkWrap: true,
-                                            physics: const NeverScrollableScrollPhysics(),
-                                            padding: EdgeInsets.only(bottom: 32.h),
-                                            itemCount: filteredGames.length,
-                                            separatorBuilder: (_, __) => SizedBox(height: 12.h),
-                                            itemBuilder: (context, index) {
-                                              final item = filteredGames[index];
-                                              final card = _ExecutiveGameCard(
-                                                key: ValueKey(item.offerId),
-                                                game: item,
-                                                onPlay: () async {
-                                                  isTracking.value = true;
-                                                  clickTime.value = DateTime.now();
-                                                  selectedTask.value = item;
+                              SizedBox(height: 4.h),
 
-                                                  if (context.mounted) {
-                                                    LaunchUrl.inWeb(
-                                                      url: item.redirectionUrl,
-                                                      context: context,
+                              // Screen Banner (Admin Configurable 700x200 with AD badge)
+                              const ScreenBannerWidget(
+                                screenKey: 'playGamesScreen',
+                                margin: EdgeInsets.only(left: 16, right: 16, bottom: 12),
+                              ),
+
+                              // Super Offer Style Top Banner Hero Card
+                              _buildTopBannerCard(),
+
+                              SizedBox(height: 14.h),
+
+                              // Dynamic Game List / Error / Shimmer Content
+                              asyncGames.when(
+                                data: (offers) {
+                                  final categories = offers
+                                      .map((e) => e.category)
+                                      .where((c) => c.trim().isNotEmpty)
+                                      .toSet()
+                                      .toList();
+
+                                  final selectedCategory = ref.watch(selectedCategoryProvider);
+
+                                  final filteredGames = selectedCategory == null
+                                      ? offers
+                                      : offers
+                                          .where((g) => g.category == selectedCategory)
+                                          .toList();
+
+                                  return Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      // Sub-Category Filter Chips Row
+                                      if (categories.isNotEmpty)
+                                        Padding(
+                                          padding: EdgeInsets.only(bottom: 16.h),
+                                          child: SingleChildScrollView(
+                                            scrollDirection: Axis.horizontal,
+                                            padding: EdgeInsets.symmetric(horizontal: 16.w),
+                                            physics: const BouncingScrollPhysics(),
+                                            child: Row(
+                                              children: [
+                                                _FilterChip(
+                                                  label: 'All',
+                                                  isSelected: selectedCategory == null,
+                                                  onTap: () {
+                                                    HapticFeedback.lightImpact();
+                                                    ref.read(selectedCategoryProvider.notifier).state = null;
+                                                  },
+                                                ),
+                                                for (final category in categories) ...[
+                                                  SizedBox(width: 8.w),
+                                                  _FilterChip(
+                                                    label: category,
+                                                    isSelected: selectedCategory == category,
+                                                    onTap: () {
+                                                      HapticFeedback.lightImpact();
+                                                      ref.read(selectedCategoryProvider.notifier).state = category;
+                                                    },
+                                                  ),
+                                                ],
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+
+                                      // Game Cards List Matching Home Screen Cards 1-to-1
+                                      Padding(
+                                        padding: EdgeInsets.symmetric(horizontal: 16.w),
+                                        child: offers.isEmpty
+                                            ? Padding(
+                                                padding: EdgeInsets.symmetric(vertical: 40.h),
+                                                child: const NoDailyTask(),
+                                              )
+                                            : ListView.separated(
+                                                shrinkWrap: true,
+                                                physics: const NeverScrollableScrollPhysics(),
+                                                padding: EdgeInsets.only(bottom: 32.h),
+                                                itemCount: filteredGames.length,
+                                                separatorBuilder: (_, __) => SizedBox(height: 12.h),
+                                                itemBuilder: (context, index) {
+                                                  final item = filteredGames[index];
+                                                  final card = _ExecutiveGameCard(
+                                                    key: ValueKey(item.offerId),
+                                                    game: item,
+                                                    onPlay: () async {
+                                                      isTracking.value = true;
+                                                      clickTime.value = DateTime.now();
+                                                      selectedTask.value = item;
+
+                                                      if (context.mounted) {
+                                                        LaunchUrl.inWeb(
+                                                          url: item.redirectionUrl,
+                                                          context: context,
+                                                        );
+                                                      }
+                                                    },
+                                                  );
+
+                                                  if (index == 1) {
+                                                    return Column(
+                                                      mainAxisSize: MainAxisSize.min,
+                                                      children: [
+                                                        card,
+                                                        ToponNativeAdCard(
+                                                          isEnabled: AdKeys.isPlayGamesNativeEnabled,
+                                                          margin: EdgeInsets.only(top: 12.h),
+                                                        ),
+                                                      ],
                                                     );
                                                   }
+
+                                                  return card;
                                                 },
-                                              );
-
-                                              if (index == 1) {
-                                                return Column(
-                                                  mainAxisSize: MainAxisSize.min,
-                                                  children: [
-                                                    card,
-                                                    ToponNativeAdCard(
-                                                      isEnabled: AdKeys.isPlayGamesNativeEnabled,
-                                                      margin: EdgeInsets.only(top: 12.h),
-                                                    ),
-                                                  ],
-                                                );
-                                              }
-
-                                              return card;
-                                            },
-                                          ),
-                                  ),
-                                ],
+                                              ),
+                                      ),
+                                    ],
+                                  );
+                                },
+                                error: (_, __) => Padding(
+                                  padding: EdgeInsets.symmetric(vertical: 40.h),
+                                  child: const NoDailyTask(),
+                                ),
+                                loading: () => const _PlayGamesGridShimmer(),
                               ),
-                            ),
+
+                              SizedBox(height: 32.h),
+                            ],
                           ),
-                        );
-                      },
-                    ),
-                  );
-                },
-                error: (_, __) => const NoDailyTask(),
-                loading: () => const _PlayGamesGridShimmer(),
+                        ),
+                      ),
+                    );
+                  },
+                ),
               ),
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildTopBannerCard() {
+    return Container(
+      width: double.infinity,
+      margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 4.h),
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
+      decoration: BoxDecoration(
+        image: const DecorationImage(
+          image: AssetImage('assets/Icons1/Rectangle 13.png'),
+          fit: BoxFit.fill,
+        ),
+        borderRadius: BorderRadius.circular(20.r),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.18),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          SizedBox(
+            width: 75.w,
+            height: 70.h,
+            child: Image.asset(
+              'assets/icons/playtimegame.png',
+              fit: BoxFit.contain,
+              errorBuilder: (_, __, ___) => Icon(
+                Icons.sports_esports_rounded,
+                color: Colors.white,
+                size: 40.sp,
+              ),
+            ),
+          ),
+          SizedBox(width: 12.w),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  'Play & Earn!',
+                  style: GoogleFonts.poppins(
+                    color: Colors.white,
+                    fontSize: 19.sp,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+                SizedBox(height: 4.h),
+                Text(
+                  'Play exciting games and collect free coin rewards!',
+                  style: GoogleFonts.poppins(
+                    color: const Color(0xFF9E9EA7),
+                    fontSize: 11.5.sp,
+                    fontWeight: FontWeight.w500,
+                    height: 1.25,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -527,15 +609,14 @@ class _ExecutiveGameCardState extends State<_ExecutiveGameCard> {
         curve: Curves.easeInOut,
         child: Container(
           decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(18.r),
-            border: Border.all(
-              color: const Color(0xFFE2E8F0),
-              width: 1.2,
+            image: const DecorationImage(
+              image: AssetImage('assets/Icons1/Rectangle 13.png'),
+              fit: BoxFit.fill,
             ),
+            borderRadius: BorderRadius.circular(18.r),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: 0.03),
+                color: Colors.black.withValues(alpha: 0.1),
                 blurRadius: 10,
                 offset: const Offset(0, 3),
               ),
@@ -554,16 +635,9 @@ class _ExecutiveGameCardState extends State<_ExecutiveGameCard> {
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(14.r),
                       border: Border.all(
-                        color: const Color(0xFFE2E8F0),
+                        color: Colors.white.withValues(alpha: 0.25),
                         width: 1,
                       ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.04),
-                          blurRadius: 6,
-                          offset: const Offset(0, 2),
-                        ),
-                      ],
                     ),
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(13.r),
@@ -586,7 +660,7 @@ class _ExecutiveGameCardState extends State<_ExecutiveGameCard> {
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: GoogleFonts.poppins(
-                            color: const Color(0xFF1E1B4B),
+                            color: Colors.white,
                             fontSize: 15.sp,
                             fontWeight: FontWeight.w700,
                           ),
@@ -596,7 +670,7 @@ class _ExecutiveGameCardState extends State<_ExecutiveGameCard> {
                           Text(
                             game.category,
                             style: GoogleFonts.poppins(
-                              color: const Color(0xFF64748B),
+                              color: const Color(0xFFCBD5E1),
                               fontSize: 11.5.sp,
                               fontWeight: FontWeight.w400,
                             ),
@@ -608,14 +682,14 @@ class _ExecutiveGameCardState extends State<_ExecutiveGameCard> {
 
                   SizedBox(width: 8.w),
 
-                  // Dark Coin Badge (Matching Home Screen)
+                  // Dark Coin Badge
                   Container(
                     padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
                     decoration: BoxDecoration(
-                      color: const Color(0xFF26262E),
+                      color: const Color(0xFFFFC107).withValues(alpha: 0.2),
                       borderRadius: BorderRadius.circular(8.r),
                       border: Border.all(
-                        color: const Color(0xFF383842),
+                        color: const Color(0xFFFFC107).withValues(alpha: 0.5),
                         width: 1,
                       ),
                     ),
@@ -632,7 +706,7 @@ class _ExecutiveGameCardState extends State<_ExecutiveGameCard> {
                         Text(
                           '+${game.coins}',
                           style: GoogleFonts.poppins(
-                            color: Colors.white,
+                            color: const Color(0xFFFFD54F),
                             fontSize: 11.5.sp,
                             fontWeight: FontWeight.w700,
                           ),
@@ -652,10 +726,10 @@ class _ExecutiveGameCardState extends State<_ExecutiveGameCard> {
                   Container(
                     padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
                     decoration: BoxDecoration(
-                      color: const Color(0xFFF8FAFC),
+                      color: Colors.white.withValues(alpha: 0.15),
                       borderRadius: BorderRadius.circular(10.r),
                       border: Border.all(
-                        color: const Color(0xFFE2E8F0),
+                        color: Colors.white.withValues(alpha: 0.2),
                         width: 1,
                       ),
                     ),
@@ -664,14 +738,14 @@ class _ExecutiveGameCardState extends State<_ExecutiveGameCard> {
                       children: [
                         Icon(
                           Icons.timer_outlined,
-                          color: const Color(0xFF64748B),
+                          color: Colors.white70,
                           size: 14.sp,
                         ),
                         SizedBox(width: 4.w),
                         Text(
                           durationText,
                           style: GoogleFonts.poppins(
-                            color: const Color(0xFF64748B),
+                            color: Colors.white,
                             fontSize: 11.5.sp,
                             fontWeight: FontWeight.w600,
                           ),
@@ -682,28 +756,16 @@ class _ExecutiveGameCardState extends State<_ExecutiveGameCard> {
 
                   const Spacer(),
 
-                  // ▶️ Metallic Silver Play Button
+                  // ▶️ White Pill Play Button
                   Container(
                     padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 7.h),
                     decoration: BoxDecoration(
-                      gradient: const LinearGradient(
-                        colors: [
-                          Colors.white,
-                          Color(0xFFE5E7EB),
-                          Color(0xFFB0B5C2),
-                        ],
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                      ),
-                      borderRadius: BorderRadius.circular(10.r),
-                      border: Border.all(
-                        color: const Color(0xFF9CA3AF),
-                        width: 1,
-                      ),
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20.r),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.08),
-                          blurRadius: 4,
+                          color: Colors.black.withValues(alpha: 0.15),
+                          blurRadius: 6,
                           offset: const Offset(0, 2),
                         ),
                       ],
@@ -718,12 +780,12 @@ class _ExecutiveGameCardState extends State<_ExecutiveGameCard> {
                         ),
                         SizedBox(width: 4.w),
                         Text(
-                          'Play',
+                          'PLAY',
                           style: GoogleFonts.poppins(
                             color: const Color(0xFF16161A),
-                            fontSize: 12.5.sp,
+                            fontSize: 12.sp,
                             fontWeight: FontWeight.w800,
-                            letterSpacing: 0.3,
+                            letterSpacing: 0.5,
                           ),
                         ),
                       ],

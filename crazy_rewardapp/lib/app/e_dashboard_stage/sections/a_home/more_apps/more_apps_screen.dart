@@ -26,98 +26,21 @@ class MoreAppsScreen extends HookConsumerWidget {
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: const SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
-        statusBarIconBrightness: Brightness.light,
-        statusBarBrightness: Brightness.dark,
-        systemNavigationBarColor: Color(0xFF070312),
-        systemNavigationBarIconBrightness: Brightness.light,
+        statusBarIconBrightness: Brightness.dark,
+        statusBarBrightness: Brightness.light,
+        systemNavigationBarColor: Colors.white,
+        systemNavigationBarIconBrightness: Brightness.dark,
       ),
       child: Scaffold(
-        backgroundColor: const Color(0xFF090414),
+        backgroundColor: Colors.white,
         body: Stack(
           children: [
-            // 1. Deep Cyberpunk Gaming Obsidian Multi-Stop Gradient Base
+            // 1. Solid Clean White Base Background
             Positioned.fill(
-              child: Container(
-                decoration: const BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      Color(0xFF090414), // Deep Cyber Void
-                      Color(0xFF140827), // Midnight Purple
-                      Color(0xFF1E0B3B), // Royal Gaming Violet
-                      Color(0xFF0D031A), // Dark Cyber Base
-                    ],
-                    stops: [0.0, 0.35, 0.70, 1.0],
-                  ),
-                ),
-              ),
+              child: Container(color: Colors.white),
             ),
 
-            // 2. Top-Right Electric Neon Violet / Indigo Laser Glow
-            Positioned(
-              top: -80.h,
-              right: -60.w,
-              child: Container(
-                width: 320.w,
-                height: 320.w,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  gradient: RadialGradient(
-                    colors: [
-                      const Color(0xFF8B5CF6).withValues(alpha: 0.40),
-                      const Color(0xFF6366F1).withValues(alpha: 0.18),
-                      Colors.transparent,
-                    ],
-                    stops: const [0.0, 0.55, 1.0],
-                  ),
-                ),
-              ),
-            ),
-
-            // 3. Center-Left Hot Cyber Pink / Neon Magenta Pulsing Glow
-            Positioned(
-              top: 220.h,
-              left: -90.w,
-              child: Container(
-                width: 290.w,
-                height: 290.w,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  gradient: RadialGradient(
-                    colors: [
-                      const Color(0xFFFF007A).withValues(alpha: 0.26),
-                      const Color(0xFF7928CA).withValues(alpha: 0.12),
-                      Colors.transparent,
-                    ],
-                    stops: const [0.0, 0.55, 1.0],
-                  ),
-                ),
-              ),
-            ),
-
-            // 4. Bottom-Right Cyber Cyan / Electric Sky Glow
-            Positioned(
-              bottom: -60.h,
-              right: -50.w,
-              child: Container(
-                width: 270.w,
-                height: 270.w,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  gradient: RadialGradient(
-                    colors: [
-                      const Color(0xFF00F0FF).withValues(alpha: 0.22),
-                      const Color(0xFF0070F3).withValues(alpha: 0.10),
-                      Colors.transparent,
-                    ],
-                    stops: const [0.0, 0.55, 1.0],
-                  ),
-                ),
-              ),
-            ),
-
-            // 5. Main Content
+            // 2. Main Content
             SafeArea(
               bottom: false,
               child: Column(
@@ -125,7 +48,7 @@ class MoreAppsScreen extends HookConsumerWidget {
                 children: [
                   SizedBox(height: 8.h),
 
-                  // Header: Gaming Back Button + Kaushan Title (Simple & Clean)
+                  // Header: Back Button + Title
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 16.w),
                     child: Row(
@@ -140,24 +63,24 @@ class MoreAppsScreen extends HookConsumerWidget {
                             height: 40.w,
                             alignment: Alignment.center,
                             decoration: BoxDecoration(
-                              color: Colors.white.withValues(alpha: 0.08),
+                              color: Colors.white,
                               borderRadius: BorderRadius.circular(14.r),
                               border: Border.all(
-                                color: const Color(0xFF00F0FF).withValues(alpha: 0.35),
+                                color: const Color(0xFFE2E8F0),
                                 width: 1.2,
                               ),
                               boxShadow: [
                                 BoxShadow(
-                                  color: const Color(0xFF00F0FF).withValues(alpha: 0.20),
-                                  blurRadius: 10,
+                                  color: Colors.black.withValues(alpha: 0.04),
+                                  blurRadius: 8,
                                   offset: const Offset(0, 2),
                                 ),
                               ],
                             ),
                             child: Icon(
-                              Icons.arrow_back_ios_new_rounded,
-                              color: Colors.white,
-                              size: 18.sp,
+                              Icons.arrow_back_rounded,
+                              color: const Color(0xFF26262B),
+                              size: 20.sp,
                             ),
                           ),
                         ),
@@ -166,23 +89,16 @@ class MoreAppsScreen extends HookConsumerWidget {
                           width: 4.w,
                           height: 20.h,
                           decoration: BoxDecoration(
-                            color: const Color(0xFF00F0FF),
+                            color: const Color(0xFF26262B),
                             borderRadius: BorderRadius.circular(2.r),
-                            boxShadow: [
-                              BoxShadow(
-                                color: const Color(0xFF00F0FF).withValues(alpha: 0.7),
-                                blurRadius: 6,
-                                offset: const Offset(0, 0),
-                              ),
-                            ],
                           ),
                         ),
                         SizedBox(width: 8.w),
                         Text(
                           'More Apps',
                           style: GoogleFonts.kaushanScript(
-                            color: Colors.white,
-                            fontSize: 24.sp,
+                            color: const Color(0xFF26262B),
+                            fontSize: 26.sp,
                             fontWeight: FontWeight.w800,
                             letterSpacing: 0.5,
                           ),
@@ -196,8 +112,8 @@ class MoreAppsScreen extends HookConsumerWidget {
                   // Main List
                   Expanded(
                     child: RefreshIndicator(
-                      color: const Color(0xFF00F0FF),
-                      backgroundColor: const Color(0xFF140827),
+                      color: const Color(0xFF26262B),
+                      backgroundColor: Colors.white,
                       onRefresh: () async {
                         ref.invalidate(SplashService.appDataProvider);
                         ref.invalidate(moreAppsStreamProvider);
@@ -223,15 +139,15 @@ class MoreAppsScreen extends HookConsumerWidget {
                                   width: double.infinity,
                                   padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 32.h),
                                   decoration: BoxDecoration(
-                                    color: Colors.white.withValues(alpha: 0.05),
+                                    color: Colors.white,
                                     borderRadius: BorderRadius.circular(24.r),
                                     border: Border.all(
-                                      color: const Color(0xFF00F0FF).withValues(alpha: 0.25),
+                                      color: const Color(0xFFE2E8F0),
                                       width: 1.2,
                                     ),
                                     boxShadow: [
                                       BoxShadow(
-                                        color: Colors.black.withValues(alpha: 0.40),
+                                        color: Colors.black.withValues(alpha: 0.04),
                                         blurRadius: 16,
                                         offset: const Offset(0, 4),
                                       ),
@@ -243,21 +159,9 @@ class MoreAppsScreen extends HookConsumerWidget {
                                       Container(
                                         width: 60.w,
                                         height: 60.w,
-                                        decoration: BoxDecoration(
-                                          gradient: const LinearGradient(
-                                            colors: [
-                                              Color(0xFF00F0FF),
-                                              Color(0xFF7000FF),
-                                            ],
-                                          ),
+                                        decoration: const BoxDecoration(
+                                          color: Color(0xFF26262B),
                                           shape: BoxShape.circle,
-                                          boxShadow: [
-                                            BoxShadow(
-                                              color: const Color(0xFF00F0FF).withValues(alpha: 0.4),
-                                              blurRadius: 12,
-                                              offset: const Offset(0, 4),
-                                            ),
-                                          ],
                                         ),
                                         alignment: Alignment.center,
                                         child: Icon(
@@ -271,9 +175,9 @@ class MoreAppsScreen extends HookConsumerWidget {
                                         'No Games Available',
                                         textAlign: TextAlign.center,
                                         style: GoogleFonts.poppins(
-                                          color: Colors.white,
+                                          color: const Color(0xFF1E1B4B),
                                           fontSize: 15.5.sp,
-                                          fontWeight: FontWeight.w600,
+                                          fontWeight: FontWeight.w700,
                                         ),
                                       ),
                                       SizedBox(height: 6.h),
@@ -281,7 +185,7 @@ class MoreAppsScreen extends HookConsumerWidget {
                                         'Check back soon for new gaming apps & bonus offers!',
                                         textAlign: TextAlign.center,
                                         style: GoogleFonts.poppins(
-                                          color: const Color(0xFF94A3B8),
+                                          color: const Color(0xFF64748B),
                                           fontSize: 12.sp,
                                         ),
                                       ),
@@ -328,7 +232,7 @@ class MoreAppsScreen extends HookConsumerWidget {
 }
 
 // -------------------------------------------------------------
-// CYBERPUNK GAMING GLOW OBSIDIAN PILL CARD
+// DARK OBSIDIAN CARD
 // -------------------------------------------------------------
 class _MoreAppScreenCard extends StatefulWidget {
   const _MoreAppScreenCard({
@@ -374,53 +278,32 @@ class _MoreAppScreenCardState extends State<_MoreAppScreenCard> {
           width: double.infinity,
           padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 8.h),
           decoration: BoxDecoration(
-            gradient: const LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                Color(0xFF1B0E33),
-                Color(0xFF140A28),
-                Color(0xFF0F061F),
-              ],
+            image: const DecorationImage(
+              image: AssetImage('assets/Icons1/Rectangle 13.png'),
+              fit: BoxFit.fill,
             ),
             borderRadius: BorderRadius.circular(36.r),
-            border: Border.all(
-              color: const Color(0xFF8B5CF6).withValues(alpha: 0.35),
-              width: 1.2,
-            ),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: 0.35),
+                color: Colors.black.withValues(alpha: 0.14),
                 blurRadius: 10,
                 offset: const Offset(0, 3),
-              ),
-              BoxShadow(
-                color: const Color(0xFF8B5CF6).withValues(alpha: 0.10),
-                blurRadius: 8,
-                offset: const Offset(0, -1),
               ),
             ],
           ),
           child: Row(
             children: [
-              // Left: Circular Logo with Cyber Neon Ring
+              // Left: Circular Logo
               Container(
                 width: 46.w,
                 height: 46.w,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: const Color(0xFF261642),
+                  color: Colors.white.withValues(alpha: 0.15),
                   border: Border.all(
-                    color: const Color(0xFF00F0FF),
+                    color: Colors.white.withValues(alpha: 0.25),
                     width: 1.8,
                   ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: const Color(0xFF00F0FF).withValues(alpha: 0.40),
-                      blurRadius: 6,
-                      offset: const Offset(0, 1),
-                    ),
-                  ],
                 ),
                 child: ClipOval(
                   child: widget.app.appLogo.isNotEmpty
@@ -441,7 +324,7 @@ class _MoreAppScreenCardState extends State<_MoreAppScreenCard> {
 
               SizedBox(width: 12.w),
 
-              // Middle: Title & Subtitle (Home Screen Typography)
+              // Middle: Title & Subtitle
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -467,12 +350,7 @@ class _MoreAppScreenCardState extends State<_MoreAppScreenCard> {
                           Container(
                             padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 1.5.h),
                             decoration: BoxDecoration(
-                              gradient: const LinearGradient(
-                                colors: [
-                                  Color(0xFFFF007A),
-                                  Color(0xFF7928CA),
-                                ],
-                              ),
+                              color: Colors.white.withValues(alpha: 0.2),
                               borderRadius: BorderRadius.circular(4.r),
                             ),
                             child: Text(
@@ -495,7 +373,7 @@ class _MoreAppScreenCardState extends State<_MoreAppScreenCard> {
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: GoogleFonts.poppins(
-                        color: const Color(0xFF94A3B8),
+                        color: const Color(0xFF9E9EA7),
                         fontSize: 9.5.sp,
                         fontWeight: FontWeight.w400,
                       ),
@@ -506,86 +384,92 @@ class _MoreAppScreenCardState extends State<_MoreAppScreenCard> {
 
               SizedBox(width: 8.w),
 
-              // Right: Action Button (Cyber Gold Gradient for Coins / Cyan for Visit)
+              // Right: Action Button
               if (widget.app.coins > 0)
                 Container(
-                  padding: EdgeInsets.symmetric(horizontal: 13.w, vertical: 6.h),
+                  padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
                   decoration: BoxDecoration(
-                    gradient: const LinearGradient(
-                      colors: [
-                        Color(0xFFFFD700),
-                        Color(0xFFFF8C00),
-                      ],
-                    ),
+                    color: const Color(0xFFFFC107).withValues(alpha: 0.2),
                     borderRadius: BorderRadius.circular(100.r),
-                    boxShadow: [
-                      BoxShadow(
-                        color: const Color(0xFFFF8C00).withValues(alpha: 0.40),
-                        blurRadius: 8,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
+                    border: Border.all(
+                      color: const Color(0xFFFFC107).withValues(alpha: 0.5),
+                      width: 1,
+                    ),
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
+                      Image.asset(
+                        'assets/icons/coin.png',
+                        width: 13.w,
+                        height: 13.w,
+                        fit: BoxFit.contain,
+                      ),
+                      SizedBox(width: 4.w),
                       Text(
                         '+${widget.app.coins}',
                         style: GoogleFonts.poppins(
-                          color: const Color(0xFF1E1000),
+                          color: const Color(0xFFFFD54F),
                           fontSize: 11.5.sp,
-                          fontWeight: FontWeight.w800,
-                          letterSpacing: 0.2,
+                          fontWeight: FontWeight.w700,
                         ),
-                      ),
-                      SizedBox(width: 3.w),
-                      Icon(
-                        Icons.stars_rounded,
-                        color: const Color(0xFF1E1000),
-                        size: 13.sp,
                       ),
                     ],
                   ),
                 )
               else
-                Container(
-                  padding: EdgeInsets.symmetric(horizontal: 13.w, vertical: 6.h),
-                  decoration: BoxDecoration(
-                    gradient: const LinearGradient(
-                      colors: [
-                        Color(0xFF00F0FF),
-                        Color(0xFF8B5CF6),
-                      ],
-                    ),
-                    borderRadius: BorderRadius.circular(100.r),
-                    boxShadow: [
-                      BoxShadow(
-                        color: const Color(0xFF00F0FF).withValues(alpha: 0.35),
-                        blurRadius: 8,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        'Play',
-                        style: GoogleFonts.poppins(
-                          color: Colors.white,
-                          fontSize: 11.5.sp,
-                          fontWeight: FontWeight.w700,
-                          letterSpacing: 0.2,
+                Builder(
+                  builder: (context) {
+                    final btnGradient = _getColorfulButtonGradient(widget.app.appName);
+                    return Container(
+                      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 7.h),
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: btnGradient,
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
                         ),
+                        borderRadius: BorderRadius.circular(100.r),
+                        border: Border.all(
+                          color: Colors.white.withValues(alpha: 0.4),
+                          width: 1.2,
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: btnGradient.first.withValues(alpha: 0.5),
+                            blurRadius: 10,
+                            offset: const Offset(0, 3),
+                          ),
+                        ],
                       ),
-                      SizedBox(width: 3.w),
-                      Icon(
-                        Icons.arrow_outward_rounded,
-                        color: Colors.white,
-                        size: 13.sp,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            'Play',
+                            style: GoogleFonts.poppins(
+                              color: Colors.white,
+                              fontSize: 11.5.sp,
+                              fontWeight: FontWeight.w800,
+                              shadows: [
+                                Shadow(
+                                  color: Colors.black.withValues(alpha: 0.35),
+                                  blurRadius: 4,
+                                  offset: const Offset(0, 1),
+                                ),
+                              ],
+                            ),
+                          ),
+                          SizedBox(width: 3.w),
+                          Icon(
+                            Icons.arrow_outward_rounded,
+                            color: Colors.white,
+                            size: 13.sp,
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
+                    );
+                  },
                 ),
             ],
           ),
@@ -594,13 +478,34 @@ class _MoreAppScreenCardState extends State<_MoreAppScreenCard> {
     );
   }
 
+  List<Color> _getColorfulButtonGradient(String name) {
+    final List<List<Color>> palettes = [
+      // 0: Neon Emerald & Sky Blue
+      [const Color(0xFF00E676), const Color(0xFF00B0FF)],
+      // 1: Electric Violet & Neon Cyan
+      [const Color(0xFF7C4DFF), const Color(0xFF00E5FF)],
+      // 2: Sunset Orange & Warm Yellow
+      [const Color(0xFFFF6D00), const Color(0xFFFFC400)],
+      // 3: Cyber Magenta & Deep Purple
+      [const Color(0xFFE040FB), const Color(0xFF7C4DFF)],
+      // 4: Vivid Crimson & Coral Rose
+      [const Color(0xFFFF1744), const Color(0xFFFF4081)],
+      // 5: Radiant Gold & Amber
+      [const Color(0xFFFFAB00), const Color(0xFFFF6D00)],
+      // 6: Deep Electric Cyan & Emerald
+      [const Color(0xFF00E5FF), const Color(0xFF00E676)],
+    ];
+    final hash = name.hashCode.abs();
+    return palettes[hash % palettes.length];
+  }
+
   Widget _buildFallbackLogo() {
     return Container(
-      color: const Color(0xFF261642),
+      color: Colors.white.withValues(alpha: 0.15),
       child: Center(
         child: Icon(
           Icons.sports_esports_rounded,
-          color: const Color(0xFF00F0FF),
+          color: Colors.white,
           size: 22.sp,
         ),
       ),
@@ -624,8 +529,8 @@ class _MoreAppsShimmer extends StatelessWidget {
       separatorBuilder: (_, __) => SizedBox(height: 12.h),
       itemBuilder: (context, index) {
         return ShimmerTag(
-          baseColor: const Color(0xFF1B0E33),
-          highlightColor: const Color(0xFF2C1B58),
+          baseColor: const Color(0xFFF8FAFC),
+          highlightColor: const Color(0xFFF1F5F9),
           child: Container(
             height: 66.h,
             width: double.infinity,
