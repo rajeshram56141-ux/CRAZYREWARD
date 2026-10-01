@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:math';
+import 'dart:ui' as ui;
 
 import 'package:auto_route/annotations.dart';
 import 'package:flutter/material.dart';
@@ -55,6 +56,42 @@ class _FloatingScore {
     required this.color,
     this.opacity = 1.0,
     this.life = 1.0,
+  });
+}
+
+class _EnvironmentImages {
+  final ui.Image? leftGrass;
+  final ui.Image? rightGrass;
+  final ui.Image? palmTree;
+  final ui.Image? rock;
+  final ui.Image? bush;
+  final ui.Image? parkingArea;
+  final ui.Image? umbrella;
+  final ui.Image? bigTree;
+  final ui.Image? pedestrian;
+  final ui.Image? womanSuitcase;
+  final ui.Image? redScooter;
+  final ui.Image? smallPlant;
+  final ui.Image? yellowCar;
+  final ui.Image? purpleCar;
+  final ui.Image? cr20Car;
+
+  _EnvironmentImages({
+    this.leftGrass,
+    this.rightGrass,
+    this.palmTree,
+    this.rock,
+    this.bush,
+    this.parkingArea,
+    this.umbrella,
+    this.bigTree,
+    this.pedestrian,
+    this.womanSuitcase,
+    this.redScooter,
+    this.smallPlant,
+    this.yellowCar,
+    this.purpleCar,
+    this.cr20Car,
   });
 }
 
@@ -142,9 +179,82 @@ class _DiamondCatchScreenState extends ConsumerState<DiamondCatchScreen>
   late AnimationController _countdownAnimController;
   late Animation<double> _countdownScaleAnim;
 
+  ui.Image? _playerCarImage;
+  _EnvironmentImages? _envImages;
+  bool _isAssetsLoading = true;
+
+  Future<ui.Image?> _loadFirstAvailableImage(List<String> paths) async {
+    for (final path in paths) {
+      try {
+        final ByteData data = await rootBundle.load(path);
+        final ui.Codec codec = await ui.instantiateImageCodec(data.buffer.asUint8List());
+        final ui.FrameInfo fi = await codec.getNextFrame();
+        return fi.image;
+      } catch (_) {}
+    }
+    return null;
+  }
+
+  Future<void> _loadPlayerCarImage() async {
+    final img = await _loadFirstAvailableImage([
+      'assets/Icons1/purple-car.png.png',
+      'assets/Icons1/purple-car.png',
+    ]);
+    if (mounted && img != null) {
+      setState(() {
+        _playerCarImage = img;
+      });
+    }
+  }
+
+  Future<void> _loadEnvironmentImages() async {
+    final results = await Future.wait([
+      _loadFirstAvailableImage(['assets/Icons1/full_green_grass.png', 'assets/Icons1/left &right-grass.png(28).png', 'assets/Icons1/left-grass.png.png']),
+      _loadFirstAvailableImage(['assets/Icons1/full_green_grass.png', 'assets/Icons1/left &right-grass.png(28).png', 'assets/Icons1/left-grass.png.png']),
+      _loadFirstAvailableImage(['assets/Icons1/palm-tree.png', 'assets/Icons1/palm-tree (2).png']),
+      _loadFirstAvailableImage(['assets/Icons1/rock.png']),
+      _loadFirstAvailableImage(['assets/Icons1/bush.png']),
+      _loadFirstAvailableImage(['assets/Icons1/parking-area.png']),
+      _loadFirstAvailableImage(['assets/Icons1/umbrella.png', 'assets/Icons1/umbrella (2).png']),
+      _loadFirstAvailableImage(['assets/Icons1/big-tree.png']),
+      _loadFirstAvailableImage(['assets/Icons1/small-pedestrian.png', 'assets/Icons1/small-pedestrian (2).png']),
+      _loadFirstAvailableImage(['assets/Icons1/woman-suitcase.png', 'assets/Icons1/woman-suitcase (2).png']),
+      _loadFirstAvailableImage(['assets/Icons1/red-scooter.png', 'assets/Icons1/red-scooter (2).png']),
+      _loadFirstAvailableImage(['assets/Icons1/small-plant.png', 'assets/Icons1/small-plant (2).png']),
+      _loadFirstAvailableImage(['assets/Icons1/yellow-car.png.png', 'assets/Icons1/yellow-car.png']),
+      _loadFirstAvailableImage(['assets/Icons1/purple-car.png.png', 'assets/Icons1/purple-car.png']),
+      _loadFirstAvailableImage(['assets/Icons1/CR (20).png']),
+    ]);
+
+    if (mounted) {
+      setState(() {
+        _envImages = _EnvironmentImages(
+          leftGrass: results[0],
+          rightGrass: results[1] ?? results[0],
+          palmTree: results[2],
+          rock: results[3],
+          bush: results[4],
+          parkingArea: results[5],
+          umbrella: results[6],
+          bigTree: results[7],
+          pedestrian: results[8],
+          womanSuitcase: results[9],
+          redScooter: results[10],
+          smallPlant: results[11],
+          yellowCar: results[12],
+          purpleCar: results[13],
+          cr20Car: results[14],
+        );
+        _isAssetsLoading = false;
+      });
+    }
+  }
+
   @override
   void initState() {
     super.initState();
+    _loadPlayerCarImage();
+    _loadEnvironmentImages();
     WidgetsBinding.instance.addObserver(this);
 
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
@@ -450,13 +560,13 @@ class _DiamondCatchScreenState extends ConsumerState<DiamondCatchScreen>
       _playerCurrentX += (targetX - _playerCurrentX) * 0.25;
 
       _spawnTimerCounter++;
-      if (_spawnTimerCounter >= 36) {
+      if (_spawnTimerCounter >= 28) {
         _spawnTimerCounter = 0;
 
         final lane = _random.nextInt(3);
         final types = _VehicleType.values;
         final type = types[_random.nextInt(types.length)];
-        final speed = 0.009 + _random.nextDouble() * 0.007;
+        final speed = 0.016 + _random.nextDouble() * 0.010;
 
         bool blocked = _trafficVehicles.any((v) => v.lane == lane && v.y < 0.25);
         if (!blocked) {
@@ -528,6 +638,60 @@ class _DiamondCatchScreenState extends ConsumerState<DiamondCatchScreen>
         ? ref.watch(DashboardService.userGemsProvider(currentUid))
         : null;
     final int userGems = userGemsAsync?.value ?? widget.gemsRequired;
+
+    if (_isAssetsLoading) {
+      return Scaffold(
+        backgroundColor: const Color(0xFF09090E),
+        body: Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 90.w,
+                height: 90.w,
+                padding: EdgeInsets.all(12.r),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF1E293B),
+                  shape: BoxShape.circle,
+                  border: Border.all(color: const Color(0xFFFFD700), width: 2),
+                  boxShadow: [
+                    BoxShadow(
+                      color: const Color(0xFFFFD700).withValues(alpha: 0.3),
+                      blurRadius: 16,
+                      spreadRadius: 2,
+                    ),
+                  ],
+                ),
+                child: Image.asset(
+                  'assets/Icons1/Crazy Racing.png',
+                  fit: BoxFit.contain,
+                  errorBuilder: (_, __, ___) => Icon(Icons.directions_car_rounded, color: Colors.amber, size: 44.sp),
+                ),
+              ),
+              SizedBox(height: 24.h),
+              SizedBox(
+                width: 32.w,
+                height: 32.w,
+                child: const CircularProgressIndicator(
+                  color: Color(0xFFFFD700),
+                  strokeWidth: 3,
+                ),
+              ),
+              SizedBox(height: 16.h),
+              Text(
+                'LOADING CRAZY RACING...',
+                style: GoogleFonts.fredoka(
+                  fontSize: 14.sp,
+                  fontWeight: FontWeight.w800,
+                  color: Colors.white70,
+                  letterSpacing: 2.0,
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
 
     return PopScope(
       canPop: !_gameStarted && !_isCountingDown,
@@ -650,6 +814,8 @@ class _DiamondCatchScreenState extends ConsumerState<DiamondCatchScreen>
                 roadScroll: _roadScroll,
                 trafficVehicles: _trafficVehicles,
                 score: _score,
+                playerCarImage: _playerCarImage,
+                envImages: _envImages,
               ),
             ),
           ),
@@ -737,6 +903,8 @@ class _DiamondCatchScreenState extends ConsumerState<DiamondCatchScreen>
                 _TrafficVehicle(y: 0.75, lane: 2, speed: 0, type: _VehicleType.yellowCar),
               ],
               score: 0,
+              playerCarImage: _playerCarImage,
+              envImages: _envImages,
             ),
           ),
         ),
@@ -964,12 +1132,25 @@ class _HighwayRacingCanvasPainter extends CustomPainter {
   final double roadScroll;
   final List<_TrafficVehicle> trafficVehicles;
   final int score;
+  final ui.Image? playerCarImage;
+  final _EnvironmentImages? envImages;
+
+  static final Paint _grassPaint = Paint()..color = const Color(0xFF2E7D32);
+  static final Paint _greenGrassSide = Paint()..color = const Color(0xFF388E3C);
+  static final Paint _roadPaint = Paint()..color = const Color(0xFF1E293B);
+  static final Paint _laneDashPaint = Paint()
+    ..color = const Color(0xFFF8FAFC)
+    ..style = PaintingStyle.stroke
+    ..strokeWidth = 3.5;
+  static final Paint _fastImgPaint = Paint()..filterQuality = FilterQuality.low;
 
   _HighwayRacingCanvasPainter({
     required this.playerX,
     required this.roadScroll,
     required this.trafficVehicles,
     required this.score,
+    this.playerCarImage,
+    this.envImages,
   });
 
   @override
@@ -980,69 +1161,248 @@ class _HighwayRacingCanvasPainter extends CustomPainter {
     final double laneWidth = roadWidth / 3;
 
     // 1. Draw Side Grass / Environment
-    final grassPaint = Paint()..color = const Color(0xFF9CA3AF); // Light grass backdrop
-    canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), grassPaint);
+    canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), _grassPaint);
+    canvas.drawRect(Rect.fromLTWH(0, 0, roadLeft, size.height), _greenGrassSide);
+    canvas.drawRect(Rect.fromLTWH(roadRight, 0, size.width - roadRight, size.height), _greenGrassSide);
 
-    final greenGrassLeft = Paint()..color = const Color(0xFFA3E635);
-    canvas.drawRect(Rect.fromLTWH(0, 0, roadLeft, size.height), greenGrassLeft);
+    final double worldScrollY = roadScroll * size.height;
 
-    final greenGrassRight = Paint()..color = const Color(0xFFA3E635);
-    canvas.drawRect(Rect.fromLTWH(roadRight, 0, size.width - roadRight, size.height), greenGrassRight);
+    // Draw Left Grass Panel
+    if (envImages?.leftGrass != null) {
+      final double leftSideWidth = roadLeft;
+      final double drawWidth = leftSideWidth * 1.5;
+      final double imgDrawHeight = drawWidth * (envImages!.leftGrass!.height / envImages!.leftGrass!.width);
+      final double scrollY = worldScrollY % imgDrawHeight;
 
-    // Environment Side Details
-    _drawEnvironmentDetails(canvas, size, roadLeft, roadRight);
-
-    // 2. Draw Side Curbs / Sidewalk Blocks
-    final curbWidth = 14.0;
-    final curbPaintLeft = Paint()..color = const Color(0xFF65A30D);
-    canvas.drawRect(Rect.fromLTWH(roadLeft - curbWidth, 0, curbWidth, size.height), curbPaintLeft);
-
-    final curbPaintRight = Paint()..color = const Color(0xFF65A30D);
-    canvas.drawRect(Rect.fromLTWH(roadRight, 0, curbWidth, size.height), curbPaintRight);
-
-    // Segmented Curb White Stripes
-    final curbStripePaint = Paint()..color = Colors.white70;
-    for (double y = 0; y < size.height; y += 32) {
-      canvas.drawRect(Rect.fromLTWH(roadLeft - curbWidth, y, curbWidth, 16), curbStripePaint);
-      canvas.drawRect(Rect.fromLTWH(roadRight, y, curbWidth, 16), curbStripePaint);
+      canvas.save();
+      canvas.clipRect(Rect.fromLTWH(0, 0, leftSideWidth, size.height));
+      final srcRect = Rect.fromLTWH(0, 0, envImages!.leftGrass!.width.toDouble(), envImages!.leftGrass!.height.toDouble());
+      for (double y = -imgDrawHeight + scrollY; y < size.height + imgDrawHeight; y += imgDrawHeight) {
+        if (y + imgDrawHeight >= 0 && y <= size.height) {
+          canvas.drawImageRect(envImages!.leftGrass!, srcRect, Rect.fromLTWH(0, y, drawWidth, imgDrawHeight), _fastImgPaint);
+        }
+      }
+      canvas.restore();
     }
 
+    // Draw Right Grass Panel
+    if (envImages?.rightGrass != null) {
+      final double rightSideWidth = size.width - roadRight;
+      final double drawWidth = rightSideWidth * 1.5;
+      final double imgDrawHeight = drawWidth * (envImages!.rightGrass!.height / envImages!.rightGrass!.width);
+      final double scrollY = worldScrollY % imgDrawHeight;
+
+      canvas.save();
+      canvas.clipRect(Rect.fromLTWH(roadRight, 0, rightSideWidth, size.height));
+      final srcRect = Rect.fromLTWH(0, 0, envImages!.rightGrass!.width.toDouble(), envImages!.rightGrass!.height.toDouble());
+      for (double y = -imgDrawHeight + scrollY; y < size.height + imgDrawHeight; y += imgDrawHeight) {
+        if (y + imgDrawHeight >= 0 && y <= size.height) {
+          canvas.drawImageRect(envImages!.rightGrass!, srcRect, Rect.fromLTWH(roadRight - (drawWidth - rightSideWidth), y, drawWidth, imgDrawHeight), _fastImgPaint);
+        }
+      }
+      canvas.restore();
+    }
+
+    // Draw Side Props (Pedestrians, Parking area, Umbrellas, Trees, Scooter, Rocks)
+    _drawSideAssets(canvas, size, roadLeft, roadRight, worldScrollY);
+
     // 3. Draw Road Asphalt Surface
-    final roadPaint = Paint()..color = const Color(0xFF334155);
-    canvas.drawRect(Rect.fromLTWH(roadLeft, 0, roadWidth, size.height), roadPaint);
+    canvas.drawRect(Rect.fromLTWH(roadLeft, 0, roadWidth, size.height), _roadPaint);
 
-    // 4. Draw White Dashed Lane Dividers (Scrolling Vertically)
-    final laneDashPaint = Paint()
-      ..color = const Color(0xFFCBD5E1)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 3.5;
-
+    // 4. Draw White Dashed Lane Dividers
     final dashHeight = 36.0;
     final gapHeight = 24.0;
     final totalDashCycle = dashHeight + gapHeight;
-    final scrollOffset = roadScroll * totalDashCycle;
+    final scrollOffset = worldScrollY % totalDashCycle;
 
     for (int laneIdx = 1; laneIdx <= 2; laneIdx++) {
       final double lx = roadLeft + (laneIdx * laneWidth);
       for (double y = -totalDashCycle + scrollOffset; y < size.height + totalDashCycle; y += totalDashCycle) {
-        canvas.drawLine(Offset(lx, y), Offset(lx, y + dashHeight), laneDashPaint);
+        if (y + dashHeight >= 0 && y <= size.height) {
+          canvas.drawLine(Offset(lx, y), Offset(lx, y + dashHeight), _laneDashPaint);
+        }
       }
     }
-
-    // 5. Draw Top-Left Score Badge
-    _drawScoreBadge(canvas, size, score);
 
     // 6. Draw Traffic Vehicles
     for (final vehicle in trafficVehicles) {
       final vx = roadLeft + (vehicle.lane + 0.5) * laneWidth;
       final vy = vehicle.y * size.height;
-      _drawCar(canvas, position: Offset(vx, vy), type: vehicle.type, isPlayer: false);
+      if (vy + 120 >= 0 && vy - 120 <= size.height) {
+        _drawCar(canvas, position: Offset(vx, vy), type: vehicle.type, isPlayer: false);
+      }
     }
 
     // 7. Draw Player Car
     final px = playerX * size.width;
     final py = size.height * 0.78;
-    _drawCar(canvas, position: Offset(px, py), type: _VehicleType.blueCar, isPlayer: true);
+
+    if (playerCarImage != null) {
+      final double carHeight = 122.h;
+      final double carWidth = carHeight * (playerCarImage!.width / playerCarImage!.height);
+
+      canvas.save();
+      canvas.translate(px, py);
+      canvas.rotate(pi);
+
+      final rect = Rect.fromCenter(
+        center: Offset.zero,
+        width: carWidth,
+        height: carHeight,
+      );
+
+      canvas.drawImageRect(
+        playerCarImage!,
+        Rect.fromLTWH(0, 0, playerCarImage!.width.toDouble(), playerCarImage!.height.toDouble()),
+        rect,
+        _fastImgPaint,
+      );
+      canvas.restore();
+    } else {
+      _drawCar(canvas, position: Offset(px, py), type: _VehicleType.blueCar, isPlayer: true);
+    }
+  }
+
+  void _drawImage(
+    Canvas canvas,
+    ui.Image? img, {
+    required double x,
+    required double y,
+    required double width,
+    required double height,
+    double screenHeight = 2000.0,
+  }) {
+    if (img == null) return;
+    if (y + height < -50 || y > screenHeight + 50) return;
+    final destRect = Rect.fromLTWH(x, y, width, height);
+    canvas.drawImageRect(
+      img,
+      Rect.fromLTWH(0, 0, img.width.toDouble(), img.height.toDouble()),
+      destRect,
+      _fastImgPaint,
+    );
+  }
+
+  void _drawSideAssets(Canvas canvas, Size size, double roadLeft, double roadRight, double worldScrollY) {
+    if (envImages == null) {
+      _drawEnvironmentDetails(canvas, size, roadLeft, roadRight);
+      return;
+    }
+
+    final double cycleHeight = size.height * 1.5;
+    final double scrollY = worldScrollY % cycleHeight;
+
+    for (int cycle = -1; cycle <= 1; cycle++) {
+      final double baseOffset = cycle * cycleHeight + scrollY;
+
+      // --- LEFT SIDE PROPS (Extra Large Coconut Palm Trees + Big Humans) ---
+      // 1. Coconut Palm Tree 1 (Top Left)
+      _drawImage(
+        canvas,
+        envImages!.palmTree,
+        x: roadLeft - 195.w,
+        y: baseOffset + (cycleHeight * 0.05),
+        width: 265.w,
+        height: 265.w,
+      );
+
+      // 2. Human: Pedestrian with luggage (Upper Mid Left - Extra Large)
+      _drawImage(
+        canvas,
+        envImages!.pedestrian,
+        x: roadLeft - 75.w,
+        y: baseOffset + (cycleHeight * 0.28),
+        width: 80.w,
+        height: 80.w,
+      );
+
+      // 3. Coconut Palm Tree 2 (Mid Left)
+      _drawImage(
+        canvas,
+        envImages!.palmTree,
+        x: roadLeft - 195.w,
+        y: baseOffset + (cycleHeight * 0.42),
+        width: 265.w,
+        height: 265.w,
+      );
+
+      // 4. Human: Woman with suitcase (Lower Mid Left - Extra Large)
+      _drawImage(
+        canvas,
+        envImages!.womanSuitcase,
+        x: roadLeft - 75.w,
+        y: baseOffset + (cycleHeight * 0.65),
+        width: 80.w,
+        height: 105.h,
+      );
+
+      // 5. Coconut Palm Tree 3 (Bottom Left)
+      _drawImage(
+        canvas,
+        envImages!.palmTree,
+        x: roadLeft - 195.w,
+        y: baseOffset + (cycleHeight * 0.82),
+        width: 265.w,
+        height: 265.w,
+      );
+
+      // --- RIGHT SIDE PROPS (Extra Large Coconut Palm Trees & Parked Scooter) ---
+      // 1. Top Right Parking Lot with Cars (Extra Large)
+      if (envImages!.parkingArea != null) {
+        final img = envImages!.parkingArea!;
+        final double aspect = img.width / img.height;
+        final double parkW = 135.w;
+        final double parkH = parkW / aspect;
+        _drawImage(
+          canvas,
+          img,
+          x: roadRight + 4.w,
+          y: baseOffset + (cycleHeight * 0.06),
+          width: parkW,
+          height: parkH,
+        );
+      }
+
+      // 2. Coconut Palm Tree 1 (Upper Right)
+      _drawImage(
+        canvas,
+        envImages!.palmTree,
+        x: roadRight - 20.w,
+        y: baseOffset + (cycleHeight * 0.28),
+        width: 265.w,
+        height: 265.w,
+      );
+
+      // 3. Human: Beach Umbrella with Relaxing Person (Extra Large)
+      _drawImage(
+        canvas,
+        envImages!.umbrella,
+        x: roadRight + 8.w,
+        y: baseOffset + (cycleHeight * 0.50),
+        width: 160.w,
+        height: 160.w,
+      );
+
+      // 4. Coconut Palm Tree 2 (Lower Mid Right)
+      _drawImage(
+        canvas,
+        envImages!.palmTree,
+        x: roadRight - 20.w,
+        y: baseOffset + (cycleHeight * 0.68),
+        width: 265.w,
+        height: 265.w,
+      );
+
+      // 5. Parked Red Scooter (Extra Large & Bold)
+      _drawImage(
+        canvas,
+        envImages!.redScooter,
+        x: roadRight + 12.w,
+        y: baseOffset + (cycleHeight * 0.86),
+        width: 95.w,
+        height: 155.h,
+      );
+    }
   }
 
   void _drawScoreBadge(Canvas canvas, Size size, int score) {
@@ -1073,33 +1433,7 @@ class _HighwayRacingCanvasPainter extends CustomPainter {
   }
 
   void _drawEnvironmentDetails(Canvas canvas, Size size, double roadLeft, double roadRight) {
-    // Left Side Trees & Rocks
-    final treePaint = Paint()..color = const Color(0xFF15803D);
-    canvas.drawCircle(Offset(roadLeft - 45, 140), 28, treePaint);
-    canvas.drawCircle(Offset(roadLeft - 30, 180), 22, treePaint);
-
-    final rockPaint = Paint()..color = const Color(0xFF64748B);
-    canvas.drawCircle(Offset(roadLeft - 40, 420), 18, rockPaint);
-    canvas.drawCircle(Offset(roadLeft - 24, 435), 14, rockPaint);
-
-    // Pedestrian with Dog on Left Side
-    final pedPaint = Paint()..color = const Color(0xFFEF4444);
-    canvas.drawCircle(Offset(roadLeft - 35, 600), 7, pedPaint);
-
-    // Right Side Beach Umbrellas & Parking Slots
-    final umbrellaPaint = Paint()..color = const Color(0xFFEF4444);
-    canvas.drawCircle(Offset(roadRight + 45, 540), 26, umbrellaPaint);
-    final umbrellaInner = Paint()..color = Colors.white;
-    canvas.drawCircle(Offset(roadRight + 45, 540), 12, umbrellaInner);
-
-    final parkingSlotPaint = Paint()
-      ..color = Colors.white70
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 2.0;
-
-    canvas.drawRect(Rect.fromLTWH(roadRight + 20, 30, 48, 28), parkingSlotPaint);
-    canvas.drawRect(Rect.fromLTWH(roadRight + 20, 64, 48, 28), parkingSlotPaint);
-    canvas.drawRect(Rect.fromLTWH(roadRight + 20, 98, 48, 28), parkingSlotPaint);
+    // Vector circles removed completely
   }
 
   void _drawCar(
@@ -1108,8 +1442,70 @@ class _HighwayRacingCanvasPainter extends CustomPainter {
     required _VehicleType type,
     required bool isPlayer,
   }) {
+    ui.Image? vehicleImg;
+    double carW = 60.w;
+    double carH = 104.h;
+
+    if (!isPlayer) {
+      switch (type) {
+        case _VehicleType.yellowCar:
+          vehicleImg = envImages?.yellowCar;
+          break;
+        case _VehicleType.purpleCar:
+          vehicleImg = envImages?.purpleCar;
+          break;
+        case _VehicleType.orangeCar:
+          vehicleImg = envImages?.cr20Car;
+          break;
+        case _VehicleType.redScooter:
+          vehicleImg = envImages?.redScooter;
+          carW = 42.w;
+          carH = 68.h;
+          break;
+        case _VehicleType.blueCar:
+          vehicleImg = envImages?.cr20Car ?? envImages?.yellowCar ?? envImages?.purpleCar;
+          break;
+      }
+    }
+
+    if (vehicleImg != null) {
+      final double imgRatio = vehicleImg.width / vehicleImg.height;
+      if (type == _VehicleType.redScooter) {
+        carH = 125.h;
+        carW = carH * imgRatio;
+      } else {
+        carH = 108.h;
+        carW = carH * imgRatio;
+      }
+
+      canvas.save();
+      canvas.translate(position.dx, position.dy);
+      if (!isPlayer) {
+        canvas.rotate(pi);
+      }
+
+      final destRect = Rect.fromCenter(
+        center: Offset.zero,
+        width: carW,
+        height: carH,
+      );
+
+      canvas.drawImageRect(
+        vehicleImg,
+        Rect.fromLTWH(0, 0, vehicleImg.width.toDouble(), vehicleImg.height.toDouble()),
+        destRect,
+        Paint()..filterQuality = FilterQuality.high,
+      );
+
+      canvas.restore();
+      return;
+    }
+
     canvas.save();
     canvas.translate(position.dx, position.dy);
+    if (!isPlayer) {
+      canvas.rotate(pi);
+    }
 
     if (type == _VehicleType.redScooter) {
       final scooterPaint = Paint()..color = const Color(0xFFEF4444);
@@ -1146,12 +1542,6 @@ class _HighwayRacingCanvasPainter extends CustomPainter {
         darkColor = const Color(0xFF1E40AF);
         break;
     }
-
-    // Shadow
-    final shadowPaint = Paint()
-      ..color = Colors.black.withValues(alpha: 0.45)
-      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 4.0);
-    canvas.drawRRect(RRect.fromRectAndRadius(const Rect.fromLTWH(-19, -33, 38, 66), const Radius.circular(12)), shadowPaint);
 
     // Side Rear-view Mirrors (Exact Crop Image Match!)
     final mirrorPaint = Paint()..color = darkColor;

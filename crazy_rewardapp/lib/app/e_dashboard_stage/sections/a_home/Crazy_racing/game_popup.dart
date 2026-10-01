@@ -12,6 +12,7 @@ import '../../../../../services/cloud_functions.dart';
 import '../../../../../services/launch_url.dart';
 import '../../../../../widgets/common/custom_toast.dart';
 import '../../../provider/dashboard_provider.dart';
+import '../../../../d_authentication_stage/users_data_model.dart';
 import 'crazy_racing_model.dart';
 import 'crazy_racing_provider.dart';
 import '../../../../b_splash_stage/splash_service.dart';
@@ -136,18 +137,42 @@ class _GameResultPopupState extends ConsumerState<GameResultPopup>
       setState(() => _isAdLoading = false);
 
       if (isSuccess) {
+        final int gemsToClaim =
+            widget.installGems > 0 ? widget.installGems : 5;
+        final user = FirebaseAuth.instance.currentUser;
+
+        if (user != null) {
+          final currentGems =
+              DashboardService.getCachedUser(user.uid)?.gems ?? 0;
+          DashboardService.updateCachedGems(user.uid, currentGems + gemsToClaim);
+          ref.invalidate(DashboardService.userGemsProvider(user.uid));
+          ref.invalidate(DashboardService.userDataProvider(user.uid));
+        }
+
+        Map<String, dynamic> res = {};
         try {
-          await CloudFunctions.claimGems(
-            widget.installGems > 0 ? widget.installGems : 5,
+          res = await CloudFunctions.claimGems(
+            gemsToClaim,
             true,
           );
         } catch (e) {
            // debugPrint("Claim gems error in install flow: $e");
         }
 
-        final user = FirebaseAuth.instance.currentUser;
         if (user != null) {
+          if (res['user'] != null && res['user'] is Map<String, dynamic>) {
+            try {
+              final updatedUser =
+                  UserDataModel.fromJson(Map<String, dynamic>.from(res['user']));
+              DashboardService.setCachedUser(updatedUser);
+            } catch (_) {
+              DashboardService.clearUserCache(user.uid);
+            }
+          } else {
+            DashboardService.clearUserCache(user.uid);
+          }
           ref.invalidate(DashboardService.userDataProvider(user.uid));
+          ref.invalidate(DashboardService.userGemsProvider(user.uid));
           ref.invalidate(DashboardService.superOfferDataProvider(user.uid));
           ref.invalidate(diamondCatchVerifierProvider(user.uid));
         }
@@ -187,8 +212,8 @@ class _GameResultPopupState extends ConsumerState<GameResultPopup>
             ? const Color(0xFFFFD700)
             : const Color(0xFFFF4D4D);
         bgGradient = isWin
-            ? const [Color(0xFF6E370F), Color(0xFF8B4513), Color(0xFF532809)]
-            : const [Color(0xFF532809), Color(0xFF3E1C03), Color(0xFF241002)];
+            ? const [Color(0xFF1E1E2E), Color(0xFF11111B), Color(0xFF09090E)]
+            : const [Color(0xFF1F1215), Color(0xFF12090B), Color(0xFF090305)];
         orbGradient = isWin
             ? const [Color(0xFFFEF08A), Color(0xFFFBBF24), Color(0xFFD97706)]
             : const [Color(0xFFF87171), Color(0xFFEF4444), Color(0xFFB91C1C)];
@@ -215,7 +240,7 @@ class _GameResultPopupState extends ConsumerState<GameResultPopup>
 
       case _PopupState.finishToUnlock:
         borderColor = const Color(0xFFFFD700);
-        bgGradient = const [Color(0xFF6E370F), Color(0xFF8B4513), Color(0xFF532809)];
+        bgGradient = const [Color(0xFF1E1E2E), Color(0xFF11111B), Color(0xFF09090E)];
         orbGradient = const [Color(0xFFFEF08A), Color(0xFFFBBF24), Color(0xFFD97706)];
         orbBorderColor = const Color(0xFFFFD700);
         orbShadowColor = const Color(0xFFFFD700).withValues(alpha: 0.50);
@@ -230,7 +255,7 @@ class _GameResultPopupState extends ConsumerState<GameResultPopup>
 
       case _PopupState.taskFailed:
         borderColor = const Color(0xFFFF4D4D);
-        bgGradient = const [Color(0xFF532809), Color(0xFF3E1C03), Color(0xFF241002)];
+        bgGradient = const [Color(0xFF1F1215), Color(0xFF12090B), Color(0xFF090305)];
         orbGradient = const [Color(0xFFF87171), Color(0xFFEF4444), Color(0xFFB91C1C)];
         orbBorderColor = const Color(0xFFFF4D4D);
         orbShadowColor = const Color(0xFFEF4444).withValues(alpha: 0.50);
@@ -245,7 +270,7 @@ class _GameResultPopupState extends ConsumerState<GameResultPopup>
 
       case _PopupState.taskSuccess:
         borderColor = const Color(0xFF4ADE80);
-        bgGradient = const [Color(0xFF14532D), Color(0xFF0F3E22), Color(0xFF0A2916)];
+        bgGradient = const [Color(0xFF0F291E), Color(0xFF081812), Color(0xFF030C09)];
         orbGradient = const [Color(0xFF86EFAC), Color(0xFF22C55E), Color(0xFF15803D)];
         orbBorderColor = const Color(0xFF4ADE80);
         orbShadowColor = const Color(0xFF22C55E).withValues(alpha: 0.50);
@@ -538,14 +563,20 @@ class _GameResultPopupState extends ConsumerState<GameResultPopup>
           ),
           child: Center(
             child: Image.asset(
-              'assets/icons/panda1.png',
+              'assets/Icons1/Crazy Racing.png',
               width: 85.w,
               height: 85.w,
               fit: BoxFit.contain,
               errorBuilder: (_, __, ___) => Image.asset(
-                'assets/icons/gems.png',
-                width: 60.w,
-                height: 60.w,
+                'assets/Icons1/purple-car.png.png',
+                width: 85.w,
+                height: 85.w,
+                fit: BoxFit.contain,
+                errorBuilder: (_, __, ___) => Image.asset(
+                  'assets/icons/gems.png',
+                  width: 60.w,
+                  height: 60.w,
+                ),
               ),
             ),
           ),
@@ -559,10 +590,10 @@ class _GameResultPopupState extends ConsumerState<GameResultPopup>
             width: double.infinity,
             padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 12.w),
             decoration: BoxDecoration(
-              color: const Color(0xFF2C1607),
+              color: const Color(0xFF11111B),
               borderRadius: BorderRadius.circular(16.r),
               border: Border.all(
-                color: const Color(0xFF8B4513),
+                color: const Color(0xFF313244),
                 width: 1.2,
               ),
             ),
@@ -1266,8 +1297,18 @@ class _GameResultPopupState extends ConsumerState<GameResultPopup>
             ? widget.gameGems
             : (widget.dailyGems > 0 ? widget.dailyGems : 1);
 
+        final user = FirebaseAuth.instance.currentUser;
+        if (user != null) {
+          final currentGems =
+              DashboardService.getCachedUser(user.uid)?.gems ?? 0;
+          DashboardService.updateCachedGems(user.uid, currentGems + gemsToClaim);
+          ref.invalidate(DashboardService.userGemsProvider(user.uid));
+          ref.invalidate(DashboardService.userDataProvider(user.uid));
+        }
+
+        Map<String, dynamic> res = {};
         try {
-          await CloudFunctions.claimGems(
+          res = await CloudFunctions.claimGems(
             gemsToClaim,
             false,
           );
@@ -1275,9 +1316,20 @@ class _GameResultPopupState extends ConsumerState<GameResultPopup>
            // debugPrint("Claim gems error: $e");
         }
 
-        final user = FirebaseAuth.instance.currentUser;
         if (user != null) {
+          if (res['user'] != null && res['user'] is Map<String, dynamic>) {
+            try {
+              final updatedUser =
+                  UserDataModel.fromJson(Map<String, dynamic>.from(res['user']));
+              DashboardService.setCachedUser(updatedUser);
+            } catch (_) {
+              DashboardService.clearUserCache(user.uid);
+            }
+          } else {
+            DashboardService.clearUserCache(user.uid);
+          }
           ref.invalidate(DashboardService.userDataProvider(user.uid));
+          ref.invalidate(DashboardService.userGemsProvider(user.uid));
           ref.invalidate(DashboardService.superOfferDataProvider(user.uid));
           ref.invalidate(diamondCatchVerifierProvider(user.uid));
         }

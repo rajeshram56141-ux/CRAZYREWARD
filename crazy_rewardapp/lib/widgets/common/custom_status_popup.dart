@@ -1261,24 +1261,6 @@ class CustomStatusPopup extends StatelessWidget {
 
     const Color effectivePrimaryTextColor = Colors.white;
 
-    final Color glowColor;
-    switch (curType) {
-      case StatusPopupType.success:
-        glowColor = const Color(0xFF00E676);
-        break;
-      case StatusPopupType.failed:
-        glowColor = const Color(0xFFEF4444);
-        break;
-      case StatusPopupType.inProgress:
-      case StatusPopupType.warning:
-        glowColor = const Color(0xFFF59E0B);
-        break;
-      case StatusPopupType.info:
-      case StatusPopupType.permission:
-        glowColor = const Color(0xFF00B0FF);
-        break;
-    }
-
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
