@@ -37,6 +37,8 @@ mixin AppConst {
   static String get dailyTaskVerifyOcr => '$serverBaseUrl/daily-task-verify-ocr';
   static String get readTskPostback => '$serverBaseUrl/read-earn-postback';
   static String get superOfferVerify => '$serverBaseUrl/super-offer-verify';
+  static String get superOfferLeaderboard => '$serverBaseUrl/api/super-offer/leaderboard';
+  static String get superOfferPastWinners => '$serverBaseUrl/api/super-offer/past-winners';
   static String get diamondCatchVerify => '$serverBaseUrl/diamond-catch-verify';
   static String get fetchWatchEarnTasks => '$serverBaseUrl/get-watch-earn-tasks';
   static String get watchEarnPostback => '$serverBaseUrl/watch-earn-postback';

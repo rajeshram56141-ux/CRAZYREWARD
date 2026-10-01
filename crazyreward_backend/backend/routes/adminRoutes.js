@@ -6674,9 +6674,325 @@ router.post('/admin/super-offer/approve-proof/:id', adminAuth, async (req, res) 
             console.error('⚠️ SuperOfferHistory update error:', hErr.message);
         }
 
+        // 5. Increment SuperOfferLeaderboard
+        try {
+            const { recordSuperOfferUnlock } = require('../services/superOfferLeaderboardService');
+            await recordSuperOfferUnlock(proof.userId);
+        } catch (lbErr) {
+            console.error('⚠️ SuperOfferLeaderboard update error on proof approve:', lbErr.message);
+        }
+
         return res.json({ success: true, message: `Proof approved! +${rewardCoins} coins credited to user.` });
     } catch (err) {
         console.error('🔥 Error approving super offer screenshot proof:', err);
+        return res.status(500).json({ success: false, message: 'Server error' });
+    }
+});
+
+// GET SUPER OFFER LEADERBOARD (ADMIN)
+router.get('/admin/super-offer/leaderboard', adminAuth, async (req, res) => {
+    try {
+        await connectMongo();
+        const { getMonthKey, getOrCreateActiveContest } = require('../services/superOfferLeaderboardService');
+        const SuperOfferLeaderboard = require('../admin/models/superOfferLeaderboard');
+        const SuperOfferContest = require('../admin/models/superOfferContest');
+        
+        const requestedKey = req.query.contestId || req.query.month || getMonthKey();
+        const contest = await getOrCreateActiveContest(requestedKey);
+        const targetKey = contest.contestId || contest.monthKey;
+        
+        const leaderboard = await SuperOfferLeaderboard.find({ monthKey: targetKey })
+            .sort({ unlockCount: -1, lastUnlockedAt: 1 })
+            .lean();
+
+        const allContests = await SuperOfferContest.find()
+            .sort({ createdAt: -1 })
+            .limit(30)
+            .lean();
+
+        return res.json({
+            success: true,
+            monthKey: targetKey,
+            contest: {
+                ...contest.toObject(),
+                isActive: contest.isActive !== false
+            },
+            allContests,
+            leaderboard
+        });
+    } catch (err) {
+        console.error('🔥 Error fetching admin super offer leaderboard:', err);
+        return res.status(500).json({ success: false, message: 'Server error' });
+    }
+});
+
+// TOGGLE CONTEST ON/OFF (ADMIN)
+router.post('/admin/super-offer/toggle-active', adminAuth, async (req, res) => {
+    try {
+        await connectMongo();
+        const SuperOfferContest = require('../admin/models/superOfferContest');
+        const { getMonthKey, getOrCreateActiveContest } = require('../services/superOfferLeaderboardService');
+
+        const monthKey = req.body.contestId || req.body.monthKey || getMonthKey();
+        const contest = await getOrCreateActiveContest(monthKey);
+        contest.isActive = Boolean(req.body.isActive);
+        await contest.save();
+
+        return res.json({
+            success: true,
+            message: `Super Offer Contest is now ${contest.isActive ? 'ON (Visible in App)' : 'OFF (Hidden in App)'}`,
+            isActive: contest.isActive
+        });
+    } catch (err) {
+        console.error('🔥 Error toggling contest active status:', err);
+        return res.status(500).json({ success: false, message: 'Server error: ' + err.message });
+    }
+});
+
+// SAVE CONTEST PRIZES & TIMINGS (ADMIN)
+router.post('/admin/super-offer/contest-prizes', adminAuth, async (req, res) => {
+    try {
+        await connectMongo();
+        const SuperOfferContest = require('../admin/models/superOfferContest');
+        try {
+            await SuperOfferContest.collection.dropIndex('monthKey_1');
+        } catch (idxErr) {
+            // Index might already be dropped or not exist
+        }
+        const { getMonthKey, getOrCreateActiveContest } = require('../services/superOfferLeaderboardService');
+        
+        const { contestId, isCreateNew, isNewContest, title, subtitle, bannerUrl, startTime, endTime, isActive, prizes } = req.body;
+        const monthKey = req.body.monthKey || getMonthKey();
+
+        let contest = null;
+
+        if (isCreateNew || isNewContest) {
+            const newContestId = 'SO_' + Date.now();
+            contest = new SuperOfferContest({
+                contestId: newContestId,
+                monthKey: monthKey || getMonthKey(),
+                title: (title || "Super Offer Contest").trim(),
+                subtitle: (subtitle || "").trim(),
+                bannerUrl: (bannerUrl || "").trim(),
+                startTime: startTime ? new Date(startTime) : new Date(),
+                endTime: endTime ? new Date(endTime) : null,
+                status: 'active',
+                isActive: typeof isActive === 'boolean' ? isActive : true,
+                prizes: []
+            });
+        } else if (contestId) {
+            contest = await SuperOfferContest.findOne({
+                $or: [{ contestId }, { _id: contestId.match(/^[0-9a-fA-F]{24}$/) ? contestId : null }]
+            });
+        }
+
+        if (!contest) {
+            contest = await getOrCreateActiveContest(monthKey);
+        }
+
+        if (title) contest.title = title.trim();
+        if (subtitle !== undefined) contest.subtitle = subtitle.trim();
+        if (bannerUrl !== undefined) contest.bannerUrl = bannerUrl.trim();
+        if (startTime) contest.startTime = new Date(startTime);
+        if (endTime) contest.endTime = new Date(endTime);
+        if (typeof isActive === 'boolean') contest.isActive = isActive;
+
+        if (Array.isArray(prizes)) {
+            contest.prizes = prizes.map(p => ({
+                minRank: Number(p.minRank) || 1,
+                maxRank: Number(p.maxRank) || 1,
+                rankRange: String(p.rankRange || `${p.minRank || 1}-${p.maxRank || 1}`).trim(),
+                title: String(p.title || '').trim(),
+                subtitle: String(p.subtitle || '').trim(),
+                imageUrl: String(p.imageUrl || '').trim(),
+                coinBonus: Number(p.coinBonus) || 0
+            }));
+        }
+
+        await contest.save();
+
+        return res.json({
+            success: true,
+            message: (isCreateNew || isNewContest) ? 'Brand NEW Contest created successfully!' : 'Contest updated successfully!',
+            contest
+        });
+    } catch (err) {
+        console.error('🔥 Error updating super offer contest prizes:', err);
+        return res.status(500).json({ success: false, message: 'Server error: ' + err.message });
+    }
+});
+
+// TOGGLE CONTEST ACTIVE STATUS (ADMIN)
+router.post('/admin/super-offer/toggle-active', adminAuth, async (req, res) => {
+    try {
+        await connectMongo();
+        const SuperOfferContest = require('../admin/models/superOfferContest');
+        const { getOrCreateActiveContest } = require('../services/superOfferLeaderboardService');
+        const { monthKey, isActive } = req.body;
+
+        const contest = await getOrCreateActiveContest(monthKey);
+        if (contest) {
+            contest.isActive = typeof isActive === 'boolean' ? isActive : true;
+            await contest.save();
+            return res.json({ success: true, message: `Contest visibility set to ${contest.isActive ? 'ON' : 'OFF'}`, isActive: contest.isActive });
+        }
+        return res.status(404).json({ success: false, message: 'Active contest not found' });
+    } catch (err) {
+        console.error('🔥 Error toggling contest active status:', err);
+        return res.status(500).json({ success: false, message: 'Server error: ' + err.message });
+    }
+});
+
+// FINALIZE & DECLARE WINNERS (ADMIN)
+router.post('/admin/super-offer/finalize-winners', adminAuth, async (req, res) => {
+    try {
+        await connectMongo();
+        const SuperOfferLeaderboard = require('../admin/models/superOfferLeaderboard');
+        const SuperOfferContest = require('../admin/models/superOfferContest');
+        const SuperOfferContestHistory = require('../admin/models/superOfferContestHistory');
+        const RewardHistory = require('../admin/models/rewardHistory');
+        const User = require('../admin/models/user');
+        const { getMonthKey, getOrCreateActiveContest } = require('../services/superOfferLeaderboardService');
+
+        const monthKey = req.body.monthKey || getMonthKey();
+        const contest = await getOrCreateActiveContest(monthKey);
+
+        const topUsers = await SuperOfferLeaderboard.find({ monthKey, isDisqualified: false })
+            .sort({ unlockCount: -1, lastUnlockedAt: 1 })
+            .lean();
+
+        const prizes = contest.prizes || [];
+        const declaredWinners = [];
+        let totalCoinsAwarded = 0;
+
+        for (let i = 0; i < topUsers.length; i++) {
+            const u = topUsers[i];
+            const rank = i + 1;
+
+            // Find matching prize tier for this rank
+            let matchedPrize = null;
+            for (const p of prizes) {
+                const minR = Number(p.minRank) || 1;
+                const maxR = Number(p.maxRank) || minR;
+                if (rank >= minR && rank <= maxR) {
+                    matchedPrize = p;
+                    break;
+                }
+            }
+
+            const prizeTitle = matchedPrize ? matchedPrize.title : 'Participation';
+            const prizeImageUrl = matchedPrize ? matchedPrize.imageUrl : '';
+            const coinBonus = matchedPrize ? (matchedPrize.coinBonus || 0) : 0;
+
+            if (coinBonus > 0) {
+                totalCoinsAwarded += coinBonus;
+                await User.findOneAndUpdate(
+                    {
+                        $or: [
+                            { userId: u.userId },
+                            { firebaseUid: u.userId }
+                        ]
+                    },
+                    { $inc: { coins: coinBonus } }
+                );
+
+                await RewardHistory.create({
+                    userId: u.userId,
+                    appName: 'Super Offer Bumper League',
+                    provider: 'Super Offer Winner Prize',
+                    coins: coinBonus,
+                    rewardType: 'coin',
+                    orderId: `SOW_${monthKey}_R${rank}_${Date.now()}`,
+                    timestamp: new Date()
+                }).catch(err => console.error('Warning creating winner reward history:', err.message));
+            }
+
+            declaredWinners.push({
+                userId: u.userId,
+                userName: u.userName || 'User',
+                avatar: u.avatar || '',
+                rank,
+                unlockCount: u.unlockCount,
+                prizeTitle,
+                prizeImageUrl,
+                coinBonusAwarded: coinBonus
+            });
+        }
+
+        contest.status = 'completed';
+        contest.isWinnerDeclared = true;
+        contest.declaredAt = new Date();
+        contest.winners = declaredWinners;
+        await contest.save();
+
+        // Save permanent record into SuperOfferContestHistory
+        await SuperOfferContestHistory.create({
+            monthKey,
+            title: contest.title,
+            subtitle: contest.subtitle,
+            bannerUrl: contest.bannerUrl,
+            startTime: contest.startTime,
+            endTime: contest.endTime,
+            declaredAt: new Date(),
+            declaredBy: req.admin?.email || 'Admin',
+            totalWinnersCount: declaredWinners.length,
+            totalCoinsAwarded,
+            prizes: contest.prizes,
+            winners: declaredWinners
+        });
+
+        return res.json({
+            success: true,
+            message: `🎉 Winners declared for ${monthKey}! Total ${declaredWinners.length} winners processed, ${totalCoinsAwarded} coins credited!`,
+            winnersCount: declaredWinners.length,
+            totalCoinsAwarded,
+            winners: declaredWinners
+        });
+    } catch (err) {
+        console.error('🔥 Error finalizing super offer winners:', err);
+        return res.status(500).json({ success: false, message: 'Server error: ' + err.message });
+    }
+});
+
+// GET WINNER HISTORY (ADMIN)
+router.get('/admin/super-offer/winner-history', adminAuth, async (req, res) => {
+    try {
+        await connectMongo();
+        const SuperOfferContestHistory = require('../admin/models/superOfferContestHistory');
+        const SuperOfferContest = require('../admin/models/superOfferContest');
+
+        let history = await SuperOfferContestHistory.find().sort({ declaredAt: -1 }).lean();
+        if (!history || history.length === 0) {
+            history = await SuperOfferContest.find({ isWinnerDeclared: true }).sort({ declaredAt: -1 }).lean();
+        }
+        return res.json({ success: true, history });
+    } catch (err) {
+        console.error('🔥 Error fetching winner history:', err);
+        return res.status(500).json({ success: false, message: 'Server error: ' + err.message });
+    }
+});
+
+// TOGGLE DISQUALIFY USER (ADMIN)
+router.post('/admin/super-offer/toggle-disqualify', adminAuth, async (req, res) => {
+    try {
+        await connectMongo();
+        const SuperOfferLeaderboard = require('../admin/models/superOfferLeaderboard');
+        const { userId, monthKey } = req.body;
+        if (!userId || !monthKey) return res.status(400).json({ success: false, message: 'Missing userId or monthKey' });
+
+        const record = await SuperOfferLeaderboard.findOne({ monthKey, userId: String(userId).trim() });
+        if (!record) return res.status(404).json({ success: false, message: 'Leaderboard record not found' });
+
+        record.isDisqualified = !record.isDisqualified;
+        await record.save();
+
+        return res.json({
+            success: true,
+            message: record.isDisqualified ? 'User disqualified' : 'User re-qualified',
+            isDisqualified: record.isDisqualified
+        });
+    } catch (err) {
+        console.error('🔥 Error toggling disqualify user:', err);
         return res.status(500).json({ success: false, message: 'Server error' });
     }
 });

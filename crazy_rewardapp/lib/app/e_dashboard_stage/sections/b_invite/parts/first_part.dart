@@ -87,7 +87,7 @@ class InviteFirstPart extends HookConsumerWidget {
           children: [
             // Panda Hero Illustration
             Image.asset(
-              'assets/icons/panda invite.png',
+              'assets/Icons1/panda_invite-removebg-preview (2).png',
               height: 155.h,
               fit: BoxFit.contain,
             ),

@@ -652,26 +652,15 @@ class SuperOfferWidget extends HookConsumerWidget {
           child: Row(
             children: [
               // 1. LEFT ICON BADGE (Matching Home Screen Dark Artwork Box)
-              Container(
-                width: 50.w,
-                height: 50.w,
-                decoration: BoxDecoration(
-                  color: const Color(0xFF202028),
-                  borderRadius: BorderRadius.circular(12.r),
-                  border: Border.all(
-                    color: Colors.white.withValues(alpha: 0.08),
-                    width: 1,
-                  ),
-                ),
-                padding: EdgeInsets.all(4.w),
-                child: Center(
-                  child: Image.asset(
+              SizedBox(
+                width: 58.w,
+                height: 58.w,
+                child: Image.asset(
+                  'assets/Icons1/bonus.png',
+                  fit: BoxFit.contain,
+                  errorBuilder: (_, __, ___) => Image.asset(
                     'assets/Icons1/super_offer_3d.png',
                     fit: BoxFit.contain,
-                    errorBuilder: (_, __, ___) => Image.asset(
-                      'assets/icons/suprerofferdhn.png',
-                      fit: BoxFit.contain,
-                    ),
                   ),
                 ),
               ),

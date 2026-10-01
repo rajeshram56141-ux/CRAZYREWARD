@@ -16,6 +16,8 @@ import 'super_offer_provider.dart';
 import '../Crazy_racing/crazy_racing_provider.dart';
 import 'super_offer_widget.dart';
 import 'super_offer_step2_list_screen.dart';
+import 'super_offer_leaderboard_screen.dart';
+import 'super_offer_leaderboard_provider.dart';
 import '../../../../../widgets/common/shimmer_tag.dart';
 import '../../../../../widgets/common/screen_banner_widget.dart';
 import '../../../../../widgets/ads/topon_native_ad_card.dart';
@@ -171,6 +173,12 @@ class SuperOfferScreen extends HookConsumerWidget {
       orElse: () => 0,
     );
 
+    final leaderboardAsync = ref.watch(superOfferLeaderboardProvider(''));
+    final isContestActive = leaderboardAsync.maybeWhen(
+      data: (res) => res.contest.isActive,
+      orElse: () => true,
+    );
+
      return AnnotatedRegion<SystemUiOverlayStyle>(
       value: const SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
@@ -202,6 +210,7 @@ class SuperOfferScreen extends HookConsumerWidget {
                           ref.invalidate(superOfferVerifierProvider(effectiveUid));
                           ref.invalidate(diamondCatchVerifierProvider(effectiveUid));
                           ref.invalidate(pendingOffersProvider(effectiveUid));
+                          ref.invalidate(superOfferLeaderboardProvider(''));
                           await SuperOfferStep2ListScreen.syncSavedOffers(effectiveUid);
                         },
                         child: SingleChildScrollView(
@@ -288,12 +297,14 @@ class SuperOfferScreen extends HookConsumerWidget {
                                         margin: EdgeInsets.only(bottom: 12),
                                       ),
 
-                                      // Super Mission Header
-                                      _buildSuperMissionHeader(),
-
+                                      if (isContestActive) ...[
+                                        // 🏆 Contest Active (App Status ON): Show Mega Bumper Prize Card
+                                        _buildLeaderboardBannerCard(context),
+                                      ] else ...[
+                                        // 🔒 Contest Paused/Off (App Status OFF): Show Super Mission Header
+                                        _buildSuperMissionHeader(),
+                                      ],
                                       SizedBox(height: 14.h),
-
-                                      // Stats Card (Offers Completed | Current Streak)
                                       _buildStatsCard(
                                         context,
                                         SuperOfferModel(
@@ -377,7 +388,7 @@ class SuperOfferScreen extends HookConsumerWidget {
                                             data: (DiamondCatchSet diamondCatch) {
                                               return _buildTaskCard(
                                                 context: context,
-                                                iconPath: 'assets/icons/playtimegame.png',
+                                                iconPath: 'assets/Icons1/Crazy Racing.png',
                                                 title: 'Crazy Racing',
                                                 subtitle: '+${diamondCatch.gameGems} Gems',
                                                 buttonText: _translate('play-now', 'Play Now'),
@@ -395,7 +406,7 @@ class SuperOfferScreen extends HookConsumerWidget {
                                             },
                                             error: (_, __) => _buildTaskCard(
                                               context: context,
-                                              iconPath: 'assets/icons/playtimegame.png',
+                                              iconPath: 'assets/Icons1/Crazy Racing.png',
                                               title: 'Crazy Racing',
                                               subtitle: '+1 Gems',
                                               buttonText: _translate('play-now', 'Play Now'),
@@ -415,7 +426,7 @@ class SuperOfferScreen extends HookConsumerWidget {
                                                   (config['gameGems'] as num?)?.toInt() ?? 1;
                                               return _buildTaskCard(
                                                 context: context,
-                                                iconPath: 'assets/icons/playtimegame.png',
+                                                iconPath: 'assets/Icons1/Crazy Racing.png',
                                                 title: 'Crazy Racing',
                                                 subtitle: '+$gameGems Gems',
                                                 buttonText: _translate('play-now', 'Play Now'),
@@ -880,7 +891,7 @@ class SuperOfferScreen extends HookConsumerWidget {
             width: 85.w,
             height: 75.h,
             child: Image.asset(
-              'assets/Icons1/Super Offer .png',
+              'assets/Icons1/bonus.png',
               fit: BoxFit.contain,
               errorBuilder: (_, __, ___) => Image.asset(
                 'assets/Icons1/super_offer_3d.png',
@@ -1027,25 +1038,16 @@ class SuperOfferScreen extends HookConsumerWidget {
         child: Row(
           children: [
             // Left 3D Game Icon Container (Home Screen Dark Container)
-            Container(
-              width: 48.w,
-              height: 48.w,
-              decoration: BoxDecoration(
-                color: const Color(0xFF202028),
-                borderRadius: BorderRadius.circular(14.r),
-                border: Border.all(
-                  color: Colors.white.withValues(alpha: 0.08),
-                  width: 1,
-                ),
-              ),
-              padding: EdgeInsets.all(7.w),
+            SizedBox(
+              width: 56.w,
+              height: 56.w,
               child: Image.asset(
                 iconPath,
                 fit: BoxFit.contain,
                 errorBuilder: (_, __, ___) => const Icon(
                   Icons.sports_esports_rounded,
                   color: Color(0xFF38BDF8),
-                  size: 24,
+                  size: 28,
                 ),
               ),
             ),
@@ -1143,6 +1145,120 @@ class SuperOfferScreen extends HookConsumerWidget {
       ),
     );
   }
+
+  Widget _buildLeaderboardBannerCard(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const SuperOfferLeaderboardScreen()),
+        );
+      },
+      child: Container(
+        width: double.infinity,
+        padding: EdgeInsets.only(left: 2.w, right: 10.w, top: 4.h, bottom: 4.h),
+        decoration: BoxDecoration(
+          image: const DecorationImage(
+            image: AssetImage('assets/Icons1/Rectangle 13.png'),
+            fit: BoxFit.fill,
+          ),
+          borderRadius: BorderRadius.circular(18.r),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.18),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            SizedBox(
+              width: 105.w,
+              height: 100.h,
+              child: Transform.scale(
+                scale: 1.15,
+                child: const FloatingPulseIcon(
+                  child: Image(
+                    image: AssetImage('assets/Icons1/output-onlinegiftools.gif'),
+                    fit: BoxFit.contain,
+                  ),
+                ),
+              ),
+            ),
+            Expanded(
+              child: Transform.translate(
+                offset: Offset(12.w, -6.h),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          'Mega Prize!',
+                          style: GoogleFonts.poppins(
+                            color: Colors.white,
+                            fontSize: 19.sp,
+                            fontWeight: FontWeight.w900,
+                            letterSpacing: 0.3,
+                          ),
+                        ),
+                        SizedBox(width: 6.w),
+                        Container(
+                          padding: EdgeInsets.all(4.w),
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            gradient: LinearGradient(
+                              colors: [
+                                Colors.white.withValues(alpha: 0.35),
+                                Colors.white.withValues(alpha: 0.1),
+                              ],
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                            ),
+                            border: Border.all(
+                              color: Colors.white.withValues(alpha: 0.5),
+                              width: 1.2,
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withValues(alpha: 0.2),
+                                blurRadius: 4,
+                                offset: const Offset(0, 2),
+                              ),
+                            ],
+                          ),
+                          child: Icon(
+                            Icons.arrow_forward_rounded,
+                            color: Colors.white,
+                            size: 13.sp,
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 2.h),
+                    Text(
+                      'Unlock offers & win iPhone 16 Pro, Smart Watch & Gifts!',
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: GoogleFonts.poppins(
+                        color: const Color(0xFF9E9EA7),
+                        fontSize: 11.sp,
+                        fontWeight: FontWeight.w500,
+                        height: 1.15,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }
 
 // Pure White Shimmer for Super Offer
@@ -1214,7 +1330,7 @@ class SuperOfferShimmer extends StatelessWidget {
               ],
             ),
           ),
-        ],
+         ],
       ),
     );
   }
@@ -1269,3 +1385,56 @@ class _AvailableGemsBadge extends StatelessWidget {
     );
   }
 }
+
+class FloatingPulseIcon extends StatefulWidget {
+  final Widget child;
+  const FloatingPulseIcon({Key? key, required this.child}) : super(key: key);
+
+  @override
+  State<FloatingPulseIcon> createState() => _FloatingPulseIconState();
+}
+
+class _FloatingPulseIconState extends State<FloatingPulseIcon> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _translation;
+  late Animation<double> _scale;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1400),
+    )..repeat(reverse: true);
+
+    _translation = Tween<double>(begin: 0, end: -6.0).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
+    );
+    _scale = Tween<double>(begin: 0.95, end: 1.05).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _controller,
+      builder: (context, child) {
+        return Transform.translate(
+          offset: Offset(0, _translation.value),
+          child: Transform.scale(
+            scale: _scale.value,
+            child: widget.child,
+          ),
+        );
+      },
+    );
+  }
+}
+

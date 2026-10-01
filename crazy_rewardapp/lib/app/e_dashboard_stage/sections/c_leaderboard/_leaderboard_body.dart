@@ -258,65 +258,80 @@ class LeaderboardBody extends HookConsumerWidget {
                             );
                           } else {
                             // Top Referrals Tab List
-                            return Container(
-                              width: double.infinity,
-                              padding: EdgeInsets.fromLTRB(16.w, 14.h, 16.w, 20.h),
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.vertical(
-                                  top: Radius.circular(28.r),
-                                ),
-                                border: Border.all(
-                                  color: const Color(0xFFE2E8F0),
-                                  width: 1.2,
-                                ),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: const Color(0xFF0F172A).withValues(alpha: 0.06),
-                                    blurRadius: 20,
-                                    offset: const Offset(0, -4),
-                                  ),
-                                ],
-                              ),
-                              child: Column(
-                                children: [
-                                  // Top Handle Line
-                                  Container(
-                                    width: 36.w,
-                                    height: 4.h,
-                                    decoration: BoxDecoration(
-                                      color: const Color(0xFFCBD5E1),
-                                      borderRadius: BorderRadius.circular(2.r),
+                            final topThree = data.take(3).toList();
+                            final remaining = data.length > 3
+                                ? data.sublist(3)
+                                : <LeaderboardModel>[];
+
+                            return Column(
+                              children: [
+                                // Top 3 Winners 3D Block Podium for Referrals
+                                _buildTopThree3DPodium(topThree, true),
+
+                                SizedBox(height: 20.h),
+
+                                // Ranks 4 to 100 Elevated White Bottom Container Card
+                                Container(
+                                  width: double.infinity,
+                                  padding: EdgeInsets.fromLTRB(16.w, 14.h, 16.w, 20.h),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.vertical(
+                                      top: Radius.circular(28.r),
                                     ),
+                                    border: Border.all(
+                                      color: const Color(0xFFE2E8F0),
+                                      width: 1.2,
+                                    ),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: const Color(0xFF0F172A).withValues(alpha: 0.06),
+                                        blurRadius: 20,
+                                        offset: const Offset(0, -4),
+                                      ),
+                                    ],
                                   ),
+                                  child: Column(
+                                    children: [
+                                      // Top Handle Line
+                                      Container(
+                                        width: 36.w,
+                                        height: 4.h,
+                                        decoration: BoxDecoration(
+                                          color: const Color(0xFFCBD5E1),
+                                          borderRadius: BorderRadius.circular(2.r),
+                                        ),
+                                      ),
 
-                                  SizedBox(height: 12.h),
+                                      SizedBox(height: 12.h),
 
-                                  _buildTimerRow(),
+                                      _buildTimerRow(),
 
-                                  SizedBox(height: 14.h),
+                                      SizedBox(height: 14.h),
 
-                                  if (data.isNotEmpty)
-                                    ListView.separated(
-                                      shrinkWrap: true,
-                                      physics: const NeverScrollableScrollPhysics(),
-                                      padding: EdgeInsets.zero,
-                                      itemCount: data.length,
-                                      separatorBuilder: (_, __) => SizedBox(height: 10.h),
-                                      itemBuilder: (context, index) {
-                                        final rank = index + 1;
-                                        final item = data[index];
-                                        return _buildRankCardItem(
-                                          rank: rank,
-                                          item: item,
-                                          isReferralTab: true,
-                                        );
-                                      },
-                                    )
-                                  else
-                                    _buildEmptyState(true),
-                                ],
-                              ),
+                                      if (remaining.isNotEmpty)
+                                        ListView.separated(
+                                          shrinkWrap: true,
+                                          physics: const NeverScrollableScrollPhysics(),
+                                          padding: EdgeInsets.zero,
+                                          itemCount: remaining.length,
+                                          separatorBuilder: (_, __) => SizedBox(height: 10.h),
+                                          itemBuilder: (context, index) {
+                                            final rank = index + 4;
+                                            final item = remaining[index];
+                                            return _buildRankCardItem(
+                                              rank: rank,
+                                              item: item,
+                                              isReferralTab: true,
+                                            );
+                                          },
+                                        )
+                                      else
+                                        _buildEmptyState(true),
+                                    ],
+                                  ),
+                                ),
+                              ],
                             );
                           }
                         },

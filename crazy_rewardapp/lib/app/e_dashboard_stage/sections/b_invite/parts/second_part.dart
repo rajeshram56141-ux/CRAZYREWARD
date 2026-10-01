@@ -423,7 +423,7 @@ class InviteSecondPart extends HookConsumerWidget {
             ),
             alignment: Alignment.center,
             child: Image.asset(
-              'assets/icons/panda invite.png',
+              'assets/Icons1/panda_invite-removebg-preview (2).png',
               width: 48.w,
               height: 48.w,
               fit: BoxFit.contain,
